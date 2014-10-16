@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0">
+    <OCD name="Hobson General Configuration" id="com.whizzosoftware.hobson.general">
+        <AD name="Server Name"  id="server.name" required="true" type="String" description="The name of this server (e.g. Home, Work, etc.)" />
+    </OCD>
+    <Designate pid="com.whizzosoftware.hobson.general">
+        <Object ocdref="com.whizzosoftware.hobson.general"/>
+    </Designate>
+    <OCD name="Hobson Mail Configuration" id="com.whizzosoftware.hobson.mail">
+        <AD name="SMTP Server"  id="mail.smtp.server" required="true" type="String" description="SMTP server hostname or IP address" />
+        <AD name="Secure?"  id="mail.smtp.useSMTPS" required="true" type="Boolean" default="false" description="Use SMTPS (port 465) instead of SMTP (port 25)?" />
+        <AD name="Username"  id="mail.smtp.username" required="false" type="String" description="SMTP server username" />
+        <AD name="Password"  id="mail.smtp.password" required="false" type="String" description="SMTP server password" />
+    </OCD>
+    <Designate pid="com.whizzosoftware.hobson.mail">
+        <Object ocdref="com.whizzosoftware.hobson.mail"/>
+    </Designate>
+</metatype:MetaData>
