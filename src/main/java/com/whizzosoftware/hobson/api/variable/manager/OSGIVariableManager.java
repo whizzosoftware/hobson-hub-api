@@ -29,7 +29,7 @@ public class OSGIVariableManager implements VariableManager {
 
     private static final String GLOBAL_NAME = "$GLOBAL$";
 
-    private final Map<String,List<VariableRegistration>> variableRegistrations = new HashMap<String,List<VariableRegistration>>();
+    private final Map<String,List<VariableRegistration>> variableRegistrations = new HashMap<>();
 
     @Override
     public void publishGlobalVariable(String pluginId, HobsonVariable var) {
@@ -130,7 +130,7 @@ public class OSGIVariableManager implements VariableManager {
 
     @Override
     public Collection<HobsonVariable> getGlobalVariables() {
-        List<HobsonVariable> results = new ArrayList<HobsonVariable>();
+        List<HobsonVariable> results = new ArrayList<>();
         BundleContext bundleContext = FrameworkUtil.getBundle(getClass()).getBundleContext();
         try {
             ServiceReference[] references = bundleContext.getServiceReferences(HobsonVariable.class.getName(), "(&(objectClass=" + HobsonVariable.class.getName() + ")(deviceId=" + GLOBAL_NAME + "))");
@@ -152,7 +152,7 @@ public class OSGIVariableManager implements VariableManager {
             try {
                 ServiceReference[] refs = bundleContext.getServiceReferences(HobsonVariable.class.getName(), "(&(objectClass=" + HobsonVariable.class.getName() + ")(pluginId=" + pluginId + ")(deviceId=" + deviceId + "))");
                 if (refs != null) {
-                    List<HobsonVariable> results = new ArrayList<HobsonVariable>();
+                    List<HobsonVariable> results = new ArrayList<>();
                     for (ServiceReference ref : refs) {
                         results.add((HobsonVariable)bundleContext.getService(ref));
                     }
@@ -243,7 +243,15 @@ public class OSGIVariableManager implements VariableManager {
     }
 
     protected void setVariable(VariableUpdate update, boolean generateEvent) {
-        HobsonVariable var = getDeviceVariable(update.getPluginId(), update.getDeviceId(), update.getName());
+        HobsonVariable var;
+
+        // if the device ID is null, it's a global variable
+        if (update.getDeviceId() == null) {
+            var = getDeviceVariable(update.getPluginId(), GLOBAL_NAME, update.getName());
+        } else {
+            var = getDeviceVariable(update.getPluginId(), update.getDeviceId(), update.getName());
+        }
+
         if (var != null) {
             ((HobsonVariableImpl)var).setValue(update.getValue());
         }
@@ -265,7 +273,7 @@ public class OSGIVariableManager implements VariableManager {
         synchronized (variableRegistrations) {
             List<VariableRegistration> regs = variableRegistrations.get(pluginId);
             if (regs == null) {
-                regs = new ArrayList<VariableRegistration>();
+                regs = new ArrayList<>();
                 variableRegistrations.put(pluginId, regs);
             }
             regs.add(new VariableRegistration(pluginId, deviceId, name, reg));

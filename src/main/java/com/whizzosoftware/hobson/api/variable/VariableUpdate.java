@@ -7,8 +7,6 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.variable;
 
-import com.whizzosoftware.hobson.api.device.HobsonDevice;
-
 /**
  * A class representing a variable update.
  *
@@ -61,22 +59,47 @@ public class VariableUpdate {
         this.updateTime = updateTime;
     }
 
+    /**
+     * Returns the plugin ID that updated the variable.
+     *
+     * @return a plugin ID
+     */
     public String getPluginId() {
         return pluginId;
     }
 
+    /**
+     * Returns the device ID that updated the variable.
+     *
+     * @return a device ID
+     */
     public String getDeviceId() {
         return deviceId;
     }
 
+    /**
+     * Returns the variable name that has changed.
+     *
+     * @return a String
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the new variable value.
+     *
+     * @return an Object
+     */
     public Object getValue() {
         return value;
     }
 
+    /**
+     * Returns the time the variable update occurred.
+     *
+     * @return a long
+     */
     public long getUpdateTime() {
         return updateTime;
     }
