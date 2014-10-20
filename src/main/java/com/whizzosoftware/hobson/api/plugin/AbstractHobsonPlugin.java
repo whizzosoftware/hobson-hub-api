@@ -14,6 +14,8 @@ import com.whizzosoftware.hobson.api.disco.ExternalBridgeMetaAnalyzer;
 import com.whizzosoftware.hobson.api.disco.manager.DiscoManager;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.event.VariableUpdateRequestEvent;
+import com.whizzosoftware.hobson.api.trigger.TriggerProvider;
+import com.whizzosoftware.hobson.api.trigger.manager.TriggerManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.manager.VariableManager;
@@ -21,6 +23,7 @@ import com.whizzosoftware.hobson.bootstrap.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.bootstrap.api.config.ConfigurationMetaData;
 import com.whizzosoftware.hobson.bootstrap.api.plugin.PluginStatus;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
@@ -37,6 +40,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     private VariableManager variableManager;
     private ConfigurationManager configManager;
     private DiscoManager discoManager;
+    private TriggerManager triggerManager;
     private String pluginId;
     private String version;
     private PluginStatus status = new PluginStatus(PluginStatus.Status.INITIALIZING);
@@ -70,6 +74,10 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
         configMeta.add(metaData);
     }
 
+    protected File getDataFile(String filename) {
+        return configManager.getDataFile(getId(), filename);
+    }
+
     @Override
     public boolean isConfigurable() {
         return (configMeta.size() > 0);
@@ -96,6 +104,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     }
 
     @Override
+    public void setTriggerManager(TriggerManager triggerManager) {
+        this.triggerManager = triggerManager;
+    }
+
+    @Override
     public void setDeviceConfigurationProperty(String id, String name, Object value, boolean overwrite) {
         validateConfigurationManager();
         configManager.setDeviceConfigurationProperty(getId(), id, name, value, overwrite);
@@ -117,6 +130,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     public void publishDeviceVariable(String deviceId, HobsonVariable variable) {
         validateVariableManager();
         variableManager.publishDeviceVariable(getId(), deviceId, variable);
+    }
+
+    @Override
+    public void publishTriggerProvider(TriggerProvider triggerProvider) {
+        triggerManager.publishTriggerProvider(triggerProvider);
     }
 
     @Override

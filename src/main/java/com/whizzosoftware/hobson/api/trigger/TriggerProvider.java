@@ -16,6 +16,20 @@ import java.util.Collection;
  */
 public interface TriggerProvider {
     /**
+     * Returns the ID of the plugin which created this trigger provider.
+     *
+     * @return a plugin ID
+     */
+    public String getPluginId();
+
+    /**
+     * Returns the ID of this trigger provider.
+     *
+     * @return the trigger provider ID
+     */
+    public String getId();
+
+    /**
      * Returns all triggers for this provider.
      *
      * @return a Collection of HobsonTrigger instances

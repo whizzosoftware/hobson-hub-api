@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.trigger.manager;
 
 import com.whizzosoftware.hobson.api.trigger.HobsonTrigger;
+import com.whizzosoftware.hobson.api.trigger.TriggerProvider;
 
 import java.util.Collection;
 
@@ -17,6 +18,8 @@ import java.util.Collection;
  * @author Dan Noguerol
  */
 public interface TriggerManager {
+    public void publishTriggerProvider(TriggerProvider provider);
+    public boolean hasTriggerProvider(String pluginId, String providerId);
     public Collection<HobsonTrigger> getAllTriggers();
     public HobsonTrigger getTrigger(String providerId, String triggerId);
     public void addTrigger(String providerId, Object trigger);

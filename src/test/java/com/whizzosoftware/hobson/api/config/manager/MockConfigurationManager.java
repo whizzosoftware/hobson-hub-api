@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.config.manager;
 
+import java.io.File;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +27,11 @@ public class MockConfigurationManager implements ConfigurationManager {
 
     @Override
     public Dictionary getDeviceConfiguration(String pluginId, String deviceId) {
+        return null;
+    }
+
+    @Override
+    public File getDataFile(String pluginId, String filename) {
         return null;
     }
 

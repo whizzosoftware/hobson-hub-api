@@ -11,6 +11,9 @@ import com.whizzosoftware.hobson.api.config.manager.ConfigurationManager;
 import com.whizzosoftware.hobson.api.device.manager.DeviceManager;
 import com.whizzosoftware.hobson.api.disco.manager.DiscoManager;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
+import com.whizzosoftware.hobson.api.trigger.HobsonTrigger;
+import com.whizzosoftware.hobson.api.trigger.TriggerProvider;
+import com.whizzosoftware.hobson.api.trigger.manager.TriggerManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.manager.VariableManager;
@@ -79,6 +82,13 @@ public interface HobsonPlugin extends BootstrapHobsonPlugin {
     public void setDiscoManager(DiscoManager discoManager);
 
     /**
+     * Sets the TriggerManager instance the plugin should use. This will be called before the init() method.
+     *
+     * @param triggerManager a TriggerManager
+     */
+    public void setTriggerManager(TriggerManager triggerManager);
+
+    /**
      * Sets a configuration property for a specific device.
      *
      * @param id the ID of the device
@@ -113,6 +123,13 @@ public interface HobsonPlugin extends BootstrapHobsonPlugin {
      * @param variable the variable to publish
      */
     public void publishDeviceVariable(String deviceId, HobsonVariable variable);
+
+    /**
+     * Publish a trigger provider.
+     *
+     * @param triggerProvider the trigger provider object
+     */
+    public void publishTriggerProvider(TriggerProvider triggerProvider);
 
     /**
      * Fires a notification that variables has been successfully updated.

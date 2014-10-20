@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.config.manager;
 
+import java.io.File;
 import java.util.Dictionary;
 
 /**
@@ -42,6 +43,16 @@ public interface ConfigurationManager {
      * @return a Dictionary (or null if there is no configuration)
      */
     public Dictionary getDeviceConfiguration(String pluginId, String deviceId);
+
+    /**
+     * Returns a data file for a specific plugin.
+     *
+     * @param pluginId the plugin ID requesting the file
+     * @param filename the name of the data file
+     *
+     * @return a File instance (or null if not found)
+     */
+    public File getDataFile(String pluginId, String filename);
 
     /**
      * Set a device level configuration property.

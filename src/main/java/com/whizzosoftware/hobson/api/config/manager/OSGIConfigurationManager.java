@@ -16,6 +16,7 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ManagedService;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -93,6 +94,17 @@ public class OSGIConfigurationManager implements ConfigurationManager {
             }
         } catch (IOException e) {
             throw new ConfigurationException("Error obtaining configuration", e);
+        }
+    }
+
+    @Override
+    public File getDataFile(String pluginId, String filename) {
+        Bundle bundle = BundleUtil.getBundleForSymbolicName(pluginId);
+        if (bundle != null) {
+            BundleContext context = bundle.getBundleContext();
+            return context.getDataFile(filename);
+        } else {
+            throw new ConfigurationException("Error obtaining data file");
         }
     }
 

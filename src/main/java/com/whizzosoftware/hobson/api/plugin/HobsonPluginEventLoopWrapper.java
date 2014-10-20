@@ -17,9 +17,12 @@ import com.whizzosoftware.hobson.api.event.PluginStartedEvent;
 import com.whizzosoftware.hobson.api.event.PluginStoppedEvent;
 import com.whizzosoftware.hobson.api.event.manager.EventManager;
 import com.whizzosoftware.hobson.api.event.manager.EventManagerListener;
+import com.whizzosoftware.hobson.api.trigger.TriggerProvider;
+import com.whizzosoftware.hobson.api.trigger.manager.TriggerManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.manager.VariableManager;
+import com.whizzosoftware.hobson.bootstrap.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.bootstrap.api.config.ConfigurationMetaData;
 import com.whizzosoftware.hobson.bootstrap.api.plugin.PluginStatus;
 
@@ -41,6 +44,7 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
     private volatile EventManager eventManager;
     private volatile ConfigurationManager configManager;
     private volatile DiscoManager discoManager;
+    private volatile TriggerManager triggerManager;
 
     private HobsonPlugin plugin;
     private PluginEventLoop eventLoop;
@@ -51,8 +55,12 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
      * @param plugin the plugin to wrapper
      */
     public HobsonPluginEventLoopWrapper(HobsonPlugin plugin) {
-        this.plugin = plugin;
-        this.eventLoop = new PluginEventLoop(this, getRefreshInterval());
+        if (plugin != null) {
+            this.plugin = plugin;
+            this.eventLoop = new PluginEventLoop(this, getRefreshInterval());
+        } else {
+            throw new HobsonRuntimeException("Passed a null plugin to HobsonPluginEventLoopWrapper");
+        }
     }
 
     /**
@@ -71,6 +79,7 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
         setVariableManager(variableManager);
         setConfigurationManager(configManager);
         setDiscoManager(discoManager);
+        setTriggerManager(triggerManager);
 
         // start the event loop
         eventLoop.start();
@@ -202,6 +211,11 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
     }
 
     @Override
+    public void setTriggerManager(TriggerManager triggerManager) {
+        plugin.setTriggerManager(triggerManager);
+    }
+
+    @Override
     public void setDeviceConfigurationProperty(String id, String name, Object value, boolean overwrite) {
         plugin.setDeviceConfigurationProperty(id, name, value, overwrite);
     }
@@ -214,6 +228,11 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
     @Override
     public void publishDeviceVariable(String deviceId, HobsonVariable variable) {
         plugin.publishDeviceVariable(deviceId, variable);
+    }
+
+    @Override
+    public void publishTriggerProvider(TriggerProvider triggerProvider) {
+        plugin.publishTriggerProvider(triggerProvider);
     }
 
     @Override

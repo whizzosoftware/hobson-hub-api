@@ -11,6 +11,7 @@ import com.whizzosoftware.hobson.api.config.manager.ConfigurationManager;
 import com.whizzosoftware.hobson.api.device.manager.DeviceManager;
 import com.whizzosoftware.hobson.api.disco.manager.DiscoManager;
 import com.whizzosoftware.hobson.api.event.manager.EventManager;
+import com.whizzosoftware.hobson.api.trigger.manager.TriggerManager;
 import com.whizzosoftware.hobson.api.variable.manager.VariableManager;
 import com.whizzosoftware.hobson.bootstrap.api.plugin.BootstrapHobsonPlugin;
 import org.apache.felix.dm.Component;
@@ -52,6 +53,7 @@ public class HobsonBundleActivator extends DependencyActivatorBase {
             c.add(createServiceDependency().setService(DiscoManager.class).setRequired(true));
             c.add(createServiceDependency().setService(EventManager.class).setRequired(true));
             c.add(createServiceDependency().setService(VariableManager.class).setRequired(true));
+            c.add(createServiceDependency().setService(TriggerManager.class).setRequired(true));
             manager.add(c);
         } else {
             logger.error("No hobson.plugin provided capability found for plugin {}", context.getBundle().getSymbolicName());

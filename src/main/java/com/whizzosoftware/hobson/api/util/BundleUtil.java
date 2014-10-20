@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.util;
 
+import com.whizzosoftware.hobson.bootstrap.api.HobsonNotFoundException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -27,7 +28,6 @@ public class BundleUtil {
                 }
             }
         }
-        return null;
+        throw new HobsonNotFoundException("Unable to find bundle with name: " + bundleSymbolicName);
     }
-
 }
