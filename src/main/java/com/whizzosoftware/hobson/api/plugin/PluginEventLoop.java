@@ -228,7 +228,7 @@ public class PluginEventLoop extends Thread {
                 pushNextState(State.PENDING_PLUGIN_CONFIG);
             }
         } else {
-            logger.warn("Ignoring config change since listener is stopping");
+            logger.debug("Ignoring config change since listener is stopping or stopped");
         }
     }
 
@@ -245,7 +245,7 @@ public class PluginEventLoop extends Thread {
                 pushNextState(State.PENDING_DEVICE_CONFIG);
             }
         } else {
-            logger.warn("Ignoring config change since listener is stopping");
+            logger.debug("Ignoring config change since listener is stopping or stopped");
         }
     }
 
@@ -261,7 +261,7 @@ public class PluginEventLoop extends Thread {
                 pushNextState(State.PENDING_EVENT);
             }
         } else {
-            logger.warn("Ignoring event since listener is stopping: " + event);
+            logger.debug("Ignoring event since listener is stopping or stopped: " + event);
         }
     }
 

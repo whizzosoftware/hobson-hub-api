@@ -81,9 +81,16 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4.7</version>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.javax.mail</artifactId>
+            <version>1.4.1_5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.specs</groupId>
+            <artifactId>org.apache.servicemix.specs.activation-api-1.1</artifactId>
+            <version>2.4.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.whizzosoftware.hobson.hub</groupId>
@@ -139,9 +146,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Import-Package>org.osgi.framework,org.osgi.service.event,org.osgi.service.cm,org.apache.felix.dm,org.apache.felix.bundlerepository,org.slf4j,io.netty.*,gnu.io.*,com.whizzosoftware.hobson.bootstrap.api.*</Import-Package>
+                        <Import-Package>org.osgi.framework,org.osgi.service.event,org.osgi.service.cm,org.apache.felix.dm,org.apache.felix.bundlerepository,org.slf4j,javax.mail.*,io.netty.*,gnu.io.*,com.whizzosoftware.hobson.bootstrap.api.*</Import-Package>
                         <Export-Package>com.whizzosoftware.hobson.api.*</Export-Package>
-                        <Embed-Dependency>mail;scope=compile|runtime</Embed-Dependency>
                         <Bundle-Activator>com.whizzosoftware.hobson.api.Activator</Bundle-Activator>
                     </instructions>
                 </configuration>
