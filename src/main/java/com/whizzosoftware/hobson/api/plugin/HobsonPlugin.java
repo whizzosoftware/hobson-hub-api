@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
+import com.whizzosoftware.hobson.api.action.manager.ActionManager;
 import com.whizzosoftware.hobson.api.config.manager.ConfigurationManager;
 import com.whizzosoftware.hobson.api.device.manager.DeviceManager;
 import com.whizzosoftware.hobson.api.disco.manager.DiscoManager;
@@ -87,6 +88,13 @@ public interface HobsonPlugin extends BootstrapHobsonPlugin {
      * @param triggerManager a TriggerManager
      */
     public void setTriggerManager(TriggerManager triggerManager);
+
+    /**
+     * Sets the ActionManager instance the plugin should use. This will be called before the init() method.
+     *
+     * @param actionManager an ActionManager
+     */
+    public void setActionManager(ActionManager actionManager);
 
     /**
      * Sets a configuration property for a specific device.

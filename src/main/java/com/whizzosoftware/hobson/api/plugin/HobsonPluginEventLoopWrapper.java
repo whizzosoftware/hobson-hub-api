@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
+import com.whizzosoftware.hobson.api.action.manager.ActionManager;
 import com.whizzosoftware.hobson.api.config.manager.ConfigurationManager;
 import com.whizzosoftware.hobson.api.config.manager.PluginConfigurationListener;
 import com.whizzosoftware.hobson.api.device.manager.DeviceManager;
@@ -45,6 +46,7 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
     private volatile ConfigurationManager configManager;
     private volatile DiscoManager discoManager;
     private volatile TriggerManager triggerManager;
+    private volatile ActionManager actionManager;
 
     private HobsonPlugin plugin;
     private PluginEventLoop eventLoop;
@@ -80,6 +82,7 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
         setConfigurationManager(configManager);
         setDiscoManager(discoManager);
         setTriggerManager(triggerManager);
+        setActionManager(actionManager);
 
         // start the event loop
         eventLoop.start();
@@ -213,6 +216,11 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
     @Override
     public void setTriggerManager(TriggerManager triggerManager) {
         plugin.setTriggerManager(triggerManager);
+    }
+
+    @Override
+    public void setActionManager(ActionManager actionManager) {
+        plugin.setActionManager(actionManager);
     }
 
     @Override

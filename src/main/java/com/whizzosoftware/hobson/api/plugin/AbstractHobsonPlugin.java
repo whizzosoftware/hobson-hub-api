@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
+import com.whizzosoftware.hobson.api.action.manager.ActionManager;
 import com.whizzosoftware.hobson.api.config.manager.ConfigurationManager;
 import com.whizzosoftware.hobson.api.device.HobsonDevice;
 import com.whizzosoftware.hobson.api.device.manager.DeviceManager;
@@ -41,6 +42,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     private ConfigurationManager configManager;
     private DiscoManager discoManager;
     private TriggerManager triggerManager;
+    private ActionManager actionManager;
     private String pluginId;
     private String version;
     private PluginStatus status = new PluginStatus(PluginStatus.Status.INITIALIZING);
@@ -109,6 +111,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     }
 
     @Override
+    public void setActionManager(ActionManager actionManager) {
+        this.actionManager = actionManager;
+    }
+
+    @Override
     public void setDeviceConfigurationProperty(String id, String name, Object value, boolean overwrite) {
         validateConfigurationManager();
         configManager.setDeviceConfigurationProperty(getId(), id, name, value, overwrite);
@@ -134,6 +141,8 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
 
     @Override
     public void publishTriggerProvider(TriggerProvider triggerProvider) {
+        validateTriggerManager();
+        triggerProvider.setActionManager(actionManager);
         triggerManager.publishTriggerProvider(triggerProvider);
     }
 
@@ -295,6 +304,12 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     private void validateDiscoManager() {
         if (discoManager == null) {
             throw new HobsonRuntimeException("No disco manager has been set");
+        }
+    }
+
+    private void validateTriggerManager() {
+        if (triggerManager == null) {
+            throw new HobsonRuntimeException("No trigger manager has been set");
         }
     }
 }

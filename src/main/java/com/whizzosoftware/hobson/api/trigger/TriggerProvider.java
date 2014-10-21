@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.trigger;
 
+import com.whizzosoftware.hobson.api.action.manager.ActionManager;
+
 import java.util.Collection;
 
 /**
@@ -28,6 +30,13 @@ public interface TriggerProvider {
      * @return the trigger provider ID
      */
     public String getId();
+
+    /**
+     * Sets the ActionManager instance this provider should use to execute actions.
+     *
+     * @param actionManager an ActionManager instance
+     */
+    public void setActionManager(ActionManager actionManager);
 
     /**
      * Returns all triggers for this provider.
