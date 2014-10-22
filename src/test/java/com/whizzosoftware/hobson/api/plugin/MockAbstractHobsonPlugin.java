@@ -18,12 +18,12 @@ public class MockAbstractHobsonPlugin extends AbstractHobsonPlugin {
     }
 
     @Override
-    public void init(Dictionary config) {
+    public void onStartup(Dictionary config) {
 
     }
 
     @Override
-    public void stop() {
+    public void onShutdown() {
 
     }
 

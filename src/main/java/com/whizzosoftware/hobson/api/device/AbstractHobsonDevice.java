@@ -73,25 +73,6 @@ abstract public class AbstractHobsonDevice implements HobsonDevice {
     }
 
     @Override
-    public void start() {
-        logger.debug("Device \"" + getId() + "\" starting");
-
-        // allow the device sub-class to initialize
-        startup();
-
-        // set the device's name to default if it's not already set
-        setConfigurationProperty("name", getDefaultName(), false);
-    }
-
-    @Override
-    public void stop() {
-        logger.debug("Device \"" + getId() + "\" stopping");
-
-        // allow the device subclass to shutdown
-        shutdown();
-    }
-
-    @Override
     public Collection<ConfigurationMetaData> getConfigurationMetaData() {
         return configMeta;
     }
@@ -190,14 +171,4 @@ abstract public class AbstractHobsonDevice implements HobsonDevice {
     public String toString() {
         return getName();
     }
-
-    /**
-     * Method that allows subclasses to perform startup functions.
-     */
-    abstract protected void startup();
-
-    /**
-     * Method that allows subclasses to perform shutdown functions.
-     */
-    abstract protected void shutdown();
 }

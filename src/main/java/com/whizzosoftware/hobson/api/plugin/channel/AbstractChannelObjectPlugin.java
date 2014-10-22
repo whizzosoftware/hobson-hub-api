@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.plugin.channel;
 
 import com.whizzosoftware.hobson.api.plugin.AbstractHobsonPlugin;
+import com.whizzosoftware.hobson.bootstrap.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.bootstrap.api.plugin.PluginStatus;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -40,6 +41,7 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
     private Channel channel;
     private SocketAddress socketAddress;
     private State connectionState = State.NOT_CONNECTED;
+    private EventLoopGroup eventLoopGroup;
     private boolean isRunning = true;
 
     public AbstractChannelObjectPlugin(String pluginId) {
@@ -47,45 +49,10 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
     }
 
     @Override
-    public void init(Dictionary config) {
-        processConfig(config);
-    }
-
-    private void processConfig(Dictionary config) {
-        boolean didConfigChange = false;
-
-        if (config != null) {
-            String s = (String) config.get("serial.port");
-            if (s != null && s.trim().length() > 0 && !s.equals(serialDevice)) {
-                serialDevice = s;
-                setRemoteAddress(new RxtxDeviceAddress(serialDevice));
-                didConfigChange = true;
-            } else {
-                s = (String) config.get("serial.hostname");
-                if (s != null && s.trim().length() > 0 && !s.equals(serialDevice)) {
-                    serialDevice = s;
-                    setRemoteAddress(new InetSocketAddress(serialDevice, 4999));
-                    didConfigChange = true;
-                }
-            }
-        }
-
-        if (serialDevice == null) {
-            setStatus(new PluginStatus(PluginStatus.Status.NOT_CONFIGURED, "Neither serial port nor serial hostname are configured"));
-        } else if (didConfigChange) {
-            // disconnect if we're already connected
-            if (connectionState == State.CONNECTED) {
-                disconnect();
-            } else {
-                // attempt to connect
-                try {
-                    connect();
-                    setStatus(new PluginStatus(PluginStatus.Status.RUNNING));
-                } catch (IOException e) {
-                    logger.error("Error attempting to connect", e);
-                    setStatus(new PluginStatus(PluginStatus.Status.FAILED, e.getLocalizedMessage()));
-                }
-            }
+    public void onStartup(Dictionary config) {
+        if (processConfig(config)) {
+            eventLoopGroup = createEventLoopGroup();
+            attemptConnect();
         }
     }
 
@@ -95,14 +62,16 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
     }
 
     @Override
-    public void stop() {
+    public void onShutdown() {
         isRunning = false;
         disconnect();
     }
 
     @Override
     public void onPluginConfigurationUpdate(Dictionary config) {
-        processConfig(config);
+        if (processConfig(config)) {
+            attemptConnect();
+        }
     }
 
     /**
@@ -196,12 +165,52 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
      */
     abstract protected void onChannelDisconnected();
 
-    private Bootstrap configureBootstrap(Bootstrap b) throws IOException {
-        return configureBootstrap(b, createEventLoopGroup());
+    private boolean processConfig(Dictionary config) {
+        boolean didConfigChange = false;
+
+        if (config != null) {
+            String s = (String) config.get("serial.port");
+            if (s != null && s.trim().length() > 0 && !s.equals(serialDevice)) {
+                serialDevice = s;
+                setRemoteAddress(new RxtxDeviceAddress(serialDevice));
+                didConfigChange = true;
+            } else {
+                s = (String) config.get("serial.hostname");
+                if (s != null && s.trim().length() > 0 && !s.equals(serialDevice)) {
+                    serialDevice = s;
+                    setRemoteAddress(new InetSocketAddress(serialDevice, 4999));
+                    didConfigChange = true;
+                }
+            }
+        }
+
+        if (serialDevice == null) {
+            setStatus(new PluginStatus(PluginStatus.Status.NOT_CONFIGURED, "Neither serial port nor serial hostname are configured"));
+        }
+
+        return didConfigChange;
     }
 
-    private Bootstrap configureBootstrap(Bootstrap b, EventLoopGroup g) {
-        b.group(g);
+    private void attemptConnect() {
+        if (serialDevice != null) {
+            // disconnect if we're already connected
+            if (connectionState == State.CONNECTED) {
+                disconnect();
+            } else {
+                // attempt to connect
+                try {
+                    connect();
+                    setStatus(new PluginStatus(PluginStatus.Status.RUNNING));
+                } catch (IOException e) {
+                    logger.error("Error attempting to connect", e);
+                    setStatus(new PluginStatus(PluginStatus.Status.FAILED, e.getLocalizedMessage()));
+                }
+            }
+        }
+    }
+
+    private Bootstrap configureBootstrap(Bootstrap b) {
+        b.group(eventLoopGroup);
 
         // configure for either network or serial channel
         if (isNetworkAddress()) {
@@ -232,16 +241,14 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
      * Creates the appropriate EventLoopGroup based on whether the remote address is a network address or serial port.
      *
      * @return an EventLoopGroup
-     *
-     * @throws IOException on failure
      */
-    private EventLoopGroup createEventLoopGroup() throws IOException {
+    private EventLoopGroup createEventLoopGroup() {
         if (isNetworkAddress()) {
             return new NioEventLoopGroup();
         } else if (isSerialAddress()) {
             return new OioEventLoopGroup();
         } else {
-            throw new IOException("Remote address is neither network or serial");
+            throw new HobsonRuntimeException("Remote address is neither network nor serial");
         }
     }
 
@@ -295,14 +302,24 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
                                 logger.info("Connection was closed");
                                 channel = null;
                                 connectionState = State.NOT_CONNECTED;
-                                onChannelDisconnected();
+                                executeInEventLoop(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        onChannelDisconnected();
+                                    }
+                                });
                                 if (isRunning) {
                                     scheduleReconnect(channelFuture.channel().eventLoop());
                                 }
                             }
                         });
 
-                        onChannelConnected();
+                        executeInEventLoop(new Runnable() {
+                            @Override
+                            public void run() {
+                                onChannelConnected();
+                            }
+                        });
                     } else {
                         logger.error("Connection attempt failed", channelFuture.cause());
                         connectionState = State.NOT_CONNECTED;

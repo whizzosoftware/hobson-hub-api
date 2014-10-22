@@ -28,12 +28,12 @@ public class MockAbstractHobsonDevice extends AbstractHobsonDevice {
     }
 
     @Override
-    protected void startup() {
+    public void onStartup() {
         wasStartupCalled = true;
     }
 
     @Override
-    protected void shutdown() {
+    public void onShutdown() {
         wasShutdownCalled = true;
     }
 

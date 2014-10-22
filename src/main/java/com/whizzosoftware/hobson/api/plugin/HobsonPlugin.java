@@ -12,7 +12,6 @@ import com.whizzosoftware.hobson.api.config.manager.ConfigurationManager;
 import com.whizzosoftware.hobson.api.device.manager.DeviceManager;
 import com.whizzosoftware.hobson.api.disco.manager.DiscoManager;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
-import com.whizzosoftware.hobson.api.trigger.HobsonTrigger;
 import com.whizzosoftware.hobson.api.trigger.TriggerProvider;
 import com.whizzosoftware.hobson.api.trigger.manager.TriggerManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
@@ -20,9 +19,12 @@ import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.manager.VariableManager;
 import com.whizzosoftware.hobson.bootstrap.api.plugin.BootstrapHobsonPlugin;
 import com.whizzosoftware.hobson.bootstrap.api.plugin.PluginStatus;
+import io.netty.channel.EventLoopGroup;
+import io.netty.util.concurrent.Future;
 
 import java.util.Dictionary;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Interface for all Hobson Hub plugins.
@@ -31,14 +33,14 @@ import java.util.List;
  */
 public interface HobsonPlugin extends BootstrapHobsonPlugin {
     /**
-     * Initialize the plugin.
+     * Callback method invoked when the plugin starts up.
      */
-    public void init(Dictionary config);
+    public void onStartup(Dictionary config);
 
     /**
-     * Stop the plugin.
+     * Callback method invoked when the plugin shuts down.
      */
-    public void stop();
+    public void onShutdown();
 
     /**
      * Returns the plugin's current status.
@@ -95,6 +97,32 @@ public interface HobsonPlugin extends BootstrapHobsonPlugin {
      * @param actionManager an ActionManager
      */
     public void setActionManager(ActionManager actionManager);
+
+    /**
+     * Execute a task using the plugin event loop.
+     *
+     * @param runnable a task to execute
+     */
+    public void executeInEventLoop(Runnable runnable);
+
+    /**
+     * Execute a task using the plugin event loop.
+     *
+     * @param runnable a task to execute
+     *
+     * @return a Future for monitoring the task execution status
+     */
+    public Future submitInEventLoop(Runnable runnable);
+
+    /**
+     * Execute a recurring task.
+     *
+     * @param runnable a task to execute
+     * @param initialDelay how long to wait for the first execution
+     * @param time the wait interval between executions
+     * @param unit the temporal unit for the time argument
+     */
+    public void scheduleAtFixedRateInEventLoop(Runnable runnable, long initialDelay, long time, TimeUnit unit);
 
     /**
      * Sets a configuration property for a specific device.

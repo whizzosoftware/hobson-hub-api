@@ -55,14 +55,14 @@ public interface HobsonDevice {
     public String getPreferredVariableName();
 
     /**
-     * Starts the device.
+     * Callback method invoked when the device is started.
      */
-    public void start();
+    public void onStartup();
 
     /**
-     * Stops the device.
+     * Callback method invoked when the device is stopped.
      */
-    public void stop();
+    public void onShutdown();
 
     /**
      * Returns meta data about the configurable aspects of the device.

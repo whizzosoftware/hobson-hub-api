@@ -32,9 +32,14 @@ public class ChannelObjectDriverInboundHandler extends SimpleChannelInboundHandl
     }
 
     @Override
-    public void channelRead0(ChannelHandlerContext channelHandlerContext, Object o) {
+    public void channelRead0(ChannelHandlerContext channelHandlerContext, final Object o) {
         logger.trace("channelRead0: {}", o);
-        plugin.onChannelData(o);
+        plugin.executeInEventLoop(new Runnable() {
+            @Override
+            public void run() {
+                plugin.onChannelData(o);
+            }
+        });
     }
 
     @Override

@@ -85,7 +85,7 @@ public class OSGIConfigurationManager implements ConfigurationManager {
                 Bundle bundle = BundleUtil.getBundleForSymbolicName(pluginId);
                 if (bundle != null) {
                     Configuration config = configAdmin.getConfiguration(pluginId + "." + deviceId, bundle.getLocation());
-                    return config.getProperties();
+                    return (config.getProperties() != null) ? config.getProperties() : new Hashtable();
                 } else {
                     throw new ConfigurationException("Unable to get bundle for " + pluginId);
                 }

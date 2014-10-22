@@ -23,12 +23,16 @@ import com.whizzosoftware.hobson.api.variable.manager.VariableManager;
 import com.whizzosoftware.hobson.bootstrap.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.bootstrap.api.config.ConfigurationMetaData;
 import com.whizzosoftware.hobson.bootstrap.api.plugin.PluginStatus;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.local.LocalEventLoopGroup;
+import io.netty.util.concurrent.Future;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A base class that implements several HobsonPlugin methods. This provides a good starting point for third-party
@@ -46,7 +50,8 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     private String pluginId;
     private String version;
     private PluginStatus status = new PluginStatus(PluginStatus.Status.INITIALIZING);
-    private final List<ConfigurationMetaData> configMeta = new ArrayList<ConfigurationMetaData>();
+    private final List<ConfigurationMetaData> configMeta = new ArrayList<>();
+    private EventLoopGroup eventLoopGroup = new LocalEventLoopGroup(1);
 
     public AbstractHobsonPlugin(String pluginId) {
         this.pluginId = pluginId;
@@ -113,6 +118,21 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     @Override
     public void setActionManager(ActionManager actionManager) {
         this.actionManager = actionManager;
+    }
+
+    @Override
+    public void executeInEventLoop(Runnable runnable) {
+        eventLoopGroup.execute(runnable);
+    }
+
+    @Override
+    public Future submitInEventLoop(Runnable runnable) {
+        return eventLoopGroup.submit(runnable);
+    }
+
+    @Override
+    public void scheduleAtFixedRateInEventLoop(Runnable runnable, long initialDelay, long time, TimeUnit unit) {
+        eventLoopGroup.scheduleAtFixedRate(runnable, initialDelay, time, unit);
     }
 
     @Override
@@ -213,9 +233,9 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
      *
      * @param device the device to publish
      */
-    protected void publishAndStartDevice(HobsonDevice device) {
+    protected void publishDevice(final HobsonDevice device) {
         validateDeviceManager();
-        deviceManager.publishAndStartDevice(device);
+        deviceManager.publishDevice(this, device);
     }
 
     /**
@@ -266,21 +286,21 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
      *
      * @param deviceId the device ID to unpublish
      */
-    protected void stopAndUnpublishDevice(String deviceId) {
+    protected void unpublishDevice(final String deviceId) {
         validateVariableManager();
         validateDeviceManager();
         variableManager.unpublishAllDeviceVariables(getId(), deviceId);
-        deviceManager.stopAndUnpublishDevice(getId(), deviceId);
+        deviceManager.unpublishDevice(this, deviceId);
     }
 
     /**
      * Unpublishes all published devices associates with a plugin after invoking their stop() methods.
      */
-    protected void stopAndUnpublishAllDevices() {
+    protected void unpublishAllDevices() {
         validateVariableManager();
         validateDeviceManager();
         variableManager.unpublishAllPluginVariables(getId());
-        deviceManager.stopAndUnpublishAllDevices(getId());
+        deviceManager.unpublishAllDevices(this);
     }
 
     private void validateDeviceManager() {

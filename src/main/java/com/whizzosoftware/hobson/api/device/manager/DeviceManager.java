@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.device.manager;
 
 import com.whizzosoftware.hobson.api.device.HobsonDevice;
+import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 
 import java.util.Collection;
 
@@ -20,9 +21,10 @@ public interface DeviceManager {
     /**
      * Publishes a device to the device registry and starts it.
      *
+     * @param plugin the HobsonPlugin instance performing the action
      * @param device the HobsonDevice to publish
      */
-    public void publishAndStartDevice(HobsonDevice device);
+    public void publishDevice(HobsonPlugin plugin, HobsonDevice device);
 
     /**
      * Retrieves all known devices.
@@ -73,18 +75,18 @@ public interface DeviceManager {
     public void setDeviceName(String pluginId, String deviceId, String name);
 
     /**
-     * Stops an unpublishes all devices associated with a specific plugin.
-     *
-     * @param pluginId the plugin ID
-     */
-    public void stopAndUnpublishAllDevices(String pluginId);
-
-    /**
      * Stops and unpublishes a device associated with a specific plugin. This allows plugins that require it
      * (e.g. the RadioRA plugin) to unpublish individual devices.
      *
-     * @param pluginId the plugin ID
+     * @param plugin the HobsonPlugin instance performing the action
      * @param deviceId the device ID
      */
-    public void stopAndUnpublishDevice(String pluginId, String deviceId);
+    public void unpublishDevice(HobsonPlugin plugin, String deviceId);
+
+    /**
+     * Stops an unpublishes all devices associated with a specific plugin.
+     *
+     * @param plugin the HobsonPlugin instance performing the action
+     */
+    public void unpublishAllDevices(HobsonPlugin plugin);
 }

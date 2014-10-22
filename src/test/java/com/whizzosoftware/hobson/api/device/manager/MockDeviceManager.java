@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.device.manager;
 
 import com.whizzosoftware.hobson.api.device.HobsonDevice;
+import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +18,7 @@ public class MockDeviceManager implements DeviceManager {
     public final List<HobsonDevice> publishedDevices = new ArrayList<HobsonDevice>();
 
     @Override
-    public void publishAndStartDevice(HobsonDevice device) {
+    public void publishDevice(HobsonPlugin plugin, HobsonDevice device) {
         publishedDevices.add(device);
     }
 
@@ -52,10 +53,10 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public void stopAndUnpublishAllDevices(String pluginId) {
+    public void unpublishAllDevices(HobsonPlugin plugin) {
         List<HobsonDevice> unpublishList = new ArrayList<HobsonDevice>();
         for (HobsonDevice device : publishedDevices) {
-            if (device.getPluginId().equals(pluginId)) {
+            if (device.getPluginId().equals(plugin.getId())) {
                 unpublishList.add(device);
             }
         }
@@ -65,10 +66,10 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public void stopAndUnpublishDevice(String pluginId, String deviceId) {
+    public void unpublishDevice(HobsonPlugin plugin, String deviceId) {
         HobsonDevice unpublishDevice = null;
         for (HobsonDevice device : publishedDevices) {
-            if (device.getPluginId().equals(pluginId) && device.getId().equals(deviceId)) {
+            if (device.getPluginId().equals(plugin.getId()) && device.getId().equals(deviceId)) {
                 unpublishDevice = device;
             }
         }

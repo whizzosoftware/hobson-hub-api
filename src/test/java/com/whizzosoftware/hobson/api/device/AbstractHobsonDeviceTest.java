@@ -62,10 +62,8 @@ public class AbstractHobsonDeviceTest {
         d.setDefaultName("deviceName");
 
         assertFalse(d.wasStartupCalled);
-        d.start();
-
+        d.onStartup();
         assertTrue(d.wasStartupCalled);
-        assertEquals("deviceName", cm.deviceProperties.get("pid.did.name"));
     }
 
     @Test
@@ -73,7 +71,7 @@ public class AbstractHobsonDeviceTest {
         HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         assertFalse(d.wasShutdownCalled);
-        d.stop();
+        d.onShutdown();
         assertTrue(d.wasShutdownCalled);
     }
 

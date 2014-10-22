@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.action.manager.ActionManager;
+import com.whizzosoftware.hobson.api.config.ConfigurationException;
 import com.whizzosoftware.hobson.api.config.manager.ConfigurationManager;
 import com.whizzosoftware.hobson.api.config.manager.PluginConfigurationListener;
 import com.whizzosoftware.hobson.api.device.manager.DeviceManager;
@@ -26,10 +27,15 @@ import com.whizzosoftware.hobson.api.variable.manager.VariableManager;
 import com.whizzosoftware.hobson.bootstrap.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.bootstrap.api.config.ConfigurationMetaData;
 import com.whizzosoftware.hobson.bootstrap.api.plugin.PluginStatus;
+import io.netty.util.concurrent.Future;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A class that encapsulates a Hobson plugin class in order to handle OSGi lifecycle events and provide
@@ -38,7 +44,9 @@ import java.util.List;
  *
  * @author Dan Noguerol
  */
-public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLoopListener, PluginConfigurationListener, EventManagerListener {
+public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigurationListener, EventManagerListener {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     // these will be dependency injected by the OSGi runtime
     private volatile DeviceManager deviceManager;
     private volatile VariableManager variableManager;
@@ -49,7 +57,7 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
     private volatile ActionManager actionManager;
 
     private HobsonPlugin plugin;
-    private PluginEventLoop eventLoop;
+    private boolean starting = true;
 
     /**
      * Constructor.
@@ -59,7 +67,6 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
     public HobsonPluginEventLoopWrapper(HobsonPlugin plugin) {
         if (plugin != null) {
             this.plugin = plugin;
-            this.eventLoop = new PluginEventLoop(this, getRefreshInterval());
         } else {
             throw new HobsonRuntimeException("Passed a null plugin to HobsonPluginEventLoopWrapper");
         }
@@ -85,71 +92,74 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
         setActionManager(actionManager);
 
         // start the event loop
-        eventLoop.start();
+        Future f = plugin.submitInEventLoop(new Runnable() {
+            @Override
+            public void run() {
+                // start the plugin
+                onStartup(getPluginConfiguration(plugin.getId()));
 
-        // post plugin started event
-        eventManager.postEvent(new PluginStartedEvent(getId()));
+                // post plugin started event
+                eventManager.postEvent(new PluginStartedEvent(getId()));
+
+                // schedule the refresh callback if the plugin's refresh interval > 0
+                if (plugin.getRefreshInterval() > 0) {
+                    plugin.scheduleAtFixedRateInEventLoop(new Runnable() {
+                        @Override
+                        public void run() {
+                            plugin.onRefresh();
+                        }
+                    }, 0, plugin.getRefreshInterval(), TimeUnit.SECONDS);
+                }
+            }
+        });
+
+        // wait for the async task to complete so that the OSGi framework knows that we've really started
+        try {
+            f.get();
+        } catch (Exception e) {
+            logger.error("Error waiting for plugin to start", e);
+        }
+
+        starting = false;
     }
 
     /**
      * Called when the OSGi service is stopped. This will stop the plugin event loop.
      */
     public void stop() {
-        // stop listening for configuration changes
-        configManager.unregisterForConfigurationUpdates(getId(), this);
+        // shutdown the plugin
+        Future f = plugin.submitInEventLoop(new Runnable() {
+            @Override
+            public void run() {
+                // stop listening for configuration changes
+                configManager.unregisterForConfigurationUpdates(getId(), HobsonPluginEventLoopWrapper.this);
 
-        // stop listening for variable events
-        eventManager.removeListener(this);
+                // stop listening for variable events
+                eventManager.removeListener(HobsonPluginEventLoopWrapper.this);
 
-        // unpublish all variables published by this plugin's devices
-        variableManager.unpublishAllPluginVariables(getId());
+                // unpublish all variables published by this plugin's devices
+                variableManager.unpublishAllPluginVariables(getId());
 
-        // stop all devices
-        deviceManager.stopAndUnpublishAllDevices(getId());
+                // stop all devices
+                deviceManager.unpublishAllDevices(plugin);
 
-        // alert the event loop
-        eventLoop.cancel();
-        eventLoop = null;
+                // shut down the plugin
+                onShutdown();
 
-        // post plugin stopped event
-        eventManager.postEvent(new PluginStoppedEvent(getId()));
-    }
+                // post plugin stopped event
+                eventManager.postEvent(new PluginStoppedEvent(getId()));
 
-    /*
-     * EventLoopListener methods
-     */
+                // drop reference
+                plugin = null;
+            }
+        });
 
-    @Override
-    public void onEventLoopInitializing(Dictionary config) {
-        init(config);
-    }
-
-    @Override
-    public void onEventLoopRefresh() {
-        onRefresh();
-    }
-
-    @Override
-    public void onEventLoopStop() {
-        plugin.stop();
-
-        // stop referencing the child plugin
-        plugin = null;
-    }
-
-    @Override
-    public void onEventLoopPluginConfigChange(Dictionary config) {
-        plugin.onPluginConfigurationUpdate(config);
-    }
-
-    @Override
-    public void onEventLoopDeviceConfigChange(String deviceId, Dictionary config) {
-        plugin.onDeviceConfigurationUpdate(deviceId, config);
-    }
-
-    @Override
-    public void onEventLoopEvent(HobsonEvent event) {
-        plugin.onHobsonEvent(event);
+        // wait for the async task to complete so that the OSGi framework knows that we've really stopped
+        try {
+            f.get();
+        } catch (Exception e) {
+            logger.error("Error waiting for plugin to stop", e);
+        }
     }
 
     /*
@@ -157,8 +167,15 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
      */
 
     @Override
-    public void onPluginConfigurationUpdate(Dictionary config) {
-        eventLoop.onPluginConfigurationUpdate(config);
+    public void onPluginConfigurationUpdate(final Dictionary config) {
+        if (!starting) { // ignore events when the plugin is still starting up
+            plugin.executeInEventLoop(new Runnable() {
+                @Override
+                public void run() {
+                    plugin.onPluginConfigurationUpdate(config);
+                }
+            });
+        }
     }
 
     /*
@@ -166,8 +183,15 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
      */
 
     @Override
-    public void onDeviceConfigurationUpdate(String deviceId, Dictionary config) {
-        eventLoop.onDeviceConfigurationUpdate(deviceId, config);
+    public void onDeviceConfigurationUpdate(final String deviceId, final Dictionary config) {
+        if (!starting) { // ignore events when the plugin is still starting up
+            plugin.executeInEventLoop(new Runnable() {
+                @Override
+                public void run() {
+                    plugin.onDeviceConfigurationUpdate(deviceId, config);
+                }
+            });
+        }
     }
 
     /*
@@ -175,8 +199,15 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
      */
 
     @Override
-    public void onHobsonEvent(HobsonEvent event) {
-        eventLoop.onHobsonEvent(event);
+    public void onHobsonEvent(final HobsonEvent event) {
+        if (!starting) { // ignore events when the plugin is still starting up
+            plugin.executeInEventLoop(new Runnable() {
+                @Override
+                public void run() {
+                    plugin.onHobsonEvent(event);
+                }
+            });
+        }
     }
 
     /*
@@ -184,8 +215,13 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
      */
 
     @Override
-    public void init(Dictionary config) {
-        plugin.init(config);
+    public void onStartup(Dictionary config) {
+        plugin.onStartup(config);
+    }
+
+    @Override
+    public void onShutdown() {
+        plugin.onShutdown();
     }
 
     @Override
@@ -221,6 +257,21 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
     @Override
     public void setActionManager(ActionManager actionManager) {
         plugin.setActionManager(actionManager);
+    }
+
+    @Override
+    public void executeInEventLoop(Runnable runnable) {
+        plugin.executeInEventLoop(runnable);
+    }
+
+    @Override
+    public Future submitInEventLoop(Runnable runnable) {
+        return plugin.submitInEventLoop(runnable);
+    }
+
+    @Override
+    public void scheduleAtFixedRateInEventLoop(Runnable runnable, long initialDelay, long time, TimeUnit unit) {
+        plugin.scheduleAtFixedRateInEventLoop(runnable, initialDelay, time, unit);
     }
 
     @Override
@@ -296,5 +347,13 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginEventLo
     @Override
     public boolean isConfigurable() {
         return plugin.isConfigurable();
+    }
+
+    protected Dictionary getPluginConfiguration(String pluginId) {
+        try {
+            return configManager.getPluginConfiguration(pluginId);
+        } catch (ConfigurationException ce) {
+            return new Hashtable();
+        }
     }
 }

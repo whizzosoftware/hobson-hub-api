@@ -16,7 +16,6 @@ import com.whizzosoftware.hobson.api.event.manager.EventManager;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.util.BundleUtil;
 import com.whizzosoftware.hobson.bootstrap.api.HobsonRuntimeException;
-import com.whizzosoftware.hobson.bootstrap.api.plugin.BootstrapHobsonPlugin;
 import org.osgi.framework.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +107,7 @@ public class OSGIDeviceManager implements DeviceManager {
     }
 
     @Override
-    synchronized public void publishAndStartDevice(HobsonDevice device) {
+    synchronized public void publishDevice(final HobsonPlugin plugin, final HobsonDevice device) {
         BundleContext context = BundleUtil.getBundleContext(getClass(), device.getPluginId());
 
         // check that the device doesn't already exist
@@ -129,66 +128,85 @@ public class OSGIDeviceManager implements DeviceManager {
             addServiceRegistration(device.getPluginId(), deviceReg);
 
             // register to monitor device configuration (it's important to do this AFTER device service registration)
-            // Note: obtaining the plugin is done as a service lookup so that configuration callbacks properly route
-            //       through the event loop wrapper if there is one
-            final HobsonPlugin plugin = getHobsonPlugin(context, device.getPluginId());
             configManager.registerForDeviceConfigurationUpdates(
                     device.getPluginId(),
                     device.getId(),
                     new DeviceConfigurationListener() {
                         @Override
-                        public void onDeviceConfigurationUpdate(String deviceId, Dictionary config) {
-                            plugin.onDeviceConfigurationUpdate(deviceId, config);
+                        public void onDeviceConfigurationUpdate(final String deviceId, final Dictionary config) {
+                            plugin.executeInEventLoop(new Runnable() {
+                                @Override
+                                public void run() {
+                                    plugin.onDeviceConfigurationUpdate(deviceId, config);
+                                }
+                            });
                         }
                     }
             );
 
             logger.debug("Device {} registered", device.getId());
 
-            device.start();
-
-            eventManager.postEvent(new DeviceStartedEvent(device));
+            // execute the device's startup method using its plugin event loop
+            plugin.executeInEventLoop(new Runnable() {
+                @Override
+                public void run() {
+                    device.onStartup();
+                    eventManager.postEvent(new DeviceStartedEvent(device));
+                }
+            });
         }
     }
 
     @Override
-    synchronized public void stopAndUnpublishAllDevices(String pluginId) {
-        List<DeviceServiceRegistration> regs = serviceRegistrations.get(pluginId);
+    synchronized public void unpublishAllDevices(HobsonPlugin plugin) {
+        List<DeviceServiceRegistration> regs = serviceRegistrations.get(plugin.getId());
         if (regs != null) {
             try {
                 for (DeviceServiceRegistration reg : regs) {
                     try {
-                        HobsonDevice device = reg.getDevice();
-                        device.stop();
-                        eventManager.postEvent(new DeviceStoppedEvent(device));
+                        final HobsonDevice device = reg.getDevice();
                         reg.unregister();
+                        // execute the device's shutdown method using its plugin event loop
+                        plugin.executeInEventLoop(new Runnable() {
+                            @Override
+                            public void run() {
+                                device.onShutdown();
+                                eventManager.postEvent(new DeviceStoppedEvent(device));
+                            }
+                        });
                     } catch (Exception e) {
-                        logger.error("Error stopping device for " + pluginId, e);
+                        logger.error("Error stopping device for " + plugin.getId(), e);
                     }
                 }
             } finally {
-                serviceRegistrations.remove(pluginId);
+                serviceRegistrations.remove(plugin.getId());
             }
         }
     }
 
     @Override
-    synchronized public void stopAndUnpublishDevice(String pluginId, String deviceId) {
-        List<DeviceServiceRegistration> regs = serviceRegistrations.get(pluginId);
+    synchronized public void unpublishDevice(HobsonPlugin plugin, String deviceId) {
+        List<DeviceServiceRegistration> regs = serviceRegistrations.get(plugin.getId());
         if (regs != null) {
             DeviceServiceRegistration dsr = null;
             try {
-                for (DeviceServiceRegistration reg : regs) {
-                    HobsonDevice device = reg.getDevice();
+                for (final DeviceServiceRegistration reg : regs) {
+                    final HobsonDevice device = reg.getDevice();
                     if (device != null && device.getId().equals(deviceId)) {
-                        device.stop();
                         dsr = reg;
-                        eventManager.postEvent(new DeviceStoppedEvent(reg.getDevice()));
+                        // execute the device's shutdown method using its plugin event loop
+                        plugin.executeInEventLoop(new Runnable() {
+                            @Override
+                            public void run() {
+                                device.onShutdown();
+                                eventManager.postEvent(new DeviceStoppedEvent(reg.getDevice()));
+                            }
+                        });
                         break;
                     }
                 }
             } catch (Exception e) {
-                logger.error("Error stopping device " + pluginId + "." + deviceId, e);
+                logger.error("Error stopping device " + plugin.getId() + "." + deviceId, e);
             } finally {
                 if (dsr != null) {
                     dsr.unregister();
@@ -206,25 +224,10 @@ public class OSGIDeviceManager implements DeviceManager {
     synchronized private void addServiceRegistration(String pluginId, ServiceRegistration deviceRegistration) {
         List<DeviceServiceRegistration> regs = serviceRegistrations.get(pluginId);
         if (regs == null) {
-            regs = new ArrayList<DeviceServiceRegistration>();
+            regs = new ArrayList<>();
             serviceRegistrations.put(pluginId, regs);
         }
         regs.add(new DeviceServiceRegistration(deviceRegistration));
-    }
-
-    private HobsonPlugin getHobsonPlugin(BundleContext context, String pluginId) {
-        try {
-            ServiceReference[] references = context.getServiceReferences(null, "(&(objectClass=" + BootstrapHobsonPlugin.class.getName() + ")(id=" + pluginId + "))");
-            if (references != null && references.length == 1) {
-                return (HobsonPlugin)context.getService(references[0]);
-            } else if (references != null && references.length > 1) {
-                throw new HobsonRuntimeException("Duplicate plugin detected for: " + pluginId);
-            } else {
-                throw new DeviceNotFoundException(pluginId, null);
-            }
-        } catch (InvalidSyntaxException e) {
-            throw new HobsonRuntimeException("Error retrieving device", e);
-        }
     }
 
     private class DeviceServiceRegistration {

@@ -30,7 +30,7 @@ public class AbstractHobsonPluginTest {
     public void testPublishAndStartDeviceWithNoDeviceManager() {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.publishAndStartDevice(new MockAbstractHobsonDevice(plugin, "pid"));
+            plugin.publishDevice(new MockAbstractHobsonDevice(plugin, "pid"));
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }
@@ -42,7 +42,7 @@ public class AbstractHobsonPluginTest {
         MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
         plugin.setDeviceManager(dm);
         assertEquals(0, dm.getAllDevices().size());
-        plugin.publishAndStartDevice(new MockAbstractHobsonDevice(plugin, "did"));
+        plugin.publishDevice(new MockAbstractHobsonDevice(plugin, "did"));
         assertEquals(1, dm.getAllDevices().size());
         assertEquals("did", dm.getAllDevices().iterator().next().getId());
     }
@@ -149,7 +149,7 @@ public class AbstractHobsonPluginTest {
         // first no device manager or variable manager
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.stopAndUnpublishDevice("id");
+            plugin.unpublishDevice("id");
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }
@@ -158,7 +158,7 @@ public class AbstractHobsonPluginTest {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
             plugin.setDeviceManager(new MockDeviceManager());
-            plugin.stopAndUnpublishDevice("id");
+            plugin.unpublishDevice("id");
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }
@@ -167,7 +167,7 @@ public class AbstractHobsonPluginTest {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
             plugin.setVariableManager(new MockVariableManager());
-            plugin.stopAndUnpublishDevice("id");
+            plugin.unpublishDevice("id");
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }
@@ -178,7 +178,7 @@ public class AbstractHobsonPluginTest {
         // first no device manager or variable manager
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.stopAndUnpublishAllDevices();
+            plugin.unpublishAllDevices();
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }
@@ -187,7 +187,7 @@ public class AbstractHobsonPluginTest {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
             plugin.setDeviceManager(new MockDeviceManager());
-            plugin.stopAndUnpublishAllDevices();
+            plugin.unpublishAllDevices();
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }
@@ -196,7 +196,7 @@ public class AbstractHobsonPluginTest {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
             plugin.setVariableManager(new MockVariableManager());
-            plugin.stopAndUnpublishAllDevices();
+            plugin.unpublishAllDevices();
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }

@@ -14,16 +14,16 @@ package com.whizzosoftware.hobson.api.variable;
  */
 public class VariableConstants {
     public static final String COLOR = "color";
-    public static final String IMAGE_STATUS_URL = "image_status_url";
+    public static final String IMAGE_STATUS_URL = "imageStatusUrl";
     public static final String LEVEL = "level";
     public static final String ON = "on";
-    public static final String TARGET_COOL_TEMP_F = "target_cool_temp_f";
-    public static final String TARGET_HEAT_TEMP_F = "target_heat_temp_f";
-    public static final String TARGET_TEMP_C = "target_temp_c";
-    public static final String TARGET_TEMP_F = "target_temp_f";
-    public static final String TEMP_C = "temp_c";
-    public static final String TEMP_F = "temp_f";
-    public static final String TSTAT_FAN_MODE = "tstat_fan_mode";
-    public static final String TSTAT_MODE = "tstat_mode";
-    public static final String VIDEO_STATUS_URL = "video_status_url";
+    public static final String TARGET_COOL_TEMP_F = "targetCoolTempF";
+    public static final String TARGET_HEAT_TEMP_F = "targetHeatTempF";
+    public static final String TARGET_TEMP_C = "targetTempC";
+    public static final String TARGET_TEMP_F = "targetTempF";
+    public static final String TEMP_C = "tempC";
+    public static final String TEMP_F = "tempF";
+    public static final String TSTAT_FAN_MODE = "tstatFanMode";
+    public static final String TSTAT_MODE = "tstatMode";
+    public static final String VIDEO_STATUS_URL = "videoStatusUrl";
 }
