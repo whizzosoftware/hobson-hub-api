@@ -13,7 +13,7 @@ public class MockAbstractHobsonPlugin extends AbstractHobsonPlugin {
     private String name;
 
     public MockAbstractHobsonPlugin(String pluginId, String name) {
-        super(pluginId);
+        super(pluginId, new MockEventLoopGroup());
         this.name = name;
     }
 

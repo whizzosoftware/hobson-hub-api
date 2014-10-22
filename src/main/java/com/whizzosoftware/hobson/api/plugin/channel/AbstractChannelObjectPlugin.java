@@ -19,6 +19,7 @@ import io.netty.channel.rxtx.RxtxDeviceAddress;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +42,7 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
     private Channel channel;
     private SocketAddress socketAddress;
     private State connectionState = State.NOT_CONNECTED;
-    private EventLoopGroup eventLoopGroup;
+    private EventLoopGroup connectionEventLoopGroup;
     private boolean isRunning = true;
 
     public AbstractChannelObjectPlugin(String pluginId) {
@@ -51,7 +52,15 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
     @Override
     public void onStartup(Dictionary config) {
         if (processConfig(config)) {
-            eventLoopGroup = createEventLoopGroup();
+            connectionEventLoopGroup = createEventLoopGroup();
+            attemptConnect();
+        }
+    }
+
+    @Override
+    public void onPluginConfigurationUpdate(Dictionary config) {
+        if (processConfig(config)) {
+            connectionEventLoopGroup = createEventLoopGroup();
             attemptConnect();
         }
     }
@@ -65,13 +74,7 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
     public void onShutdown() {
         isRunning = false;
         disconnect();
-    }
-
-    @Override
-    public void onPluginConfigurationUpdate(Dictionary config) {
-        if (processConfig(config)) {
-            attemptConnect();
-        }
+        closeEventLoopGroup();
     }
 
     /**
@@ -196,21 +199,23 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
             // disconnect if we're already connected
             if (connectionState == State.CONNECTED) {
                 disconnect();
-            } else {
-                // attempt to connect
-                try {
-                    connect();
-                    setStatus(new PluginStatus(PluginStatus.Status.RUNNING));
-                } catch (IOException e) {
-                    logger.error("Error attempting to connect", e);
-                    setStatus(new PluginStatus(PluginStatus.Status.FAILED, e.getLocalizedMessage()));
-                }
+            }
+
+            // attempt to connect
+            try {
+                connect();
+                setStatus(new PluginStatus(PluginStatus.Status.RUNNING));
+            } catch (IOException e) {
+                logger.error("Error attempting to connect", e);
+                setStatus(new PluginStatus(PluginStatus.Status.FAILED, e.getLocalizedMessage()));
             }
         }
     }
 
     private Bootstrap configureBootstrap(Bootstrap b) {
-        b.group(eventLoopGroup);
+        b.group(connectionEventLoopGroup);
+        b.option(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, 32 * 1024);
+        b.option(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, 8 * 1024);
 
         // configure for either network or serial channel
         if (isNetworkAddress()) {
@@ -243,12 +248,25 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
      * @return an EventLoopGroup
      */
     private EventLoopGroup createEventLoopGroup() {
+        // create new event loop group
         if (isNetworkAddress()) {
-            return new NioEventLoopGroup();
+            return new NioEventLoopGroup(1);
         } else if (isSerialAddress()) {
-            return new OioEventLoopGroup();
+            return new OioEventLoopGroup(1);
         } else {
             throw new HobsonRuntimeException("Remote address is neither network nor serial");
+        }
+    }
+
+    private void closeEventLoopGroup() {
+        // shutdown the event loop group if there is one
+        if (connectionEventLoopGroup != null) {
+            logger.debug("Closing event loop group");
+            Future f = connectionEventLoopGroup.shutdownGracefully();
+            try {
+                f.sync();
+            } catch (InterruptedException ignored) {}
+            logger.debug("Event loop group closed");
         }
     }
 

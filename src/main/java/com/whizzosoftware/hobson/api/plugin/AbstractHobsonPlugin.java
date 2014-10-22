@@ -51,10 +51,15 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     private String version;
     private PluginStatus status = new PluginStatus(PluginStatus.Status.INITIALIZING);
     private final List<ConfigurationMetaData> configMeta = new ArrayList<>();
-    private EventLoopGroup eventLoopGroup = new LocalEventLoopGroup(1);
+    private EventLoopGroup eventLoop;
 
     public AbstractHobsonPlugin(String pluginId) {
+        this(pluginId, new LocalEventLoopGroup(1));
+    }
+
+    public AbstractHobsonPlugin(String pluginId, EventLoopGroup eventLoop) {
         this.pluginId = pluginId;
+        this.eventLoop = eventLoop;
     }
 
     @Override
@@ -122,17 +127,17 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
 
     @Override
     public void executeInEventLoop(Runnable runnable) {
-        eventLoopGroup.execute(runnable);
+        eventLoop.execute(runnable);
     }
 
     @Override
     public Future submitInEventLoop(Runnable runnable) {
-        return eventLoopGroup.submit(runnable);
+        return eventLoop.submit(runnable);
     }
 
     @Override
     public void scheduleAtFixedRateInEventLoop(Runnable runnable, long initialDelay, long time, TimeUnit unit) {
-        eventLoopGroup.scheduleAtFixedRate(runnable, initialDelay, time, unit);
+        eventLoop.scheduleAtFixedRate(runnable, initialDelay, time, unit);
     }
 
     @Override
@@ -169,13 +174,13 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     @Override
     public void fireVariableUpdateNotifications(List<VariableUpdate> updates) {
         validateVariableManager();
-        variableManager.fireVariableUpdateNotifications(updates);
+        variableManager.fireVariableUpdateNotifications(this, updates);
     }
 
     @Override
     public void fireVariableUpdateNotification(VariableUpdate variableUpdate) {
         validateVariableManager();
-        variableManager.fireVariableUpdateNotification(variableUpdate);
+        variableManager.fireVariableUpdateNotification(this, variableUpdate);
     }
 
     @Override

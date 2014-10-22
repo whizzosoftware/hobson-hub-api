@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.variable.manager;
 
+import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 
@@ -125,14 +126,16 @@ public interface VariableManager {
     /**
      * Updates a variable and publishes an update notification.
      *
+     * @param plugin the plugin firing the update
      * @param update the VariableUpdate
      */
-    public void fireVariableUpdateNotification(VariableUpdate update);
+    public void fireVariableUpdateNotification(HobsonPlugin plugin, VariableUpdate update);
 
     /**
      * Updates variables and publishes an update notification.
      *
+     * @param plugin the plugin firing the update
      * @param updates the VariableUpdate
      */
-    public void fireVariableUpdateNotifications(List<VariableUpdate> updates);
+    public void fireVariableUpdateNotifications(HobsonPlugin plugin, List<VariableUpdate> updates);
 }

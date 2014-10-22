@@ -10,11 +10,14 @@ package com.whizzosoftware.hobson.api.variable.manager;
 import com.whizzosoftware.hobson.api.event.VariableUpdateNotificationEvent;
 import com.whizzosoftware.hobson.api.event.VariableUpdateRequestEvent;
 import com.whizzosoftware.hobson.api.event.manager.EventManager;
+import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.HobsonVariableImpl;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.bootstrap.api.HobsonRuntimeException;
 import org.osgi.framework.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -25,6 +28,8 @@ import java.util.*;
  * @author Dan Noguerol
  */
 public class OSGIVariableManager implements VariableManager {
+    private static final Logger logger = LoggerFactory.getLogger(OSGIVariableManager.class);
+
     private volatile EventManager eventManager;
 
     private static final String GLOBAL_NAME = "$GLOBAL$";
@@ -230,16 +235,34 @@ public class OSGIVariableManager implements VariableManager {
     }
 
     @Override
-    public void fireVariableUpdateNotification(VariableUpdate update) {
-        setVariable(update, true);
+    public void fireVariableUpdateNotification(HobsonPlugin plugin, final VariableUpdate update) {
+        plugin.executeInEventLoop(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    setVariable(update, true);
+                } catch (VariableNotFoundException e) {
+                    logger.error("Attempt to update a variable that has not been published: {}", update);
+                }
+            }
+        });
     }
 
     @Override
-    public void fireVariableUpdateNotifications(List<VariableUpdate> updates) {
-        for (VariableUpdate update : updates) {
-            setVariable(update, false);
-        }
-        eventManager.postEvent(new VariableUpdateNotificationEvent(updates));
+    public void fireVariableUpdateNotifications(HobsonPlugin plugin, final List<VariableUpdate> updates) {
+        plugin.executeInEventLoop(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (VariableUpdate update : updates) {
+                        setVariable(update, false);
+                    }
+                    eventManager.postEvent(new VariableUpdateNotificationEvent(updates));
+                } catch (VariableNotFoundException e) {
+                    logger.error("Attempt to update a variable that has not been published: {}", updates);
+                }
+            }
+        });
     }
 
     protected void setVariable(VariableUpdate update, boolean generateEvent) {

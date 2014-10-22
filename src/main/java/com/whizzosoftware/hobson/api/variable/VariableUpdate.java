@@ -103,4 +103,8 @@ public class VariableUpdate {
     public long getUpdateTime() {
         return updateTime;
     }
+
+    public String toString() {
+        return pluginId + "." + deviceId + "." + name;
+    }
 }
