@@ -8,12 +8,12 @@
 package com.whizzosoftware.hobson.api.disco;
 
 /**
- * An class that represents an external bridge. These are entities that are external to the Hub but that Hub plugins
+ * A class that represents a bridge to other devices. Bridges are typically physical hardware that Hub plugins
  * must use to communicate with devices (e.g. serial ports).
  *
  * @author Dan Noguerol
  */
-public class ExternalBridge {
+public class DeviceBridge {
     private String pluginId;
     private String type;
     private String name;
@@ -27,7 +27,7 @@ public class ExternalBridge {
      * @param name the name of the bridge
      * @param value the "value" of the bridge -- this is what would be used when setting configuration properties
      */
-    public ExternalBridge(String pluginId, String type, String name, String value) {
+    public DeviceBridge(String pluginId, String type, String name, String value) {
         this.pluginId = pluginId;
         this.type = type;
         this.name = name;

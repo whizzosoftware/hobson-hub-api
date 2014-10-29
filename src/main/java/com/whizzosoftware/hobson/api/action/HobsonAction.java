@@ -50,7 +50,8 @@ public interface HobsonAction {
 
     /**
      * Sets the ConfigurationManager the action should use when it executes.
-     * @param configManager
+     *
+     * @param configManager a ConfigurationManager instance
      */
     public void setConfigurationManager(ConfigurationManager configManager);
 

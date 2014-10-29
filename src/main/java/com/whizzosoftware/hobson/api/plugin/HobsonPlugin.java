@@ -19,7 +19,6 @@ import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.manager.VariableManager;
 import com.whizzosoftware.hobson.bootstrap.api.plugin.BootstrapHobsonPlugin;
 import com.whizzosoftware.hobson.bootstrap.api.plugin.PluginStatus;
-import io.netty.channel.EventLoopGroup;
 import io.netty.util.concurrent.Future;
 
 import java.util.Dictionary;
@@ -34,6 +33,8 @@ import java.util.concurrent.TimeUnit;
 public interface HobsonPlugin extends BootstrapHobsonPlugin {
     /**
      * Callback method invoked when the plugin starts up.
+     *
+     * @param config the plugin configuration
      */
     public void onStartup(Dictionary config);
 
@@ -215,8 +216,6 @@ public interface HobsonPlugin extends BootstrapHobsonPlugin {
      * @param deviceId the ID Of the device that published the variable
      * @param variableName the variable name
      * @param value the variable value
-     *
-     * @throws com.whizzosoftware.hobson.api.variable.manager.VariableNotFoundException
      */
     public void onSetDeviceVariable(String deviceId, String variableName, Object value);
 }

@@ -11,7 +11,7 @@ import com.whizzosoftware.hobson.api.action.manager.ActionManager;
 import com.whizzosoftware.hobson.api.config.manager.ConfigurationManager;
 import com.whizzosoftware.hobson.api.device.HobsonDevice;
 import com.whizzosoftware.hobson.api.device.manager.DeviceManager;
-import com.whizzosoftware.hobson.api.disco.ExternalBridgeMetaAnalyzer;
+import com.whizzosoftware.hobson.api.disco.DeviceBridgeDetector;
 import com.whizzosoftware.hobson.api.disco.manager.DiscoManager;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.event.VariableUpdateRequestEvent;
@@ -244,13 +244,13 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     }
 
     /**
-     * Publishes a new ExternalBridgeMetaAnalyzer.
+     * Publishes a new DeviceBridgeDetector.
      *
-     * @param analyzer the analyzer to publish
+     * @param detector the detector to publish
      */
-    protected void publishExternalBridgeMetaAnalyzer(ExternalBridgeMetaAnalyzer analyzer) {
+    protected void publishDeviceBridgeDetector(DeviceBridgeDetector detector) {
         validateDiscoManager();
-        discoManager.publishExternalBridgeMetaAnalyzer(analyzer);
+        discoManager.publishDeviceBridgeDetector(detector);
     }
 
     /**

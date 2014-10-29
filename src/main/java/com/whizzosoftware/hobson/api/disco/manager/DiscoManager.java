@@ -12,38 +12,38 @@ import com.whizzosoftware.hobson.api.disco.*;
 import java.util.Collection;
 
 /**
- * A manager interface for entity discovery. This is currently just for external bridges but could accomodate discovery
+ * A manager interface for entity discovery. This is currently just for external bridges but could accommodate discovery
  * of other entities as well.
  *
  * @author Dan Noguerol
  */
-public interface DiscoManager extends ExternalBridgeMetaAnalysisContext {
+public interface DiscoManager extends DeviceBridgeDetectionContext {
     /**
-     * Publishes a new ExternalBridgeMetaAnalyzer.
+     * Publishes a new DeviceBridgeDetector.
      *
      * @param metaAnalyzer the analyzer to publish
      */
-    public void publishExternalBridgeMetaAnalyzer(ExternalBridgeMetaAnalyzer metaAnalyzer);
+    public void publishDeviceBridgeDetector(DeviceBridgeDetector metaAnalyzer);
 
     /**
      * Unpublishes a previously published ExternalBridgeMetaAnalyzer.
      *
-     * @param metaAnalyzerId the ID of the analyzer to unpublish
+     * @param detectorId the ID of the detector to unpublish
      */
-    public void unpublishExternalBridgeMetaAnalyzer(String metaAnalyzerId);
+    public void unpublishDeviceBridgeDetector(String detectorId);
 
     /**
-     * Returns a list of all discovered external bridges.
+     * Returns a list of all discovered device bridges.
      *
-     * @return a Collection of ExternalBridge instances
+     * @return a Collection of DeviceBridge instances
      */
-    public Collection<ExternalBridge> getExternalBridges();
+    public Collection<DeviceBridge> getDeviceBridges();
 
     /**
-     * Processes an ExternalBridgeMeta object. This will give all registered ExternalBridgeMetaAnalyzers an
+     * Processes a DevceBridgeMetaData object. This will give all registered DeviceBridgeDetectors an
      * opportunity to attempt to identify the meta information.
      *
      * @param meta the object to process
      */
-    public void processExternalBridgeMeta(ExternalBridgeMeta meta);
+    public void processDeviceBridgeMetaData(DeviceBridgeMetaData meta);
 }

@@ -85,6 +85,7 @@ public interface ConfigurationManager {
     /**
      * Allows a plugin to cease receiving callbacks when its configuration changes.
      *
+     * @param pluginId the plugin ID requesting the un-registration
      * @param listener the plugin that previously requested the callback
      */
     public void unregisterForConfigurationUpdates(String pluginId, PluginConfigurationListener listener);

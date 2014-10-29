@@ -8,11 +8,11 @@
 package com.whizzosoftware.hobson.api.disco;
 
 /**
- * Interface for classes that can scan for external bridges.
+ * Interface for classes that can scan for device bridges.
  *
  * @author Dan Noguerol
  */
-public interface ExternalBridgeScanner {
+public interface DeviceBridgeScanner {
     /**
      * Returns the plugin ID that owns this scanner.
      *
@@ -39,7 +39,7 @@ public interface ExternalBridgeScanner {
 
     /**
      * Causes the scanner to refresh. This is called when new analyzers are registered so the scanners can make
-     * their best effort to re-publish any ExternalBridgeMeta objects that have already been found.
+     * their best effort to re-publish any DeviceBridgeMetaData objects that have already been found.
      */
     public void refresh();
 }

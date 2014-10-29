@@ -22,13 +22,13 @@ import java.util.*;
  *
  * @author Dan Noguerol
  */
-public class OSGIDiscoManager implements DiscoManager, ExternalBridgeMetaAnalysisContext {
+public class OSGIDiscoManager implements DiscoManager, DeviceBridgeDetectionContext {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private volatile BundleContext bundleContext;
 
-    private final Map<String,ExternalBridge> bridgeMap = new HashMap<String,ExternalBridge>();
-    private final Map<String,ServiceRegistration> analyzerRegistrationMap = new HashMap<String,ServiceRegistration>();
+    private final Map<String,DeviceBridge> bridgeMap = new HashMap<String,DeviceBridge>();
+    private final Map<String,ServiceRegistration> detectorRegistrationMap = new HashMap<String,ServiceRegistration>();
 
     public void start() {
         logger.debug("OSGIDiscoManager starting");
@@ -37,19 +37,19 @@ public class OSGIDiscoManager implements DiscoManager, ExternalBridgeMetaAnalysi
     public void stop() {
         logger.debug("OSGIDiscoManager stopping");
 
-        synchronized (analyzerRegistrationMap) {
-            for (ServiceRegistration reg : analyzerRegistrationMap.values()) {
+        synchronized (detectorRegistrationMap) {
+            for (ServiceRegistration reg : detectorRegistrationMap.values()) {
                 reg.unregister();
             }
-            analyzerRegistrationMap.clear();
+            detectorRegistrationMap.clear();
         }
     }
 
     @Override
-    public Collection<ExternalBridge> getExternalBridges() {
-        ArrayList<ExternalBridge> results = new ArrayList<ExternalBridge>();
+    public Collection<DeviceBridge> getDeviceBridges() {
+        ArrayList<DeviceBridge> results = new ArrayList<DeviceBridge>();
         synchronized (bridgeMap) {
-            for (ExternalBridge disco : bridgeMap.values()) {
+            for (DeviceBridge disco : bridgeMap.values()) {
                 results.add(disco);
             }
         }
@@ -57,39 +57,39 @@ public class OSGIDiscoManager implements DiscoManager, ExternalBridgeMetaAnalysi
     }
 
     @Override
-    public void publishExternalBridgeMetaAnalyzer(ExternalBridgeMetaAnalyzer metaAnalyzer) {
-        logger.trace("Adding DiscoAnalyzer: {}", metaAnalyzer.getId());
-        synchronized (analyzerRegistrationMap) {
+    public void publishDeviceBridgeDetector(DeviceBridgeDetector detector) {
+        logger.trace("Adding device bridge detector: {}", detector.getId());
+        synchronized (detectorRegistrationMap) {
             Dictionary dic = new Hashtable();
-            dic.put("id", metaAnalyzer.getId());
-            dic.put("pluginId", metaAnalyzer.getPluginId());
-            analyzerRegistrationMap.put(
-                    metaAnalyzer.getId(),
-                    bundleContext.registerService(ExternalBridgeMetaAnalyzer.class.getName(), metaAnalyzer, dic)
+            dic.put("id", detector.getId());
+            dic.put("pluginId", detector.getPluginId());
+            detectorRegistrationMap.put(
+                    detector.getId(),
+                    bundleContext.registerService(DeviceBridgeDetector.class.getName(), detector, dic)
             );
             refreshScanners();
         }
     }
 
     @Override
-    public void unpublishExternalBridgeMetaAnalyzer(String metaAnalyzerId) {
-        logger.trace("Removing DiscoAnalyzer: {}", metaAnalyzerId);
-        synchronized (analyzerRegistrationMap) {
-            ServiceRegistration reg = analyzerRegistrationMap.get(metaAnalyzerId);
+    public void unpublishDeviceBridgeDetector(String detectorId) {
+        logger.trace("Removing device bridge detector: {}", detectorId);
+        synchronized (detectorRegistrationMap) {
+            ServiceRegistration reg = detectorRegistrationMap.get(detectorId);
             if (reg != null) {
                 reg.unregister();
-                analyzerRegistrationMap.remove(metaAnalyzerId);
+                detectorRegistrationMap.remove(detectorId);
             }
         }
     }
 
     @Override
-    public void processExternalBridgeMeta(ExternalBridgeMeta meta) {
+    public void processDeviceBridgeMetaData(DeviceBridgeMetaData meta) {
         try {
-            ServiceReference[] refs = bundleContext.getServiceReferences(ExternalBridgeMetaAnalyzer.class.getName(), null);
+            ServiceReference[] refs = bundleContext.getServiceReferences(DeviceBridgeDetector.class.getName(), null);
             if (refs != null) {
                 for (ServiceReference ref : refs) {
-                    ExternalBridgeMetaAnalyzer di = (ExternalBridgeMetaAnalyzer)bundleContext.getService(ref);
+                    DeviceBridgeDetector di = (DeviceBridgeDetector)bundleContext.getService(ref);
                     if (di.identify(this, meta)) {
                         break;
                     }
@@ -101,32 +101,32 @@ public class OSGIDiscoManager implements DiscoManager, ExternalBridgeMetaAnalysi
     }
 
     @Override
-    public void addExternalBridge(ExternalBridge bridge) {
+    public void addDeviceBridge(DeviceBridge bridge) {
         synchronized (bridgeMap) {
-            logger.debug("Added identified entity: {} ({})", bridge.getValue(), bridge.getName());
+            logger.debug("Added device bridge: {} ({})", bridge.getValue(), bridge.getName());
             bridgeMap.put(bridge.getValue(), bridge);
         }
     }
 
     @Override
-    public void removeExternalBridge(String bridgeId) {
+    public void removeDeviceBridge(String bridgeId) {
         synchronized (bridgeMap) {
-            logger.debug("Removed identified entity: {}", bridgeId);
+            logger.debug("Removed device bridge: {}", bridgeId);
             bridgeMap.remove(bridgeId);
         }
     }
 
     private void refreshScanners() {
         try {
-            ServiceReference[] refs = bundleContext.getServiceReferences(ExternalBridgeScanner.class.getName(), null);
+            ServiceReference[] refs = bundleContext.getServiceReferences(DeviceBridgeScanner.class.getName(), null);
             if (refs != null) {
                 for (ServiceReference ref : refs) {
-                    ExternalBridgeScanner scanner = (ExternalBridgeScanner)bundleContext.getService(ref);
+                    DeviceBridgeScanner scanner = (DeviceBridgeScanner)bundleContext.getService(ref);
                     scanner.refresh();
                 }
             }
         } catch (InvalidSyntaxException e) {
-            logger.error("An error occurred refreshing ExternalBridgeScanners", e);
+            logger.error("An error occurred refreshing DeviceBridgeScanners", e);
         }
     }
 }

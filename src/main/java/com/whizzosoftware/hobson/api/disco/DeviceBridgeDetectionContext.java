@@ -7,18 +7,23 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.disco;
 
-public interface ExternalBridgeMetaAnalysisContext {
+/**
+ * An interface passed to DeviceBridgeDetector objects to allow them to add or remove DeviceBridges.
+ *
+ * @author Dan Noguerol
+ */
+public interface DeviceBridgeDetectionContext {
     /**
-     * Adds a newly identified ExternalBridge instance.
+     * Adds a newly identified DeviceBridge instance.
      *
      * @param bridge the bridge instance to add
      */
-    public void addExternalBridge(ExternalBridge bridge);
+    public void addDeviceBridge(DeviceBridge bridge);
 
     /**
-     * Removes a previously identified and added ExternalBridge instance.
+     * Removes a previously added DeviceBridge instance.
      *
      * @param bridgeId the ID of the bridge to remove
      */
-    public void removeExternalBridge(String bridgeId);
+    public void removeDeviceBridge(String bridgeId);
 }

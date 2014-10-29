@@ -8,12 +8,13 @@
 package com.whizzosoftware.hobson.api.disco;
 
 /**
- * A class that can convert ExternalBridgeMeta objects into ExternalBridge objects. The analyzer will look at the
- * meta data to determine if it is something identifiable and, if so, create the corresponding ExternalBridge object.
+ * A class that creates DeviceBridge objects. The detector will look at DeviceBridgeMetaData created by a
+ * DeviceBridgeScanner to determine if it is something it recognizes. If so, it creates the corresponding
+ * DeviceBridge object.
  *
  * @author Dan Noguerol
  */
-public interface ExternalBridgeMetaAnalyzer {
+public interface DeviceBridgeDetector {
     /**
      * Returns the plugin ID of this analyzer.
      *
@@ -36,5 +37,5 @@ public interface ExternalBridgeMetaAnalyzer {
      *
      * @return a boolean indicating whether the meta object was identified or not
      */
-    public boolean identify(ExternalBridgeMetaAnalysisContext context, ExternalBridgeMeta meta);
+    public boolean identify(DeviceBridgeDetectionContext context, DeviceBridgeMetaData meta);
 }

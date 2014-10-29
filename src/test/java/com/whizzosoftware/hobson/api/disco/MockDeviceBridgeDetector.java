@@ -7,11 +7,11 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.disco;
 
-public class MockExternalBridgeMetaAnalyzer implements ExternalBridgeMetaAnalyzer {
+public class MockDeviceBridgeDetector implements DeviceBridgeDetector {
     private String pluginId;
     private String id;
 
-    public MockExternalBridgeMetaAnalyzer(String pluginId, String id) {
+    public MockDeviceBridgeDetector(String pluginId, String id) {
         this.pluginId = pluginId;
         this.id = id;
     }
@@ -27,7 +27,7 @@ public class MockExternalBridgeMetaAnalyzer implements ExternalBridgeMetaAnalyze
     }
 
     @Override
-    public boolean identify(ExternalBridgeMetaAnalysisContext context, ExternalBridgeMeta meta) {
+    public boolean identify(DeviceBridgeDetectionContext context, DeviceBridgeMetaData meta) {
         return false;
     }
 }
