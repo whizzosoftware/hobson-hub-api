@@ -16,12 +16,15 @@ import java.util.Collection;
  * of other entities as well.
  *
  * @author Dan Noguerol
+ * @since hobson-hub-api 0.1.6
  */
 public interface DiscoManager extends DeviceBridgeDetectionContext {
     /**
      * Publishes a new DeviceBridgeDetector.
      *
      * @param metaAnalyzer the analyzer to publish
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void publishDeviceBridgeDetector(DeviceBridgeDetector metaAnalyzer);
 
@@ -29,6 +32,8 @@ public interface DiscoManager extends DeviceBridgeDetectionContext {
      * Unpublishes a previously published ExternalBridgeMetaAnalyzer.
      *
      * @param detectorId the ID of the detector to unpublish
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void unpublishDeviceBridgeDetector(String detectorId);
 
@@ -36,6 +41,8 @@ public interface DiscoManager extends DeviceBridgeDetectionContext {
      * Returns a list of all discovered device bridges.
      *
      * @return a Collection of DeviceBridge instances
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public Collection<DeviceBridge> getDeviceBridges();
 
@@ -44,6 +51,8 @@ public interface DiscoManager extends DeviceBridgeDetectionContext {
      * opportunity to attempt to identify the meta information.
      *
      * @param meta the object to process
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void processDeviceBridgeMetaData(DeviceBridgeMetaData meta);
 }

@@ -8,12 +8,12 @@
 package com.whizzosoftware.hobson.api.event.manager;
 
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
-import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 
 /**
  * An interface for sending and receiving system events.
  *
  * @author Dan Noguerol
+ * @since hobson-hub-api 0.1.6
  */
 public interface EventManager {
     /**
@@ -21,15 +21,26 @@ public interface EventManager {
      *
      * @param listener the listener
      * @param topic the topic name
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void addListener(EventManagerListener listener, String topic);
 
+    /**
+     * Removes a previously added listener.
+     *
+     * @param listener the listener to remove
+     *
+     * @since hobson-hub-api 0.1.6
+     */
     public void removeListener(EventManagerListener listener);
 
     /**
      * Sends a system event.
      *
      * @param event the event to send
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void postEvent(HobsonEvent event);
 }

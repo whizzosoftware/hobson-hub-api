@@ -11,12 +11,15 @@ package com.whizzosoftware.hobson.api.variable;
  * An interface for variables that a device publishes.
  *
  * @author Dan Noguerol
+ * @since hobson-hub-api 0.1.6
  */
 public interface HobsonVariable {
     /**
      * Returns the variable name.
      *
      * @return the variable name
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public String getName();
 
@@ -24,6 +27,8 @@ public interface HobsonVariable {
      * Returns the variable value.
      *
      * @return the variable value
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public Object getValue();
 
@@ -31,6 +36,8 @@ public interface HobsonVariable {
      * Returns whether this variable is read-only.
      *
      * @return a boolean
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public Mask getMask();
 
@@ -38,6 +45,8 @@ public interface HobsonVariable {
      * Returns the last time the variable was updated.
      *
      * @return a Long (or null if the variable has never been updated)
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public Long getLastUpdate();
 

@@ -22,9 +22,10 @@ import javax.mail.internet.MimeMessage;
 import java.util.*;
 
 /**
- * An action that can send e-mails.
+ * A HobsonAction implementation that sends e-mails.
  *
  * @author Dan Noguerol
+ * @since hobson-hub-api 0.1.6
  */
 public class EmailAction extends AbstractHobsonAction {
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -39,6 +40,13 @@ public class EmailAction extends AbstractHobsonAction {
     public static final String SUBJECT = "subject";
     public static final String MESSAGE = "message";
 
+    /**
+     * Constructor.
+     *
+     * @param pluginId the plugin ID creating this action
+     *
+     * @since hobson-hub-api 0.1.6
+     */
     public EmailAction(String pluginId) {
         super(pluginId, "sendEmail", "Send E-mail");
 
@@ -48,6 +56,13 @@ public class EmailAction extends AbstractHobsonAction {
         addMeta(new ActionMeta(MESSAGE, "Message Body", "The e-mail message body", ActionMeta.Type.STRING));
     }
 
+    /**
+     * Executes the action.
+     *
+     * @param properties a Map of action properties
+     *
+     * @since hobson-hub-api 0.1.6
+     */
     @Override
     public void execute(Map<String, Object> properties) {
         try {
@@ -60,6 +75,16 @@ public class EmailAction extends AbstractHobsonAction {
         }
     }
 
+    /**
+     * Convenience method to both create and send the e-mail message.
+     *
+     * @param config the configuration to use
+     * @param properties the message properties
+     *
+     * @throws MessagingException on failure
+     *
+     * @since hobson-hub-api 0.1.6
+     */
     protected void createAndSendMessage(Dictionary config, Map<String,Object> properties) throws MessagingException {
         String mailHost = (String)config.get(PROP_SMTP_SERVER);
         Boolean mailUseSMTPS = (Boolean)config.get(PROP_USE_SMTPS);
@@ -96,6 +121,16 @@ public class EmailAction extends AbstractHobsonAction {
         logger.debug("Message sent successfully");
     }
 
+    /**
+     * Convenience method for creating an e-mail message from a set of message properties.
+     *
+     * @param session the mail Session instance to use
+     * @param properties the message properties
+     *
+     * @return a Message instance
+     *
+     * @since hobson-hub-api 0.1.6
+     */
     protected Message createMessage(Session session, Map<String,Object> properties) {
         String senderAddress = (String) properties.get(SENDER_ADDRESS);
         String recipientAddress = (String) properties.get(RECIPIENT_ADDRESS);

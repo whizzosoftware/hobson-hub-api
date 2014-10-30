@@ -19,6 +19,7 @@ import java.util.List;
  * variables, such as global variables, that are not associated with a particular device.
  *
  * @author Dan Noguerol
+ * @since hobson-hub-api 0.1.6
  */
 public interface VariableManager {
     /**
@@ -26,6 +27,8 @@ public interface VariableManager {
      *
      * @param pluginId the plugin ID publishing the variable
      * @param var the variable object
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void publishGlobalVariable(String pluginId, HobsonVariable var);
 
@@ -33,6 +36,8 @@ public interface VariableManager {
      * Returns a collection of all published global variables.
      *
      * @return a Collection of HobsonVariable instances
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public Collection<HobsonVariable> getGlobalVariables();
 
@@ -41,6 +46,8 @@ public interface VariableManager {
      *
      * @param pluginId the plugin ID that published the variable
      * @param name the variable name
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void unpublishGlobalVariable(String pluginId, String name);
 
@@ -50,6 +57,8 @@ public interface VariableManager {
      * @param pluginId the plugin ID of the device publishing the variable
      * @param deviceId the device ID publishing the variable
      * @param var the variable object
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void publishDeviceVariable(String pluginId, String deviceId, HobsonVariable var);
 
@@ -59,6 +68,8 @@ public interface VariableManager {
      * @param pluginId the plugin ID of the device that published the variable
      * @param deviceId the device ID that published the variable
      * @param name the variable name
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void unpublishDeviceVariable(String pluginId, String deviceId, String name);
 
@@ -67,6 +78,8 @@ public interface VariableManager {
      *
      * @param pluginId the plugin ID of the device that published the variables
      * @param deviceId the device ID that published the variables
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void unpublishAllDeviceVariables(String pluginId, String deviceId);
 
@@ -74,6 +87,8 @@ public interface VariableManager {
      * Unpublishes all variables published by a plugin's devices.
      *
      * @param pluginId the plugin ID
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void unpublishAllPluginVariables(String pluginId);
 
@@ -84,6 +99,8 @@ public interface VariableManager {
      * @param deviceId the device ID that published the variables
      *
      * @return a Collection of HobsonVariable instances
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public Collection<HobsonVariable> getDeviceVariables(String pluginId, String deviceId);
 
@@ -96,6 +113,8 @@ public interface VariableManager {
      *
      * @return a HobsonVariable instance (or null if not found)
      * @throws VariableNotFoundException if not found
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public HobsonVariable getDeviceVariable(String pluginId, String deviceId, String name);
 
@@ -107,6 +126,8 @@ public interface VariableManager {
      * @param name the variable name
      *
      * @return a boolean
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public boolean hasDeviceVariable(String pluginId, String deviceId, String name);
 
@@ -120,6 +141,8 @@ public interface VariableManager {
      *
      * @return the last update time prior to this set call
      * @throws VariableNotFoundException if not found
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public Long setDeviceVariable(String pluginId, String deviceId, String name, Object value);
 
@@ -128,6 +151,8 @@ public interface VariableManager {
      *
      * @param plugin the plugin firing the update
      * @param update the VariableUpdate
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void fireVariableUpdateNotification(HobsonPlugin plugin, VariableUpdate update);
 
@@ -136,6 +161,8 @@ public interface VariableManager {
      *
      * @param plugin the plugin firing the update
      * @param updates the VariableUpdate
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void fireVariableUpdateNotifications(HobsonPlugin plugin, List<VariableUpdate> updates);
 }

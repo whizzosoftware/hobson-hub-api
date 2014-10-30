@@ -16,6 +16,7 @@ import java.util.Collection;
  * An interface for managing Hobson devices.
  *
  * @author Dan Noguerol
+ * @since hobson-hub-api 0.1.6
  */
 public interface DeviceManager {
     /**
@@ -23,33 +24,41 @@ public interface DeviceManager {
      *
      * @param plugin the HobsonPlugin instance performing the action
      * @param device the HobsonDevice to publish
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void publishDevice(HobsonPlugin plugin, HobsonDevice device);
 
     /**
-     * Retrieves all known devices.
+     * Returns all published devices.
      *
      * @return a Collection of HobsonDevice instances
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public Collection<HobsonDevice> getAllDevices();
 
     /**
-     * Retrieves all devices published by a particular plugin
+     * Returns all devices published by a particular plugin
      *
      * @param pluginId the plugin ID
      *
      * @return a Collection of HobsonDevice instances
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public Collection<HobsonDevice> getAllPluginDevices(String pluginId);
 
     /**
-     * Retrieves a specific device.
+     * Returns a specific device.
      *
      * @param pluginId the plugin ID associated with the device
      * @param deviceId the device ID
      *
      * @return a HobsonDevice instance (or null if it wasn't found)
      * @throws DeviceNotFoundException if device isn't found
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public HobsonDevice getDevice(String pluginId, String deviceId);
 
@@ -60,6 +69,8 @@ public interface DeviceManager {
      * @param deviceId the device ID
      *
      * @return a boolean
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public boolean hasDevice(String pluginId, String deviceId);
 
@@ -71,6 +82,8 @@ public interface DeviceManager {
      * @param name the new name of the device
      *
      * @throws DeviceNotFoundException if device isn't found
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void setDeviceName(String pluginId, String deviceId, String name);
 
@@ -80,6 +93,8 @@ public interface DeviceManager {
      *
      * @param plugin the HobsonPlugin instance performing the action
      * @param deviceId the device ID
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void unpublishDevice(HobsonPlugin plugin, String deviceId);
 
@@ -87,6 +102,8 @@ public interface DeviceManager {
      * Stops an unpublishes all devices associated with a specific plugin.
      *
      * @param plugin the HobsonPlugin instance performing the action
+     *
+     * @since hobson-hub-api 0.1.6
      */
     public void unpublishAllDevices(HobsonPlugin plugin);
 }
