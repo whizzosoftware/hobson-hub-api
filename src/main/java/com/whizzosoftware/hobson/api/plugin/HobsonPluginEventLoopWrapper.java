@@ -172,7 +172,11 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
             plugin.executeInEventLoop(new Runnable() {
                 @Override
                 public void run() {
-                    plugin.onPluginConfigurationUpdate(config);
+                    try {
+                        plugin.onPluginConfigurationUpdate(config);
+                    } catch (Exception e) {
+                        logger.error("An error occurred updating plugin configuration", e);
+                    }
                 }
             });
         }
@@ -188,7 +192,11 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
             plugin.executeInEventLoop(new Runnable() {
                 @Override
                 public void run() {
-                    plugin.onDeviceConfigurationUpdate(deviceId, config);
+                    try {
+                        plugin.onDeviceConfigurationUpdate(deviceId, config);
+                    } catch (Exception e) {
+                        logger.error("An error occurred updating device configuration", e);
+                    }
                 }
             });
         }
@@ -204,7 +212,11 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
             plugin.executeInEventLoop(new Runnable() {
                 @Override
                 public void run() {
-                    plugin.onHobsonEvent(event);
+                    try {
+                        plugin.onHobsonEvent(event);
+                    } catch (Exception e) {
+                        logger.error("An error occurred processing an event", e);
+                    }
                 }
             });
         }
