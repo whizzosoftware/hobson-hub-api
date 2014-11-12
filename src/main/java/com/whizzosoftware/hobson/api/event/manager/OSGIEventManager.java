@@ -7,10 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event.manager;
 
-import com.whizzosoftware.hobson.api.event.EventListener;
-import com.whizzosoftware.hobson.api.event.HobsonEvent;
-import com.whizzosoftware.hobson.api.event.VariableUpdateNotificationEvent;
-import com.whizzosoftware.hobson.api.event.VariableUpdateRequestEvent;
+import com.whizzosoftware.hobson.api.event.*;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
@@ -78,11 +75,14 @@ public class OSGIEventManager implements EventManager {
 
         @Override
         public void handleEvent(Event event) {
+            // TODO: find a more elegant way to perform OSGi -> Hobson event conversion
             logger.debug("Received event: {}", event);
             if (VariableUpdateNotificationEvent.ID.equals(HobsonEvent.readEventId(event))) {
                 listener.onHobsonEvent(new VariableUpdateNotificationEvent(event));
             } else if (VariableUpdateRequestEvent.ID.equals(HobsonEvent.readEventId(event))) {
                 listener.onHobsonEvent(new VariableUpdateRequestEvent(event));
+            } else if (PresenceUpdateEvent.ID.equals(HobsonEvent.readEventId(event))) {
+                listener.onHobsonEvent(new PresenceUpdateEvent(event));
             }
         }
     }
