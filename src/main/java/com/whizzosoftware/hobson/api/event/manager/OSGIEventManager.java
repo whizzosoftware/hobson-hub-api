@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event.manager;
 
+import com.whizzosoftware.hobson.api.event.EventListener;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.event.VariableUpdateNotificationEvent;
 import com.whizzosoftware.hobson.api.event.VariableUpdateRequestEvent;
@@ -19,6 +20,7 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -32,13 +34,12 @@ public class OSGIEventManager implements EventManager {
     volatile private BundleContext bundleContext;
     volatile private EventAdmin eventAdmin;
 
-    private final Map<EventManagerListener,ServiceRegistration> serviceRegMap = new HashMap<EventManagerListener,ServiceRegistration>();
+    private final Map<EventListener,ServiceRegistration> serviceRegMap = new HashMap<EventListener,ServiceRegistration>();
 
     @Override
-    public void addListener(EventManagerListener listener, String topic) {
-        String[] topics = new String[] {topic};
+    public void addListener(EventListener listener, Collection<String> topics) {
         Hashtable ht = new Hashtable();
-        ht.put(EventConstants.EVENT_TOPIC, topics);
+        ht.put(EventConstants.EVENT_TOPIC, topics.toArray(new String[topics.size()]));
         synchronized (serviceRegMap) {
             if (serviceRegMap.containsKey(listener)) {
                 serviceRegMap.get(listener).unregister();
@@ -51,7 +52,7 @@ public class OSGIEventManager implements EventManager {
     }
 
     @Override
-    public void removeListener(EventManagerListener listener) {
+    public void removeListener(EventListener listener) {
         synchronized (serviceRegMap) {
             ServiceRegistration reg = serviceRegMap.get(listener);
             if (reg != null) {
@@ -69,9 +70,9 @@ public class OSGIEventManager implements EventManager {
     private class EventHandlerAdapter implements EventHandler {
         private final Logger logger = LoggerFactory.getLogger(getClass());
 
-        private EventManagerListener listener;
+        private EventListener listener;
 
-        public EventHandlerAdapter(EventManagerListener listener) {
+        public EventHandlerAdapter(EventListener listener) {
             this.listener = listener;
         }
 

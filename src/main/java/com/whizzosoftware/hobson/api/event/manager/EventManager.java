@@ -7,7 +7,10 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event.manager;
 
+import com.whizzosoftware.hobson.api.event.EventListener;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
+
+import java.util.Collection;
 
 /**
  * An interface for sending and receiving system events.
@@ -20,11 +23,11 @@ public interface EventManager {
      * Adds a listener for a specific event topic.
      *
      * @param listener the listener
-     * @param topic the topic name
+     * @param topics the topics to subscribe to
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void addListener(EventManagerListener listener, String topic);
+    public void addListener(EventListener listener, Collection<String> topics);
 
     /**
      * Removes a previously added listener.
@@ -33,7 +36,7 @@ public interface EventManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void removeListener(EventManagerListener listener);
+    public void removeListener(EventListener listener);
 
     /**
      * Sends a system event.

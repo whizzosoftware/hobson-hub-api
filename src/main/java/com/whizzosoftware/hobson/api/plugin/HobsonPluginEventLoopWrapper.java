@@ -13,12 +13,9 @@ import com.whizzosoftware.hobson.api.config.manager.ConfigurationManager;
 import com.whizzosoftware.hobson.api.config.manager.PluginConfigurationListener;
 import com.whizzosoftware.hobson.api.device.manager.DeviceManager;
 import com.whizzosoftware.hobson.api.disco.manager.DiscoManager;
-import com.whizzosoftware.hobson.api.event.EventTopics;
-import com.whizzosoftware.hobson.api.event.HobsonEvent;
-import com.whizzosoftware.hobson.api.event.PluginStartedEvent;
-import com.whizzosoftware.hobson.api.event.PluginStoppedEvent;
+import com.whizzosoftware.hobson.api.event.*;
+import com.whizzosoftware.hobson.api.event.EventListener;
 import com.whizzosoftware.hobson.api.event.manager.EventManager;
-import com.whizzosoftware.hobson.api.event.manager.EventManagerListener;
 import com.whizzosoftware.hobson.api.trigger.TriggerProvider;
 import com.whizzosoftware.hobson.api.trigger.manager.TriggerManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
@@ -31,10 +28,7 @@ import io.netty.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -44,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Dan Noguerol
  */
-public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigurationListener, EventManagerListener {
+public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigurationListener, EventListener {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     // these will be dependency injected by the OSGi runtime
@@ -80,8 +74,18 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
         // register plugin for configuration updates
         configManager.registerForPluginConfigurationUpdates(getId(), this);
 
-        // register plugin for variable events
-        eventManager.addListener(this, EventTopics.VARIABLES_TOPIC);
+        // register plugin for necessary events
+        List<String> topics = new ArrayList<>();
+        topics.add(EventTopics.VARIABLES_TOPIC); // all plugins need to listen for variable events
+        String[] otherTopics = plugin.getEventTopics();
+        if (otherTopics != null) {
+            for (String topic : otherTopics) {
+                if (!topics.contains(topic)) {
+                    topics.add(topic);
+                }
+            }
+        }
+        eventManager.addListener(this, topics);
 
         // inject manager dependencies
         setDeviceManager(deviceManager);
@@ -349,6 +353,11 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
     @Override
     public PluginStatus getStatus() {
         return plugin.getStatus();
+    }
+
+    @Override
+    public String[] getEventTopics() {
+        return plugin.getEventTopics();
     }
 
     @Override

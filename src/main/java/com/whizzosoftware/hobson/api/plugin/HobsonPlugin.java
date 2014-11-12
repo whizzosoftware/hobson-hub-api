@@ -51,6 +51,13 @@ public interface HobsonPlugin extends BootstrapHobsonPlugin {
     public PluginStatus getStatus();
 
     /**
+     * Returns the topics this plugin is interested in receiving events for.
+     *
+     * @return an array of String topic names (or null if no events are desired)
+     */
+    public String[] getEventTopics();
+
+    /**
      * Returns how often the refresh() method will be called.
      *
      * @return the refresh interval in seconds (a 0 value means never)

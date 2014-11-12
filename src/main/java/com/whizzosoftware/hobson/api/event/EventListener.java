@@ -5,16 +5,14 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.event.manager;
-
-import com.whizzosoftware.hobson.api.event.HobsonEvent;
+package com.whizzosoftware.hobson.api.event;
 
 /**
- * An interface for classes that want to receive event manager events.
+ * An interface for classes that want to receive Hobson events.
  *
  * @author Dan Noguerol
  */
-public interface EventManagerListener {
+public interface EventListener {
     /**
      * Callback when a HobsonEvent is received.
      *

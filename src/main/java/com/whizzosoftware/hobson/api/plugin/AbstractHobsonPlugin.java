@@ -78,16 +78,13 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     }
 
     @Override
+    public String[] getEventTopics() {
+        return null;
+    }
+
+    @Override
     public Collection<ConfigurationMetaData> getConfigurationMetaData() {
         return configMeta;
-    }
-
-    protected void addConfigurationMetaData(ConfigurationMetaData metaData) {
-        configMeta.add(metaData);
-    }
-
-    protected File getDataFile(String filename) {
-        return configManager.getDataFile(getId(), filename);
     }
 
     @Override
@@ -210,6 +207,14 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
      */
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    protected void addConfigurationMetaData(ConfigurationMetaData metaData) {
+        configMeta.add(metaData);
+    }
+
+    protected File getDataFile(String filename) {
+        return configManager.getDataFile(getId(), filename);
     }
 
     /**
