@@ -5,9 +5,8 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.config.manager;
+package com.whizzosoftware.hobson.api.config;
 
-import com.whizzosoftware.hobson.api.config.ConfigurationException;
 import com.whizzosoftware.hobson.bootstrap.api.util.BundleUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

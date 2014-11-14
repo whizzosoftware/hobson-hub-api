@@ -7,7 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device;
 
-import com.whizzosoftware.hobson.api.config.manager.MockConfigurationManager;
+import com.whizzosoftware.hobson.api.config.MockConfigurationManager;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.MockAbstractHobsonPlugin;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;

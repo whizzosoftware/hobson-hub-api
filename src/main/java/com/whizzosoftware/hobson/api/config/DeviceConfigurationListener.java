@@ -5,12 +5,15 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.variable.manager;
+package com.whizzosoftware.hobson.api.config;
 
-import com.whizzosoftware.hobson.bootstrap.api.HobsonNotFoundException;
+import java.util.Dictionary;
 
-public class VariableNotFoundException extends HobsonNotFoundException {
-    public VariableNotFoundException(String pluginId, String deviceId, String name) {
-        super("Variable " + pluginId + "." + deviceId + "[" + name + "]" + " not found");
-    }
+/**
+ * Interface implemented by objects that want to receive device configuration update callbacks.
+ *
+ * @author Dan Noguerol
+ */
+public interface DeviceConfigurationListener {
+    public void onDeviceConfigurationUpdate(String deviceId, Dictionary config);
 }

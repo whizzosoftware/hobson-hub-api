@@ -7,13 +7,13 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.activator;
 
-import com.whizzosoftware.hobson.api.action.manager.ActionManager;
-import com.whizzosoftware.hobson.api.config.manager.ConfigurationManager;
-import com.whizzosoftware.hobson.api.device.manager.DeviceManager;
-import com.whizzosoftware.hobson.api.disco.manager.DiscoManager;
-import com.whizzosoftware.hobson.api.event.manager.EventManager;
-import com.whizzosoftware.hobson.api.trigger.manager.TriggerManager;
-import com.whizzosoftware.hobson.api.variable.manager.VariableManager;
+import com.whizzosoftware.hobson.api.action.ActionManager;
+import com.whizzosoftware.hobson.api.config.ConfigurationManager;
+import com.whizzosoftware.hobson.api.device.DeviceManager;
+import com.whizzosoftware.hobson.api.disco.DiscoManager;
+import com.whizzosoftware.hobson.api.event.EventManager;
+import com.whizzosoftware.hobson.api.trigger.TriggerManager;
+import com.whizzosoftware.hobson.api.variable.VariableManager;
 import com.whizzosoftware.hobson.bootstrap.api.plugin.BootstrapHobsonPlugin;
 import org.apache.felix.dm.Component;
 import org.apache.felix.dm.DependencyActivatorBase;
@@ -49,13 +49,13 @@ public class HobsonBundleActivator extends DependencyActivatorBase {
             props.setProperty("id", pluginId);
             c.setInterface(BootstrapHobsonPlugin.class.getName(), props);
             c.setFactory(new HobsonPluginFactory(context, pluginClass, pluginId), "create");
+            c.add(createServiceDependency().setService(ActionManager.class).setRequired(true));
             c.add(createServiceDependency().setService(ConfigurationManager.class).setRequired(true));
             c.add(createServiceDependency().setService(DeviceManager.class).setRequired(true));
             c.add(createServiceDependency().setService(DiscoManager.class).setRequired(true));
             c.add(createServiceDependency().setService(EventManager.class).setRequired(true));
-            c.add(createServiceDependency().setService(VariableManager.class).setRequired(true));
             c.add(createServiceDependency().setService(TriggerManager.class).setRequired(true));
-            c.add(createServiceDependency().setService(ActionManager.class).setRequired(true));
+            c.add(createServiceDependency().setService(VariableManager.class).setRequired(true));
             manager.add(c);
         } else {
             logger.error("No hobson.plugin provided capability found for plugin {}", context.getBundle().getSymbolicName());

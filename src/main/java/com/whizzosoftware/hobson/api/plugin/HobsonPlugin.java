@@ -7,16 +7,18 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
-import com.whizzosoftware.hobson.api.action.manager.ActionManager;
-import com.whizzosoftware.hobson.api.config.manager.ConfigurationManager;
-import com.whizzosoftware.hobson.api.device.manager.DeviceManager;
-import com.whizzosoftware.hobson.api.disco.manager.DiscoManager;
+import com.whizzosoftware.hobson.api.action.HobsonAction;
+import com.whizzosoftware.hobson.api.action.ActionManager;
+import com.whizzosoftware.hobson.api.config.ConfigurationManager;
+import com.whizzosoftware.hobson.api.device.DeviceManager;
+import com.whizzosoftware.hobson.api.disco.DiscoManager;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
+import com.whizzosoftware.hobson.api.event.EventManager;
 import com.whizzosoftware.hobson.api.trigger.TriggerProvider;
-import com.whizzosoftware.hobson.api.trigger.manager.TriggerManager;
+import com.whizzosoftware.hobson.api.trigger.TriggerManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
-import com.whizzosoftware.hobson.api.variable.manager.VariableManager;
+import com.whizzosoftware.hobson.api.variable.VariableManager;
 import com.whizzosoftware.hobson.bootstrap.api.plugin.BootstrapHobsonPlugin;
 import com.whizzosoftware.hobson.bootstrap.api.plugin.PluginStatus;
 import io.netty.util.concurrent.Future;
@@ -93,6 +95,13 @@ public interface HobsonPlugin extends BootstrapHobsonPlugin {
     public void setDiscoManager(DiscoManager discoManager);
 
     /**
+     * Sets the EventManager instance the plugin should use. This will be called before the init() method.
+     *
+     * @param eventManager a EventManager
+     */
+    public void setEventManager(EventManager eventManager);
+
+    /**
      * Sets the TriggerManager instance the plugin should use. This will be called before the init() method.
      *
      * @param triggerManager a TriggerManager
@@ -149,7 +158,7 @@ public interface HobsonPlugin extends BootstrapHobsonPlugin {
      * @param variableName the variable name
      *
      * @return a HobsonVariable instance
-     * @throws com.whizzosoftware.hobson.api.variable.manager.VariableNotFoundException if the variable wasn't found
+     * @throws com.whizzosoftware.hobson.api.variable.VariableNotFoundException if the variable wasn't found
      */
     public HobsonVariable getDeviceVariable(String deviceId, String variableName);
 
@@ -174,6 +183,13 @@ public interface HobsonPlugin extends BootstrapHobsonPlugin {
      * @param triggerProvider the trigger provider object
      */
     public void publishTriggerProvider(TriggerProvider triggerProvider);
+
+    /**
+     * Publish an action.
+     *
+     * @param action the action to publish
+     */
+    public void publishAction(HobsonAction action);
 
     /**
      * Fires a notification that variables has been successfully updated.

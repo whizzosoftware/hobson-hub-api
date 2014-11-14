@@ -5,10 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.trigger.manager;
-
-import com.whizzosoftware.hobson.api.trigger.HobsonTrigger;
-import com.whizzosoftware.hobson.api.trigger.TriggerProvider;
+package com.whizzosoftware.hobson.api.trigger;
 
 import java.util.Collection;
 

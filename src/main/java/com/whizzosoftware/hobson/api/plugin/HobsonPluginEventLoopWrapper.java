@@ -7,20 +7,21 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
-import com.whizzosoftware.hobson.api.action.manager.ActionManager;
+import com.whizzosoftware.hobson.api.action.HobsonAction;
+import com.whizzosoftware.hobson.api.action.ActionManager;
 import com.whizzosoftware.hobson.api.config.ConfigurationException;
-import com.whizzosoftware.hobson.api.config.manager.ConfigurationManager;
-import com.whizzosoftware.hobson.api.config.manager.PluginConfigurationListener;
-import com.whizzosoftware.hobson.api.device.manager.DeviceManager;
-import com.whizzosoftware.hobson.api.disco.manager.DiscoManager;
+import com.whizzosoftware.hobson.api.config.ConfigurationManager;
+import com.whizzosoftware.hobson.api.config.PluginConfigurationListener;
+import com.whizzosoftware.hobson.api.device.DeviceManager;
+import com.whizzosoftware.hobson.api.disco.DiscoManager;
 import com.whizzosoftware.hobson.api.event.*;
 import com.whizzosoftware.hobson.api.event.EventListener;
-import com.whizzosoftware.hobson.api.event.manager.EventManager;
+import com.whizzosoftware.hobson.api.event.EventManager;
 import com.whizzosoftware.hobson.api.trigger.TriggerProvider;
-import com.whizzosoftware.hobson.api.trigger.manager.TriggerManager;
+import com.whizzosoftware.hobson.api.trigger.TriggerManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
-import com.whizzosoftware.hobson.api.variable.manager.VariableManager;
+import com.whizzosoftware.hobson.api.variable.VariableManager;
 import com.whizzosoftware.hobson.bootstrap.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.bootstrap.api.config.ConfigurationMetaData;
 import com.whizzosoftware.hobson.bootstrap.api.plugin.PluginStatus;
@@ -88,12 +89,13 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
         eventManager.addListener(this, topics);
 
         // inject manager dependencies
-        setDeviceManager(deviceManager);
-        setVariableManager(variableManager);
-        setConfigurationManager(configManager);
-        setDiscoManager(discoManager);
-        setTriggerManager(triggerManager);
         setActionManager(actionManager);
+        setConfigurationManager(configManager);
+        setDeviceManager(deviceManager);
+        setDiscoManager(discoManager);
+        setEventManager(eventManager);
+        setTriggerManager(triggerManager);
+        setVariableManager(variableManager);
 
         // start the event loop
         Future f = plugin.submitInEventLoop(new Runnable() {
@@ -266,6 +268,11 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
     }
 
     @Override
+    public void setEventManager(EventManager eventManager) {
+        plugin.setEventManager(eventManager);
+    }
+
+    @Override
     public void setTriggerManager(TriggerManager triggerManager) {
         plugin.setTriggerManager(triggerManager);
     }
@@ -308,6 +315,11 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
     @Override
     public void publishTriggerProvider(TriggerProvider triggerProvider) {
         plugin.publishTriggerProvider(triggerProvider);
+    }
+
+    @Override
+    public void publishAction(HobsonAction action) {
+        plugin.publishAction(action);
     }
 
     @Override

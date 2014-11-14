@@ -5,10 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.event.manager;
-
-import com.whizzosoftware.hobson.api.event.EventListener;
-import com.whizzosoftware.hobson.api.event.HobsonEvent;
+package com.whizzosoftware.hobson.api.event;
 
 import java.util.Collection;
 

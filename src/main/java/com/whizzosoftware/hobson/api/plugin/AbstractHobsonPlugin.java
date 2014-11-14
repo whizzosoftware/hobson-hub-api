@@ -7,19 +7,21 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
-import com.whizzosoftware.hobson.api.action.manager.ActionManager;
-import com.whizzosoftware.hobson.api.config.manager.ConfigurationManager;
+import com.whizzosoftware.hobson.api.action.HobsonAction;
+import com.whizzosoftware.hobson.api.action.ActionManager;
+import com.whizzosoftware.hobson.api.config.ConfigurationManager;
 import com.whizzosoftware.hobson.api.device.HobsonDevice;
-import com.whizzosoftware.hobson.api.device.manager.DeviceManager;
+import com.whizzosoftware.hobson.api.device.DeviceManager;
 import com.whizzosoftware.hobson.api.disco.DeviceBridgeDetector;
-import com.whizzosoftware.hobson.api.disco.manager.DiscoManager;
+import com.whizzosoftware.hobson.api.disco.DiscoManager;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.event.VariableUpdateRequestEvent;
+import com.whizzosoftware.hobson.api.event.EventManager;
 import com.whizzosoftware.hobson.api.trigger.TriggerProvider;
-import com.whizzosoftware.hobson.api.trigger.manager.TriggerManager;
+import com.whizzosoftware.hobson.api.trigger.TriggerManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
-import com.whizzosoftware.hobson.api.variable.manager.VariableManager;
+import com.whizzosoftware.hobson.api.variable.VariableManager;
 import com.whizzosoftware.hobson.bootstrap.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.bootstrap.api.config.ConfigurationMetaData;
 import com.whizzosoftware.hobson.bootstrap.api.plugin.PluginStatus;
@@ -41,12 +43,13 @@ import java.util.concurrent.TimeUnit;
  * @author Dan Noguerol
  */
 abstract public class AbstractHobsonPlugin implements HobsonPlugin {
-    private DeviceManager deviceManager;
-    private VariableManager variableManager;
-    private ConfigurationManager configManager;
-    private DiscoManager discoManager;
-    private TriggerManager triggerManager;
     private ActionManager actionManager;
+    private ConfigurationManager configManager;
+    private DeviceManager deviceManager;
+    private DiscoManager discoManager;
+    private EventManager eventManager;
+    private VariableManager variableManager;
+    private TriggerManager triggerManager;
     private String pluginId;
     private String version;
     private PluginStatus status = new PluginStatus(PluginStatus.Status.INITIALIZING);
@@ -93,13 +96,8 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     }
 
     @Override
-    public void setDeviceManager(DeviceManager deviceManager) {
-        this.deviceManager = deviceManager;
-    }
-
-    @Override
-    public void setVariableManager(VariableManager variableManager) {
-        this.variableManager = variableManager;
+    public void setActionManager(ActionManager actionManager) {
+        this.actionManager = actionManager;
     }
 
     @Override
@@ -108,8 +106,18 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     }
 
     @Override
+    public void setDeviceManager(DeviceManager deviceManager) {
+        this.deviceManager = deviceManager;
+    }
+
+    @Override
     public void setDiscoManager(DiscoManager discoManager) {
         this.discoManager = discoManager;
+    }
+
+    @Override
+    public void setEventManager(EventManager eventManager) {
+        this.eventManager = eventManager;
     }
 
     @Override
@@ -118,8 +126,8 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     }
 
     @Override
-    public void setActionManager(ActionManager actionManager) {
-        this.actionManager = actionManager;
+    public void setVariableManager(VariableManager variableManager) {
+        this.variableManager = variableManager;
     }
 
     @Override
@@ -166,6 +174,12 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
         validateTriggerManager();
         triggerProvider.setActionManager(actionManager);
         triggerManager.publishTriggerProvider(triggerProvider);
+    }
+
+    @Override
+    public void publishAction(HobsonAction action) {
+        validateActionManager();
+        actionManager.publishAction(action);
     }
 
     @Override
@@ -313,9 +327,9 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
         deviceManager.unpublishAllDevices(this);
     }
 
-    private void validateDeviceManager() {
-        if (deviceManager == null) {
-            throw new HobsonRuntimeException("No device manager has been set");
+    private void validateActionManager() {
+        if (actionManager == null) {
+            throw new HobsonRuntimeException("No action manager has been set");
         }
     }
 
@@ -325,9 +339,9 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
         }
     }
 
-    private void validateVariableManager() {
-        if (variableManager == null) {
-            throw new HobsonRuntimeException("No variable manager has been set");
+    private void validateDeviceManager() {
+        if (deviceManager == null) {
+            throw new HobsonRuntimeException("No device manager has been set");
         }
     }
 
@@ -337,9 +351,21 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
         }
     }
 
+    private void validateEventManager() {
+        if (eventManager == null) {
+            throw new HobsonRuntimeException("No event manager has been set");
+        }
+    }
+
     private void validateTriggerManager() {
         if (triggerManager == null) {
             throw new HobsonRuntimeException("No trigger manager has been set");
+        }
+    }
+
+    private void validateVariableManager() {
+        if (variableManager == null) {
+            throw new HobsonRuntimeException("No variable manager has been set");
         }
     }
 }

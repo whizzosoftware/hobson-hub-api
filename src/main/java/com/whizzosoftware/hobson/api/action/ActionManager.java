@@ -5,9 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.action.manager;
-
-import com.whizzosoftware.hobson.api.action.HobsonAction;
+package com.whizzosoftware.hobson.api.action;
 
 import java.util.Collection;
 import java.util.Map;

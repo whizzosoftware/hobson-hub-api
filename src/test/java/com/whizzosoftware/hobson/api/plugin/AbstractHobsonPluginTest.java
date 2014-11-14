@@ -8,7 +8,7 @@
 package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.device.MockAbstractHobsonDevice;
-import com.whizzosoftware.hobson.api.device.manager.MockDeviceManager;
+import com.whizzosoftware.hobson.api.device.MockDeviceManager;
 import com.whizzosoftware.hobson.api.disco.MockDeviceBridgeDetector;
 import com.whizzosoftware.hobson.api.event.VariableUpdateRequestEvent;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;

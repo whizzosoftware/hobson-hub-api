@@ -5,15 +5,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.disco.manager;
-
-import com.whizzosoftware.hobson.api.disco.*;
+package com.whizzosoftware.hobson.api.disco;
 
 import java.util.Collection;
 
 /**
- * A manager interface for entity discovery. This is currently just for external bridges but could accommodate discovery
- * of other entities as well.
+ * A manager interface for device bridge discovery.
  *
  * @author Dan Noguerol
  * @since hobson-hub-api 0.1.6

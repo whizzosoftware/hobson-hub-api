@@ -5,15 +5,17 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.config.manager;
+package com.whizzosoftware.hobson.api.presence;
 
-import java.util.Dictionary;
+import java.util.Collection;
 
 /**
- * Interface implemented by objects that want to receive device configuration update callbacks.
+ * A manager interface for entity presence.
  *
  * @author Dan Noguerol
+ * @since hobson-hub-api 0.1.7
  */
-public interface PluginConfigurationListener {
-    public void onPluginConfigurationUpdate(Dictionary config);
+public interface PresenceManager {
+    public Collection<PresenceEntity> getEntities();
+    public void firePresenceUpdate(String entityId, String location);
 }

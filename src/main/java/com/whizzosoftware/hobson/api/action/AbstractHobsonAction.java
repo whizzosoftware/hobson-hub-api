@@ -5,12 +5,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.action.impl;
+package com.whizzosoftware.hobson.api.action;
 
-import com.whizzosoftware.hobson.api.action.HobsonAction;
 import com.whizzosoftware.hobson.api.action.meta.ActionMeta;
-import com.whizzosoftware.hobson.api.config.manager.ConfigurationManager;
-import com.whizzosoftware.hobson.api.variable.manager.VariableManager;
+import com.whizzosoftware.hobson.api.config.ConfigurationManager;
+import com.whizzosoftware.hobson.api.variable.VariableManager;
 
 import java.util.ArrayList;
 import java.util.Collection;

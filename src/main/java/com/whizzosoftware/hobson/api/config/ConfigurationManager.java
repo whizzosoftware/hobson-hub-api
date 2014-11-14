@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.config.manager;
+package com.whizzosoftware.hobson.api.config;
 
 import java.io.File;
 import java.util.Dictionary;

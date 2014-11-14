@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.config.manager;
+package com.whizzosoftware.hobson.api.config;
 
 import java.util.Dictionary;
 
@@ -14,6 +14,6 @@ import java.util.Dictionary;
  *
  * @author Dan Noguerol
  */
-public interface DeviceConfigurationListener {
-    public void onDeviceConfigurationUpdate(String deviceId, Dictionary config);
+public interface PluginConfigurationListener {
+    public void onPluginConfigurationUpdate(Dictionary config);
 }
