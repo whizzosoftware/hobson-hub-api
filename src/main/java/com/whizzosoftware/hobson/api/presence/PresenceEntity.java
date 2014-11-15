@@ -8,30 +8,13 @@
 package com.whizzosoftware.hobson.api.presence;
 
 /**
- * A class that represents the current presence status of an entity.
+ * An interface that represents the current presence status of an entity.
  *
  * @author Dan Noguerol
  */
-public class PresenceEntity {
-    private String id;
-    private String name;
-    private String location;
-
-    public PresenceEntity(String id, String name, String location) {
-        this.id = id;
-        this.name = name;
-        this.location = location;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getLocation() {
-        return location;
-    }
+public interface PresenceEntity {
+    public String getId();
+    public String getName();
+    public String getLocation();
+    public Long getLastUpdate();
 }

@@ -16,6 +16,38 @@ import java.util.Collection;
  * @since hobson-hub-api 0.1.7
  */
 public interface PresenceManager {
-    public Collection<PresenceEntity> getEntities();
-    public void firePresenceUpdate(String entityId, String location);
+    /**
+     * Returns a summary of all presence entities.
+     *
+     * @return a Collection of PresenceEntity objects
+     */
+    public Collection<PresenceEntity> getAllEntities();
+
+    /**
+     * Returns details of a presence entity.
+     *
+     * @param entityId the ID of the entity
+     *
+     * @return a PresenceEntity object
+     */
+    public PresenceEntity getEntity(String entityId);
+
+    /**
+     * Adds a new presence entity.
+     *
+     * @param name the entity name
+     * @param location the entity location
+     *
+     * @return the ID of the newly created entity
+     */
+    public String addEntity(String name, String location);
+
+    /**
+     * Sends an update event for a presence entity.
+     *
+     * @param entityId the ID of the entity
+     * @param name the name of the entity (or null if unchanged)
+     * @param location the location of the entity (or null if unknown)
+     */
+    public void updateEntity(String entityId, String name, String location);
 }
