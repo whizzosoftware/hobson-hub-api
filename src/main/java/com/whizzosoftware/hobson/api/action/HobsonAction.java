@@ -7,8 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.action;
 
-import com.whizzosoftware.hobson.api.action.meta.ActionMeta;
-import com.whizzosoftware.hobson.api.config.ConfigurationManager;
+import com.whizzosoftware.hobson.api.action.meta.ActionMetaData;
 import com.whizzosoftware.hobson.api.variable.VariableManager;
 
 import java.util.Collection;
@@ -49,18 +48,11 @@ public interface HobsonAction {
     public void setVariableManager(VariableManager variableManager);
 
     /**
-     * Sets the ConfigurationManager the action should use when it executes.
-     *
-     * @param configManager a ConfigurationManager instance
-     */
-    public void setConfigurationManager(ConfigurationManager configManager);
-
-    /**
      * Returns meta-data about the action.
      *
      * @return a Collection of ActionMeta instances
      */
-    public Collection<ActionMeta> getMeta();
+    public Collection<ActionMetaData> getMetaData();
 
     /**
      * Executes the action.

@@ -44,7 +44,7 @@ public interface ActionManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Collection<HobsonAction> getAllActions();
+    public Collection<HobsonAction> getAllActions(String userId, String hubId);
 
     /**
      * Retrieve a published action.
@@ -56,5 +56,5 @@ public interface ActionManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public HobsonAction getAction(String pluginId, String actionId);
+    public HobsonAction getAction(String userId, String hubId, String pluginId, String actionId);
 }

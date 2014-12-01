@@ -23,7 +23,7 @@ public interface TriggerManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void publishTriggerProvider(TriggerProvider provider);
+    public void publishTriggerProvider(String userId, String hubId, TriggerProvider provider);
 
     /**
      * Indicates whether a trigger provider has been published.
@@ -35,7 +35,7 @@ public interface TriggerManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public boolean hasTriggerProvider(String pluginId, String providerId);
+    public boolean hasTriggerProvider(String userId, String hubId, String pluginId, String providerId);
 
     /**
      * Returns all triggers that have been published by all trigger providers.
@@ -44,7 +44,7 @@ public interface TriggerManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Collection<HobsonTrigger> getAllTriggers();
+    public Collection<HobsonTrigger> getAllTriggers(String userId, String hubId);
 
     /**
      * Returns a specific trigger.
@@ -56,7 +56,7 @@ public interface TriggerManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public HobsonTrigger getTrigger(String providerId, String triggerId);
+    public HobsonTrigger getTrigger(String userId, String hubId, String providerId, String triggerId);
 
     /**
      * Adds a new trigger. This should be called by trigger providers.
@@ -66,7 +66,7 @@ public interface TriggerManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void addTrigger(String providerId, Object trigger);
+    public void addTrigger(String userId, String hubId, String providerId, Object trigger);
 
     /**
      * Deletes a previously added trigger.
@@ -76,5 +76,5 @@ public interface TriggerManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void deleteTrigger(String providerId, String triggerId);
+    public void deleteTrigger(String userId, String hubId, String providerId, String triggerId);
 }

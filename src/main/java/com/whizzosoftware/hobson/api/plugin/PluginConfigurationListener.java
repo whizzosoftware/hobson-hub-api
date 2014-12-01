@@ -10,24 +10,10 @@ package com.whizzosoftware.hobson.api.plugin;
 import java.util.Dictionary;
 
 /**
- * Encapsulates information about a device configuration update.
+ * Interface implemented by objects that want to receive device configuration update callbacks.
  *
  * @author Dan Noguerol
  */
-public class DeviceConfigurationUpdate {
-    private String deviceId;
-    private Dictionary configuration;
-
-    public DeviceConfigurationUpdate(String deviceId, Dictionary configuration) {
-        this.deviceId = deviceId;
-        this.configuration = configuration;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public Dictionary getConfiguration() {
-        return configuration;
-    }
+public interface PluginConfigurationListener {
+    public void onPluginConfigurationUpdate(Dictionary config);
 }

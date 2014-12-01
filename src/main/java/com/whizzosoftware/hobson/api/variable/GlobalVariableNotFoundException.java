@@ -5,18 +5,17 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.device;
+package com.whizzosoftware.hobson.api.variable;
 
 import com.whizzosoftware.hobson.api.HobsonNotFoundException;
 
 /**
- * An exception thrown when a device is not found. This would happen, for example, when an invalid device ID is
- * requested from the device manager.
+ * An exception that occurs when a global variable cannot be found (e.g. when requesting one).
  *
  * @author Dan Noguerol
  */
-public class DeviceNotFoundException extends HobsonNotFoundException {
-    public DeviceNotFoundException(String pluginId, String deviceId) {
-        super("Device " + pluginId + "." + deviceId + " not found");
+public class GlobalVariableNotFoundException extends HobsonNotFoundException {
+    public GlobalVariableNotFoundException(String name) {
+        super("Global variable [" + name + "]" + " not found");
     }
 }

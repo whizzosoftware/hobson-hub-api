@@ -10,7 +10,7 @@ package com.whizzosoftware.hobson.api.presence;
 import java.util.Collection;
 
 /**
- * A manager interface for entity presence.
+ * A manager interface for entity presence functions.
  *
  * @author Dan Noguerol
  * @since hobson-hub-api 0.1.7
@@ -21,7 +21,7 @@ public interface PresenceManager {
      *
      * @return a Collection of PresenceEntity objects
      */
-    public Collection<PresenceEntity> getAllEntities();
+    public Collection<PresenceEntity> getAllEntities(String userId, String hubId);
 
     /**
      * Returns details of a presence entity.
@@ -30,17 +30,16 @@ public interface PresenceManager {
      *
      * @return a PresenceEntity object
      */
-    public PresenceEntity getEntity(String entityId);
+    public PresenceEntity getEntity(String userId, String hubId, String entityId);
 
     /**
      * Adds a new presence entity.
      *
-     * @param name the entity name
-     * @param location the entity location
+     * @param entity the entity to add
      *
      * @return the ID of the newly created entity
      */
-    public String addEntity(String name, String location);
+    public String addEntity(String userId, String hubId, PresenceEntity entity);
 
     /**
      * Sends an update event for a presence entity.
@@ -49,5 +48,5 @@ public interface PresenceManager {
      * @param name the name of the entity (or null if unchanged)
      * @param location the location of the entity (or null if unknown)
      */
-    public void updateEntity(String entityId, String name, String location);
+    public void updateEntity(String userId, String hubId, String entityId, String name, String location);
 }

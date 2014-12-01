@@ -12,19 +12,28 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Represents meta-data about an action describing what information the action requires in order to execute
- * successfully. This information is primarily used to drive user interfaces.
+ * Represents meta-data about an action. This describes what information the action requires in order to execute
+ * successfully. It is used primarily to drive user interfaces.
  *
  * @author Dan Noguerol
+ * @since hobson-hub-api 0.1.7
  */
-public class ActionMeta {
+public class ActionMetaData {
     private String id;
     private String name;
     private String description;
     private Type type;
-    private List<ActionMetaEnumValue> enumValues;
+    private List<ActionMetaDataEnumValue> enumValues;
 
-    public ActionMeta(String id, String name, String description, Type type) {
+    /**
+     * Constructor.
+     *
+     * @param id the metadata ID
+     * @param name the metadata name
+     * @param description the metadata description
+     * @param type the metadata type
+     */
+    public ActionMetaData(String id, String name, String description, Type type) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -47,14 +56,24 @@ public class ActionMeta {
         return type;
     }
 
-    public void addEnumValue(ActionMetaEnumValue eValue) {
+    /**
+     * Adds a new enumerated value to the metadata.
+     *
+     * @param eValue the value to add
+     */
+    public void addEnumValue(ActionMetaDataEnumValue eValue) {
         if (enumValues == null) {
-            enumValues = new ArrayList<ActionMetaEnumValue>();
+            enumValues = new ArrayList<>();
         }
         enumValues.add(eValue);
     }
 
-    public Collection<ActionMetaEnumValue> getEnumValues() {
+    /**
+     * Returns a list of enumerated values for the metadata.
+     *
+     * @return a Collection of ActionMetaDataEnumValue objects
+     */
+    public Collection<ActionMetaDataEnumValue> getEnumValues() {
         return enumValues;
     }
 

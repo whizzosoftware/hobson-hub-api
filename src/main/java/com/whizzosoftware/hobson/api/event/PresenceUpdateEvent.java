@@ -7,8 +7,6 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event;
 
-import org.osgi.service.event.Event;
-
 import java.util.Map;
 
 /**
@@ -22,37 +20,22 @@ public class PresenceUpdateEvent extends HobsonEvent {
     private static final String PROP_ENTITY_ID = "entityId";
     private static final String PROP_LOCATION = "location";
 
-    private String entityId;
-    private String location;
-
     public PresenceUpdateEvent(String entityId, String location) {
         super(EventTopics.PRESENCE_TOPIC, ID);
 
-        this.entityId = entityId;
-        this.location = location;
+        setProperty(PROP_ENTITY_ID, entityId);
+        setProperty(PROP_LOCATION, location);
     }
 
-    public PresenceUpdateEvent(Event event) {
-        super(event);
+    public PresenceUpdateEvent(Map<String,Object> properties) {
+        super(EventTopics.PRESENCE_TOPIC, properties);
     }
 
     public String getEntityId() {
-        return entityId;
+        return (String)getProperty(PROP_ENTITY_ID);
     }
 
     public String getLocation() {
-        return location;
-    }
-
-    @Override
-    void readProperties(Event event) {
-        this.entityId = (String)event.getProperty(PROP_ENTITY_ID);
-        this.location = (String)event.getProperty(PROP_LOCATION);
-    }
-
-    @Override
-    void writeProperties(Map properties) {
-        properties.put(PROP_ENTITY_ID, entityId);
-        properties.put(PROP_LOCATION, location);
+        return (String)getProperty(PROP_LOCATION);
     }
 }

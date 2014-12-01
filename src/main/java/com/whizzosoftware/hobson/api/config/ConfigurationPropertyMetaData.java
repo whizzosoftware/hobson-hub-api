@@ -5,25 +5,32 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.action.meta;
+package com.whizzosoftware.hobson.api.config;
 
 /**
- * Represents an optional parameter for an action meta enumeration.
- *
- * For example, the "Send Command to Device" action's "Set Level" enumeration takes a numeric parameter representing
- * the level value.
+ * Meta data about a configurable property.
  *
  * @author Dan Noguerol
  */
-public class ActionMetaEnumValueParam {
+public class ConfigurationPropertyMetaData {
+    private String id;
     private String name;
     private String description;
-    private ActionMeta.Type type;
+    private Type type;
 
-    public ActionMetaEnumValueParam(String name, String description, ActionMeta.Type type) {
+    public ConfigurationPropertyMetaData(String id) {
+        this.id = id;
+    }
+
+    public ConfigurationPropertyMetaData(String id, String name, String description, Type type) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.type = type;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {
@@ -34,7 +41,14 @@ public class ActionMetaEnumValueParam {
         return description;
     }
 
-    public ActionMeta.Type getType() {
+    public Type getType() {
         return type;
+    }
+
+    public enum Type {
+        BOOLEAN,
+        STRING,
+        PASSWORD,
+        NUMBER
     }
 }

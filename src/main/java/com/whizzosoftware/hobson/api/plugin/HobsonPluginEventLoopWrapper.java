@@ -7,24 +7,22 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
+import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.action.HobsonAction;
 import com.whizzosoftware.hobson.api.action.ActionManager;
-import com.whizzosoftware.hobson.api.config.ConfigurationException;
-import com.whizzosoftware.hobson.api.config.ConfigurationManager;
-import com.whizzosoftware.hobson.api.config.PluginConfigurationListener;
+import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
 import com.whizzosoftware.hobson.api.disco.DiscoManager;
 import com.whizzosoftware.hobson.api.event.*;
 import com.whizzosoftware.hobson.api.event.EventListener;
 import com.whizzosoftware.hobson.api.event.EventManager;
+import com.whizzosoftware.hobson.api.hub.HubManager;
 import com.whizzosoftware.hobson.api.trigger.TriggerProvider;
 import com.whizzosoftware.hobson.api.trigger.TriggerManager;
+import com.whizzosoftware.hobson.api.util.UserUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.VariableManager;
-import com.whizzosoftware.hobson.bootstrap.api.HobsonRuntimeException;
-import com.whizzosoftware.hobson.bootstrap.api.config.ConfigurationMetaData;
-import com.whizzosoftware.hobson.bootstrap.api.plugin.PluginStatus;
 import io.netty.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,13 +41,14 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     // these will be dependency injected by the OSGi runtime
-    private volatile DeviceManager deviceManager;
-    private volatile VariableManager variableManager;
-    private volatile EventManager eventManager;
-    private volatile ConfigurationManager configManager;
-    private volatile DiscoManager discoManager;
-    private volatile TriggerManager triggerManager;
     private volatile ActionManager actionManager;
+    private volatile DeviceManager deviceManager;
+    private volatile DiscoManager discoManager;
+    private volatile EventManager eventManager;
+    private volatile HubManager hubManager;
+    private volatile PluginManager pluginManager;
+    private volatile TriggerManager triggerManager;
+    private volatile VariableManager variableManager;
 
     private HobsonPlugin plugin;
     private boolean starting = true;
@@ -73,7 +72,7 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
      */
     public void start() {
         // register plugin for configuration updates
-        configManager.registerForPluginConfigurationUpdates(getId(), this);
+        pluginManager.registerForPluginConfigurationUpdates(getId(), this);
 
         // register plugin for necessary events
         List<String> topics = new ArrayList<>();
@@ -90,10 +89,11 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
 
         // inject manager dependencies
         setActionManager(actionManager);
-        setConfigurationManager(configManager);
         setDeviceManager(deviceManager);
         setDiscoManager(discoManager);
         setEventManager(eventManager);
+        setHubManager(hubManager);
+        setPluginManager(pluginManager);
         setTriggerManager(triggerManager);
         setVariableManager(variableManager);
 
@@ -101,21 +101,21 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
         Future f = plugin.submitInEventLoop(new Runnable() {
             @Override
             public void run() {
-                // start the plugin
-                onStartup(getPluginConfiguration(plugin.getId()));
+            // start the plugin
+            onStartup(pluginManager.getPluginConfiguration(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, plugin).getPropertyDictionary());
 
-                // post plugin started event
-                eventManager.postEvent(new PluginStartedEvent(getId()));
+            // post plugin started event
+            eventManager.postEvent(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, new PluginStartedEvent(getId()));
 
-                // schedule the refresh callback if the plugin's refresh interval > 0
-                if (plugin.getRefreshInterval() > 0) {
-                    plugin.scheduleAtFixedRateInEventLoop(new Runnable() {
-                        @Override
-                        public void run() {
-                            plugin.onRefresh();
-                        }
-                    }, 0, plugin.getRefreshInterval(), TimeUnit.SECONDS);
-                }
+            // schedule the refresh callback if the plugin's refresh interval > 0
+            if (plugin.getRefreshInterval() > 0) {
+                plugin.scheduleAtFixedRateInEventLoop(new Runnable() {
+                    @Override
+                    public void run() {
+                        plugin.onRefresh();
+                    }
+                }, 0, plugin.getRefreshInterval(), TimeUnit.SECONDS);
+            }
             }
         });
 
@@ -138,22 +138,22 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
             @Override
             public void run() {
                 // stop listening for configuration changes
-                configManager.unregisterForConfigurationUpdates(getId(), HobsonPluginEventLoopWrapper.this);
+                pluginManager.unregisterForPluginConfigurationUpdates(getId(), HobsonPluginEventLoopWrapper.this);
 
                 // stop listening for variable events
                 eventManager.removeListener(HobsonPluginEventLoopWrapper.this);
 
                 // unpublish all variables published by this plugin's devices
-                variableManager.unpublishAllPluginVariables(getId());
+                variableManager.unpublishAllPluginVariables(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId());
 
                 // stop all devices
-                deviceManager.unpublishAllDevices(plugin);
+                deviceManager.unpublishAllDevices(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, plugin);
 
                 // shut down the plugin
                 onShutdown();
 
                 // post plugin stopped event
-                eventManager.postEvent(new PluginStoppedEvent(getId()));
+                eventManager.postEvent(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, new PluginStoppedEvent(getId()));
 
                 // drop reference
                 plugin = null;
@@ -258,11 +258,6 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
     }
 
     @Override
-    public void setConfigurationManager(ConfigurationManager configManager) {
-        plugin.setConfigurationManager(configManager);
-    }
-
-    @Override
     public void setDiscoManager(DiscoManager discoManager) {
         plugin.setDiscoManager(discoManager);
     }
@@ -270,6 +265,16 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
     @Override
     public void setEventManager(EventManager eventManager) {
         plugin.setEventManager(eventManager);
+    }
+
+    @Override
+    public void setHubManager(HubManager hubManager) {
+        plugin.setHubManager(hubManager);
+    }
+
+    @Override
+    public void setPluginManager(PluginManager pluginManager) {
+        plugin.setPluginManager(pluginManager);
     }
 
     @Override
@@ -373,20 +378,17 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
     }
 
     @Override
-    public Collection<ConfigurationMetaData> getConfigurationMetaData() {
-        return plugin.getConfigurationMetaData();
+    public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData() {
+        return plugin.getConfigurationPropertyMetaData();
+    }
+
+    @Override
+    public PluginType getType() {
+        return plugin.getType();
     }
 
     @Override
     public boolean isConfigurable() {
         return plugin.isConfigurable();
-    }
-
-    protected Dictionary getPluginConfiguration(String pluginId) {
-        try {
-            return configManager.getPluginConfiguration(pluginId);
-        } catch (ConfigurationException ce) {
-            return new Hashtable();
-        }
     }
 }

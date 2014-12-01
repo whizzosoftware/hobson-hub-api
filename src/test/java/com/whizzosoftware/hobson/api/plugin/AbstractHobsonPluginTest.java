@@ -7,16 +7,17 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
+import com.whizzosoftware.hobson.api.HobsonRuntimeException;
+import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.device.MockAbstractHobsonDevice;
 import com.whizzosoftware.hobson.api.device.MockDeviceManager;
 import com.whizzosoftware.hobson.api.disco.MockDeviceBridgeDetector;
 import com.whizzosoftware.hobson.api.event.VariableUpdateRequestEvent;
+import com.whizzosoftware.hobson.api.util.UserUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.HobsonVariableImpl;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.manager.MockVariableManager;
-import com.whizzosoftware.hobson.bootstrap.api.HobsonRuntimeException;
-import com.whizzosoftware.hobson.bootstrap.api.config.ConfigurationMetaData;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -41,26 +42,26 @@ public class AbstractHobsonPluginTest {
         MockDeviceManager dm = new MockDeviceManager();
         MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
         plugin.setDeviceManager(dm);
-        assertEquals(0, dm.getAllDevices().size());
+        assertEquals(0, dm.getAllDevices(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB).size());
         plugin.publishDevice(new MockAbstractHobsonDevice(plugin, "did"));
-        assertEquals(1, dm.getAllDevices().size());
-        assertEquals("did", dm.getAllDevices().iterator().next().getId());
+        assertEquals(1, dm.getAllDevices(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB).size());
+        assertEquals("did", dm.getAllDevices(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB).iterator().next().getId());
     }
 
     @Test
     public void testGetConfigurationMetaData() {
         MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-        assertNotNull(plugin.getConfigurationMetaData());
-        assertEquals(0, plugin.getConfigurationMetaData().size());
-        plugin.addConfigurationMetaData(new ConfigurationMetaData("id", "name", "desc", ConfigurationMetaData.Type.STRING));
-        assertEquals(1, plugin.getConfigurationMetaData().size());
+        assertNotNull(plugin.getConfigurationPropertyMetaData());
+        assertEquals(0, plugin.getConfigurationPropertyMetaData().size());
+        plugin.addConfigurationPropertyMetaData(new ConfigurationPropertyMetaData("id", "name", "desc", ConfigurationPropertyMetaData.Type.STRING));
+        assertEquals(1, plugin.getConfigurationPropertyMetaData().size());
     }
 
     @Test
     public void testIsConfigurable() {
         MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
         assertFalse(plugin.isConfigurable());
-        plugin.addConfigurationMetaData(new ConfigurationMetaData("id", "name", "desc", ConfigurationMetaData.Type.STRING));
+        plugin.addConfigurationPropertyMetaData(new ConfigurationPropertyMetaData("id", "name", "desc", ConfigurationPropertyMetaData.Type.STRING));
         assertTrue(plugin.isConfigurable());
     }
 

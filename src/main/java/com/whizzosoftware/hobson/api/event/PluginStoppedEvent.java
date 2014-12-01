@@ -7,8 +7,6 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event;
 
-import org.osgi.service.event.Event;
-
 import java.util.Map;
 
 /**
@@ -21,28 +19,16 @@ public class PluginStoppedEvent extends HobsonEvent {
 
     private static final String PROP_PLUGIN_ID = "pluginId";
 
-    private String pluginId;
-
     public PluginStoppedEvent(String pluginId) {
         super(EventTopics.PLUGINS_TOPIC, ID);
-        this.pluginId = pluginId;
+        setProperty(PROP_PLUGIN_ID, pluginId);
     }
 
-    public PluginStoppedEvent(Event event) {
-        super(event);
+    public PluginStoppedEvent(Map<String,Object> properties) {
+        super(EventTopics.PLUGINS_TOPIC, properties);
     }
 
     public String getPluginId() {
-        return pluginId;
-    }
-
-    @Override
-    void readProperties(Event event) {
-        pluginId = (String)event.getProperty(PROP_PLUGIN_ID);
-    }
-
-    @Override
-    void writeProperties(Map properties) {
-        properties.put(PROP_PLUGIN_ID, getPluginId());
+        return (String)getProperty(PROP_PLUGIN_ID);
     }
 }

@@ -23,7 +23,7 @@ public interface DiscoManager extends DeviceBridgeDetectionContext {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void publishDeviceBridgeDetector(DeviceBridgeDetector metaAnalyzer);
+    public void publishDeviceBridgeDetector(String userId, String hubId, DeviceBridgeDetector metaAnalyzer);
 
     /**
      * Unpublishes a previously published ExternalBridgeMetaAnalyzer.
@@ -32,7 +32,7 @@ public interface DiscoManager extends DeviceBridgeDetectionContext {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void unpublishDeviceBridgeDetector(String detectorId);
+    public void unpublishDeviceBridgeDetector(String userId, String hubId, String detectorId);
 
     /**
      * Returns a list of all discovered device bridges.
@@ -41,7 +41,7 @@ public interface DiscoManager extends DeviceBridgeDetectionContext {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Collection<DeviceBridge> getDeviceBridges();
+    public Collection<DeviceBridge> getDeviceBridges(String userId, String hubId);
 
     /**
      * Processes a DevceBridgeMetaData object. This will give all registered DeviceBridgeDetectors an
@@ -51,5 +51,5 @@ public interface DiscoManager extends DeviceBridgeDetectionContext {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void processDeviceBridgeMetaData(DeviceBridgeMetaData meta);
+    public void processDeviceBridgeMetaData(String userId, String hubId, DeviceBridgeMetaData meta);
 }

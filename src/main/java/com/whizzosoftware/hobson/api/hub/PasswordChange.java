@@ -5,18 +5,27 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.device;
-
-import com.whizzosoftware.hobson.api.HobsonNotFoundException;
+package com.whizzosoftware.hobson.api.hub;
 
 /**
- * An exception thrown when a device is not found. This would happen, for example, when an invalid device ID is
- * requested from the device manager.
+ * A class representing a password change.
  *
  * @author Dan Noguerol
  */
-public class DeviceNotFoundException extends HobsonNotFoundException {
-    public DeviceNotFoundException(String pluginId, String deviceId) {
-        super("Device " + pluginId + "." + deviceId + " not found");
+public class PasswordChange {
+    private String currentPassword;
+    private String newPassword;
+
+    public PasswordChange(String currentPassword, String newPassword) {
+        this.currentPassword = currentPassword;
+        this.newPassword = newPassword;
+    }
+
+    public String getCurrentPassword() {
+        return currentPassword;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
     }
 }

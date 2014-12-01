@@ -7,8 +7,6 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event;
 
-import org.osgi.service.event.Event;
-
 import java.util.Map;
 
 /**
@@ -23,11 +21,6 @@ public class VariableUpdateRequestEvent extends HobsonEvent {
     public static final String PROP_NAME = "name";
     public static final String PROP_VALUE = "value";
 
-    private String pluginId;
-    private String deviceId;
-    private String name;
-    private Object value;
-
     public VariableUpdateRequestEvent(String pluginId, String name, Object value) {
         this(pluginId, null, name, value);
     }
@@ -35,49 +28,33 @@ public class VariableUpdateRequestEvent extends HobsonEvent {
     public VariableUpdateRequestEvent(String pluginId, String deviceId, String name, Object value) {
         super(EventTopics.VARIABLES_TOPIC, ID);
 
-        this.pluginId = pluginId;
-        this.deviceId = deviceId;
-        this.name = name;
-        this.value = value;
+        setProperty(PROP_PLUGIN_ID, pluginId);
+        setProperty(PROP_DEVICE_ID, deviceId);
+        setProperty(PROP_NAME, name);
+        setProperty(PROP_VALUE, value);
     }
 
-    public VariableUpdateRequestEvent(Event event) {
-        super(event);
+    public VariableUpdateRequestEvent(Map<String,Object> properties) {
+        super(EventTopics.VARIABLES_TOPIC, properties);
     }
 
     public String getPluginId() {
-        return pluginId;
+        return (String)getProperty(PROP_PLUGIN_ID);
     }
 
     public String getDeviceId() {
-        return deviceId;
+        return (String)getProperty(PROP_DEVICE_ID);
     }
 
     public String getName() {
-        return name;
+        return (String)getProperty(PROP_NAME);
     }
 
     public Object getValue() {
-        return value;
+        return getProperty(PROP_VALUE);
     }
 
     public boolean isGlobal() {
-        return (deviceId == null);
-    }
-
-    @Override
-    void readProperties(Event event) {
-        pluginId = (String)event.getProperty(PROP_PLUGIN_ID);
-        deviceId = (String)event.getProperty(PROP_DEVICE_ID);
-        name = (String)event.getProperty(PROP_NAME);
-        value = event.getProperty(PROP_VALUE);
-    }
-
-    @Override
-    void writeProperties(Map properties) {
-        properties.put(PROP_PLUGIN_ID, pluginId);
-        properties.put(PROP_DEVICE_ID, deviceId);
-        properties.put(PROP_NAME, name);
-        properties.put(PROP_VALUE, value);
+        return (getDeviceId() == null);
     }
 }

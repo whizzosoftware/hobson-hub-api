@@ -7,14 +7,38 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.presence;
 
+import java.util.UUID;
+
 /**
- * An interface that represents the current presence status of an entity.
+ * A class that represents the current presence status of an entity.
  *
  * @author Dan Noguerol
  */
-public interface PresenceEntity {
-    public String getId();
-    public String getName();
-    public String getLocation();
-    public Long getLastUpdate();
+public class PresenceEntity {
+    private String id;
+    protected String name;
+    protected String location;
+    protected Long lastUpdate;
+
+    public PresenceEntity(String name, String location) {
+        this.id = UUID.randomUUID().toString();
+        this.name = name;
+        this.location = location;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public Long getLastUpdate() {
+        return lastUpdate;
+    }
 }

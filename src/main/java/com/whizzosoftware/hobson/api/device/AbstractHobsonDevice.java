@@ -7,13 +7,11 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device;
 
+import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.HobsonVariableImpl;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
-import com.whizzosoftware.hobson.bootstrap.api.config.ConfigurationMetaData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,13 +25,11 @@ import java.util.List;
  * @author Dan Noguerol
  */
 abstract public class AbstractHobsonDevice implements HobsonDevice {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private HobsonPlugin plugin;
     private String id;
     private String name;
     private String defaultName;
-    private final List<ConfigurationMetaData> configMeta = new ArrayList<ConfigurationMetaData>();
+    private final List<ConfigurationPropertyMetaData> configMeta = new ArrayList<>();
 
     /**
      * Constructor.
@@ -45,12 +41,16 @@ abstract public class AbstractHobsonDevice implements HobsonDevice {
         this.plugin = plugin;
         this.id = id;
 
-        addConfigurationMetaData(new ConfigurationMetaData("name", "Name", "A descriptive name for this device", ConfigurationMetaData.Type.STRING));
+        addConfigurationMetaData(new ConfigurationPropertyMetaData("name", "Name", "A descriptive name for this device", ConfigurationPropertyMetaData.Type.STRING));
     }
 
     @Override
     public String getPluginId() {
-        return getPlugin().getId();
+        if (getPlugin() != null) {
+            return getPlugin().getId();
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -73,11 +73,11 @@ abstract public class AbstractHobsonDevice implements HobsonDevice {
     }
 
     @Override
-    public Collection<ConfigurationMetaData> getConfigurationMetaData() {
+    public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData() {
         return configMeta;
     }
 
-    protected void addConfigurationMetaData(ConfigurationMetaData metaData) {
+    protected void addConfigurationMetaData(ConfigurationPropertyMetaData metaData) {
         configMeta.add(metaData);
     }
 

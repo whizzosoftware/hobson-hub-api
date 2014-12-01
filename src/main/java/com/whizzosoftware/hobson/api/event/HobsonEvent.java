@@ -1,7 +1,5 @@
 package com.whizzosoftware.hobson.api.event;
 
-import org.osgi.service.event.Event;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,49 +15,57 @@ abstract public class HobsonEvent {
     public static final String PROP_EVENT_ID = "eventId";
 
     private String topic;
-    private String eventId;
+    private Map<String,Object> properties;
 
     public HobsonEvent(String topic, String eventId) {
         this.topic = topic;
-        this.eventId = eventId;
+        setProperty(PROP_EVENT_ID, eventId);
     }
 
-    public HobsonEvent(Event event) {
-        eventId = (String)event.getProperty(PROP_EVENT_ID);
-        readProperties(event);
+    public HobsonEvent(String topic, Map<String,Object> properties) {
+        this.topic = topic;
+        this.properties = properties;
+    }
+
+    public String getTopic() {
+        return topic;
     }
 
     public String getEventId() {
-        return eventId;
+        return (String)getProperty(PROP_EVENT_ID);
     }
 
-    /**
-     * Returns an OSGi Event object.
-     *
-     * @return an Event
-     */
-    public Event getEvent() {
-        Map map = new HashMap();
-        writeProperties(map);
-        map.put(PROP_EVENT_ID, getEventId());
-        return new Event(topic, map);
+    public Map<String, Object> getProperties() {
+        return properties;
     }
 
     public String toString() {
-        return eventId;
+        return getEventId();
+    }
+
+    protected Object getProperty(String key) {
+        if (properties != null) {
+            return properties.get(key);
+        } else {
+            return null;
+        }
+    }
+
+    protected void setProperty(String key, Object value) {
+        if (properties == null) {
+            properties = new HashMap<>();
+        }
+        properties.put(key, value);
     }
 
     /**
-     * Returns the event ID of an OSGi Event object.
+     * Returns the event ID of a property map.
      *
-     * @param event the event object
+     * @param properties the property map
      *
      * @return a String or null if the event has no ID
      */
-    static public String readEventId(Event event) {
-        return (String)event.getProperty(PROP_EVENT_ID);
+    static public String readEventId(Map<String,Object> properties) {
+        return (String)properties.get(PROP_EVENT_ID);
     }
-
-    abstract void readProperties(Event event);
-    abstract void writeProperties(Map properties);
 }

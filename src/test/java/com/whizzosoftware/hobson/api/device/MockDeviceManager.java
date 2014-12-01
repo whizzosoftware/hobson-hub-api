@@ -7,32 +7,32 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device;
 
+import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class MockDeviceManager implements DeviceManager {
     public final List<HobsonDevice> publishedDevices = new ArrayList<HobsonDevice>();
+    public final Map<String,Object> configuration = new HashMap<String,Object>();
 
     @Override
-    public void publishDevice(HobsonPlugin plugin, HobsonDevice device) {
+    public void publishDevice(String userId, String hubId, HobsonPlugin plugin, HobsonDevice device) {
         publishedDevices.add(device);
     }
 
     @Override
-    public Collection<HobsonDevice> getAllDevices() {
+    public Collection<HobsonDevice> getAllDevices(String userId, String hubId) {
         return publishedDevices;
     }
 
     @Override
-    public Collection<HobsonDevice> getAllPluginDevices(String pluginId) {
+    public Collection<HobsonDevice> getAllPluginDevices(String userId, String hubId, String pluginId) {
         return null;
     }
 
     @Override
-    public HobsonDevice getDevice(String pluginId, String deviceId) {
+    public HobsonDevice getDevice(String userId, String hubId, String pluginId, String deviceId) {
         for (HobsonDevice device : publishedDevices) {
             if (device.getPluginId().equals(pluginId) && device.getId().equals(deviceId)) {
                 return device;
@@ -42,17 +42,27 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public boolean hasDevice(String pluginId, String deviceId) {
-        return (getDevice(pluginId, deviceId) != null);
+    public boolean hasDevice(String userId, String hubId, String pluginId, String deviceId) {
+        return (getDevice(userId, hubId, pluginId, deviceId) != null);
     }
 
     @Override
-    public void setDeviceName(String pluginId, String deviceId, String name) {
+    public Configuration getDeviceConfiguration(String userId, String hubId, String pluginId, String deviceId) {
+        return null;
+    }
+
+    @Override
+    public void setDeviceConfigurationProperty(String userId, String hubId, String pluginId, String deviceId, String name, Object value, boolean overwrite) {
+        configuration.put(pluginId + "." + deviceId + "." + name, value);
+    }
+
+    @Override
+    public void setDeviceName(String userId, String hubId, String pluginId, String deviceId, String name) {
 
     }
 
     @Override
-    public void unpublishAllDevices(HobsonPlugin plugin) {
+    public void unpublishAllDevices(String userId, String hubId, HobsonPlugin plugin) {
         List<HobsonDevice> unpublishList = new ArrayList<HobsonDevice>();
         for (HobsonDevice device : publishedDevices) {
             if (device.getPluginId().equals(plugin.getId())) {
@@ -65,7 +75,12 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public void unpublishDevice(HobsonPlugin plugin, String deviceId) {
+    public void registerForDeviceConfigurationUpdates(String userId, String hubId, String pluginId, String deviceId, DeviceConfigurationListener listener) {
+
+    }
+
+    @Override
+    public void unpublishDevice(String userId, String hubId, HobsonPlugin plugin, String deviceId) {
         HobsonDevice unpublishDevice = null;
         for (HobsonDevice device : publishedDevices) {
             if (device.getPluginId().equals(plugin.getId()) && device.getId().equals(deviceId)) {

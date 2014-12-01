@@ -8,7 +8,6 @@
 package com.whizzosoftware.hobson.api.event;
 
 import com.whizzosoftware.hobson.api.device.HobsonDevice;
-import org.osgi.service.event.Event;
 
 import java.util.Map;
 
@@ -21,33 +20,20 @@ public class DeviceStoppedEvent extends HobsonEvent {
     public static final String ID = "deviceRemoved";
     public static final String PROP_DEVICE = "device";
 
-    private HobsonDevice device;
-
     public DeviceStoppedEvent(HobsonDevice device) {
         super(EventTopics.DEVICES_TOPIC, ID);
-
-        this.device = device;
+        setProperty(PROP_DEVICE, device);
     }
 
-    public DeviceStoppedEvent(Event event) {
-        super(event);
+    public DeviceStoppedEvent(Map<String,Object> properties) {
+        super(EventTopics.DEVICES_TOPIC, properties);
     }
 
     public HobsonDevice getDevice() {
-        return device;
+        return (HobsonDevice)getProperty(PROP_DEVICE);
     }
 
     public String getPluginId() {
-        return device.getPluginId();
-    }
-
-    @Override
-    void readProperties(Event event) {
-        device = (HobsonDevice)event.getProperty(PROP_DEVICE);
-    }
-
-    @Override
-    void writeProperties(Map properties) {
-        properties.put(PROP_DEVICE, device);
+        return getDevice().getPluginId();
     }
 }

@@ -28,7 +28,7 @@ public interface VariableManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void publishGlobalVariable(String pluginId, HobsonVariable var);
+    public void publishGlobalVariable(String userId, String hubId, String pluginId, HobsonVariable var);
 
     /**
      * Returns a collection of all published global variables.
@@ -37,7 +37,19 @@ public interface VariableManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Collection<HobsonVariable> getGlobalVariables();
+    public Collection<HobsonVariable> getGlobalVariables(String userId, String hubId);
+
+    /**
+     * Returns a specific published global variable.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param name the variable name
+     *
+     * @return a HobsonVariable instance
+     * @throws GlobalVariableNotFoundException if not found
+     */
+    public HobsonVariable getGlobalVariable(String userId, String hubId, String name);
 
     /**
      * Unpublishes a global variable.
@@ -47,7 +59,7 @@ public interface VariableManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void unpublishGlobalVariable(String pluginId, String name);
+    public void unpublishGlobalVariable(String userId, String hubId, String pluginId, String name);
 
     /**
      * Publish a new device variable.
@@ -58,7 +70,7 @@ public interface VariableManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void publishDeviceVariable(String pluginId, String deviceId, HobsonVariable var);
+    public void publishDeviceVariable(String userId, String hubId, String pluginId, String deviceId, HobsonVariable var);
 
     /**
      * Unpublishes a device variable.
@@ -69,7 +81,7 @@ public interface VariableManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void unpublishDeviceVariable(String pluginId, String deviceId, String name);
+    public void unpublishDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name);
 
     /**
      * Unpublishes all variables published by a device.
@@ -79,7 +91,7 @@ public interface VariableManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void unpublishAllDeviceVariables(String pluginId, String deviceId);
+    public void unpublishAllDeviceVariables(String userId, String hubId, String pluginId, String deviceId);
 
     /**
      * Unpublishes all variables published by a plugin's devices.
@@ -88,7 +100,7 @@ public interface VariableManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void unpublishAllPluginVariables(String pluginId);
+    public void unpublishAllPluginVariables(String userId, String hubId, String pluginId);
 
     /**
      * Returns all published variables for a device.
@@ -100,7 +112,7 @@ public interface VariableManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Collection<HobsonVariable> getDeviceVariables(String pluginId, String deviceId);
+    public Collection<HobsonVariable> getDeviceVariables(String userId, String hubId, String pluginId, String deviceId);
 
     /**
      * Returns a specific published variable for a device.
@@ -110,11 +122,11 @@ public interface VariableManager {
      * @param name the variable name
      *
      * @return a HobsonVariable instance (or null if not found)
-     * @throws VariableNotFoundException if not found
+     * @throws DeviceVariableNotFoundException if not found
      *
      * @since hobson-hub-api 0.1.6
      */
-    public HobsonVariable getDeviceVariable(String pluginId, String deviceId, String name);
+    public HobsonVariable getDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name);
 
     /**
      * Indicates whether a device variable has been published.
@@ -127,7 +139,7 @@ public interface VariableManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public boolean hasDeviceVariable(String pluginId, String deviceId, String name);
+    public boolean hasDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name);
 
     /**
      * Sets a specific device variable.
@@ -138,11 +150,11 @@ public interface VariableManager {
      * @param value the variable value
      *
      * @return the last update time prior to this set call
-     * @throws VariableNotFoundException if not found
+     * @throws DeviceVariableNotFoundException if not found
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Long setDeviceVariable(String pluginId, String deviceId, String name, Object value);
+    public Long setDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name, Object value);
 
     /**
      * Updates a variable and publishes an update notification.
@@ -152,7 +164,7 @@ public interface VariableManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void fireVariableUpdateNotification(HobsonPlugin plugin, VariableUpdate update);
+    public void fireVariableUpdateNotification(String userId, String hubId, HobsonPlugin plugin, VariableUpdate update);
 
     /**
      * Updates variables and publishes an update notification.
@@ -162,5 +174,5 @@ public interface VariableManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void fireVariableUpdateNotifications(HobsonPlugin plugin, List<VariableUpdate> updates);
+    public void fireVariableUpdateNotifications(String userId, String hubId, HobsonPlugin plugin, List<VariableUpdate> updates);
 }

@@ -8,7 +8,6 @@
 package com.whizzosoftware.hobson.api.event;
 
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
-import org.osgi.service.event.Event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,40 +22,25 @@ public class VariableUpdateNotificationEvent extends HobsonEvent {
     public static final String ID = "variableUpdate";
     public static final String PROP_UPDATES = "updates";
 
-    private List<VariableUpdate> updates;
-
     public VariableUpdateNotificationEvent(VariableUpdate update) {
         super(EventTopics.VARIABLES_TOPIC, ID);
 
-        this.updates = new ArrayList<VariableUpdate>();
-        this.updates.add(update);
+        List<VariableUpdate> updates = new ArrayList<>();
+        updates.add(update);
+        setProperty(PROP_UPDATES, updates);
     }
 
     public VariableUpdateNotificationEvent(List<VariableUpdate> updates) {
         super(EventTopics.VARIABLES_TOPIC, ID);
 
-        this.updates = updates;
+        setProperty(PROP_UPDATES, updates);
     }
 
-    public VariableUpdateNotificationEvent(Event event) {
-        super(event);
+    public VariableUpdateNotificationEvent(Map<String,Object> properties) {
+        super(EventTopics.VARIABLES_TOPIC, properties);
     }
 
     public List<VariableUpdate> getUpdates() {
-        return updates;
-    }
-
-    public void removeUpdatesWithVariableName(String name) {
-        List<VariableUpdate> itemsToRemove = new ArrayList<VariableUpdate>();
-    }
-
-    @Override
-    void readProperties(Event event) {
-        updates = (List<VariableUpdate>)event.getProperty(PROP_UPDATES);
-    }
-
-    @Override
-    void writeProperties(Map properties) {
-        properties.put(PROP_UPDATES, updates);
+        return (List<VariableUpdate>)getProperty(PROP_UPDATES);
     }
 }

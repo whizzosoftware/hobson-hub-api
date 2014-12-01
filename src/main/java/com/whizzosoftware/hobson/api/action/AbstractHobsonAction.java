@@ -7,8 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.action;
 
-import com.whizzosoftware.hobson.api.action.meta.ActionMeta;
-import com.whizzosoftware.hobson.api.config.ConfigurationManager;
+import com.whizzosoftware.hobson.api.action.meta.ActionMetaData;
 import com.whizzosoftware.hobson.api.variable.VariableManager;
 
 import java.util.ArrayList;
@@ -26,8 +25,7 @@ abstract public class AbstractHobsonAction implements HobsonAction {
     private String id;
     private String name;
     private VariableManager variableManager;
-    private ConfigurationManager configManager;
-    private List<ActionMeta> metaList = new ArrayList<ActionMeta>();
+    private List<ActionMetaData> metaList = new ArrayList<ActionMetaData>();
 
     /**
      * Constructor.
@@ -78,17 +76,6 @@ abstract public class AbstractHobsonAction implements HobsonAction {
     }
 
     /**
-     * Returns meta-data about the action.
-     *
-     * @return a Collection of ActionMeta objects
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    public Collection<ActionMeta> getMeta() {
-        return metaList;
-    }
-
-    /**
      * Sets the VariableManager instance used by this action.
      *
      * @param variableManager a VariableManager instance
@@ -111,35 +98,24 @@ abstract public class AbstractHobsonAction implements HobsonAction {
     }
 
     /**
-     * Sets the ConfigurationManager instance in use by this action.
+     * Returns metadata about the action.
      *
-     * @param configManager a ConfigurationManager instance
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    public void setConfigurationManager(ConfigurationManager configManager) {
-        this.configManager = configManager;
-    }
-
-    /**
-     * Returns the ConfigurationManager instance in use by this action.
-     *
-     * @return a ConfigurationManager instance
+     * @return a Collection of ActionMeta objects
      *
      * @since hobson-hub-api 0.1.6
      */
-    public ConfigurationManager getConfigManager() {
-        return configManager;
+    public Collection<ActionMetaData> getMetaData() {
+        return metaList;
     }
 
     /**
-     * Adds meta-data about this action.
+     * Adds metadata about this action.
      *
      * @param meta the ActionMeta object to add
      *
      * @since hobson-hub-api 0.1.6
      */
-    protected void addMeta(ActionMeta meta) {
+    protected void addMetaData(ActionMetaData meta) {
         metaList.add(meta);
     }
 }

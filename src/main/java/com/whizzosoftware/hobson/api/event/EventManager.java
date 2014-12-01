@@ -42,5 +42,5 @@ public interface EventManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void postEvent(HobsonEvent event);
+    public void postEvent(String userId, String hubId, HobsonEvent event);
 }

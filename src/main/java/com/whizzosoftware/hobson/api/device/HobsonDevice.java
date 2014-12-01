@@ -7,7 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device;
 
-import com.whizzosoftware.hobson.bootstrap.api.config.ConfigurationMetaData;
+import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 
 import java.util.Collection;
 import java.util.Dictionary;
@@ -69,7 +69,7 @@ public interface HobsonDevice {
      *
      * @return a Collection of ConfigurationMetaData objects (or null if there is none)
      */
-    public Collection<ConfigurationMetaData> getConfigurationMetaData();
+    public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData();
 
     /**
      * Sets a device configuration property.

@@ -5,15 +5,14 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.config;
-
-import java.util.Dictionary;
+package com.whizzosoftware.hobson.api.util;
 
 /**
- * Interface implemented by objects that want to receive device configuration update callbacks.
+ * Provides convenience methods related to users.
  *
  * @author Dan Noguerol
  */
-public interface DeviceConfigurationListener {
-    public void onDeviceConfigurationUpdate(String deviceId, Dictionary config);
+public class UserUtil {
+    public static final String DEFAULT_USER = "local";
+    public static final String DEFAULT_HUB = "local";
 }

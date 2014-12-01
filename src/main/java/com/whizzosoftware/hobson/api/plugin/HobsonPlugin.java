@@ -9,20 +9,20 @@ package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.action.HobsonAction;
 import com.whizzosoftware.hobson.api.action.ActionManager;
-import com.whizzosoftware.hobson.api.config.ConfigurationManager;
+import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
 import com.whizzosoftware.hobson.api.disco.DiscoManager;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.event.EventManager;
+import com.whizzosoftware.hobson.api.hub.HubManager;
 import com.whizzosoftware.hobson.api.trigger.TriggerProvider;
 import com.whizzosoftware.hobson.api.trigger.TriggerManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.VariableManager;
-import com.whizzosoftware.hobson.bootstrap.api.plugin.BootstrapHobsonPlugin;
-import com.whizzosoftware.hobson.bootstrap.api.plugin.PluginStatus;
 import io.netty.util.concurrent.Future;
 
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +32,56 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Dan Noguerol
  */
-public interface HobsonPlugin extends BootstrapHobsonPlugin {
+public interface HobsonPlugin {
+    /**
+     * Returns the plugin ID.
+     *
+     * @return the plugin ID
+     */
+    public String getId();
+
+    /**
+     * Returns the plugin name.
+     *
+     * @return the plugin name
+     */
+    public String getName();
+
+    /**
+     * Returns the plugin version string.
+     *
+     * @return the plugin version
+     */
+    public String getVersion();
+
+    /**
+     * Returns the status of the plugin.
+     *
+     * @return a PluginStatus instance
+     */
+    public PluginStatus getStatus();
+
+    /**
+     * Returns the configuration property meta-data associated with this plugin.
+     *
+     * @return a Collection of ConfigurationPropertyMetaData objects
+     */
+    public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData();
+
+    /**
+     * Returns the type of plugin.
+     *
+     * @return a PluginType instance
+     */
+    public PluginType getType();
+
+    /**
+     * Indicates whether this plugin is configurable.
+     *
+     * @return a boolean
+     */
+    public boolean isConfigurable();
+
     /**
      * Callback method invoked when the plugin starts up.
      *
@@ -44,13 +93,6 @@ public interface HobsonPlugin extends BootstrapHobsonPlugin {
      * Callback method invoked when the plugin shuts down.
      */
     public void onShutdown();
-
-    /**
-     * Returns the plugin's current status.
-     *
-     * @return a PluginStatus instance
-     */
-    public PluginStatus getStatus();
 
     /**
      * Returns the topics this plugin is interested in receiving events for.
@@ -67,25 +109,18 @@ public interface HobsonPlugin extends BootstrapHobsonPlugin {
     public long getRefreshInterval();
 
     /**
+     * Sets the ActionManager instance the plugin should use. This will be called before the init() method.
+     *
+     * @param actionManager an ActionManager
+     */
+    public void setActionManager(ActionManager actionManager);
+
+    /**
      * Sets the DeviceManager instance the plugin should use. This will be called before the init() method.
      *
      * @param deviceManager a DeviceManager
      */
     public void setDeviceManager(DeviceManager deviceManager);
-
-    /**
-     * Sets the VariableManager instance the plugin should use. This will be called before the init() method.
-     *
-     * @param variableManager a VariableManager
-     */
-    public void setVariableManager(VariableManager variableManager);
-
-    /**
-     * Sets the ConfigurationManager instance the plugin should use. This will be called before the init() method.
-     *
-     * @param configManager a ConfigManager
-     */
-    public void setConfigurationManager(ConfigurationManager configManager);
 
     /**
      * Sets the DiscoManager instance the plugin should use. This will be called before the init() method.
@@ -102,18 +137,33 @@ public interface HobsonPlugin extends BootstrapHobsonPlugin {
     public void setEventManager(EventManager eventManager);
 
     /**
+     * Sets the HubManager instance the plugin should use. This will be called before the init() method.
+     *
+     * @param hubManager a HubManager
+     */
+    public void setHubManager(HubManager hubManager);
+
+    /**
+     * Sets the PluginManager instance the plugin should use. This will be called before the init() method.
+     *
+     * @param pluginManager a PluginManager
+     */
+    public void setPluginManager(PluginManager pluginManager);
+
+    /**
+     * Sets the VariableManager instance the plugin should use. This will be called before the init() method.
+     *
+     * @param variableManager a VariableManager
+     */
+    public void setVariableManager(VariableManager variableManager);
+
+    /**
      * Sets the TriggerManager instance the plugin should use. This will be called before the init() method.
      *
      * @param triggerManager a TriggerManager
      */
     public void setTriggerManager(TriggerManager triggerManager);
 
-    /**
-     * Sets the ActionManager instance the plugin should use. This will be called before the init() method.
-     *
-     * @param actionManager an ActionManager
-     */
-    public void setActionManager(ActionManager actionManager);
 
     /**
      * Execute a task using the plugin event loop.
@@ -158,7 +208,7 @@ public interface HobsonPlugin extends BootstrapHobsonPlugin {
      * @param variableName the variable name
      *
      * @return a HobsonVariable instance
-     * @throws com.whizzosoftware.hobson.api.variable.VariableNotFoundException if the variable wasn't found
+     * @throws com.whizzosoftware.hobson.api.variable.DeviceVariableNotFoundException if the variable wasn't found
      */
     public HobsonVariable getDeviceVariable(String deviceId, String variableName);
 

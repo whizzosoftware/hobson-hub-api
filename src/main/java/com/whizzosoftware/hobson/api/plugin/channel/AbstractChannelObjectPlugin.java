@@ -7,9 +7,9 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin.channel;
 
+import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.plugin.AbstractHobsonPlugin;
-import com.whizzosoftware.hobson.bootstrap.api.HobsonRuntimeException;
-import com.whizzosoftware.hobson.bootstrap.api.plugin.PluginStatus;
+import com.whizzosoftware.hobson.api.plugin.PluginStatus;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;

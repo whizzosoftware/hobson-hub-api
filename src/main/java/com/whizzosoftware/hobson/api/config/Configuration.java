@@ -7,19 +7,27 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.config;
 
-
-import com.whizzosoftware.hobson.api.HobsonRuntimeException;
+import java.util.*;
 
 /**
- * Exception for configuration errors.
+ * Encapsulates information about a configuration. This could apply to plugins, devices, etc.
  *
  * @author Dan Noguerol
  */
-public class ConfigurationException extends HobsonRuntimeException {
-    public ConfigurationException(String msg, Throwable t) {
-        super(msg, t);
+public class Configuration {
+    private List<ConfigurationProperty> properties = new ArrayList<>();
+
+    public Configuration() {}
+
+    public Configuration(Collection<ConfigurationProperty> properties) {
+        this.properties.addAll(properties);
     }
-    public ConfigurationException(String msg) {
-        super(msg);
+
+    public Collection<ConfigurationProperty> getProperties() {
+        return properties;
+    }
+
+    public Dictionary getPropertyDictionary() {
+        return new Hashtable();
     }
 }

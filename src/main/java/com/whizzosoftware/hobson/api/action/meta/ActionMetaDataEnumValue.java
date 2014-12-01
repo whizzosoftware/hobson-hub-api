@@ -8,21 +8,30 @@
 package com.whizzosoftware.hobson.api.action.meta;
 
 /**
- * Represents the valid value of an action meta enumeration. This is used when an ActionMeta is of type ENUMERATION.
+ * Represents a valid value for an action meta enumeration. This is used when an ActionMeta is of type ENUMERATION.
  *
  * For example, the "Send Command to Device" action might have enumerated values of "Turn On", "Turn Off" and
  * "Set Level". The "Turn On" and "Turn Off" values would have implicit parameters (e.g. "on" and "off" respectively).
  * The "Set Level" value, on the other hand, requires a parameter indicating what the level should be set to.
  *
  * @author Dan Noguerol
+ * @since hobson-hub-api 0.1.7
  */
-public class ActionMetaEnumValue {
+public class ActionMetaDataEnumValue {
     private String id;
     private String name;
-    private ActionMetaEnumValueParam param;
+    private ActionMetaDataEnumValueParam param;
     private String requiredDeviceVariable;
 
-    public ActionMetaEnumValue(String id, String name, ActionMetaEnumValueParam param, String requiredDeviceVariable) {
+    /**
+     * Constructor.
+     *
+     * @param id the ID of the enum value
+     * @param name the name of the enum value
+     * @param param the enum parameter
+     * @param requiredDeviceVariable the device variable that the device must have in order for this enum value to be applicable
+     */
+    public ActionMetaDataEnumValue(String id, String name, ActionMetaDataEnumValueParam param, String requiredDeviceVariable) {
         this.id = id;
         this.name = name;
         this.param = param;
@@ -37,7 +46,7 @@ public class ActionMetaEnumValue {
         return name;
     }
 
-    public ActionMetaEnumValueParam getParam() {
+    public ActionMetaDataEnumValueParam getParam() {
         return param;
     }
 

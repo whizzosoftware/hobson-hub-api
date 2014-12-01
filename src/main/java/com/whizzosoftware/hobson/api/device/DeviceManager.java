@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device;
 
+import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 
 import java.util.Collection;
@@ -26,7 +27,7 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void publishDevice(HobsonPlugin plugin, HobsonDevice device);
+    public void publishDevice(String userId, String hubId, HobsonPlugin plugin, HobsonDevice device);
 
     /**
      * Returns all published devices.
@@ -35,7 +36,7 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Collection<HobsonDevice> getAllDevices();
+    public Collection<HobsonDevice> getAllDevices(String userId, String hubId);
 
     /**
      * Returns all devices published by a particular plugin
@@ -46,7 +47,7 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Collection<HobsonDevice> getAllPluginDevices(String pluginId);
+    public Collection<HobsonDevice> getAllPluginDevices(String userId, String hubId, String pluginId);
 
     /**
      * Returns a specific device.
@@ -59,7 +60,7 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public HobsonDevice getDevice(String pluginId, String deviceId);
+    public HobsonDevice getDevice(String userId, String hubId, String pluginId, String deviceId);
 
     /**
      * Indicates whether a device has been published.
@@ -71,7 +72,28 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public boolean hasDevice(String pluginId, String deviceId);
+    public boolean hasDevice(String userId, String hubId, String pluginId, String deviceId);
+
+    /**
+     * Returns the device level configuration.
+     *
+     * @param pluginId the plugin ID that owns the device
+     * @param deviceId the device ID that owns the configuration
+     *
+     * @return a Dictionary (or null if there is no configuration)
+     */
+    public Configuration getDeviceConfiguration(String userId, String hubId, String pluginId, String deviceId);
+
+    /**
+     * Set a device level configuration property.
+     *
+     * @param pluginId the plugin ID that owns the device
+     * @param deviceId the device ID that owns the configuration property.
+     * @param name the configuration property name
+     * @param value the configuration property value
+     * @param overwrite indicates whether an existing key should be overwritten
+     */
+    public void setDeviceConfigurationProperty(String userId, String hubId, String pluginId, String deviceId, String name, Object value, boolean overwrite);
 
     /**
      * Sets the name of a specific device.
@@ -84,7 +106,7 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void setDeviceName(String pluginId, String deviceId, String name);
+    public void setDeviceName(String userId, String hubId, String pluginId, String deviceId, String name);
 
     /**
      * Stops and unpublishes a device associated with a specific plugin. This allows plugins that require it
@@ -95,7 +117,7 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void unpublishDevice(HobsonPlugin plugin, String deviceId);
+    public void unpublishDevice(String userId, String hubId, HobsonPlugin plugin, String deviceId);
 
     /**
      * Stops an unpublishes all devices associated with a specific plugin.
@@ -104,5 +126,14 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void unpublishAllDevices(HobsonPlugin plugin);
+    public void unpublishAllDevices(String userId, String hubId, HobsonPlugin plugin);
+
+    /**
+     * Allows a listener to receive a callback when a device's configuration changes.
+     *
+     * @param pluginId the plugin ID of the device
+     * @param deviceId the device ID
+     * @param listener the listener object to be called
+     */
+    public void registerForDeviceConfigurationUpdates(String userId, String hubId, String pluginId, String deviceId, DeviceConfigurationListener listener);
 }
