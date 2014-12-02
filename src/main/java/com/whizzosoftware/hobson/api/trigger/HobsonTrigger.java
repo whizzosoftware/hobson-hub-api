@@ -64,6 +64,11 @@ public interface HobsonTrigger {
      */
     public boolean isEnabled();
 
+    /**
+     * Immediately executes the trigger.
+     */
+    public void execute();
+
     public enum Type {
         EVENT,
         SCHEDULE

@@ -59,6 +59,16 @@ public interface TriggerManager {
     public HobsonTrigger getTrigger(String userId, String hubId, String providerId, String triggerId);
 
     /**
+     * Immediately executes a specific trigger.
+     *
+     * @param userId
+     * @param hubId
+     * @param providerId
+     * @param triggerId
+     */
+    public void executeTrigger(String userId, String hubId, String providerId, String triggerId);
+
+    /**
      * Adds a new trigger. This should be called by trigger providers.
      *
      * @param providerId the trigger provider ID adding the trigger
