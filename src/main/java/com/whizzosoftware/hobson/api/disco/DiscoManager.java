@@ -19,15 +19,19 @@ public interface DiscoManager extends DeviceBridgeDetectionContext {
     /**
      * Publishes a new DeviceBridgeDetector.
      *
-     * @param metaAnalyzer the analyzer to publish
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param detector the detector to publish
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void publishDeviceBridgeDetector(String userId, String hubId, DeviceBridgeDetector metaAnalyzer);
+    public void publishDeviceBridgeDetector(String userId, String hubId, DeviceBridgeDetector detector);
 
     /**
      * Unpublishes a previously published ExternalBridgeMetaAnalyzer.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param detectorId the ID of the detector to unpublish
      *
      * @since hobson-hub-api 0.1.6
@@ -36,6 +40,9 @@ public interface DiscoManager extends DeviceBridgeDetectionContext {
 
     /**
      * Returns a list of all discovered device bridges.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      *
      * @return a Collection of DeviceBridge instances
      *
@@ -47,9 +54,11 @@ public interface DiscoManager extends DeviceBridgeDetectionContext {
      * Processes a DevceBridgeMetaData object. This will give all registered DeviceBridgeDetectors an
      * opportunity to attempt to identify the meta information.
      *
-     * @param meta the object to process
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param metaData the object to process
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void processDeviceBridgeMetaData(String userId, String hubId, DeviceBridgeMetaData meta);
+    public void processDeviceBridgeMetaData(String userId, String hubId, DeviceBridgeMetaData metaData);
 }

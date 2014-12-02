@@ -23,6 +23,8 @@ public interface VariableManager {
     /**
      * Publish a new global variable.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID publishing the variable
      * @param var the variable object
      *
@@ -32,6 +34,9 @@ public interface VariableManager {
 
     /**
      * Returns a collection of all published global variables.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      *
      * @return a Collection of HobsonVariable instances
      *
@@ -54,6 +59,8 @@ public interface VariableManager {
     /**
      * Unpublishes a global variable.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID that published the variable
      * @param name the variable name
      *
@@ -64,6 +71,8 @@ public interface VariableManager {
     /**
      * Publish a new device variable.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID of the device publishing the variable
      * @param deviceId the device ID publishing the variable
      * @param var the variable object
@@ -75,6 +84,8 @@ public interface VariableManager {
     /**
      * Unpublishes a device variable.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID of the device that published the variable
      * @param deviceId the device ID that published the variable
      * @param name the variable name
@@ -86,6 +97,8 @@ public interface VariableManager {
     /**
      * Unpublishes all variables published by a device.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID of the device that published the variables
      * @param deviceId the device ID that published the variables
      *
@@ -96,6 +109,8 @@ public interface VariableManager {
     /**
      * Unpublishes all variables published by a plugin's devices.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID
      *
      * @since hobson-hub-api 0.1.6
@@ -105,6 +120,8 @@ public interface VariableManager {
     /**
      * Returns all published variables for a device.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID of the device
      * @param deviceId the device ID that published the variables
      *
@@ -117,6 +134,8 @@ public interface VariableManager {
     /**
      * Returns a specific published variable for a device.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID of the device that published the variable
      * @param deviceId the device ID that published the variable
      * @param name the variable name
@@ -131,6 +150,8 @@ public interface VariableManager {
     /**
      * Indicates whether a device variable has been published.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID of the device that published the variable
      * @param deviceId the device ID that published the variable
      * @param name the variable name
@@ -144,6 +165,8 @@ public interface VariableManager {
     /**
      * Sets a specific device variable.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID of the device that published the variable
      * @param deviceId the device ID that published the variable
      * @param name the variable name
@@ -159,6 +182,8 @@ public interface VariableManager {
     /**
      * Updates a variable and publishes an update notification.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param plugin the plugin firing the update
      * @param update the VariableUpdate
      *
@@ -169,6 +194,8 @@ public interface VariableManager {
     /**
      * Updates variables and publishes an update notification.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param plugin the plugin firing the update
      * @param updates the VariableUpdate
      *

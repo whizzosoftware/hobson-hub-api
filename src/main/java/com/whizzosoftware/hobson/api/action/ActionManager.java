@@ -40,6 +40,9 @@ public interface ActionManager {
     /**
      * Retrieves all published actions.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     *
      * @return a Collection of HobsonAction instances
      *
      * @since hobson-hub-api 0.1.6
@@ -49,6 +52,8 @@ public interface ActionManager {
     /**
      * Retrieve a published action.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID that published the action
      * @param actionId the action ID
      *

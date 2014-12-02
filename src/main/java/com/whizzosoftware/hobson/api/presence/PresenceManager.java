@@ -19,6 +19,9 @@ public interface PresenceManager {
     /**
      * Returns a summary of all presence entities.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     *
      * @return a Collection of PresenceEntity objects
      */
     public Collection<PresenceEntity> getAllEntities(String userId, String hubId);
@@ -26,6 +29,8 @@ public interface PresenceManager {
     /**
      * Returns details of a presence entity.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param entityId the ID of the entity
      *
      * @return a PresenceEntity object
@@ -35,6 +40,8 @@ public interface PresenceManager {
     /**
      * Adds a new presence entity.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param entity the entity to add
      *
      * @return the ID of the newly created entity
@@ -44,6 +51,8 @@ public interface PresenceManager {
     /**
      * Sends an update event for a presence entity.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param entityId the ID of the entity
      * @param name the name of the entity (or null if unchanged)
      * @param location the location of the entity (or null if unknown)

@@ -19,6 +19,8 @@ public interface TriggerManager {
     /**
      * Publishes a new TriggerProvider instance to the runtime.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param provider the trigger provider to publish
      *
      * @since hobson-hub-api 0.1.6
@@ -28,6 +30,8 @@ public interface TriggerManager {
     /**
      * Indicates whether a trigger provider has been published.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID of the trigger provider
      * @param providerId the trigger provider ID
      *
@@ -40,6 +44,9 @@ public interface TriggerManager {
     /**
      * Returns all triggers that have been published by all trigger providers.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     *
      * @return a Collection of HobsonTrigger objects
      *
      * @since hobson-hub-api 0.1.6
@@ -49,6 +56,8 @@ public interface TriggerManager {
     /**
      * Returns a specific trigger.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param providerId the provider ID
      * @param triggerId the trigger ID
      *
@@ -61,16 +70,18 @@ public interface TriggerManager {
     /**
      * Immediately executes a specific trigger.
      *
-     * @param userId
-     * @param hubId
-     * @param providerId
-     * @param triggerId
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param providerId the trigger provider ID
+     * @param triggerId the trigger ID
      */
     public void executeTrigger(String userId, String hubId, String providerId, String triggerId);
 
     /**
      * Adds a new trigger. This should be called by trigger providers.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param providerId the trigger provider ID adding the trigger
      * @param trigger the trigger to add
      *
@@ -81,6 +92,8 @@ public interface TriggerManager {
     /**
      * Deletes a previously added trigger.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param providerId the trigger provider ID that added the trigger
      * @param triggerId the trigger ID
      *

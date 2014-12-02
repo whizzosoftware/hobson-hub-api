@@ -9,6 +9,8 @@ public interface PluginManager {
     /**
      * Retrieve a list of all plugins.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param includeRemoteInfo indicates whether online Hobson plugin directory information should be included
      *
      * @return a PluginList
@@ -18,6 +20,8 @@ public interface PluginManager {
     /**
      * Retrieves a specific plugin.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID
      *
      * @return a HobsonPlugin instance (or null if not found)
@@ -27,6 +31,8 @@ public interface PluginManager {
     /**
      * Returns the plugin level configuration.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID
      *
      * @return a Dictionary (or null if there is no configuration)
@@ -36,6 +42,8 @@ public interface PluginManager {
     /**
      * Returns the plugin level configuration.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param plugin the plugin
      *
      * @return a Dictionary (or null if there is no configuration)
@@ -45,6 +53,9 @@ public interface PluginManager {
     /**
      * Sets the plugin level configuration.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param pluginId the plugin ID
      * @param config the plugin configuration
      */
     public void setPluginConfiguration(String userId, String hubId, String pluginId, Configuration config);
@@ -52,6 +63,8 @@ public interface PluginManager {
     /**
      * Sets an individual plugin level configuration property.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID
      * @param name the configuration property name
      * @param value the configuration property value
@@ -61,6 +74,8 @@ public interface PluginManager {
     /**
      * Returns the current local version of a plugin.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID
      *
      * @return the current version in x.x.x format
@@ -70,6 +85,8 @@ public interface PluginManager {
     /**
      * Reloads the specified plugin.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID to reload
      */
     public void reloadPlugin(String userId, String hubId, String pluginId);
@@ -77,10 +94,10 @@ public interface PluginManager {
     /**
      * Installs a specific version of a plugin.
      *
-     * @param userId
-     * @param hubId
-     * @param pluginId
-     * @param pluginVersion
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param pluginId the plugin ID to install
+     * @param pluginVersion the plugin version to install
      */
     public void installPlugin(String userId, String hubId, String pluginId, String pluginVersion);
 

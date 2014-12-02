@@ -38,6 +38,8 @@ public interface EventManager {
     /**
      * Sends a system event.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param event the event to send
      *
      * @since hobson-hub-api 0.1.6

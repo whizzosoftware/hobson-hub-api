@@ -22,6 +22,8 @@ public interface DeviceManager {
     /**
      * Publishes a device to the device registry and starts it.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param plugin the HobsonPlugin instance performing the action
      * @param device the HobsonDevice to publish
      *
@@ -32,6 +34,9 @@ public interface DeviceManager {
     /**
      * Returns all published devices.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     *
      * @return a Collection of HobsonDevice instances
      *
      * @since hobson-hub-api 0.1.6
@@ -41,6 +46,8 @@ public interface DeviceManager {
     /**
      * Returns all devices published by a particular plugin
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID
      *
      * @return a Collection of HobsonDevice instances
@@ -52,6 +59,8 @@ public interface DeviceManager {
     /**
      * Returns a specific device.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID associated with the device
      * @param deviceId the device ID
      *
@@ -65,6 +74,8 @@ public interface DeviceManager {
     /**
      * Indicates whether a device has been published.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID associated with the device
      * @param deviceId the device ID
      *
@@ -77,6 +88,8 @@ public interface DeviceManager {
     /**
      * Returns the device level configuration.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID that owns the device
      * @param deviceId the device ID that owns the configuration
      *
@@ -87,6 +100,8 @@ public interface DeviceManager {
     /**
      * Set a device level configuration property.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID that owns the device
      * @param deviceId the device ID that owns the configuration property.
      * @param name the configuration property name
@@ -98,6 +113,8 @@ public interface DeviceManager {
     /**
      * Sets the name of a specific device.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID associated with the device
      * @param deviceId the device ID
      * @param name the new name of the device
@@ -112,6 +129,8 @@ public interface DeviceManager {
      * Stops and unpublishes a device associated with a specific plugin. This allows plugins that require it
      * (e.g. the RadioRA plugin) to unpublish individual devices.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param plugin the HobsonPlugin instance performing the action
      * @param deviceId the device ID
      *
@@ -122,6 +141,8 @@ public interface DeviceManager {
     /**
      * Stops an unpublishes all devices associated with a specific plugin.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param plugin the HobsonPlugin instance performing the action
      *
      * @since hobson-hub-api 0.1.6
@@ -131,6 +152,8 @@ public interface DeviceManager {
     /**
      * Allows a listener to receive a callback when a device's configuration changes.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID of the device
      * @param deviceId the device ID
      * @param listener the listener object to be called
