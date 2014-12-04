@@ -132,6 +132,18 @@ public interface VariableManager {
     public Collection<HobsonVariable> getDeviceVariables(String userId, String hubId, String pluginId, String deviceId);
 
     /**
+     * Returns all the variable change IDs that can be produced by a device.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param pluginId the plugin ID of the device
+     * @param deviceId the device ID
+     *
+     * @return a Collection of variable change IDs
+     */
+    public Collection<String> getDeviceVariableChangeIds(String userId, String hubId, String pluginId, String deviceId);
+
+    /**
      * Returns a specific published variable for a device.
      *
      * @param userId the user ID that owns the hub

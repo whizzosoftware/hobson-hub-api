@@ -64,6 +64,11 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
+    public Collection<String> getDeviceVariableChangeIds(String userId, String hubId, String pluginId, String deviceId) {
+        return null;
+    }
+
+    @Override
     public HobsonVariable getDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name) {
         return publishedVariables.get(pluginId + "." + deviceId);
     }
