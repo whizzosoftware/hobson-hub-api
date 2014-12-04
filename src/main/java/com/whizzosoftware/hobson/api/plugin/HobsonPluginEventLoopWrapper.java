@@ -17,8 +17,8 @@ import com.whizzosoftware.hobson.api.event.*;
 import com.whizzosoftware.hobson.api.event.EventListener;
 import com.whizzosoftware.hobson.api.event.EventManager;
 import com.whizzosoftware.hobson.api.hub.HubManager;
-import com.whizzosoftware.hobson.api.trigger.TriggerProvider;
-import com.whizzosoftware.hobson.api.trigger.TriggerManager;
+import com.whizzosoftware.hobson.api.task.TaskProvider;
+import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.util.UserUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
@@ -47,7 +47,7 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
     private volatile EventManager eventManager;
     private volatile HubManager hubManager;
     private volatile PluginManager pluginManager;
-    private volatile TriggerManager triggerManager;
+    private volatile TaskManager taskManager;
     private volatile VariableManager variableManager;
 
     private HobsonPlugin plugin;
@@ -94,7 +94,7 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
         setEventManager(eventManager);
         setHubManager(hubManager);
         setPluginManager(pluginManager);
-        setTriggerManager(triggerManager);
+        setTaskManager(taskManager);
         setVariableManager(variableManager);
 
         // start the event loop
@@ -278,8 +278,8 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
     }
 
     @Override
-    public void setTriggerManager(TriggerManager triggerManager) {
-        plugin.setTriggerManager(triggerManager);
+    public void setTaskManager(TaskManager taskManager) {
+        plugin.setTaskManager(taskManager);
     }
 
     @Override
@@ -318,8 +318,8 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
     }
 
     @Override
-    public void publishTriggerProvider(TriggerProvider triggerProvider) {
-        plugin.publishTriggerProvider(triggerProvider);
+    public void publishTaskProvider(TaskProvider taskProvider) {
+        plugin.publishTaskProvider(taskProvider);
     }
 
     @Override

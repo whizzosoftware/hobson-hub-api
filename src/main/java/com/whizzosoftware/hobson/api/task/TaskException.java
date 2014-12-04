@@ -5,19 +5,19 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.trigger;
+package com.whizzosoftware.hobson.api.task;
 
 /**
- * Generic trigger exception.
+ * Generic task exception.
  *
  * @author Dan Noguerol
  */
-public class TriggerException extends RuntimeException {
-    public TriggerException(String msg) {
+public class TaskException extends RuntimeException {
+    public TaskException(String msg) {
         super(msg);
     }
 
-    public TriggerException(String msg, Throwable t) {
+    public TaskException(String msg, Throwable t) {
         super(msg, t);
     }
 }

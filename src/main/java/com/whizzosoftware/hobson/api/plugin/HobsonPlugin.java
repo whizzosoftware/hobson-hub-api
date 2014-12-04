@@ -15,8 +15,8 @@ import com.whizzosoftware.hobson.api.disco.DiscoManager;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.event.EventManager;
 import com.whizzosoftware.hobson.api.hub.HubManager;
-import com.whizzosoftware.hobson.api.trigger.TriggerProvider;
-import com.whizzosoftware.hobson.api.trigger.TriggerManager;
+import com.whizzosoftware.hobson.api.task.TaskProvider;
+import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.VariableManager;
@@ -158,11 +158,11 @@ public interface HobsonPlugin {
     public void setVariableManager(VariableManager variableManager);
 
     /**
-     * Sets the TriggerManager instance the plugin should use. This will be called before the init() method.
+     * Sets the TaskManager instance the plugin should use. This will be called before the init() method.
      *
-     * @param triggerManager a TriggerManager
+     * @param taskManager a TaskManager
      */
-    public void setTriggerManager(TriggerManager triggerManager);
+    public void setTaskManager(TaskManager taskManager);
 
 
     /**
@@ -228,11 +228,11 @@ public interface HobsonPlugin {
     public void publishDeviceVariable(String deviceId, HobsonVariable variable);
 
     /**
-     * Publish a trigger provider.
+     * Publish a task provider.
      *
-     * @param triggerProvider the trigger provider object
+     * @param taskProvider the task provider object
      */
-    public void publishTriggerProvider(TriggerProvider triggerProvider);
+    public void publishTaskProvider(TaskProvider taskProvider);
 
     /**
      * Publish an action.

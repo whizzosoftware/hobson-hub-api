@@ -50,7 +50,7 @@ public class VariableChangeIdHelper {
      *
      * @return a Map of variable name to variable value
      */
-    static Map<String,Object> getVariableChangeForId(String changeId) {
+    static public Map<String,Object> getVariableForChangeId(String changeId) {
         Map<String,Object> result = new HashMap<>();
         switch (changeId) {
             case TURN_ON:

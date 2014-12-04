@@ -19,8 +19,8 @@ import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.event.VariableUpdateRequestEvent;
 import com.whizzosoftware.hobson.api.event.EventManager;
 import com.whizzosoftware.hobson.api.hub.HubManager;
-import com.whizzosoftware.hobson.api.trigger.TriggerProvider;
-import com.whizzosoftware.hobson.api.trigger.TriggerManager;
+import com.whizzosoftware.hobson.api.task.TaskProvider;
+import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.util.UserUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
@@ -50,7 +50,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     private HubManager hubManager;
     private PluginManager pluginManager;
     private VariableManager variableManager;
-    private TriggerManager triggerManager;
+    private TaskManager taskManager;
     private String pluginId;
     private String version;
     private PluginStatus status = new PluginStatus(PluginStatus.Status.INITIALIZING);
@@ -141,8 +141,8 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     }
 
     @Override
-    public void setTriggerManager(TriggerManager triggerManager) {
-        this.triggerManager = triggerManager;
+    public void setTaskManager(TaskManager taskManager) {
+        this.taskManager = taskManager;
     }
 
     @Override
@@ -190,10 +190,10 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     }
 
     @Override
-    public void publishTriggerProvider(TriggerProvider triggerProvider) {
-        validateTriggerManager();
-        triggerProvider.setActionManager(actionManager);
-        triggerManager.publishTriggerProvider(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, triggerProvider);
+    public void publishTaskProvider(TaskProvider taskProvider) {
+        validateTaskManager();
+        taskProvider.setActionManager(actionManager);
+        taskManager.publishTaskProvider(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, taskProvider);
     }
 
     @Override
@@ -381,9 +381,9 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
         }
     }
 
-    private void validateTriggerManager() {
-        if (triggerManager == null) {
-            throw new HobsonRuntimeException("No trigger manager has been set");
+    private void validateTaskManager() {
+        if (taskManager == null) {
+            throw new HobsonRuntimeException("No task manager has been set");
         }
     }
 
