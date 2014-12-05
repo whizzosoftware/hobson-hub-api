@@ -8,22 +8,17 @@
 package com.whizzosoftware.hobson.api.disco;
 
 /**
- * An interface passed to DeviceBridgeDetector objects to allow them to add or remove DeviceBridges.
+ * A DeviceAdvertisementListener receives DeviceAdvertisements for a particular protocol via a callback. This enables
+ * them to analyze advertisements, check for devices they know how to interact with and publish them as Hobson devices
+ * if appropriate.
  *
  * @author Dan Noguerol
  */
-public interface DeviceBridgeDetectionContext {
+public interface DeviceAdvertisementListener {
     /**
-     * Adds a newly identified DeviceBridge instance.
+     * Callback made when a device advertisement of possible interest is detected.
      *
-     * @param bridge the bridge instance to add
+     * @param advertisement the advertisement
      */
-    public void addDeviceBridge(DeviceBridge bridge);
-
-    /**
-     * Removes a previously added DeviceBridge instance.
-     *
-     * @param bridgeId the ID of the bridge to remove
-     */
-    public void removeDeviceBridge(String bridgeId);
+    public void onDeviceAdvertisement(DeviceAdvertisement advertisement);
 }

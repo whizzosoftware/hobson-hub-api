@@ -11,7 +11,7 @@ import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.device.MockAbstractHobsonDevice;
 import com.whizzosoftware.hobson.api.device.MockDeviceManager;
-import com.whizzosoftware.hobson.api.disco.MockDeviceBridgeDetector;
+import com.whizzosoftware.hobson.api.disco.MockDeviceAdvertisementListener;
 import com.whizzosoftware.hobson.api.event.VariableUpdateRequestEvent;
 import com.whizzosoftware.hobson.api.util.UserUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
@@ -236,10 +236,10 @@ public class AbstractHobsonPluginTest {
     }
 
     @Test
-    public void testPublishExternalBridgeMetaAnalyzerWithNoDiscoManager() {
+    public void testPublishDeviceAdvertisementListenerWithNoDiscoManager() {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("pid", "name");
-            plugin.publishDeviceBridgeDetector(new MockDeviceBridgeDetector("pid", "id"));
+            plugin.publishDeviceAdvertisementListener("protocol", new MockDeviceAdvertisementListener());
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {}
     }

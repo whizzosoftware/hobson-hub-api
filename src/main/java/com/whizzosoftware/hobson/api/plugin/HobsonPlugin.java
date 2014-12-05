@@ -25,6 +25,7 @@ import io.netty.util.concurrent.Future;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -137,6 +138,13 @@ public interface HobsonPlugin {
     public void setEventManager(EventManager eventManager);
 
     /**
+     * Sets the ExecutorService the plugin should use. This will be called before the init() methods.
+     *
+     * @param executorService an ExecutorService
+     */
+    public void setExecutorService(ExecutorService executorService);
+
+    /**
      * Sets the HubManager instance the plugin should use. This will be called before the init() method.
      *
      * @param hubManager a HubManager
@@ -163,7 +171,6 @@ public interface HobsonPlugin {
      * @param taskManager a TaskManager
      */
     public void setTaskManager(TaskManager taskManager);
-
 
     /**
      * Execute a task using the plugin event loop.

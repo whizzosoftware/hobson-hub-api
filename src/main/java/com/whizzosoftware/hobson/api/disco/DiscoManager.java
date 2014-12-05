@@ -7,58 +7,43 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.disco;
 
-import java.util.Collection;
-
 /**
- * A manager interface for device bridge discovery.
+ * A manager interface for managing device advertisement listeners.
  *
  * @author Dan Noguerol
  * @since hobson-hub-api 0.1.6
  */
-public interface DiscoManager extends DeviceBridgeDetectionContext {
+public interface DiscoManager {
     /**
-     * Publishes a new DeviceBridgeDetector.
+     * Publishes a new DeviceAdvertisementListener.
      *
      * @param userId the user ID that owns the hub
      * @param hubId the hub ID
-     * @param detector the detector to publish
+     * @param protocolId the protocol that the listener is interested in receiving advertisements for
+     * @param listener the listener to publish
      *
-     * @since hobson-hub-api 0.1.6
+     * @since hobson-hub-api 0.1.8
      */
-    public void publishDeviceBridgeDetector(String userId, String hubId, DeviceBridgeDetector detector);
+    public void publishDeviceAdvertisementListener(String userId, String hubId, String protocolId, DeviceAdvertisementListener listener);
 
     /**
-     * Unpublishes a previously published ExternalBridgeMetaAnalyzer.
+     * Unpublishes a previously published DeviceAdvertisementListener.
      *
      * @param userId the user ID that owns the hub
      * @param hubId the hub ID
-     * @param detectorId the ID of the detector to unpublish
+     * @param listener the listener to remove
      *
-     * @since hobson-hub-api 0.1.6
+     * @since hobson-hub-api 0.1.8
      */
-    public void unpublishDeviceBridgeDetector(String userId, String hubId, String detectorId);
+    public void unpublishDeviceAdvertisementListener(String userId, String hubId, DeviceAdvertisementListener listener);
 
     /**
-     * Returns a list of all discovered device bridges.
+     * Fires a DeviceAdvertisement. This should perform callbacks for any registered DeviceAdvertisementListeners
+     * that are available for the advertisement's protocol.
      *
      * @param userId the user ID that owns the hub
      * @param hubId the hub ID
-     *
-     * @return a Collection of DeviceBridge instances
-     *
-     * @since hobson-hub-api 0.1.6
+     * @param advertisement the advertisement to publish
      */
-    public Collection<DeviceBridge> getDeviceBridges(String userId, String hubId);
-
-    /**
-     * Processes a DevceBridgeMetaData object. This will give all registered DeviceBridgeDetectors an
-     * opportunity to attempt to identify the meta information.
-     *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param metaData the object to process
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    public void processDeviceBridgeMetaData(String userId, String hubId, DeviceBridgeMetaData metaData);
+    public void fireDeviceAdvertisement(String userId, String hubId, DeviceAdvertisement advertisement);
 }

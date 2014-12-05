@@ -25,7 +25,7 @@ abstract public class AbstractHobsonAction implements HobsonAction {
     private String id;
     private String name;
     private VariableManager variableManager;
-    private List<ActionMetaData> metaList = new ArrayList<ActionMetaData>();
+    private List<ActionMetaData> metaList = new ArrayList<>();
 
     /**
      * Constructor.

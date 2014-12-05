@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -45,6 +46,7 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
     private volatile DeviceManager deviceManager;
     private volatile DiscoManager discoManager;
     private volatile EventManager eventManager;
+    private volatile ExecutorService executorService;
     private volatile HubManager hubManager;
     private volatile PluginManager pluginManager;
     private volatile TaskManager taskManager;
@@ -92,6 +94,7 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
         setDeviceManager(deviceManager);
         setDiscoManager(discoManager);
         setEventManager(eventManager);
+        setExecutorService(executorService);
         setHubManager(hubManager);
         setPluginManager(pluginManager);
         setTaskManager(taskManager);
@@ -265,6 +268,11 @@ public class HobsonPluginEventLoopWrapper implements HobsonPlugin, PluginConfigu
     @Override
     public void setEventManager(EventManager eventManager) {
         plugin.setEventManager(eventManager);
+    }
+
+    @Override
+    public void setExecutorService(ExecutorService executorService) {
+        plugin.setExecutorService(executorService);
     }
 
     @Override

@@ -7,27 +7,9 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.disco;
 
-public class MockDeviceBridgeDetector implements DeviceBridgeDetector {
-    private String pluginId;
-    private String id;
-
-    public MockDeviceBridgeDetector(String pluginId, String id) {
-        this.pluginId = pluginId;
-        this.id = id;
-    }
-
+public class MockDeviceAdvertisementListener implements DeviceAdvertisementListener {
     @Override
-    public String getPluginId() {
-        return pluginId;
-    }
+    public void onDeviceAdvertisement(DeviceAdvertisement advertisement) {
 
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public boolean identify(DeviceBridgeDetectionContext context, DeviceBridgeMetaData meta) {
-        return false;
     }
 }

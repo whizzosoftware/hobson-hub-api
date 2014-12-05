@@ -13,7 +13,8 @@ import com.whizzosoftware.hobson.api.action.ActionManager;
 import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.device.HobsonDevice;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
-import com.whizzosoftware.hobson.api.disco.DeviceBridgeDetector;
+import com.whizzosoftware.hobson.api.disco.DeviceAdvertisement;
+import com.whizzosoftware.hobson.api.disco.DeviceAdvertisementListener;
 import com.whizzosoftware.hobson.api.disco.DiscoManager;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.event.VariableUpdateRequestEvent;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -47,6 +49,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     private DeviceManager deviceManager;
     private DiscoManager discoManager;
     private EventManager eventManager;
+    private ExecutorService executorService;
     private HubManager hubManager;
     private PluginManager pluginManager;
     private VariableManager variableManager;
@@ -128,6 +131,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     @Override
     public void setEventManager(EventManager eventManager) {
         this.eventManager = eventManager;
+    }
+
+    @Override
+    public void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService;
     }
 
     @Override
@@ -283,13 +291,25 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     }
 
     /**
-     * Publishes a new DeviceBridgeDetector.
+     * Publishes a new DeviceAdvertisementListener that will receive DeviceAdvertisement objects for a particular
+     * protocol.
      *
-     * @param detector the detector to publish
+     * @param protocolId the protocol for which advertisements are desired
+     * @param listener the listener to publish
      */
-    protected void publishDeviceBridgeDetector(DeviceBridgeDetector detector) {
+    protected void publishDeviceAdvertisementListener(String protocolId, DeviceAdvertisementListener listener) {
         validateDiscoManager();
-        discoManager.publishDeviceBridgeDetector(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, detector);
+        discoManager.publishDeviceAdvertisementListener(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, protocolId, listener);
+    }
+
+    /**
+     * Publishes a new DeviceAdvertisement.
+     *
+     * @param advertisement the advertisement to publish
+     */
+    protected void fireDeviceAdvertisement(DeviceAdvertisement advertisement) {
+        validateDiscoManager();
+        discoManager.fireDeviceAdvertisement(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, advertisement);
     }
 
     /**

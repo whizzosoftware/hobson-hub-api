@@ -17,4 +17,5 @@ public class EventTopics {
     public static final String PLUGINS_TOPIC = "com/whizzosoftware/hobson/event/plugins";
     public static final String VARIABLES_TOPIC = "com/whizzosoftware/hobson/event/variables";
     public static final String PRESENCE_TOPIC = "com/whizzosoftware/hobson/event/presence";
+    public static final String DISCO_TOPIC = "com/whizzosoftware/hobson/event/disco";
 }

@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Dan Noguerol
  */
 public class DeviceStoppedEvent extends HobsonEvent {
-    public static final String ID = "deviceRemoved";
+    public static final String ID = "deviceStopped";
     public static final String PROP_DEVICE = "device";
 
     public DeviceStoppedEvent(HobsonDevice device) {
