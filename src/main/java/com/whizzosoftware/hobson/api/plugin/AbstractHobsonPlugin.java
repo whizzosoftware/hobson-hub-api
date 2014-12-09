@@ -14,11 +14,8 @@ import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.device.HobsonDevice;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
 import com.whizzosoftware.hobson.api.disco.DeviceAdvertisement;
-import com.whizzosoftware.hobson.api.disco.DeviceAdvertisementListener;
 import com.whizzosoftware.hobson.api.disco.DiscoManager;
-import com.whizzosoftware.hobson.api.event.HobsonEvent;
-import com.whizzosoftware.hobson.api.event.VariableUpdateRequestEvent;
-import com.whizzosoftware.hobson.api.event.EventManager;
+import com.whizzosoftware.hobson.api.event.*;
 import com.whizzosoftware.hobson.api.hub.HubManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.task.TaskManager;
@@ -35,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -49,7 +45,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     private DeviceManager deviceManager;
     private DiscoManager discoManager;
     private EventManager eventManager;
-    private ExecutorService executorService;
     private HubManager hubManager;
     private PluginManager pluginManager;
     private VariableManager variableManager;
@@ -131,11 +126,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     @Override
     public void setEventManager(EventManager eventManager) {
         this.eventManager = eventManager;
-    }
-
-    @Override
-    public void setExecutorService(ExecutorService executorService) {
-        this.executorService = executorService;
     }
 
     @Override
@@ -251,10 +241,22 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
         this.version = version;
     }
 
+    /**
+     * Add configuration property metadata for this plugin.
+     *
+     * @param metaData the metadata to add
+     */
     protected void addConfigurationPropertyMetaData(ConfigurationPropertyMetaData metaData) {
         configMetaData.add(metaData);
     }
 
+    /**
+     * Returns a File located in the plugin's directory sandbox.
+     *
+     * @param filename the filename
+     *
+     * @return a File instance
+     */
     protected File getDataFile(String filename) {
         return pluginManager.getDataFile(getId(), filename);
     }
@@ -291,15 +293,20 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     }
 
     /**
-     * Publishes a new DeviceAdvertisementListener that will receive DeviceAdvertisement objects for a particular
-     * protocol.
+     * Requests all currently known device advertisements. This is an asynchronous call that will be serviced
+     * as multiple DeviceAdvertisementEvent events to the plugin's onHobsonEvent() callback.
      *
-     * @param protocolId the protocol for which advertisements are desired
-     * @param listener the listener to publish
+     * @param protocolId the protocol ID for the advertisements requested
      */
-    protected void publishDeviceAdvertisementListener(String protocolId, DeviceAdvertisementListener listener) {
+    protected void requestDeviceAdvertisementSnapshot(final String protocolId) {
         validateDiscoManager();
-        discoManager.publishDeviceAdvertisementListener(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, protocolId, listener);
+        // this is called in the plugin event loop so that it can safely be invoked in the onStartup() method
+        executeInEventLoop(new Runnable() {
+            @Override
+            public void run() {
+            discoManager.requestDeviceAdvertisementSnapshot(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), protocolId);
+            }
+        });
     }
 
     /**

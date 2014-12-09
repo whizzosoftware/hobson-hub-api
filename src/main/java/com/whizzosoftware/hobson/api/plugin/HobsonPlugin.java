@@ -11,8 +11,9 @@ import com.whizzosoftware.hobson.api.action.HobsonAction;
 import com.whizzosoftware.hobson.api.action.ActionManager;
 import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
+import com.whizzosoftware.hobson.api.disco.DeviceAdvertisement;
 import com.whizzosoftware.hobson.api.disco.DiscoManager;
-import com.whizzosoftware.hobson.api.event.HobsonEvent;
+import com.whizzosoftware.hobson.api.event.EventListener;
 import com.whizzosoftware.hobson.api.event.EventManager;
 import com.whizzosoftware.hobson.api.hub.HubManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
@@ -33,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Dan Noguerol
  */
-public interface HobsonPlugin {
+public interface HobsonPlugin extends EventListener {
     /**
      * Returns the plugin ID.
      *
@@ -138,13 +139,6 @@ public interface HobsonPlugin {
     public void setEventManager(EventManager eventManager);
 
     /**
-     * Sets the ExecutorService the plugin should use. This will be called before the init() methods.
-     *
-     * @param executorService an ExecutorService
-     */
-    public void setExecutorService(ExecutorService executorService);
-
-    /**
      * Sets the HubManager instance the plugin should use. This will be called before the init() method.
      *
      * @param hubManager a HubManager
@@ -173,14 +167,16 @@ public interface HobsonPlugin {
     public void setTaskManager(TaskManager taskManager);
 
     /**
-     * Execute a task using the plugin event loop.
+     * Execute a task using the plugin event loop. Note that this will tie up the event loop while the task is being
+     * executed so this should not be used for long running tasks.
      *
      * @param runnable a task to execute
      */
     public void executeInEventLoop(Runnable runnable);
 
     /**
-     * Execute a task using the plugin event loop.
+     * Execute a task using the plugin event loop. Note that this will tie up the event loop while the task is being
+     * executed so this should not be used for long running tasks.
      *
      * @param runnable a task to execute
      *
@@ -282,13 +278,6 @@ public interface HobsonPlugin {
      * @param config the new configuration
      */
     public void onDeviceConfigurationUpdate(String deviceId, Dictionary config);
-
-    /**
-     * Callback when a Hobson event is received.
-     *
-     * @param event the event
-     */
-    public void onHobsonEvent(HobsonEvent event);
 
     /**
      * Callback when a request to set a device variable has been received.

@@ -15,27 +15,15 @@ package com.whizzosoftware.hobson.api.disco;
  */
 public interface DiscoManager {
     /**
-     * Publishes a new DeviceAdvertisementListener.
+     * Allows a plugin to request all known device advertisements. This is an asynchronous call that will be serviced
+     * as multiple DeviceAdvertisementEvent events to the plugin's onHobsonEvent() callback.
      *
      * @param userId the user ID that owns the hub
      * @param hubId the hub ID
-     * @param protocolId the protocol that the listener is interested in receiving advertisements for
-     * @param listener the listener to publish
-     *
-     * @since hobson-hub-api 0.1.8
+     * @param pluginId the ID of the plugin requesting the snapshot
+     * @param protocolId the protocol ID for the advertisements requested
      */
-    public void publishDeviceAdvertisementListener(String userId, String hubId, String protocolId, DeviceAdvertisementListener listener);
-
-    /**
-     * Unpublishes a previously published DeviceAdvertisementListener.
-     *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param listener the listener to remove
-     *
-     * @since hobson-hub-api 0.1.8
-     */
-    public void unpublishDeviceAdvertisementListener(String userId, String hubId, DeviceAdvertisementListener listener);
+    public void requestDeviceAdvertisementSnapshot(String userId, String hubId, String pluginId, String protocolId);
 
     /**
      * Fires a DeviceAdvertisement. This should perform callbacks for any registered DeviceAdvertisementListeners

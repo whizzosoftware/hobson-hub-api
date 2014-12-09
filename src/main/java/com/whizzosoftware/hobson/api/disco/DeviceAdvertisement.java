@@ -8,19 +8,27 @@
 package com.whizzosoftware.hobson.api.disco;
 
 /**
- * A DeviceAdvertisement is a message that devices broadcast to indicate their availability (or lack thereof). This
- * class treats the advertisement payload as a raw string. Generally, these objects will be consumed by
- * DeviceAdvertisementListener objects to determine if the advertised device is something they care about.
+ * A DeviceAdvertisement is a message that devices broadcast to indicate their availability (or lack thereof).
+ * Generally, these objects will be consumed by plugins to determine if the advertised device is something they care
+ * about.
  *
  * @author Dan Noguerol
  */
 public class DeviceAdvertisement {
+    private String id;
     private String protocolId;
-    private String data;
+    private String rawData;
+    private Object object;
 
-    public DeviceAdvertisement(String protocolId, String data) {
+    public DeviceAdvertisement(String id, String protocolId, String rawData) {
+        this.id = id;
         this.protocolId = protocolId;
-        this.data = data;
+        this.rawData = rawData;
+    }
+
+    public DeviceAdvertisement(String id, String protocolId, String rawData, Object object) {
+        this(id, protocolId, rawData);
+        this.object = object;
     }
 
     /**
@@ -33,11 +41,30 @@ public class DeviceAdvertisement {
     }
 
     /**
+     * Returns a unique identifier for this device advertisement.
+     *
+     * @return an ID
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Returns an object representation of the advertisement. It will fall upon consumers to cast to the correct
+     * class based on the protocol ID.
+     *
+     * @return an object
+     */
+    public Object getObject() {
+        return object;
+    }
+
+    /**
      * Returns the raw data of the advertisement.
      *
      * @return the raw data as a String
      */
-    public String getData() {
-        return data;
+    public String getRawData() {
+        return rawData;
     }
 }

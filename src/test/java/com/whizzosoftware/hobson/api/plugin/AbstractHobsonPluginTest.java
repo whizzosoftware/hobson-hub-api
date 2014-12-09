@@ -11,7 +11,6 @@ import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.device.MockAbstractHobsonDevice;
 import com.whizzosoftware.hobson.api.device.MockDeviceManager;
-import com.whizzosoftware.hobson.api.disco.MockDeviceAdvertisementListener;
 import com.whizzosoftware.hobson.api.event.VariableUpdateRequestEvent;
 import com.whizzosoftware.hobson.api.util.UserUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
@@ -233,14 +232,5 @@ public class AbstractHobsonPluginTest {
         // note that the event is for a different plugin ID
         plugin.onHobsonEvent(new VariableUpdateRequestEvent("pid2", "did", "var", "newValue"));
         assertEquals(0, d.setVariableRequests.size());
-    }
-
-    @Test
-    public void testPublishDeviceAdvertisementListenerWithNoDiscoManager() {
-        try {
-            MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("pid", "name");
-            plugin.publishDeviceAdvertisementListener("protocol", new MockDeviceAdvertisementListener());
-            fail("Should have thrown exception");
-        } catch (HobsonRuntimeException ignored) {}
     }
 }
