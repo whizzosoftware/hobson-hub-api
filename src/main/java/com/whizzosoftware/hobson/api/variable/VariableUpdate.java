@@ -105,6 +105,6 @@ public class VariableUpdate {
     }
 
     public String toString() {
-        return pluginId + "." + deviceId + "." + name;
+        return pluginId + "." + deviceId + "." + name + "=" + value;
     }
 }

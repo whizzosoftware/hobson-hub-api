@@ -9,7 +9,6 @@ package com.whizzosoftware.hobson.api.plugin.http;
 
 import com.whizzosoftware.hobson.api.plugin.AbstractHobsonPlugin;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
@@ -32,18 +31,16 @@ import java.util.Map;
  *
  * @author Dan Noguerol
  */
-abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin implements ChannelInboundHandler {
+abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
     private static final Logger logger = LoggerFactory.getLogger(AbstractHttpClientPlugin.class);
 
     private final NioEventLoopGroup httpEventLoopGroup;
-    private Bootstrap bootstrap;
-    private Bootstrap bootstrapSSL;
     private SslContext sslContext;
 
     public AbstractHttpClientPlugin(String pluginId) {
         super(pluginId);
 
-        httpEventLoopGroup = new NioEventLoopGroup(1);
+        httpEventLoopGroup = new NioEventLoopGroup();
 
         try {
             sslContext = SslContext.newClientContext(InsecureTrustManagerFactory.INSTANCE);
@@ -58,9 +55,10 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin impl
      *
      * @param uri the URI to send the request to
      * @param headers request headers (or null if none)
+     * @param context a context object that will be returned in the response callback (or null if one is not needed)
      */
-    protected void sendHttpGetRequest(URI uri, Map<String,String> headers) {
-        sendHttpRequest(uri, HttpMethod.GET, headers, null);
+    protected void sendHttpGetRequest(URI uri, Map<String,String> headers, Object context) {
+        sendHttpRequest(uri, HttpMethod.GET, headers, null, context);
     }
 
     /**
@@ -70,9 +68,10 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin impl
      * @param uri the URI to send the request to
      * @param headers request headers (or null if none)
      * @param data the request content
+     * @param context a context object that will be returned in the response callback (or null if one is not needed)
      */
-    protected void sendHttpPostRequest(URI uri, Map<String,String> headers, byte[] data) {
-        sendHttpRequest(uri, HttpMethod.POST, headers, data);
+    protected void sendHttpPostRequest(URI uri, Map<String,String> headers, byte[] data, Object context) {
+        sendHttpRequest(uri, HttpMethod.POST, headers, data, context);
     }
 
     /**
@@ -82,9 +81,10 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin impl
      * @param uri the URI to send the request to
      * @param headers request headers (or null if none)
      * @param data the request content
+     * @param context a context object that will be returned in the response callback (or null if one is not needed)
      */
-    protected void sendHttpPutRequest(URI uri, Map<String,String> headers, byte[] data) {
-        sendHttpRequest(uri, HttpMethod.PUT, headers, data);
+    protected void sendHttpPutRequest(URI uri, Map<String,String> headers, byte[] data, Object context) {
+        sendHttpRequest(uri, HttpMethod.PUT, headers, data, context);
     }
 
     /**
@@ -94,9 +94,10 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin impl
      * @param uri the URI to send the request to
      * @param headers request headers (or null if none)
      * @param data the request content
+     * @param context a context object that will be returned in the response callback (or null if one is not needed)
      */
-    protected void sendHttpDeleteRequest(URI uri, Map<String,String> headers, byte[] data) {
-        sendHttpRequest(uri, HttpMethod.DELETE, headers, data);
+    protected void sendHttpDeleteRequest(URI uri, Map<String,String> headers, byte[] data, Object context) {
+        sendHttpRequest(uri, HttpMethod.DELETE, headers, data, context);
     }
 
     /**
@@ -106,9 +107,10 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin impl
      * @param uri the URI to send the request to
      * @param headers request headers (or null if none)
      * @param data the request content
+     * @param context a context object that will be returned in the response callback (or null if one is not needed)
      */
-    protected void sendHttpPatchRequest(URI uri, Map<String,String> headers, byte[] data) {
-        sendHttpRequest(uri, HttpMethod.PATCH, headers, data);
+    protected void sendHttpPatchRequest(URI uri, Map<String,String> headers, byte[] data, Object context) {
+        sendHttpRequest(uri, HttpMethod.PATCH, headers, data, context);
     }
 
     /**
@@ -118,26 +120,28 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin impl
      * @param statusCode the response status code
      * @param headers response headers
      * @param response the response body
+     * @param context the context object passed in the request
      */
-    abstract protected void onHttpResponse(int statusCode, List<Map.Entry<String,String>> headers, InputStream response);
+    abstract protected void onHttpResponse(int statusCode, List<Map.Entry<String,String>> headers, InputStream response, Object context);
 
     /**
      * Callback for unsuccessful HTTP responses. Note that "unsuccessful" means that there was a transport level
      * problem.
      *
      * @param cause the cause of the failure
+     * @param context the context object passed in the request
      */
-    abstract protected void onHttpRequestFailure(Throwable cause);
+    abstract protected void onHttpRequestFailure(Throwable cause, Object context);
 
-    private void sendHttpRequest(final URI uri, final HttpMethod method, final Map<String,String> headers, final byte[] content) {
+    private void sendHttpRequest(final URI uri, final HttpMethod method, final Map<String,String> headers, final byte[] content, Object context) {
         Bootstrap bs;
         int defaultPort;
 
         if (uri.getScheme().equalsIgnoreCase("https")) {
-            bs = getBootstrapSSL();
+            bs = getBootstrapSSL(context);
             defaultPort = 443;
         } else {
-            bs = getBootstrap();
+            bs = getBootstrap(context);
             defaultPort = 80;
         }
 
@@ -148,6 +152,7 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin impl
                 DefaultFullHttpRequest request;
                 if (content != null) {
                     request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, uri.getRawPath(), Unpooled.wrappedBuffer(content));
+                    request.headers().set(HttpHeaders.Names.CONTENT_LENGTH, content.length);
                 } else {
                     request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, uri.getRawPath());
                 }
@@ -164,24 +169,22 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin impl
         });
     }
 
-    private Bootstrap getBootstrap() {
-        if (bootstrap == null) {
-            bootstrap = new Bootstrap();
-            configureBootstrap(bootstrap);
-            bootstrap.handler(new HttpClientInitializer(this, null));
-        }
+    private Bootstrap getBootstrap(Object context) {
+        Bootstrap bootstrap = new Bootstrap();
+        configureBootstrap(bootstrap);
+        bootstrap.handler(new HttpClientInitializer(new HttpClientResponseHandler(this, context), null));
         return bootstrap;
     }
 
-    private Bootstrap getBootstrapSSL() {
-        if (bootstrapSSL == null && sslContext != null) {
-            bootstrapSSL = new Bootstrap();
+    private Bootstrap getBootstrapSSL(Object context) {
+        if (sslContext != null) {
+            Bootstrap bootstrapSSL = new Bootstrap();
             configureBootstrap(bootstrapSSL);
-            bootstrapSSL.handler(new HttpClientInitializer(this, sslContext));
-        } else if (sslContext == null) {
-            bootstrapSSL = bootstrap;
+            bootstrapSSL.handler(new HttpClientInitializer(new HttpClientResponseHandler(this, context), sslContext));
+            return bootstrapSSL;
+        } else {
+            return getBootstrap(context);
         }
-        return bootstrapSSL;
     }
 
     private void configureBootstrap(Bootstrap b) {
@@ -192,60 +195,5 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin impl
         b.option(ChannelOption.SO_REUSEADDR, false);
         b.option(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, 32 * 1024);
         b.option(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, 8 * 1024);
-    }
-
-    /*
-     * ChannelInboundHandler methods
-     */
-
-    @Override
-    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {}
-
-    @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {}
-
-    @Override
-    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {}
-
-    @Override
-    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {}
-
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {}
-
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {}
-
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, final Object msg) throws Exception {
-        DefaultFullHttpResponse response = (DefaultFullHttpResponse)msg;
-        final int statusCode = response.getStatus().code();
-        final InputStream is = new ByteBufInputStream(response.content());
-        final List<Map.Entry<String,String>> headers = response.headers().entries();
-        executeInEventLoop(new Runnable() {
-            @Override
-            public void run() {
-                onHttpResponse(statusCode, headers, is);
-            }
-        });
-    }
-
-    @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {}
-
-    @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {}
-
-    @Override
-    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {}
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, final Throwable cause) throws Exception {
-        executeInEventLoop(new Runnable() {
-            @Override
-            public void run() {
-                onHttpRequestFailure(cause);
-            }
-        });
     }
 }
