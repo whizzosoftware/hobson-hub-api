@@ -172,7 +172,7 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
     private Bootstrap getBootstrap(Object context) {
         Bootstrap bootstrap = new Bootstrap();
         configureBootstrap(bootstrap);
-        bootstrap.handler(new HttpClientInitializer(new HttpClientResponseHandler(this, context), null));
+        bootstrap.handler(new HttpClientInitializer(getId(), new HttpClientResponseHandler(this, context), null));
         return bootstrap;
     }
 
@@ -180,7 +180,7 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
         if (sslContext != null) {
             Bootstrap bootstrapSSL = new Bootstrap();
             configureBootstrap(bootstrapSSL);
-            bootstrapSSL.handler(new HttpClientInitializer(new HttpClientResponseHandler(this, context), sslContext));
+            bootstrapSSL.handler(new HttpClientInitializer(getId(), new HttpClientResponseHandler(this, context), sslContext));
             return bootstrapSSL;
         } else {
             return getBootstrap(context);

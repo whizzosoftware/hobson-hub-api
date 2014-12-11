@@ -11,6 +11,8 @@ import io.netty.channel.*;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpContentDecompressor;
 import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 
 /**
@@ -19,10 +21,12 @@ import io.netty.handler.ssl.SslContext;
  * @author Dan Noguerol
  */
 public class HttpClientInitializer extends ChannelInitializer<Channel> {
+    private String id;
     private ChannelInboundHandler handler;
     private SslContext sslContext;
 
-    public HttpClientInitializer(ChannelInboundHandler handler, SslContext sslContext) {
+    public HttpClientInitializer(String id, ChannelInboundHandler handler, SslContext sslContext) {
+        this.id = id;
         this.handler = handler;
         this.sslContext = sslContext;
     }
@@ -33,6 +37,7 @@ public class HttpClientInitializer extends ChannelInitializer<Channel> {
         if (sslContext != null) {
             pipeline.addLast("ssl", sslContext.newHandler(ch.alloc()));
         }
+        pipeline.addLast("logger", new LoggingHandler("netty-" + id, LogLevel.TRACE));
         pipeline.addLast("codec", new HttpClientCodec());
         pipeline.addLast("decompressor", new HttpContentDecompressor());
         pipeline.addLast("aggregator", new HttpObjectAggregator(512 * 1024));
