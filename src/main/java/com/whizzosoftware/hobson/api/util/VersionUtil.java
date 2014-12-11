@@ -22,7 +22,7 @@ public class VersionUtil {
      *         The result is a positive integer if str1 is _numerically_ greater than str2.
      *         The result is zero if the strings are _numerically_ equal.
      */
-    static public int versionCompare(String str1, String str2) {
+    public static int versionCompare(String str1, String str2) {
         if (str1 == null && str2 == null) {
             return 0;
         } else if (str1 == null) {

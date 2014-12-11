@@ -65,7 +65,7 @@ abstract public class HobsonEvent {
      *
      * @return a String or null if the event has no ID
      */
-    static public String readEventId(Map<String,Object> properties) {
+    public static String readEventId(Map<String,Object> properties) {
         return (String)properties.get(PROP_EVENT_ID);
     }
 }

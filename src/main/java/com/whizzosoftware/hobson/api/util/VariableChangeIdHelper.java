@@ -31,7 +31,7 @@ public class VariableChangeIdHelper {
      * @param name the variable name
      * @param changeIds the List to add the change IDs to
      */
-    static public void populateChangeIdsForVariableName(String name, List<String> changeIds) {
+    public static void populateChangeIdsForVariableName(String name, List<String> changeIds) {
         switch (name) {
             case VariableConstants.ON:
                 changeIds.add(TURN_ON);
@@ -50,7 +50,7 @@ public class VariableChangeIdHelper {
      *
      * @return a Map of variable name to variable value
      */
-    static public Map<String,Object> getVariableForChangeId(String changeId) {
+    public static Map<String,Object> getVariableForChangeId(String changeId) {
         Map<String,Object> result = new HashMap<>();
         switch (changeId) {
             case TURN_ON:
