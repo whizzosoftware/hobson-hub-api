@@ -7,11 +7,15 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin.http;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +26,8 @@ import java.util.Map;
  * @author Dan Noguerol
  */
 public class HttpClientResponseHandler extends ChannelInboundHandlerAdapter {
+    private final static Logger logger = LoggerFactory.getLogger(HttpClientResponseHandler.class);
+
     private AbstractHttpClientPlugin plugin;
     private Object context;
 
@@ -34,12 +40,27 @@ public class HttpClientResponseHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, final Object msg) throws Exception {
         DefaultFullHttpResponse response = (DefaultFullHttpResponse)msg;
         final int statusCode = response.getStatus().code();
-        final InputStream is = new ByteBufInputStream(response.content());
+        final ByteBuf buf = response.content();
         final List<Map.Entry<String,String>> headers = response.headers().entries();
         plugin.executeInEventLoop(new Runnable() {
             @Override
             public void run() {
-                plugin.onHttpResponse(statusCode, headers, is, context);
+                InputStream is = null;
+                try {
+                    is = new ByteBufInputStream(buf);
+                    plugin.onHttpResponse(statusCode, headers, is, context);
+                } catch (Exception e) {
+                    logger.error("Error processing HTTP response", e);
+                } finally {
+                    buf.release();
+                    try {
+                        if (is != null) {
+                            is.close();
+                        }
+                    } catch (IOException e) {
+                        logger.error("Error closing HTTP response stream", e);
+                    }
+                }
             }
         });
     }
@@ -48,7 +69,11 @@ public class HttpClientResponseHandler extends ChannelInboundHandlerAdapter {
         plugin.executeInEventLoop(new Runnable() {
             @Override
             public void run() {
-                plugin.onHttpRequestFailure(cause, context);
+                try {
+                    plugin.onHttpRequestFailure(cause, context);
+                } catch (Exception e) {
+                    logger.error("Error processing HTTP failure", e);
+                }
             }
         });
     }
