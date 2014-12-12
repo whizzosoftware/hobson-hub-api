@@ -8,11 +8,9 @@
 package com.whizzosoftware.hobson.api.variable;
 
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
-import com.whizzosoftware.hobson.api.variable.telemetry.TelemetryFormat;
 import com.whizzosoftware.hobson.api.variable.telemetry.TelemetryInterval;
 import com.whizzosoftware.hobson.api.variable.telemetry.TemporalValue;
 
-import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
 
@@ -226,7 +224,7 @@ public interface VariableManager {
      * @param deviceId the device ID that published the variable
      * @param name the variable name
      * @param value the variable value
-     * @param time the time the variable held the value
+     * @param time the time the variable held the value (in epoch time)
      */
     public void writeDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, Object value, long time);
 
@@ -238,12 +236,12 @@ public interface VariableManager {
      * @param pluginId the plugin ID of the device that published the variable
      * @param deviceId the device ID that published the variable
      * @param name the variable name
-     * @param startTime the start time for which data is requested
-     * @param interval an interval representing the amount of data requested
+     * @param endTime the end time for which data is requested (in epoch time)
+     * @param interval an interval representing the amount of data requested (endTime - interval == startTime)
      *
      * @return a Collection of TemporalValue instances
      */
-    public Collection<TemporalValue> getDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, long startTime, TelemetryInterval interval);
+    public Collection<TemporalValue> getDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, long endTime, TelemetryInterval interval);
 
     /**
      * Updates a variable and publishes an update notification.

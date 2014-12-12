@@ -9,11 +9,9 @@ package com.whizzosoftware.hobson.api.variable.manager;
 
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.variable.*;
-import com.whizzosoftware.hobson.api.variable.telemetry.TelemetryFormat;
 import com.whizzosoftware.hobson.api.variable.telemetry.TelemetryInterval;
 import com.whizzosoftware.hobson.api.variable.telemetry.TemporalValue;
 
-import java.io.OutputStream;
 import java.util.*;
 
 public class MockVariableManager implements VariableManager {

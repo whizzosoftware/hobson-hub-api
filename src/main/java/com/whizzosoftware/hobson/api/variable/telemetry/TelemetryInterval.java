@@ -15,5 +15,5 @@ package com.whizzosoftware.hobson.api.variable.telemetry;
 public enum TelemetryInterval {
     HOURS_24,
     DAYS_7,
-    MONTHS_1
+    DAYS_30
 }
