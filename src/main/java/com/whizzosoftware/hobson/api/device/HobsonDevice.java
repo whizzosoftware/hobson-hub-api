@@ -55,6 +55,13 @@ public interface HobsonDevice {
     public String getPreferredVariableName();
 
     /**
+     * Indicates whether this device can provide telemetry data.
+     *
+     * @return a boolean
+     */
+    public boolean hasTelemetry();
+
+    /**
      * Returns the name(s) of the variables that should be used if telemetry is enabled for this device.
      *
      * @return an array of Strings (or null if telemetry should never be enabled for this device)

@@ -374,6 +374,10 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
         deviceManager.unpublishAllDevices(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this);
     }
 
+    protected DeviceManager getDeviceManager() {
+        return deviceManager;
+    }
+
     protected HubManager getHubManager() {
         return hubManager;
     }

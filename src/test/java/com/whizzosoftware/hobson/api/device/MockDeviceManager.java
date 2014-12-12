@@ -9,6 +9,8 @@ package com.whizzosoftware.hobson.api.device;
 
 import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
+import com.whizzosoftware.hobson.api.variable.telemetry.TelemetryInterval;
+import com.whizzosoftware.hobson.api.variable.telemetry.TemporalValue;
 
 import java.util.*;
 
@@ -52,6 +54,11 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
+    public Object getDeviceConfigurationProperty(String userId, String hubId, String pluginId, String deviceId, String name) {
+        return null;
+    }
+
+    @Override
     public void setDeviceConfigurationProperty(String userId, String hubId, String pluginId, String deviceId, String name, Object value, boolean overwrite) {
         configuration.put(pluginId + "." + deviceId + "." + name, value);
     }
@@ -76,6 +83,31 @@ public class MockDeviceManager implements DeviceManager {
 
     @Override
     public void registerForDeviceConfigurationUpdates(String userId, String hubId, String pluginId, String deviceId, DeviceConfigurationListener listener) {
+
+    }
+
+    @Override
+    public Collection<HobsonDevice> getAllTelemetryEnabledDevices(String userId, String hubId) {
+        return null;
+    }
+
+    @Override
+    public boolean isDeviceTelemetryEnabled(String userId, String hubId, String pluginId, String deviceId) {
+        return false;
+    }
+
+    @Override
+    public void enableDeviceTelemetry(String userId, String hubId, String pluginId, String deviceId, boolean enabled) {
+
+    }
+
+    @Override
+    public Map<String,Collection<TemporalValue>> getDeviceTelemetry(String userId, String hubId, String pluginId, String deviceId, long endTime, TelemetryInterval interval) {
+        return null;
+    }
+
+    @Override
+    public void writeDeviceTelemetry(String userId, String hubId, String pluginId, String deviceId, Map<String, TemporalValue> values) {
 
     }
 

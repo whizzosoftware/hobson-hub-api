@@ -73,6 +73,11 @@ abstract public class AbstractHobsonDevice implements HobsonDevice {
     }
 
     @Override
+    public boolean hasTelemetry() {
+        return (getTelemetryVariableNames() != null);
+    }
+
+    @Override
     public String[] getTelemetryVariableNames() {
         return null;
     }

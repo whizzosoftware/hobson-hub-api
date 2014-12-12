@@ -194,29 +194,7 @@ public interface VariableManager {
     public Long setDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name, Object value);
 
     /**
-     * Enables or disables telemetry for a device variable.
-     *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID of the device that published the variable
-     * @param deviceId the device ID that published the variable
-     * @param name the variable name
-     * @param enabled whether to enable telemetry or not
-     */
-    public void enableDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, boolean enabled);
-
-    /**
-     * Returns all variables that have had telemetry enabled.
-     *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     *
-     * @return a Collection of DeviceVariableRef instances
-     */
-    public Collection<DeviceVariableRef> getTelemetryEnabledDeviceVariables(String userId, String hubId);
-
-    /**
-     * Writes telemetry data for a device.
+     * Writes telemetry data for a device variable.
      *
      * @param userId the user ID that owns the hub
      * @param hubId the hub ID
@@ -229,7 +207,7 @@ public interface VariableManager {
     public void writeDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, Object value, long time);
 
     /**
-     * Retrieves telemetry data for a device.
+     * Retrieves telemetry data for a device variable.
      *
      * @param userId the user ID that owns the hub
      * @param hubId the hub ID

@@ -84,16 +84,6 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public void enableDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, boolean enabled) {
-
-    }
-
-    @Override
-    public Collection<DeviceVariableRef> getTelemetryEnabledDeviceVariables(String userId, String hubId) {
-        return null;
-    }
-
-    @Override
     public void writeDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, Object value, long time) {
 
     }
