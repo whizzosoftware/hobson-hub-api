@@ -8,10 +8,12 @@
 package com.whizzosoftware.hobson.api.variable.manager;
 
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
-import com.whizzosoftware.hobson.api.variable.HobsonVariable;
-import com.whizzosoftware.hobson.api.variable.VariableManager;
-import com.whizzosoftware.hobson.api.variable.VariableUpdate;
+import com.whizzosoftware.hobson.api.variable.*;
+import com.whizzosoftware.hobson.api.variable.telemetry.TelemetryFormat;
+import com.whizzosoftware.hobson.api.variable.telemetry.TelemetryInterval;
+import com.whizzosoftware.hobson.api.variable.telemetry.TemporalValue;
 
+import java.io.OutputStream;
 import java.util.*;
 
 public class MockVariableManager implements VariableManager {
@@ -80,6 +82,26 @@ public class MockVariableManager implements VariableManager {
 
     @Override
     public Long setDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name, Object value) {
+        return null;
+    }
+
+    @Override
+    public void enableDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, boolean enabled) {
+
+    }
+
+    @Override
+    public Collection<DeviceVariableRef> getTelemetryEnabledDeviceVariables(String userId, String hubId) {
+        return null;
+    }
+
+    @Override
+    public void writeDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, Object value, long time) {
+
+    }
+
+    @Override
+    public Collection<TemporalValue> getDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, long startTime, TelemetryInterval interval) {
         return null;
     }
 

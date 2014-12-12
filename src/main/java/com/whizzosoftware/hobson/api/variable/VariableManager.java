@@ -8,7 +8,11 @@
 package com.whizzosoftware.hobson.api.variable;
 
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
+import com.whizzosoftware.hobson.api.variable.telemetry.TelemetryFormat;
+import com.whizzosoftware.hobson.api.variable.telemetry.TelemetryInterval;
+import com.whizzosoftware.hobson.api.variable.telemetry.TemporalValue;
 
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
 
@@ -190,6 +194,56 @@ public interface VariableManager {
      * @since hobson-hub-api 0.1.6
      */
     public Long setDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name, Object value);
+
+    /**
+     * Enables or disables telemetry for a device variable.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param pluginId the plugin ID of the device that published the variable
+     * @param deviceId the device ID that published the variable
+     * @param name the variable name
+     * @param enabled whether to enable telemetry or not
+     */
+    public void enableDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, boolean enabled);
+
+    /**
+     * Returns all variables that have had telemetry enabled.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     *
+     * @return a Collection of DeviceVariableRef instances
+     */
+    public Collection<DeviceVariableRef> getTelemetryEnabledDeviceVariables(String userId, String hubId);
+
+    /**
+     * Writes telemetry data for a device.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param pluginId the plugin ID of the device that published the variable
+     * @param deviceId the device ID that published the variable
+     * @param name the variable name
+     * @param value the variable value
+     * @param time the time the variable held the value
+     */
+    public void writeDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, Object value, long time);
+
+    /**
+     * Retrieves telemetry data for a device.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param pluginId the plugin ID of the device that published the variable
+     * @param deviceId the device ID that published the variable
+     * @param name the variable name
+     * @param startTime the start time for which data is requested
+     * @param interval an interval representing the amount of data requested
+     *
+     * @return a Collection of TemporalValue instances
+     */
+    public Collection<TemporalValue> getDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, long startTime, TelemetryInterval interval);
 
     /**
      * Updates a variable and publishes an update notification.

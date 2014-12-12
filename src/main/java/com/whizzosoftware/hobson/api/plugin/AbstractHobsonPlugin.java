@@ -378,6 +378,10 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
         return hubManager;
     }
 
+    protected VariableManager getVariableManager() {
+        return variableManager;
+    }
+
     private void validateActionManager() {
         if (actionManager == null) {
             throw new HobsonRuntimeException("No action manager has been set");

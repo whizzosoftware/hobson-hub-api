@@ -45,7 +45,7 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
         try {
             sslContext = SslContext.newClientContext(InsecureTrustManagerFactory.INSTANCE);
         } catch (Exception e) {
-            logger.warn("Unable to create SSL engine; https will not work");
+            logger.warn("Unable to create SSL engine; HTTPS will not work");
         }
     }
 

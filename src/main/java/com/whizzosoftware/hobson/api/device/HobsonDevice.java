@@ -55,6 +55,13 @@ public interface HobsonDevice {
     public String getPreferredVariableName();
 
     /**
+     * Returns the name(s) of the variables that should be used if telemetry is enabled for this device.
+     *
+     * @return an array of Strings (or null if telemetry should never be enabled for this device)
+     */
+    public String[] getTelemetryVariableNames();
+
+    /**
      * Callback method invoked when the device is started.
      */
     public void onStartup();

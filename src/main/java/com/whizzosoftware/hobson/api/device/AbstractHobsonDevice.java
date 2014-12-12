@@ -73,6 +73,11 @@ abstract public class AbstractHobsonDevice implements HobsonDevice {
     }
 
     @Override
+    public String[] getTelemetryVariableNames() {
+        return null;
+    }
+
+    @Override
     public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData() {
         return configMeta;
     }
