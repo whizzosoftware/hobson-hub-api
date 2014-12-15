@@ -55,6 +55,22 @@ public interface HobsonDevice {
     public String getPreferredVariableName();
 
     /**
+     * Returns meta data about the configurable aspects of the device.
+     *
+     * @return a Collection of ConfigurationMetaData objects (or null if there is none)
+     */
+    public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData();
+
+    /**
+     * Sets a device configuration property.
+     *
+     * @param name the configuration property name
+     * @param value the value
+     * @param overwrite whether to overwrite a previously set value
+     */
+    public void setConfigurationProperty(String name, Object value, boolean overwrite);
+
+    /**
      * Indicates whether this device can provide telemetry data.
      *
      * @return a boolean
@@ -77,22 +93,6 @@ public interface HobsonDevice {
      * Callback method invoked when the device is stopped.
      */
     public void onShutdown();
-
-    /**
-     * Returns meta data about the configurable aspects of the device.
-     *
-     * @return a Collection of ConfigurationMetaData objects (or null if there is none)
-     */
-    public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData();
-
-    /**
-     * Sets a device configuration property.
-     *
-     * @param name the configuration property name
-     * @param value the value
-     * @param overwrite whether to overwrite a previously set value
-     */
-    public void setConfigurationProperty(String name, Object value, boolean overwrite);
 
     /**
      * Called when the device's configuration has changed.

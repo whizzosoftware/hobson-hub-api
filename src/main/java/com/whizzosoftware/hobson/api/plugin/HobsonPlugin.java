@@ -57,25 +57,18 @@ public interface HobsonPlugin extends EventListener {
     public String getVersion();
 
     /**
-     * Returns the status of the plugin.
-     *
-     * @return a PluginStatus instance
-     */
-    public PluginStatus getStatus();
-
-    /**
-     * Returns the configuration property meta-data associated with this plugin.
-     *
-     * @return a Collection of ConfigurationPropertyMetaData objects
-     */
-    public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData();
-
-    /**
      * Returns the type of plugin.
      *
      * @return a PluginType instance
      */
     public PluginType getType();
+
+    /**
+     * Returns the status of the plugin.
+     *
+     * @return a PluginStatus instance
+     */
+    public PluginStatus getStatus();
 
     /**
      * Indicates whether this plugin is configurable.
@@ -85,16 +78,11 @@ public interface HobsonPlugin extends EventListener {
     public boolean isConfigurable();
 
     /**
-     * Callback method invoked when the plugin starts up.
+     * Returns the configuration property meta-data associated with this plugin.
      *
-     * @param config the plugin configuration
+     * @return a Collection of ConfigurationPropertyMetaData objects
      */
-    public void onStartup(Dictionary config);
-
-    /**
-     * Callback method invoked when the plugin shuts down.
-     */
-    public void onShutdown();
+    public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData();
 
     /**
      * Returns the topics this plugin is interested in receiving events for.
@@ -257,6 +245,18 @@ public interface HobsonPlugin extends EventListener {
      * @param variableUpdate a VariableUpdate instance
      */
     public void fireVariableUpdateNotification(VariableUpdate variableUpdate);
+
+    /**
+     * Callback method invoked when the plugin starts up.
+     *
+     * @param config the plugin configuration
+     */
+    public void onStartup(Dictionary config);
+
+    /**
+     * Callback method invoked when the plugin shuts down.
+     */
+    public void onShutdown();
 
     /**
      * Callback that gives a plugin the opportunity to perform work. This will be called every
