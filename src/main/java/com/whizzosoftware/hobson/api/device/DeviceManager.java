@@ -157,7 +157,7 @@ public interface DeviceManager {
      * @param deviceId the device ID
      * @param listener the listener object to be called
      */
-    public void registerForDeviceConfigurationUpdates(String userId, String hubId, String pluginId, String deviceId, DeviceConfigurationListener listener);
+    //public void registerForDeviceConfigurationUpdates(String userId, String hubId, String pluginId, String deviceId, DeviceConfigurationListener listener);
 
     /**
      * Set a device level configuration property.

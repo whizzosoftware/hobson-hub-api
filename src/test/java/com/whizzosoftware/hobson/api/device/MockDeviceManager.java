@@ -82,11 +82,6 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public void registerForDeviceConfigurationUpdates(String userId, String hubId, String pluginId, String deviceId, DeviceConfigurationListener listener) {
-
-    }
-
-    @Override
     public Collection<HobsonDevice> getAllTelemetryEnabledDevices(String userId, String hubId) {
         return null;
     }
