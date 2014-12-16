@@ -81,7 +81,7 @@ public class FileWatcherThread extends Thread {
                     break;
                 }
             } catch (InterruptedException x) {
-                logger.error("Thread was interrupted", x);
+                logger.debug("Thread was interrupted", x);
             }
         }
         logger.debug("Thread exiting");
