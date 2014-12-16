@@ -149,17 +149,6 @@ public interface DeviceManager {
     public boolean isDeviceTelemetryEnabled(String userId, String hubId, String pluginId, String deviceId);
 
     /**
-     * Allows a listener to receive a callback when a device's configuration changes.
-     *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID of the device
-     * @param deviceId the device ID
-     * @param listener the listener object to be called
-     */
-    //public void registerForDeviceConfigurationUpdates(String userId, String hubId, String pluginId, String deviceId, DeviceConfigurationListener listener);
-
-    /**
      * Set a device level configuration property.
      *
      * @param userId the user ID that owns the hub
@@ -190,38 +179,32 @@ public interface DeviceManager {
     /**
      * Publishes a device to the device registry and starts it.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
      * @param plugin the HobsonPlugin instance performing the action
      * @param device the HobsonDevice to publish
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void publishDevice(String userId, String hubId, HobsonPlugin plugin, HobsonDevice device);
+    public void publishDevice(HobsonPlugin plugin, HobsonDevice device);
 
     /**
      * Stops and unpublishes a device associated with a specific plugin. This allows plugins that require it
      * (e.g. the RadioRA plugin) to unpublish individual devices.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
      * @param plugin the HobsonPlugin instance performing the action
      * @param deviceId the device ID
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void unpublishDevice(String userId, String hubId, HobsonPlugin plugin, String deviceId);
+    public void unpublishDevice(HobsonPlugin plugin, String deviceId);
 
     /**
      * Stops an unpublishes all devices associated with a specific plugin.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
      * @param plugin the HobsonPlugin instance performing the action
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void unpublishAllDevices(String userId, String hubId, HobsonPlugin plugin);
+    public void unpublishAllDevices(HobsonPlugin plugin);
 
     /**
      * Writes telemetry data for a specific device.

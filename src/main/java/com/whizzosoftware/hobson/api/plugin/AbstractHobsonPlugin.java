@@ -289,7 +289,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
      */
     protected void publishDevice(final HobsonDevice device) {
         validateDeviceManager();
-        deviceManager.publishDevice(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this, device);
+        deviceManager.publishDevice(this, device);
     }
 
     /**
@@ -361,7 +361,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
         validateVariableManager();
         validateDeviceManager();
         variableManager.unpublishAllDeviceVariables(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), deviceId);
-        deviceManager.unpublishDevice(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this, deviceId);
+        deviceManager.unpublishDevice(this, deviceId);
     }
 
     /**
@@ -371,7 +371,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
         validateVariableManager();
         validateDeviceManager();
         variableManager.unpublishAllPluginVariables(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId());
-        deviceManager.unpublishAllDevices(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this);
+        deviceManager.unpublishAllDevices(this);
     }
 
     protected DeviceManager getDeviceManager() {

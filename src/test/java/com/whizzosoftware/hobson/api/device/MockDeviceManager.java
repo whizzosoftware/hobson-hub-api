@@ -19,7 +19,7 @@ public class MockDeviceManager implements DeviceManager {
     public final Map<String,Object> configuration = new HashMap<String,Object>();
 
     @Override
-    public void publishDevice(String userId, String hubId, HobsonPlugin plugin, HobsonDevice device) {
+    public void publishDevice(HobsonPlugin plugin, HobsonDevice device) {
         publishedDevices.add(device);
     }
 
@@ -69,7 +69,7 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public void unpublishAllDevices(String userId, String hubId, HobsonPlugin plugin) {
+    public void unpublishAllDevices(HobsonPlugin plugin) {
         List<HobsonDevice> unpublishList = new ArrayList<HobsonDevice>();
         for (HobsonDevice device : publishedDevices) {
             if (device.getPluginId().equals(plugin.getId())) {
@@ -107,7 +107,7 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public void unpublishDevice(String userId, String hubId, HobsonPlugin plugin, String deviceId) {
+    public void unpublishDevice(HobsonPlugin plugin, String deviceId) {
         HobsonDevice unpublishDevice = null;
         for (HobsonDevice device : publishedDevices) {
             if (device.getPluginId().equals(plugin.getId()) && device.getId().equals(deviceId)) {
