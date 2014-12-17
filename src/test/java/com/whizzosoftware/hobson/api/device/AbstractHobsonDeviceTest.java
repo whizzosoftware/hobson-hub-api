@@ -13,7 +13,6 @@ import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.MockAbstractHobsonPlugin;
 import com.whizzosoftware.hobson.api.util.UserUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
-import com.whizzosoftware.hobson.api.variable.HobsonVariableImpl;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.manager.MockVariableManager;
 import org.junit.Test;
@@ -217,7 +216,7 @@ public class AbstractHobsonDeviceTest {
     @Test
     public void testGetVariableWithWithVariableManager() {
         MockVariableManager vm = new MockVariableManager();
-        vm.publishDeviceVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, "pid", "did", new HobsonVariableImpl("var1", "val1", HobsonVariable.Mask.READ_WRITE));
+        vm.publishDeviceVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, "pid", "did", "var1", "val1", HobsonVariable.Mask.READ_WRITE);
         HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
         p.setVariableManager(vm);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");

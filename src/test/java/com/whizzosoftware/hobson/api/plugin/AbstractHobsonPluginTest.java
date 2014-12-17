@@ -14,7 +14,6 @@ import com.whizzosoftware.hobson.api.device.MockDeviceManager;
 import com.whizzosoftware.hobson.api.event.VariableUpdateRequestEvent;
 import com.whizzosoftware.hobson.api.util.UserUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
-import com.whizzosoftware.hobson.api.variable.HobsonVariableImpl;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.manager.MockVariableManager;
 import org.junit.Test;
@@ -97,7 +96,7 @@ public class AbstractHobsonPluginTest {
     public void testPublishGlobalVariableWithNoVariableManager() {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.publishGlobalVariable(new HobsonVariableImpl("name", "value", HobsonVariable.Mask.READ_WRITE));
+            plugin.publishGlobalVariable("name", "value", HobsonVariable.Mask.READ_WRITE);
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }
@@ -107,7 +106,7 @@ public class AbstractHobsonPluginTest {
     public void testPublishDeviceVariableWithNoVariableManager() {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.publishDeviceVariable("id", new HobsonVariableImpl("name", "value", HobsonVariable.Mask.READ_WRITE));
+            plugin.publishDeviceVariable("id", "name", "value", HobsonVariable.Mask.READ_WRITE);
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }

@@ -28,11 +28,13 @@ public interface VariableManager {
      * @param userId the user ID that owns the hub
      * @param hubId the hub ID
      * @param pluginId the plugin ID publishing the variable
-     * @param var the variable object
+     * @param name the name of the new variable to publish
+     * @param value the value of the new variable (or null if not known)
+     * @param mask the access mask of the new variable
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void publishGlobalVariable(String userId, String hubId, String pluginId, HobsonVariable var);
+    public void publishGlobalVariable(String userId, String hubId, String pluginId, String name, Object value, HobsonVariable.Mask mask);
 
     /**
      * Returns a collection of all published global variables.
@@ -77,11 +79,13 @@ public interface VariableManager {
      * @param hubId the hub ID
      * @param pluginId the plugin ID of the device publishing the variable
      * @param deviceId the device ID publishing the variable
-     * @param var the variable object
+     * @param name the name of the new variable to publish
+     * @param value the value of the new variable (or null if not known)
+     * @param mask the access mask of the new variable
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void publishDeviceVariable(String userId, String hubId, String pluginId, String deviceId, HobsonVariable var);
+    public void publishDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name, Object value, HobsonVariable.Mask mask);
 
     /**
      * Unpublishes a device variable.

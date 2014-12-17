@@ -7,20 +7,15 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.variable;
 
-/**
- * Concrete implementation of HobsonVariable.
- *
- * @author Dan Noguerol
- */
-public class HobsonVariableImpl implements HobsonVariable {
+public class MockHobsonVariable implements HobsonVariable {
     private String name;
     private Object value;
     private Mask mask;
     private Long lastUpdate;
 
-    public HobsonVariableImpl(String name, Object value, Mask mask) {
+    public MockHobsonVariable(String name, Object value, Mask mask) {
         this.name = name;
-        setValue(value);
+        this.value = value;
         this.mask = mask;
     }
 
@@ -37,11 +32,6 @@ public class HobsonVariableImpl implements HobsonVariable {
     @Override
     public Mask getMask() {
         return mask;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
-        this.lastUpdate = System.currentTimeMillis();
     }
 
     @Override

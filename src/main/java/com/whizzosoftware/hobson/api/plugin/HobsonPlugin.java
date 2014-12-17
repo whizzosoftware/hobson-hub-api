@@ -206,17 +206,21 @@ public interface HobsonPlugin extends EventListener {
     /**
      * Publish a global variable.
      *
-     * @param variable the variable to publish
+     * @param name the name of the new variable to publish
+     * @param value the value of the new variable (or null if not known)
+     * @param mask the access mask of the new variable
      */
-    public void publishGlobalVariable(HobsonVariable variable);
+    public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask);
 
     /**
      * Publish a device variable.
      *
      * @param deviceId the ID of the device publishing the variable
-     * @param variable the variable to publish
+     * @param name the name of the new variable to publish
+     * @param value the value of the new variable (or null if not known)
+     * @param mask the access mask of the new variable
      */
-    public void publishDeviceVariable(String deviceId, HobsonVariable variable);
+    public void publishDeviceVariable(String deviceId, String name, Object value, HobsonVariable.Mask mask);
 
     /**
      * Publish a task provider.

@@ -19,7 +19,7 @@ public class MockVariableManager implements VariableManager {
     public final List<VariableUpdate> firedUpdates = new ArrayList<VariableUpdate>();
 
     @Override
-    public void publishGlobalVariable(String userId, String hubId, String pluginId, HobsonVariable var) {
+    public void publishGlobalVariable(String userId, String hubId, String pluginId, String name, Object value, HobsonVariable.Mask mask) {
 
     }
 
@@ -39,8 +39,8 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public void publishDeviceVariable(String userId, String hubId, String pluginId, String deviceId, HobsonVariable var) {
-        publishedVariables.put(pluginId + "." + deviceId, var);
+    public void publishDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name, Object value, HobsonVariable.Mask mask) {
+        publishedVariables.put(pluginId + "." + deviceId, new MockHobsonVariable(name, value, mask));
     }
 
     @Override

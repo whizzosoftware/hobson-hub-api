@@ -176,15 +176,15 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
     }
 
     @Override
-    public void publishGlobalVariable(HobsonVariable variable) {
+    public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask) {
         validateVariableManager();
-        variableManager.publishGlobalVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), variable);
+        variableManager.publishGlobalVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), name, value, mask);
     }
 
     @Override
-    public void publishDeviceVariable(String deviceId, HobsonVariable variable) {
+    public void publishDeviceVariable(String deviceId, String name, Object value, HobsonVariable.Mask mask) {
         validateVariableManager();
-        variableManager.publishDeviceVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), deviceId, variable);
+        variableManager.publishDeviceVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), deviceId, name, value, mask);
     }
 
     @Override

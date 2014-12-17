@@ -10,7 +10,6 @@ package com.whizzosoftware.hobson.api.device;
 import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
-import com.whizzosoftware.hobson.api.variable.HobsonVariableImpl;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 
 import java.util.ArrayList;
@@ -145,7 +144,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice {
      * @param mask the variable mask
      */
     protected void publishVariable(String name, Object value, HobsonVariable.Mask mask) {
-        getPlugin().publishDeviceVariable(getId(), new HobsonVariableImpl(name, value, mask));
+        getPlugin().publishDeviceVariable(getId(), name, value, mask);
     }
 
     /**
