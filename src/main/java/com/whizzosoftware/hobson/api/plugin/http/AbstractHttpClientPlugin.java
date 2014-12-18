@@ -150,11 +150,15 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
                 DefaultFullHttpRequest request;
+                String path = uri.getPath();
+                if (uri.getQuery() != null) {
+                    path += "?" + uri.getQuery();
+                }
                 if (content != null) {
-                    request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, uri.getRawPath(), Unpooled.wrappedBuffer(content));
+                    request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, path, Unpooled.wrappedBuffer(content));
                     request.headers().set(HttpHeaders.Names.CONTENT_LENGTH, content.length);
                 } else {
-                    request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, uri.getRawPath());
+                    request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, path);
                 }
                 request.headers().set(HttpHeaders.Names.HOST, uri.getHost());
                 request.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
