@@ -8,19 +8,17 @@
 package com.whizzosoftware.hobson.api.plugin.http;
 
 import com.whizzosoftware.hobson.api.plugin.AbstractHobsonPlugin;
-import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.http.*;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.*;
+import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.impl.nio.client.HttpAsyncClients;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -34,19 +32,13 @@ import java.util.Map;
 abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
     private static final Logger logger = LoggerFactory.getLogger(AbstractHttpClientPlugin.class);
 
-    private final NioEventLoopGroup httpEventLoopGroup;
-    private SslContext sslContext;
+    private CloseableHttpAsyncClient httpClient;
 
     public AbstractHttpClientPlugin(String pluginId) {
         super(pluginId);
 
-        httpEventLoopGroup = new NioEventLoopGroup();
-
-        try {
-            sslContext = SslContext.newClientContext(InsecureTrustManagerFactory.INSTANCE);
-        } catch (Exception e) {
-            logger.warn("Unable to create SSL engine; HTTPS will not work");
-        }
+        httpClient = HttpAsyncClients.createDefault();
+        httpClient.start();
     }
 
     /**
@@ -57,8 +49,14 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
      * @param headers request headers (or null if none)
      * @param context a context object that will be returned in the response callback (or null if one is not needed)
      */
-    protected void sendHttpGetRequest(URI uri, Map<String,String> headers, Object context) {
-        sendHttpRequest(uri, HttpMethod.GET, headers, null, context);
+    public void sendHttpGetRequest(URI uri, Map<String,String> headers, final Object context) {
+        HttpGet get = new HttpGet(uri);
+        if (headers != null) {
+            for (String key : headers.keySet()) {
+                get.setHeader(key, headers.get(key));
+            }
+        }
+        sendHttpRequest(get, context);
     }
 
     /**
@@ -70,8 +68,17 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
      * @param data the request content
      * @param context a context object that will be returned in the response callback (or null if one is not needed)
      */
-    protected void sendHttpPostRequest(URI uri, Map<String,String> headers, byte[] data, Object context) {
-        sendHttpRequest(uri, HttpMethod.POST, headers, data, context);
+    public void sendHttpPostRequest(URI uri, Map<String,String> headers, byte[] data, final Object context) {
+        HttpPost post = new HttpPost(uri);
+        if (headers != null) {
+            for (String key : headers.keySet()) {
+                post.setHeader(key, headers.get(key));
+            }
+        }
+        if (data != null) {
+            post.setEntity(new ByteArrayEntity(data));
+        }
+        sendHttpRequest(post, context);
     }
 
     /**
@@ -83,8 +90,17 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
      * @param data the request content
      * @param context a context object that will be returned in the response callback (or null if one is not needed)
      */
-    protected void sendHttpPutRequest(URI uri, Map<String,String> headers, byte[] data, Object context) {
-        sendHttpRequest(uri, HttpMethod.PUT, headers, data, context);
+    public void sendHttpPutRequest(URI uri, Map<String,String> headers, byte[] data, final Object context) {
+        HttpPut put = new HttpPut(uri);
+        if (headers != null) {
+            for (String key : headers.keySet()) {
+                put.setHeader(key, headers.get(key));
+            }
+        }
+        if (data != null) {
+            put.setEntity(new ByteArrayEntity(data));
+        }
+        sendHttpRequest(put, context);
     }
 
     /**
@@ -96,8 +112,14 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
      * @param data the request content
      * @param context a context object that will be returned in the response callback (or null if one is not needed)
      */
-    protected void sendHttpDeleteRequest(URI uri, Map<String,String> headers, byte[] data, Object context) {
-        sendHttpRequest(uri, HttpMethod.DELETE, headers, data, context);
+    public void sendHttpDeleteRequest(URI uri, Map<String,String> headers, byte[] data, Object context) {
+        HttpDelete delete = new HttpDelete(uri);
+        if (headers != null) {
+            for (String key : headers.keySet()) {
+                delete.setHeader(key, headers.get(key));
+            }
+        }
+        sendHttpRequest(delete, context);
     }
 
     /**
@@ -109,8 +131,17 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
      * @param data the request content
      * @param context a context object that will be returned in the response callback (or null if one is not needed)
      */
-    protected void sendHttpPatchRequest(URI uri, Map<String,String> headers, byte[] data, Object context) {
-        sendHttpRequest(uri, HttpMethod.PATCH, headers, data, context);
+    public void sendHttpPatchRequest(URI uri, Map<String,String> headers, byte[] data, Object context) {
+        HttpPatch patch = new HttpPatch();
+        if (headers != null) {
+            for (String key : headers.keySet()) {
+                patch.setHeader(key, headers.get(key));
+            }
+        }
+        if (data != null) {
+            patch.setEntity(new ByteArrayEntity(data));
+        }
+        sendHttpRequest(patch, context);
     }
 
     /**
@@ -122,7 +153,7 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
      * @param response the response body
      * @param context the context object passed in the request
      */
-    abstract protected void onHttpResponse(int statusCode, List<Map.Entry<String,String>> headers, InputStream response, Object context);
+    abstract protected void onHttpResponse(int statusCode, List<Map.Entry<String,String>> headers, String response, Object context);
 
     /**
      * Callback for unsuccessful HTTP responses. Note that "unsuccessful" means that there was a transport level
@@ -133,71 +164,37 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
      */
     abstract protected void onHttpRequestFailure(Throwable cause, Object context);
 
-    private void sendHttpRequest(final URI uri, final HttpMethod method, final Map<String,String> headers, final byte[] content, Object context) {
-        Bootstrap bs;
-        int defaultPort;
-
-        if (uri.getScheme().equalsIgnoreCase("https")) {
-            bs = getBootstrapSSL(context);
-            defaultPort = 443;
-        } else {
-            bs = getBootstrap(context);
-            defaultPort = 80;
-        }
-
-        ChannelFuture future = bs.connect(uri.getHost(), (uri.getPort() > 0) ? uri.getPort() : defaultPort);
-        future.addListener(new ChannelFutureListener() {
+    private void sendHttpRequest(HttpUriRequest request, final Object context) {
+        httpClient.execute(request, new FutureCallback<HttpResponse>() {
             @Override
-            public void operationComplete(ChannelFuture future) throws Exception {
-                DefaultFullHttpRequest request;
-                String path = uri.getPath();
-                if (uri.getQuery() != null) {
-                    path += "?" + uri.getQuery();
+            public void completed(final HttpResponse response) {
+                try {
+                    final int statusCode = response.getStatusLine().getStatusCode();
+                    final String body = EntityUtils.toString(response.getEntity());
+                    executeInEventLoop(new Runnable() {
+                        @Override
+                        public void run() {
+                            onHttpResponse(statusCode, null, body, context);
+                        }
+                    });
+                } catch (IOException e) {
+                    logger.error("Error receiving HTTP repsonse", e);
                 }
-                if (content != null) {
-                    request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, path, Unpooled.wrappedBuffer(content));
-                    request.headers().set(HttpHeaders.Names.CONTENT_LENGTH, content.length);
-                } else {
-                    request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, path);
-                }
-                request.headers().set(HttpHeaders.Names.HOST, uri.getHost());
-                request.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
-                request.headers().set(HttpHeaders.Names.ACCEPT_ENCODING, HttpHeaders.Values.GZIP);
-                if (headers != null) {
-                    for (String name : headers.keySet()) {
-                        request.headers().set(name, headers.get(name));
+            }
+
+            @Override
+            public void failed(final Exception e) {
+                executeInEventLoop(new Runnable() {
+                    @Override
+                    public void run() {
+                        onHttpRequestFailure(e, context);
                     }
-                }
-                future.channel().writeAndFlush(request);
+                });
+            }
+
+            @Override
+            public void cancelled() {
             }
         });
-    }
-
-    private Bootstrap getBootstrap(Object context) {
-        Bootstrap bootstrap = new Bootstrap();
-        configureBootstrap(bootstrap);
-        bootstrap.handler(new HttpClientInitializer(getId(), new HttpClientResponseHandler(this, context), null));
-        return bootstrap;
-    }
-
-    private Bootstrap getBootstrapSSL(Object context) {
-        if (sslContext != null) {
-            Bootstrap bootstrapSSL = new Bootstrap();
-            configureBootstrap(bootstrapSSL);
-            bootstrapSSL.handler(new HttpClientInitializer(getId(), new HttpClientResponseHandler(this, context), sslContext));
-            return bootstrapSSL;
-        } else {
-            return getBootstrap(context);
-        }
-    }
-
-    private void configureBootstrap(Bootstrap b) {
-        b.group(httpEventLoopGroup);
-        b.channel(NioSocketChannel.class);
-        b.option(ChannelOption.TCP_NODELAY, true);
-        b.option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
-        b.option(ChannelOption.SO_REUSEADDR, false);
-        b.option(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, 32 * 1024);
-        b.option(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, 8 * 1024);
     }
 }

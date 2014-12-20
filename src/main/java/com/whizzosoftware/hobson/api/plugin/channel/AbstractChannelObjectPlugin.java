@@ -339,7 +339,7 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
                             }
                         });
                     } else {
-                        logger.error("Connection attempt failed", channelFuture.cause());
+                        logger.warn("Connection attempt to " + socketAddress.toString() + " failed", channelFuture.cause());
                         connectionState = State.NOT_CONNECTED;
                         if (isRunning) {
                             scheduleReconnect(channelFuture.channel().eventLoop());
