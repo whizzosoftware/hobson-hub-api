@@ -19,8 +19,6 @@ public class VariableConstants {
     public static final String IMAGE_STATUS_URL = "imageStatusUrl";
     public static final String LEVEL = "level";
     public static final String ON = "on";
-    public static final String TARGET_COOL_TEMP_F = "targetCoolTempF";
-    public static final String TARGET_HEAT_TEMP_F = "targetHeatTempF";
     public static final String TARGET_TEMP_C = "targetTempC";
     public static final String TARGET_TEMP_F = "targetTempF";
     public static final String TEMP_C = "tempC";
