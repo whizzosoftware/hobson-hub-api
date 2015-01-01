@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.action;
 
 import com.whizzosoftware.hobson.api.action.meta.ActionMetaData;
+import com.whizzosoftware.hobson.api.hub.HubManager;
 import com.whizzosoftware.hobson.api.variable.VariableManager;
 
 import java.util.Collection;
@@ -57,7 +58,8 @@ public interface HobsonAction {
     /**
      * Executes the action.
      *
+     * @param hubManager a HubManager instance that the action can use to get info about the Hub
      * @param properties a Map of action properties
      */
-    public void execute(Map<String,Object> properties);
+    public void execute(HubManager hubManager, Map<String,Object> properties);
 }
