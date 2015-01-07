@@ -115,14 +115,6 @@ public interface PluginManager {
     public void setPluginConfigurationProperty(String userId, String hubId, String pluginId, String name, Object value);
 
     /**
-     * Allows a listener to receive a callback when a plugin's configuration changes.
-     *
-     * @param pluginId the plugin ID
-     * @param listener the listener object to be called
-     */
-    public void registerForPluginConfigurationUpdates(String pluginId, PluginConfigurationListener listener);
-
-    /**
      * Reloads the specified plugin.
      *
      * @param userId the user ID that owns the hub
@@ -130,12 +122,4 @@ public interface PluginManager {
      * @param pluginId the plugin ID to reload
      */
     public void reloadPlugin(String userId, String hubId, String pluginId);
-
-    /**
-     * Allows a plugin to cease receiving callbacks when its configuration changes.
-     *
-     * @param pluginId the plugin ID requesting the un-registration
-     * @param listener the plugin that previously requested the callback
-     */
-    public void unregisterForPluginConfigurationUpdates(String pluginId, PluginConfigurationListener listener);
 }

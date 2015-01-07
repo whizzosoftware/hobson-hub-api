@@ -49,4 +49,8 @@ public class ConfigurationProperty {
     public void setValue(Object value) {
         this.value = value;
     }
+
+    public String toString() {
+        return getId() + "=" + getValue();
+    }
 }

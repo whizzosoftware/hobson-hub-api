@@ -15,13 +15,13 @@ import java.util.Map;
  * @author Dan Noguerol
  */
 public class HubConfigurationUpdateEvent extends HobsonEvent {
-    public static final String ID = "ID";
+    public static final String ID = "hubConfigurationUpdate";
 
     public HubConfigurationUpdateEvent() {
         super(EventTopics.CONFIG_TOPIC, ID);
     }
 
     public HubConfigurationUpdateEvent(Map<String,Object> props) {
-        super(EventTopics.CONFIG_TOPIC, ID);
+        super(EventTopics.CONFIG_TOPIC, props);
     }
 }

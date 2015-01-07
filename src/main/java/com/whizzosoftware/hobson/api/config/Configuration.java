@@ -47,11 +47,28 @@ public class Configuration {
     }
 
     /**
+     * Returns a Map of the configuration property values.
+     *
+     * @return a Map of property values
+     */
+    public Map<String,Object> getPropertyMap() {
+        Map<String,Object> map = new HashMap<>();
+        for (String name : propertyMap.keySet()) {
+            map.put(name, propertyMap.get(name).getValue().toString());
+        }
+        return map;
+    }
+
+    /**
      * Adds a property to the configuration.
      *
      * @param p the property to add
      */
     public void addProperty(ConfigurationProperty p) {
         propertyMap.put(p.getId(), p);
+    }
+
+    public String toString() {
+        return propertyMap.values().toString();
     }
 }

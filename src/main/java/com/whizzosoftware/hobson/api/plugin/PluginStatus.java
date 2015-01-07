@@ -37,6 +37,17 @@ public class PluginStatus {
     }
 
     /**
+     * Constructor.
+     *
+     * @param status the plugin status as a String
+     * @param message a message associated with the plugin status
+     */
+    public PluginStatus(String status, String message) {
+        this.status = Status.valueOf(status.toUpperCase());
+        this.message = message;
+    }
+
+    /**
      * Returns a status enumeration.
      *
      * @return a Status
