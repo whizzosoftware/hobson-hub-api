@@ -15,19 +15,43 @@ import java.util.*;
  * @author Dan Noguerol
  */
 public class Configuration {
-    private List<ConfigurationProperty> properties = new ArrayList<>();
+    private final Map<String,ConfigurationProperty> propertyMap = new HashMap<>();
 
-    public Configuration() {}
-
-    public Configuration(Collection<ConfigurationProperty> properties) {
-        this.properties.addAll(properties);
-    }
-
+    /**
+     * Returns all configuration properties.
+     *
+     * @return a Collection of ConfigurationProperty instances
+     */
     public Collection<ConfigurationProperty> getProperties() {
-        return properties;
+        return propertyMap.values();
     }
 
+    /**
+     * Returns a specific configuration property.
+     *
+     * @param id the ID of the desired property
+     *
+     * @return a ConfigurationProperty instance (or null if not found)
+     */
+    public ConfigurationProperty getProperty(String id) {
+        return propertyMap.get(id);
+    }
+
+    /**
+     * Returns a Dictionary representation of this configuration.
+     *
+     * @return a Dictionary instance
+     */
     public Dictionary getPropertyDictionary() {
-        return new Hashtable();
+        return new Hashtable(); // TODO
+    }
+
+    /**
+     * Adds a property to the configuration.
+     *
+     * @param p the property to add
+     */
+    public void addProperty(ConfigurationProperty p) {
+        propertyMap.put(p.getId(), p);
     }
 }

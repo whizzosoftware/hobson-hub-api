@@ -61,6 +61,18 @@ public interface PluginManager {
     public Configuration getPluginConfiguration(String userId, String hubId, String pluginId);
 
     /**
+     * Returns a plugin level configuration property.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param pluginId the plugin ID
+     * @param name the name of the configuration property
+     *
+     * @return the configuration property value (or null if not set)
+     */
+    public Object getPluginConfigurationProperty(String userId, String hubId, String pluginId, String name);
+
+    /**
      * Returns the current local version of a plugin.
      *
      * @param userId the user ID that owns the hub
