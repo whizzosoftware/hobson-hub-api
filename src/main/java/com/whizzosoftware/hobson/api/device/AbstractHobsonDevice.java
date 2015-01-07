@@ -92,7 +92,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice {
 
     @Override
     public void setConfigurationProperty(String name, Object value, boolean overwrite) {
-        getPlugin().setDeviceConfigurationProperty(getId(), name, value, overwrite);
+        getPlugin().getRuntime().setDeviceConfigurationProperty(getId(), name, value, overwrite);
     }
 
     @Override
@@ -144,7 +144,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice {
      * @param mask the variable mask
      */
     protected void publishVariable(String name, Object value, HobsonVariable.Mask mask) {
-        getPlugin().publishDeviceVariable(getId(), name, value, mask);
+        getPlugin().getRuntime().publishDeviceVariable(getId(), name, value, mask);
     }
 
     /**
@@ -153,7 +153,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice {
      * @param updates a List of VariableUpdate instances
      */
     protected void fireVariableUpdateNotifications(List<VariableUpdate> updates) {
-        getPlugin().fireVariableUpdateNotifications(updates);
+        getPlugin().getRuntime().fireVariableUpdateNotifications(updates);
     }
 
     /**
@@ -163,7 +163,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice {
      * @param value the variable value
      */
     protected void fireVariableUpdateNotification(String name, Object value) {
-        getPlugin().fireVariableUpdateNotification(new VariableUpdate(getPluginId(), getId(), name, value));
+        getPlugin().getRuntime().fireVariableUpdateNotification(new VariableUpdate(getPluginId(), getId(), name, value));
     }
 
     /**
@@ -174,7 +174,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice {
      * @return a HobsonVariable instance
      */
     protected HobsonVariable getVariable(String variableName) {
-        return getPlugin().getDeviceVariable(getId(), variableName);
+        return getPlugin().getRuntime().getDeviceVariable(getId(), variableName);
     }
 
     public String toString() {

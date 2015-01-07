@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Dan Noguerol
  */
-abstract public class AbstractHobsonPlugin implements HobsonPlugin {
+abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPluginRuntime {
     private ActionManager actionManager;
     private DeviceManager deviceManager;
     private DiscoManager discoManager;
@@ -106,6 +106,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin {
 
     @Override
     public void onRefresh() {
+    }
+
+    @Override
+    public HobsonPluginRuntime getRuntime() {
+        return this;
     }
 
     @Override

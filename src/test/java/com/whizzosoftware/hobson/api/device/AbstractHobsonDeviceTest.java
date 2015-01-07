@@ -96,7 +96,7 @@ public class AbstractHobsonDeviceTest {
     public void testSetConfigurationProperty() {
         MockDeviceManager dm = new MockDeviceManager();
         HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
-        p.setDeviceManager(dm);
+        p.getRuntime().setDeviceManager(dm);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         d.setConfigurationProperty("prop1", "value1", true);
         assertEquals("value1", dm.configuration.get("pid.did.prop1"));
@@ -142,7 +142,7 @@ public class AbstractHobsonDeviceTest {
     public void testPublishVariableWithVariableManager() {
         MockVariableManager vm = new MockVariableManager();
         HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
-        p.setVariableManager(vm);
+        p.getRuntime().setVariableManager(vm);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         d.publishVariable("var1", "val1", HobsonVariable.Mask.READ_WRITE);
         HobsonVariable v = vm.getDeviceVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, "pid", "did", "var1");
@@ -166,7 +166,7 @@ public class AbstractHobsonDeviceTest {
     public void testFireVariableUpdateNotifications() {
         MockVariableManager vm = new MockVariableManager();
         HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
-        p.setVariableManager(vm);
+        p.getRuntime().setVariableManager(vm);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         List<VariableUpdate> updates = new ArrayList<VariableUpdate>();
         updates.add(new VariableUpdate("pid", "did", "var1", "val1"));
@@ -194,7 +194,7 @@ public class AbstractHobsonDeviceTest {
     public void testFireVariableUpdateNotification() {
         MockVariableManager vm = new MockVariableManager();
         HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
-        p.setVariableManager(vm);
+        p.getRuntime().setVariableManager(vm);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         d.fireVariableUpdateNotification("name", "value");
         assertEquals(1, vm.firedUpdates.size());
@@ -218,7 +218,7 @@ public class AbstractHobsonDeviceTest {
         MockVariableManager vm = new MockVariableManager();
         vm.publishDeviceVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, "pid", "did", "var1", "val1", HobsonVariable.Mask.READ_WRITE);
         HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
-        p.setVariableManager(vm);
+        p.getRuntime().setVariableManager(vm);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         HobsonVariable hv = d.getVariable("var1");
         assertNotNull(hv);
