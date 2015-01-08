@@ -219,7 +219,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
 
     @Override
     public void onDeviceConfigurationUpdate(String deviceId, Dictionary config) {
-        getDevice(deviceId).onDeviceConfigurationUpdate(config);
+        getDevice(deviceId).getRuntime().onDeviceConfigurationUpdate(config);
     }
 
     @Override
@@ -234,7 +234,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
 
     @Override
     public void onSetDeviceVariable(String deviceId, String variableName, Object value) {
-        getDevice(deviceId).onSetVariable(variableName, value);
+        getDevice(deviceId).getRuntime().onSetVariable(variableName, value);
     }
 
     /**
@@ -294,7 +294,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
      */
     protected void publishDevice(final HobsonDevice device) {
         validateDeviceManager();
-        deviceManager.publishDevice(this, device);
+        deviceManager.getPublisher().publishDevice(this, device);
     }
 
     /**
@@ -366,7 +366,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         validateVariableManager();
         validateDeviceManager();
         variableManager.unpublishAllDeviceVariables(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), deviceId);
-        deviceManager.unpublishDevice(this, deviceId);
+        deviceManager.getPublisher().unpublishDevice(this, deviceId);
     }
 
     /**
@@ -376,7 +376,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         validateVariableManager();
         validateDeviceManager();
         variableManager.unpublishAllPluginVariables(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId());
-        deviceManager.unpublishAllDevices(this);
+        deviceManager.getPublisher().unpublishAllDevices(this);
     }
 
     protected DeviceManager getDeviceManager() {

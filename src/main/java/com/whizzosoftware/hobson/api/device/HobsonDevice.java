@@ -62,15 +62,6 @@ public interface HobsonDevice {
     public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData();
 
     /**
-     * Sets a device configuration property.
-     *
-     * @param name the configuration property name
-     * @param value the value
-     * @param overwrite whether to overwrite a previously set value
-     */
-    public void setConfigurationProperty(String name, Object value, boolean overwrite);
-
-    /**
      * Indicates whether this device can provide telemetry data.
      *
      * @return a boolean
@@ -78,39 +69,9 @@ public interface HobsonDevice {
     public boolean hasTelemetry();
 
     /**
-     * Returns the name(s) of the variables that should be used if telemetry is enabled for this device.
+     * Returns a an object that can be used to invoke methods related to device runtime execution.
      *
-     * @return an array of Strings (or null if telemetry should never be enabled for this device)
+     * @return a HobsonPluginExecution instance (or null if this object doesn't support a runtime)
      */
-    public String[] getTelemetryVariableNames();
-
-    /**
-     * Callback method invoked when the device is started.
-     */
-    public void onStartup();
-
-    /**
-     * Callback method invoked when the device is stopped.
-     */
-    public void onShutdown();
-
-    /**
-     * Called when the device's configuration has changed.
-     *
-     * @param config the updated configuration
-     */
-    public void onDeviceConfigurationUpdate(Dictionary config);
-
-    /**
-     * Called when a device should set one of its variables. The actual setting of the variable should be performed
-     * asynchronously and this method must return before the variable change has taken effect. It is the responsibility
-     * of the device to fire a VariableUpdateEvent when the variable change has been confirmed.
-     *
-     * Note: This method should only be called by the framework and never directly by third-party plugin code. To
-     * update a device variable from a plugin, use the VariableManager.setDeviceVariable() method.
-     *
-     * @param variableName the name of the variable
-     * @param value the value of the variable
-     */
-    public void onSetVariable(String variableName, Object value);
+    public HobsonDeviceRuntime getRuntime();
 }

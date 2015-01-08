@@ -11,6 +11,7 @@ import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.device.MockAbstractHobsonDevice;
 import com.whizzosoftware.hobson.api.device.MockDeviceManager;
+import com.whizzosoftware.hobson.api.device.MockDevicePublisher;
 import com.whizzosoftware.hobson.api.event.VariableUpdateRequestEvent;
 import com.whizzosoftware.hobson.api.util.UserUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
@@ -205,9 +206,10 @@ public class AbstractHobsonPluginTest {
     public void testOnHobsonEventWithRelevantVariableUpdateEvent() {
         // create a device manager with one published device
         MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("pid", "name");
-        MockDeviceManager dm = new MockDeviceManager();
+        MockDevicePublisher dp = new MockDevicePublisher();
+        MockDeviceManager dm = new MockDeviceManager(dp);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(plugin, "did");
-        dm.publishedDevices.add(d);
+        dp.addPublishedDevice(d);
 
         plugin.setDeviceManager(dm);
 
@@ -221,9 +223,10 @@ public class AbstractHobsonPluginTest {
     public void testOnHobsonEventWithIrrelevantVariableUpdateEvent() {
         // create a device manager with one published device
         MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("pid", "name");
-        MockDeviceManager dm = new MockDeviceManager();
+        MockDevicePublisher dp = new MockDevicePublisher();
+        MockDeviceManager dm = new MockDeviceManager(dp);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(plugin, "did");
-        dm.publishedDevices.add(d);
+        dp.addPublishedDevice(d);
 
         plugin.setDeviceManager(dm);
 

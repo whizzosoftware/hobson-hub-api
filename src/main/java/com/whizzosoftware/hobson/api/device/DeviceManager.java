@@ -8,7 +8,6 @@
 package com.whizzosoftware.hobson.api.device;
 
 import com.whizzosoftware.hobson.api.config.Configuration;
-import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.variable.telemetry.TelemetryInterval;
 import com.whizzosoftware.hobson.api.variable.telemetry.TemporalValue;
 
@@ -109,6 +108,13 @@ public interface DeviceManager {
     public Object getDeviceConfigurationProperty(String userId, String hubId, String pluginId, String deviceId, String name);
 
     /**
+     * Returns a DevicePublisher instance that can be used for publishing devices.
+     *
+     * @return a DevicePublisher (or null if the manager doesn't support publishing)
+     */
+    public DevicePublisher getPublisher();
+
+    /**
      * Retrieves telemetry data for a specific device.
      *
      * @param userId the user ID that owns the hub
@@ -175,36 +181,6 @@ public interface DeviceManager {
      * @since hobson-hub-api 0.1.6
      */
     public void setDeviceName(String userId, String hubId, String pluginId, String deviceId, String name);
-
-    /**
-     * Publishes a device to the device registry and starts it.
-     *
-     * @param plugin the HobsonPlugin instance performing the action
-     * @param device the HobsonDevice to publish
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    public void publishDevice(HobsonPlugin plugin, HobsonDevice device);
-
-    /**
-     * Stops and unpublishes a device associated with a specific plugin. This allows plugins that require it
-     * (e.g. the RadioRA plugin) to unpublish individual devices.
-     *
-     * @param plugin the HobsonPlugin instance performing the action
-     * @param deviceId the device ID
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    public void unpublishDevice(HobsonPlugin plugin, String deviceId);
-
-    /**
-     * Stops an unpublishes all devices associated with a specific plugin.
-     *
-     * @param plugin the HobsonPlugin instance performing the action
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    public void unpublishAllDevices(HobsonPlugin plugin);
 
     /**
      * Writes telemetry data for a specific device.

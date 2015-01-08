@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author Dan Noguerol
  */
-abstract public class AbstractHobsonDevice implements HobsonDevice {
+abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDeviceRuntime {
     private HobsonPlugin plugin;
     private String id;
     private String name;
@@ -72,22 +72,23 @@ abstract public class AbstractHobsonDevice implements HobsonDevice {
     }
 
     @Override
+    public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData() {
+        return configMeta;
+    }
+
+    @Override
     public boolean hasTelemetry() {
         return (getTelemetryVariableNames() != null);
     }
 
     @Override
-    public String[] getTelemetryVariableNames() {
-        return null;
+    public HobsonDeviceRuntime getRuntime() {
+        return this;
     }
 
     @Override
-    public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData() {
-        return configMeta;
-    }
-
-    protected void addConfigurationMetaData(ConfigurationPropertyMetaData metaData) {
-        configMeta.add(metaData);
+    public String[] getTelemetryVariableNames() {
+        return null;
     }
 
     @Override
@@ -103,6 +104,10 @@ abstract public class AbstractHobsonDevice implements HobsonDevice {
                 this.name = s;
             }
         }
+    }
+
+    protected void addConfigurationMetaData(ConfigurationPropertyMetaData metaData) {
+        configMeta.add(metaData);
     }
 
     /**
