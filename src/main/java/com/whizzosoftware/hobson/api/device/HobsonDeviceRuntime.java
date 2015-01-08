@@ -10,7 +10,7 @@ package com.whizzosoftware.hobson.api.device;
 import java.util.Dictionary;
 
 /**
- * Interface for methods related to Hobson device runtime functions including lifecycle callbacks.
+ * Interface for invoking methods related to device runtime functions including lifecycle callbacks.
  *
  * @author Dan Noguerol
  */
