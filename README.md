@@ -14,3 +14,5 @@ To find out more and download ready-to-run installers, please visit the
 
 The API plugin provides provides the application programming interface that all other plugins use to interact
 with the Hobson Hub.
+
+[![Build Status](https://api.travis-ci.org/whizzosoftware/hobson-hub-api.png)](https://api.travis-ci.org/whizzosoftware/hobson-hub-api.png)
