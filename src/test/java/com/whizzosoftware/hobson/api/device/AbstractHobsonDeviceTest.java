@@ -15,6 +15,7 @@ import com.whizzosoftware.hobson.api.util.UserUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.manager.MockVariableManager;
+import com.whizzosoftware.hobson.api.variable.manager.MockVariablePublisher;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -164,20 +165,21 @@ public class AbstractHobsonDeviceTest {
 
     @Test
     public void testFireVariableUpdateNotifications() {
-        MockVariableManager vm = new MockVariableManager();
+        MockVariablePublisher vp = new MockVariablePublisher();
+        MockVariableManager vm = new MockVariableManager(vp);
         HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
         p.getRuntime().setVariableManager(vm);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         List<VariableUpdate> updates = new ArrayList<VariableUpdate>();
         updates.add(new VariableUpdate("pid", "did", "var1", "val1"));
         updates.add(new VariableUpdate("pid", "did", "var2", "val2"));
-        assertEquals(0, vm.firedUpdates.size());
+        assertEquals(0, vp.getFiredUpdates().size());
         d.fireVariableUpdateNotifications(updates);
-        assertEquals(2, vm.firedUpdates.size());
-        assertEquals("var1", vm.firedUpdates.get(0).getName());
-        assertEquals("val1", vm.firedUpdates.get(0).getValue());
-        assertEquals("var2", vm.firedUpdates.get(1).getName());
-        assertEquals("val2", vm.firedUpdates.get(1).getValue());
+        assertEquals(2, vp.getFiredUpdates().size());
+        assertEquals("var1", vp.getFiredUpdates().get(0).getName());
+        assertEquals("val1", vp.getFiredUpdates().get(0).getValue());
+        assertEquals("var2", vp.getFiredUpdates().get(1).getName());
+        assertEquals("val2", vp.getFiredUpdates().get(1).getValue());
     }
 
     @Test
@@ -192,16 +194,17 @@ public class AbstractHobsonDeviceTest {
 
     @Test
     public void testFireVariableUpdateNotification() {
-        MockVariableManager vm = new MockVariableManager();
+        MockVariablePublisher vp = new MockVariablePublisher();
+        MockVariableManager vm = new MockVariableManager(vp);
         HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
         p.getRuntime().setVariableManager(vm);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         d.fireVariableUpdateNotification("name", "value");
-        assertEquals(1, vm.firedUpdates.size());
-        assertEquals("pid", vm.firedUpdates.get(0).getPluginId());
-        assertEquals("did", vm.firedUpdates.get(0).getDeviceId());
-        assertEquals("name", vm.firedUpdates.get(0).getName());
-        assertEquals("value", vm.firedUpdates.get(0).getValue());
+        assertEquals(1, vp.getFiredUpdates().size());
+        assertEquals("pid", vp.getFiredUpdates().get(0).getPluginId());
+        assertEquals("did", vp.getFiredUpdates().get(0).getDeviceId());
+        assertEquals("name", vp.getFiredUpdates().get(0).getName());
+        assertEquals("value", vp.getFiredUpdates().get(0).getValue());
     }
 
     @Test
@@ -215,8 +218,9 @@ public class AbstractHobsonDeviceTest {
 
     @Test
     public void testGetVariableWithWithVariableManager() {
-        MockVariableManager vm = new MockVariableManager();
-        vm.publishDeviceVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, "pid", "did", "var1", "val1", HobsonVariable.Mask.READ_WRITE);
+        MockVariablePublisher vp = new MockVariablePublisher();
+        MockVariableManager vm = new MockVariableManager(vp);
+        vp.publishDeviceVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, "pid", "did", "var1", "val1", HobsonVariable.Mask.READ_WRITE);
         HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
         p.getRuntime().setVariableManager(vm);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");

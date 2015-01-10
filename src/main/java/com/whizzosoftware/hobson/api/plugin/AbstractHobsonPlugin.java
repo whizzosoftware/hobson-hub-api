@@ -183,13 +183,13 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     @Override
     public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask) {
         validateVariableManager();
-        variableManager.publishGlobalVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), name, value, mask);
+        variableManager.getPublisher().publishGlobalVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), name, value, mask);
     }
 
     @Override
     public void publishDeviceVariable(String deviceId, String name, Object value, HobsonVariable.Mask mask) {
         validateVariableManager();
-        variableManager.publishDeviceVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), deviceId, name, value, mask);
+        variableManager.getPublisher().publishDeviceVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), deviceId, name, value, mask);
     }
 
     @Override
@@ -208,13 +208,13 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     @Override
     public void fireVariableUpdateNotifications(List<VariableUpdate> updates) {
         validateVariableManager();
-        variableManager.fireVariableUpdateNotifications(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this, updates);
+        variableManager.getPublisher().fireVariableUpdateNotifications(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this, updates);
     }
 
     @Override
     public void fireVariableUpdateNotification(VariableUpdate variableUpdate) {
         validateVariableManager();
-        variableManager.fireVariableUpdateNotification(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this, variableUpdate);
+        variableManager.getPublisher().fireVariableUpdateNotification(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this, variableUpdate);
     }
 
     @Override
@@ -365,7 +365,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     protected void unpublishDevice(final String deviceId) {
         validateVariableManager();
         validateDeviceManager();
-        variableManager.unpublishAllDeviceVariables(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), deviceId);
+        variableManager.getPublisher().unpublishAllDeviceVariables(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), deviceId);
         deviceManager.getPublisher().unpublishDevice(this, deviceId);
     }
 
@@ -375,7 +375,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     protected void unpublishAllDevices() {
         validateVariableManager();
         validateDeviceManager();
-        variableManager.unpublishAllPluginVariables(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId());
+        variableManager.getPublisher().unpublishAllPluginVariables(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId());
         deviceManager.getPublisher().unpublishAllDevices(this);
     }
 

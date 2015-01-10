@@ -7,7 +7,6 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.variable.manager;
 
-import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.variable.*;
 import com.whizzosoftware.hobson.api.variable.telemetry.TelemetryInterval;
 import com.whizzosoftware.hobson.api.variable.telemetry.TemporalValue;
@@ -15,12 +14,14 @@ import com.whizzosoftware.hobson.api.variable.telemetry.TemporalValue;
 import java.util.*;
 
 public class MockVariableManager implements VariableManager {
-    public final Map<String,HobsonVariable> publishedVariables = new HashMap<String,HobsonVariable>();
-    public final List<VariableUpdate> firedUpdates = new ArrayList<VariableUpdate>();
+    public MockVariablePublisher publisher;
 
-    @Override
-    public void publishGlobalVariable(String userId, String hubId, String pluginId, String name, Object value, HobsonVariable.Mask mask) {
+    public MockVariableManager() {
+        this(new MockVariablePublisher());
+    }
 
+    public MockVariableManager(MockVariablePublisher publisher) {
+        this.publisher = publisher;
     }
 
     @Override
@@ -31,31 +32,6 @@ public class MockVariableManager implements VariableManager {
     @Override
     public HobsonVariable getGlobalVariable(String userId, String hubId, String name) {
         return null;
-    }
-
-    @Override
-    public void unpublishGlobalVariable(String userId, String hubId, String pluginId, String name) {
-
-    }
-
-    @Override
-    public void publishDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name, Object value, HobsonVariable.Mask mask) {
-        publishedVariables.put(pluginId + "." + deviceId, new MockHobsonVariable(name, value, mask));
-    }
-
-    @Override
-    public void unpublishDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name) {
-
-    }
-
-    @Override
-    public void unpublishAllDeviceVariables(String userId, String hubId, String pluginId, String deviceId) {
-
-    }
-
-    @Override
-    public void unpublishAllPluginVariables(String userId, String hubId, String pluginId) {
-
     }
 
     @Override
@@ -70,7 +46,7 @@ public class MockVariableManager implements VariableManager {
 
     @Override
     public HobsonVariable getDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name) {
-        return publishedVariables.get(pluginId + "." + deviceId);
+        return publisher.getPublishedVariables().get(pluginId + "." + deviceId);
     }
 
     @Override
@@ -94,14 +70,7 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public void fireVariableUpdateNotification(String userId, String hubId, HobsonPlugin plugin, VariableUpdate update) {
-        firedUpdates.add(update);
-    }
-
-    @Override
-    public void fireVariableUpdateNotifications(String userId, String hubId, HobsonPlugin plugin, List<VariableUpdate> updates) {
-        for (VariableUpdate u : updates) {
-            firedUpdates.add(u);
-        }
+    public VariablePublisher getPublisher() {
+        return publisher;
     }
 }
