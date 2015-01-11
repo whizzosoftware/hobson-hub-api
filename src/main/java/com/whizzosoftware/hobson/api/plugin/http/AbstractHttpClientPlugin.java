@@ -23,7 +23,7 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
     private HttpChannel httpChannel;
 
     public AbstractHttpClientPlugin(String pluginId) {
-        this(pluginId, new HttpComponentsChannel());
+        this(pluginId, new AsyncHttpClientChannel());
     }
 
     public AbstractHttpClientPlugin(String pluginId, HttpChannel httpChannel) {
