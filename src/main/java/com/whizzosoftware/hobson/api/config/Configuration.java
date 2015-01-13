@@ -43,7 +43,14 @@ public class Configuration {
      * @return a Dictionary instance
      */
     public Dictionary getPropertyDictionary() {
-        return new Hashtable(); // TODO
+        Hashtable<String,Object> ht = new Hashtable<>();
+        for (String name : propertyMap.keySet()) {
+            ConfigurationProperty cp = propertyMap.get(name);
+            if (cp != null && cp.getValue() != null) {
+                ht.put(name, cp.getValue());
+            }
+        }
+        return ht;
     }
 
     /**
@@ -54,7 +61,10 @@ public class Configuration {
     public Map<String,Object> getPropertyMap() {
         Map<String,Object> map = new HashMap<>();
         for (String name : propertyMap.keySet()) {
-            map.put(name, propertyMap.get(name).getValue().toString());
+            ConfigurationProperty cp = propertyMap.get(name);
+            if (cp != null && cp.getValue() != null) {
+                map.put(name, cp.getValue().toString());
+            }
         }
         return map;
     }
