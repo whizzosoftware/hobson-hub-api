@@ -23,7 +23,9 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
     private HttpChannel httpChannel;
 
     public AbstractHttpClientPlugin(String pluginId) {
-        this(pluginId, new AsyncHttpClientChannel());
+        super(pluginId);
+        this.httpChannel = new AsyncHttpClientChannel((int)(Math.max(getRefreshInterval() * 1000 / 2, 5000)));
+        this.httpChannel.setPlugin(this);
     }
 
     public AbstractHttpClientPlugin(String pluginId, HttpChannel httpChannel) {
