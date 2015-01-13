@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 	<groupId>com.whizzosoftware.hobson.hub</groupId>
     <artifactId>hobson-hub-api</artifactId>
-    <version>0.3.2-SNAPSHOT</version>
+    <version>0.3.2</version>
     <packaging>jar</packaging>
     <name>Hobson Hub API</name>
     <description>The core API of the Hobson Hub.</description>
@@ -157,7 +157,7 @@
     <scm>
         <connection>scm:git:ssh://git@github.com/whizzosoftware/hobson-hub-api.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/whizzosoftware/hobson-hub-api.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>hobson-hub-api-0.3.2</tag>
     </scm>
     <distributionManagement>
         <snapshotRepository>
