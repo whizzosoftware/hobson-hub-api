@@ -16,3 +16,4 @@ The API plugin provides provides the application programming interface that all 
 with the Hobson Hub.
 
 [![Build Status](https://api.travis-ci.org/whizzosoftware/hobson-hub-api.png)](https://api.travis-ci.org/whizzosoftware/hobson-hub-api.png)
+[![Coverage Status](https://coveralls.io/repos/whizzosoftware/hobson-hub-api/badge.svg)](https://coveralls.io/r/whizzosoftware/hobson-hub-api)
