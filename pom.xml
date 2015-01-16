@@ -7,6 +7,22 @@
     <packaging>jar</packaging>
     <name>Hobson Hub API</name>
     <description>The core API of the Hobson Hub.</description>
+    <url>https://github.com/whizzosoftware/hobson-hub-api</url>
+    <licenses>
+        <license>
+            <name>Eclise Public License, Version 1.0</name>
+            <url>https://www.eclipse.org/legal/epl-v10.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Dan Noguerol</name>
+            <email>oss@whizzosoftware.com</email>
+            <organization>Whizzo Software LLC</organization>
+            <organizationUrl>http://www.whizzosoftware.com</organizationUrl>
+        </developer>
+    </developers>
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>

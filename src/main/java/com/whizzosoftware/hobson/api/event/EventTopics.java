@@ -20,6 +20,13 @@ public class EventTopics {
     public static final String DISCO_TOPIC = "com/whizzosoftware/hobson/event/disco";
     public static final String CONFIG_TOPIC = "com/whizzosoftware/hobson/event/config";
 
+    /**
+     * Creates a protocol-specific discovery topic name that can be used to listen for DeviceAdvertisementEvents.
+     *
+     * @param protocolId the protocol ID of interest
+     *
+     * @return a topic name
+     */
     public static String createDiscoTopic(String protocolId) {
         return DISCO_TOPIC + "/" + protocolId;
     }
