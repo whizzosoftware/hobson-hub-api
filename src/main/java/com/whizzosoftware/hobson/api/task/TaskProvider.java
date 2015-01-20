@@ -65,10 +65,9 @@ public interface TaskProvider {
      * Updates an existing task.
      *
      * @param taskId the ID of the task
-     * @param name the new task name
      * @param data the task data
      */
-    public void updateTask(String taskId, String name, Object data);
+    public void updateTask(String taskId, Object data);
 
     /**
      * Removes an existing task.

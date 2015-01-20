@@ -83,11 +83,22 @@ public interface TaskManager {
      * @param userId the user ID that owns the hub
      * @param hubId the hub ID
      * @param providerId the task provider ID adding the task
-     * @param task the task to add
+     * @param task the task data
      *
      * @since hobson-hub-api 0.1.6
      */
     public void addTask(String userId, String hubId, String providerId, Object task);
+
+    /**
+     * Updates an existing task. This should be called by task providers.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param providerId the task provider ID adding the task
+     * @param taskId the ID of the task being updated
+     * @param task the task data
+     */
+    public void updateTask(String userId, String hubId, String providerId, String taskId, Object task);
 
     /**
      * Deletes a previously added task.
