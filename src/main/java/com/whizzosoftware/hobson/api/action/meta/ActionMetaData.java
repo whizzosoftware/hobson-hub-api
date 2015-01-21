@@ -81,6 +81,7 @@ public class ActionMetaData {
         BOOLEAN,
         NUMBER,
         STRING,
+        COLOR,
         ENUMERATION
     }
 }
