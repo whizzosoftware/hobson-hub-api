@@ -293,8 +293,18 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
      * @param device the device to publish
      */
     protected void publishDevice(final HobsonDevice device) {
+        publishDevice(device, false);
+    }
+
+    /**
+     * Publishes a new device and invokes its start() method.
+     *
+     * @param device the device to publish
+     * @param republish indicates whether this is a re-publish of a previously published device (if this is false, a re-publish will throw an exception)
+     */
+    protected void publishDevice(final HobsonDevice device, boolean republish) {
         validateDeviceManager();
-        deviceManager.getPublisher().publishDevice(this, device);
+        deviceManager.getPublisher().publishDevice(this, device, republish);
     }
 
     /**

@@ -26,6 +26,17 @@ public interface DevicePublisher {
     public void publishDevice(HobsonPlugin plugin, HobsonDevice device);
 
     /**
+     * Publishes a device to the device registry and starts it.
+     *
+     * @param plugin the HobsonPlugin instance performing the action
+     * @param device the HobsonDevice to publish
+     * @param republish indicates whether this is a forced republish of an existing device
+     *
+     * @since hobson-hub-api 0.4.2
+     */
+    public void publishDevice(HobsonPlugin plugin, HobsonDevice device, boolean republish);
+
+    /**
      * Stops and unpublishes a device associated with a specific plugin. This allows plugins that require it
      * (e.g. the RadioRA plugin) to unpublish individual devices.
      *

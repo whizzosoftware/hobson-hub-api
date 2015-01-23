@@ -17,6 +17,11 @@ public class MockDevicePublisher implements DevicePublisher {
 
     @Override
     public void publishDevice(HobsonPlugin plugin, HobsonDevice device) {
+        publishDevice(plugin, device, false);
+    }
+
+    @Override
+    public void publishDevice(HobsonPlugin plugin, HobsonDevice device, boolean republish) {
         publishedDevices.add(device);
     }
 
