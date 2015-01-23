@@ -13,6 +13,7 @@ package com.whizzosoftware.hobson.api.device;
  * @author Dan Noguerol
  */
 public enum DeviceType {
+    UNKNOWN,
     LIGHTBULB,
     SWITCH,
     THERMOSTAT,
