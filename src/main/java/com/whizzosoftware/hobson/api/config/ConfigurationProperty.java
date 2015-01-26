@@ -7,9 +7,11 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.config;
 
+import java.util.List;
+
 /**
  * Encapsulates information about a configurable property. It is comprised of two parts -- the metadata about
- * the property and its value.
+ * the property and its (optional) value.
  *
  * @author Dan Noguerol
  */
@@ -36,6 +38,14 @@ public class ConfigurationProperty {
 
     public ConfigurationPropertyMetaData.Type getType() {
         return metaData.getType();
+    }
+
+    public boolean hasEnumValues() {
+        return metaData.hasEnumValues();
+    }
+
+    public List<ConfigurationEnumValue> getEnumValues() {
+        return metaData.getEnumValues();
     }
 
     public boolean hasValue() {
