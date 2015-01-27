@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device;
 
+import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class MockAbstractHobsonDevice extends AbstractHobsonDevice {
     }
 
     @Override
-    public void onStartup() {
+    public void onStartup(Configuration config) {
         wasStartupCalled = true;
     }
 

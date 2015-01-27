@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
+import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.device.MockAbstractHobsonDevice;
 import com.whizzosoftware.hobson.api.device.MockDeviceManager;
@@ -138,7 +139,7 @@ public class AbstractHobsonPluginTest {
     public void testOnDeviceConfigurationUpdateWithNoDeviceManager() {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.onDeviceConfigurationUpdate("id", new Hashtable());
+            plugin.onDeviceConfigurationUpdate("id", new Configuration());
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }

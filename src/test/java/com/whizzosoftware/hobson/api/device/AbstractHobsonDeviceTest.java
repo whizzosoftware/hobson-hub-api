@@ -8,6 +8,8 @@
 package com.whizzosoftware.hobson.api.device;
 
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
+import com.whizzosoftware.hobson.api.config.Configuration;
+import com.whizzosoftware.hobson.api.config.ConfigurationProperty;
 import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.MockAbstractHobsonPlugin;
@@ -60,7 +62,7 @@ public class AbstractHobsonDeviceTest {
         d.setDefaultName("deviceName");
 
         assertFalse(d.wasStartupCalled);
-        d.onStartup();
+        d.onStartup(new Configuration());
         assertTrue(d.wasStartupCalled);
     }
 
@@ -108,9 +110,9 @@ public class AbstractHobsonDeviceTest {
         HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         assertEquals("did", d.getName());
-        Dictionary dic = new Hashtable();
-        dic.put("name", "foo");
-        d.onDeviceConfigurationUpdate(dic);
+        Configuration config = new Configuration();
+        config.addProperty(ConfigurationProperty.create("name", "foo"));
+        d.onDeviceConfigurationUpdate(config);
         assertEquals("foo", d.getName());
     }
 

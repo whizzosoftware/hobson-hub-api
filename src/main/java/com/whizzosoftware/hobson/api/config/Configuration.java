@@ -18,6 +18,27 @@ public class Configuration {
     private final Map<String,ConfigurationProperty> propertyMap = new HashMap<>();
 
     /**
+     * Constructor.
+     */
+    public Configuration() {}
+
+    /**
+     * Constructor.
+     *
+     * @param dic a Dictionary to use for starting values
+     */
+    public Configuration(Dictionary dic) {
+        Enumeration e = dic.keys();
+        while (e.hasMoreElements()) {
+            Object o = e.nextElement();
+            if (o instanceof String) {
+                String key = (String)o;
+                addProperty(ConfigurationProperty.create(key, dic.get(key)));
+            }
+        }
+    }
+
+    /**
      * Returns all configuration properties.
      *
      * @return a Collection of ConfigurationProperty instances
@@ -35,6 +56,22 @@ public class Configuration {
      */
     public ConfigurationProperty getProperty(String id) {
         return propertyMap.get(id);
+    }
+
+    /**
+     * Returns the value of a specific configuration property.
+     *
+     * @param id the ID of the desired property
+     *
+     * @return the value or null if the configuration property is not found
+     */
+    public Object getPropertyValue(String id) {
+        ConfigurationProperty p = propertyMap.get(id);
+        if (p != null) {
+            return p.getValue();
+        } else {
+            return null;
+        }
     }
 
     /**

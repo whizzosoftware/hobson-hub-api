@@ -19,6 +19,10 @@ public class ConfigurationProperty {
     private ConfigurationPropertyMetaData metaData;
     private Object value;
 
+    static public ConfigurationProperty create(String name, Object value) {
+        return new ConfigurationProperty(new ConfigurationPropertyMetaData(name), value);
+    }
+
     public ConfigurationProperty(ConfigurationPropertyMetaData metaData, Object value) {
         this.metaData = metaData;
         this.value = value;

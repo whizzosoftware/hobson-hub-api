@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device;
 
+import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
@@ -97,9 +98,9 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     }
 
     @Override
-    public void onDeviceConfigurationUpdate(Dictionary config) {
+    public void onDeviceConfigurationUpdate(Configuration config) {
         if (config != null) {
-            String s = (String)config.get("name");
+            String s = (String)config.getPropertyValue("name");
             if (s != null) {
                 this.name = s;
             }

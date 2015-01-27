@@ -10,6 +10,7 @@ package com.whizzosoftware.hobson.api.plugin;
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.action.HobsonAction;
 import com.whizzosoftware.hobson.api.action.ActionManager;
+import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.device.HobsonDevice;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
@@ -218,7 +219,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public void onDeviceConfigurationUpdate(String deviceId, Dictionary config) {
+    public void onDeviceConfigurationUpdate(String deviceId, Configuration config) {
         getDevice(deviceId).getRuntime().onDeviceConfigurationUpdate(config);
     }
 

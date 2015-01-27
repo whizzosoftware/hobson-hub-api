@@ -7,7 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
-import java.util.Dictionary;
+import com.whizzosoftware.hobson.api.config.Configuration;
 
 public class MockAbstractHobsonPlugin extends AbstractHobsonPlugin {
     private String name;
@@ -18,7 +18,7 @@ public class MockAbstractHobsonPlugin extends AbstractHobsonPlugin {
     }
 
     @Override
-    public void onStartup(Dictionary config) {
+    public void onStartup(Configuration config) {
 
     }
 
@@ -38,7 +38,7 @@ public class MockAbstractHobsonPlugin extends AbstractHobsonPlugin {
     }
 
     @Override
-    public void onPluginConfigurationUpdate(Dictionary config) {
+    public void onPluginConfigurationUpdate(Configuration config) {
 
     }
 
