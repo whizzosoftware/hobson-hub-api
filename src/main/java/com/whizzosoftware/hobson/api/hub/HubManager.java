@@ -74,21 +74,6 @@ public interface HubManager {
     public void setHubLocation(String userId, String hubId, HubLocation location);
 
     /**
-     * Retrieves the current Hub image.
-     *
-     * @return an ImageInputStream instance
-     * @throws com.whizzosoftware.hobson.api.HobsonNotFoundException if an image does not exist
-     */
-    public ImageInputStream getHubImage();
-
-    /**
-     * Sets the current Hub image.
-     *
-     * @param iis an ImageInputStream instance
-     */
-    public void setHubImage(ImageInputStream iis);
-
-    /**
      * Returns the e-mail configuration of the Hub.
      *
      * @param userId the user ID that owns the hub
