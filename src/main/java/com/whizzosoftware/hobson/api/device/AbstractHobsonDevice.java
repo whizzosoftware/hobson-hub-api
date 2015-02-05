@@ -28,6 +28,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     private String id;
     private String name;
     private String defaultName;
+    private DeviceError deviceError;
     private final List<ConfigurationPropertyMetaData> configMeta = new ArrayList<>();
 
     /**
@@ -64,6 +65,11 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
         } else {
             return getDefaultName();
         }
+    }
+
+    @Override
+    public DeviceError getError() {
+        return deviceError;
     }
 
     @Override
@@ -130,6 +136,15 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
      */
     protected void setDefaultName(String defaultName) {
         this.defaultName = defaultName;
+    }
+
+    /**
+     * Sets the error information for this device and puts the device into an error state.
+     *
+     * @param deviceError the device error information
+     */
+    protected void setError(DeviceError deviceError) {
+        this.deviceError = deviceError;
     }
 
     /**

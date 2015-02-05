@@ -43,6 +43,16 @@ public class MockAbstractHobsonDevice extends AbstractHobsonDevice {
     }
 
     @Override
+    public boolean hasError() {
+        return false;
+    }
+
+    @Override
+    public DeviceError getError() {
+        return null;
+    }
+
+    @Override
     public void onSetVariable(String variableName, Object value) {
         setVariableRequests.put(variableName, value);
     }

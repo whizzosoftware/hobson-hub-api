@@ -11,6 +11,7 @@ import com.whizzosoftware.hobson.api.variable.telemetry.TelemetryInterval;
 import com.whizzosoftware.hobson.api.variable.telemetry.TemporalValue;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * An interface for managing global and device variables. The variable manager is a separate entity because there are
@@ -117,6 +118,21 @@ public interface VariableManager {
      * @since hobson-hub-api 0.1.6
      */
     public Long setDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name, Object value);
+
+    /**
+     * Sets multiple device variables.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param pluginId the plugin ID of the device that published the variable
+     * @param deviceId the device ID that published the variable
+     * @param values a Map of variable name to variable value
+     *
+     * @return a Map of variable name to last update time prior to this call
+     *
+     * @since hobson-hub-api 0.5.0
+     */
+    public Map<String,Long> setDeviceVariables(String userId, String hubId, String pluginId, String deviceId, Map<String,Object> values);
 
     /**
      * Writes telemetry data for a device variable.

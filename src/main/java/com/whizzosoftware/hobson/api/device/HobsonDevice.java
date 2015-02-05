@@ -47,6 +47,20 @@ public interface HobsonDevice {
     public DeviceType getType();
 
     /**
+     * Indicates whether this device is in an error state.
+     *
+     * @return a boolean
+     */
+    public boolean hasError();
+
+    /**
+     * Returns error information if the device is in an error state (or null otherwise).
+     *
+     * @return a String containing an error message
+     */
+    public DeviceError getError();
+
+    /**
      * Returns the name of the device's "preferred variable" -- the one variable it deems the most important to expose
      * to the user.
      *

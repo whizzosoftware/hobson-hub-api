@@ -60,6 +60,11 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
+    public Map<String, Long> setDeviceVariables(String userId, String hubId, String pluginId, String deviceId, Map<String, Object> values) {
+        return null;
+    }
+
+    @Override
     public void writeDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, Object value, long time) {
 
     }
