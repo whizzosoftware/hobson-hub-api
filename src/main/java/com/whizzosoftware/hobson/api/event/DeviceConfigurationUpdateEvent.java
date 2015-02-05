@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event;
 
+import com.whizzosoftware.hobson.api.config.Configuration;
+
 import java.util.Dictionary;
 import java.util.Map;
 
@@ -22,7 +24,7 @@ public class DeviceConfigurationUpdateEvent extends HobsonEvent {
     private static final String PROP_DEVICE_ID = "deviceId";
     private static final String PROP_CONFIGURATION = "configuration";
 
-    public DeviceConfigurationUpdateEvent(String pluginId, String deviceId, Dictionary configuration) {
+    public DeviceConfigurationUpdateEvent(String pluginId, String deviceId, Configuration configuration) {
         super(EventTopics.CONFIG_TOPIC, ID);
         setProperty(PROP_PLUGIN_ID, pluginId);
         setProperty(PROP_DEVICE_ID, deviceId);
@@ -41,7 +43,7 @@ public class DeviceConfigurationUpdateEvent extends HobsonEvent {
         return (String)getProperty(PROP_DEVICE_ID);
     }
 
-    public Dictionary getConfiguration() {
-        return (Dictionary)getProperty(PROP_CONFIGURATION);
+    public Configuration getConfiguration() {
+        return (Configuration)getProperty(PROP_CONFIGURATION);
     }
 }

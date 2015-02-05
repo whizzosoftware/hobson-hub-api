@@ -7,7 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device;
 
-import java.util.Dictionary;
+import com.whizzosoftware.hobson.api.config.Configuration;
 
 /**
  * Interface for invoking methods related to device runtime functions including lifecycle callbacks.
@@ -33,8 +33,10 @@ public interface HobsonDeviceRuntime {
 
     /**
      * Callback method invoked when the device is started.
+     *
+     * @param config the current device configuration
      */
-    public void onStartup();
+    public void onStartup(Configuration config);
 
     /**
      * Callback method invoked when the device is stopped.
@@ -44,9 +46,9 @@ public interface HobsonDeviceRuntime {
     /**
      * Called when the device's configuration has changed.
      *
-     * @param config the updated configuration
+     * @param config the updated new configuration
      */
-    public void onDeviceConfigurationUpdate(Dictionary config);
+    public void onDeviceConfigurationUpdate(Configuration config);
 
     /**
      * Called when a device should set one of its variables. The actual setting of the variable should be performed

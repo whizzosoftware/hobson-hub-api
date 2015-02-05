@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.plugin.channel;
 
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
+import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.plugin.AbstractHobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.PluginStatus;
 import io.netty.bootstrap.Bootstrap;
@@ -50,7 +51,7 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
     }
 
     @Override
-    public void onStartup(Dictionary config) {
+    public void onStartup(Configuration config) {
         if (processConfig(config)) {
             connectionEventLoopGroup = createEventLoopGroup();
             attemptConnect();
@@ -58,7 +59,7 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
     }
 
     @Override
-    public void onPluginConfigurationUpdate(Dictionary config) {
+    public void onPluginConfigurationUpdate(Configuration config) {
         if (processConfig(config)) {
             connectionEventLoopGroup = createEventLoopGroup();
             attemptConnect();
@@ -168,17 +169,17 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
      */
     abstract protected void onChannelDisconnected();
 
-    private boolean processConfig(Dictionary config) {
+    private boolean processConfig(Configuration config) {
         boolean didConfigChange = false;
 
         if (config != null) {
-            String s = (String) config.get("serial.port");
+            String s = (String) config.getPropertyValue("serial.port");
             if (s != null && s.trim().length() > 0 && !s.equals(serialDevice)) {
                 serialDevice = s;
                 setRemoteAddress(new RxtxDeviceAddress(serialDevice));
                 didConfigChange = true;
             } else {
-                s = (String) config.get("serial.hostname");
+                s = (String) config.getPropertyValue("serial.hostname");
                 if (s != null && s.trim().length() > 0 && !s.equals(serialDevice)) {
                     serialDevice = s;
                     setRemoteAddress(new InetSocketAddress(serialDevice, 4999));

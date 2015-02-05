@@ -9,6 +9,7 @@ package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.action.ActionManager;
 import com.whizzosoftware.hobson.api.action.HobsonAction;
+import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
 import com.whizzosoftware.hobson.api.disco.DiscoManager;
 import com.whizzosoftware.hobson.api.event.EventListener;
@@ -188,7 +189,7 @@ public interface HobsonPluginRuntime extends EventListener {
      *
      * @param config the plugin configuration
      */
-    public void onStartup(Dictionary config);
+    public void onStartup(Configuration config);
 
     /**
      * Callback method invoked when the plugin shuts down.
@@ -206,7 +207,7 @@ public interface HobsonPluginRuntime extends EventListener {
      *
      * @param config the new configuration
      */
-    public void onPluginConfigurationUpdate(Dictionary config);
+    public void onPluginConfigurationUpdate(Configuration config);
 
     /**
      * Called when the plugin device's configuration has changed.
@@ -214,7 +215,7 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param deviceId the device ID
      * @param config the new configuration
      */
-    public void onDeviceConfigurationUpdate(String deviceId, Dictionary config);
+    public void onDeviceConfigurationUpdate(String deviceId, Configuration config);
 
     /**
      * Callback when a request to set a device variable has been received.
