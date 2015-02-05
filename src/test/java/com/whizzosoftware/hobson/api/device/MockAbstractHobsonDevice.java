@@ -43,11 +43,6 @@ public class MockAbstractHobsonDevice extends AbstractHobsonDevice {
     }
 
     @Override
-    public boolean hasError() {
-        return false;
-    }
-
-    @Override
     public DeviceError getError() {
         return null;
     }

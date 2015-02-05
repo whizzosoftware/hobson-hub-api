@@ -68,6 +68,11 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     }
 
     @Override
+    public boolean hasError() {
+        return (deviceError != null);
+    }
+
+    @Override
     public DeviceError getError() {
         return deviceError;
     }
