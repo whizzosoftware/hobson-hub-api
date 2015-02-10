@@ -31,7 +31,6 @@ import io.netty.util.concurrent.Future;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Dictionary;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -65,19 +64,13 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         this.eventLoop = eventLoop;
     }
 
+    /*
+     * HobsonPlugin methods
+     */
+
     @Override
     public String getId() {
         return pluginId;
-    }
-
-    @Override
-    public String getVersion() {
-        return version;
-    }
-
-    @Override
-    public PluginStatus getStatus() {
-        return status;
     }
 
     @Override
@@ -91,22 +84,8 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public PluginType getType() {
-        return PluginType.PLUGIN;
-    }
-
-    @Override
-    public boolean isConfigurable() {
-        return (configMetaData.size() > 0);
-    }
-
-    @Override
     public long getRefreshInterval() {
         return 0;
-    }
-
-    @Override
-    public void onRefresh() {
     }
 
     @Override
@@ -115,8 +94,128 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
+    public PluginStatus getStatus() {
+        return status;
+    }
+
+    @Override
+    public PluginType getType() {
+        return PluginType.PLUGIN;
+    }
+
+    @Override
+    public String getVersion() {
+        return version;
+    }
+
+    @Override
+    public boolean isConfigurable() {
+        return (configMetaData.size() > 0);
+    }
+
+    /*
+     * HobsonPluginRuntime methods
+     */
+
+    @Override
+    public void executeInEventLoop(Runnable runnable) {
+        eventLoop.execute(runnable);
+    }
+
+    @Override
+    public void fireVariableUpdateNotification(VariableUpdate variableUpdate) {
+        validateVariableManager();
+        variableManager.getPublisher().fireVariableUpdateNotification(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this, variableUpdate);
+    }
+
+    @Override
+    public void fireVariableUpdateNotifications(List<VariableUpdate> updates) {
+        validateVariableManager();
+        variableManager.getPublisher().fireVariableUpdateNotifications(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this, updates);
+    }
+
+    @Override
+    public HobsonVariable getDeviceVariable(String deviceId, String variableName) {
+        validateVariableManager();
+        return variableManager.getDeviceVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), deviceId, variableName);
+    }
+
+    @Override
+    public void onDeviceConfigurationUpdate(String deviceId, Configuration config) {
+        getDevice(deviceId).getRuntime().onDeviceConfigurationUpdate(config);
+    }
+
+    @Override
+    public void onHobsonEvent(HobsonEvent event) {
+        if (event instanceof VariableUpdateRequestEvent) {
+            VariableUpdateRequestEvent vure = (VariableUpdateRequestEvent)event;
+            if (vure.getPluginId() == null || vure.getPluginId().equals(getId())) {
+                onSetDeviceVariable(vure.getDeviceId(), vure.getName(), vure.getValue());
+            }
+        }
+    }
+
+    @Override
+    public void onRefresh() {
+    }
+
+    @Override
+    public void onSetDeviceVariable(String deviceId, String variableName, Object value) {
+        getDevice(deviceId).getRuntime().onSetVariable(variableName, value);
+    }
+
+    @Override
+    public void onShutdown() {
+        // unpublish all tasks published by this plugin
+        if (taskManager != null) {
+            taskManager.getPublisher().unpublishAllTaskProviders(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId());
+        }
+
+        // unpublish all actions published by this plugin
+        if (actionManager != null) {
+            actionManager.getPublisher().unpublishAllActions(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId());
+        }
+    }
+
+    @Override
+    public void publishAction(HobsonAction action) {
+        validateActionManager();
+        actionManager.getPublisher().publishAction(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, action);
+    }
+
+    @Override
+    public void publishDeviceVariable(String deviceId, String name, Object value, HobsonVariable.Mask mask) {
+        validateVariableManager();
+        variableManager.getPublisher().publishDeviceVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), deviceId, name, value, mask);
+    }
+
+    @Override
+    public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask) {
+        validateVariableManager();
+        variableManager.getPublisher().publishGlobalVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), name, value, mask);
+    }
+
+    @Override
+    public void publishTaskProvider(TaskProvider taskProvider) {
+        validateTaskManager();
+        taskProvider.setActionManager(actionManager);
+        taskManager.getPublisher().publishTaskProvider(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, taskProvider);
+    }
+
+    @Override
+    public void scheduleAtFixedRateInEventLoop(Runnable runnable, long initialDelay, long time, TimeUnit unit) {
+        eventLoop.scheduleAtFixedRate(runnable, initialDelay, time, unit);
+    }
+
+    @Override
     public void setActionManager(ActionManager actionManager) {
         this.actionManager = actionManager;
+    }
+
+    @Override
+    public void setDeviceConfigurationProperty(String id, String name, Object value, boolean overwrite) {
+        validateDeviceManager();
+        deviceManager.setDeviceConfigurationProperty(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), id, name, value, overwrite);
     }
 
     @Override
@@ -155,88 +254,13 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public void executeInEventLoop(Runnable runnable) {
-        eventLoop.execute(runnable);
-    }
-
-    @Override
     public Future submitInEventLoop(Runnable runnable) {
         return eventLoop.submit(runnable);
     }
 
-    @Override
-    public void scheduleAtFixedRateInEventLoop(Runnable runnable, long initialDelay, long time, TimeUnit unit) {
-        eventLoop.scheduleAtFixedRate(runnable, initialDelay, time, unit);
-    }
-
-    @Override
-    public void setDeviceConfigurationProperty(String id, String name, Object value, boolean overwrite) {
-        validateDeviceManager();
-        deviceManager.setDeviceConfigurationProperty(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), id, name, value, overwrite);
-    }
-
-    @Override
-    public HobsonVariable getDeviceVariable(String deviceId, String variableName) {
-        validateVariableManager();
-        return variableManager.getDeviceVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), deviceId, variableName);
-    }
-
-    @Override
-    public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask) {
-        validateVariableManager();
-        variableManager.getPublisher().publishGlobalVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), name, value, mask);
-    }
-
-    @Override
-    public void publishDeviceVariable(String deviceId, String name, Object value, HobsonVariable.Mask mask) {
-        validateVariableManager();
-        variableManager.getPublisher().publishDeviceVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), deviceId, name, value, mask);
-    }
-
-    @Override
-    public void publishTaskProvider(TaskProvider taskProvider) {
-        validateTaskManager();
-        taskProvider.setActionManager(actionManager);
-        taskManager.publishTaskProvider(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, taskProvider);
-    }
-
-    @Override
-    public void publishAction(HobsonAction action) {
-        validateActionManager();
-        actionManager.publishAction(action);
-    }
-
-    @Override
-    public void fireVariableUpdateNotifications(List<VariableUpdate> updates) {
-        validateVariableManager();
-        variableManager.getPublisher().fireVariableUpdateNotifications(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this, updates);
-    }
-
-    @Override
-    public void fireVariableUpdateNotification(VariableUpdate variableUpdate) {
-        validateVariableManager();
-        variableManager.getPublisher().fireVariableUpdateNotification(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this, variableUpdate);
-    }
-
-    @Override
-    public void onDeviceConfigurationUpdate(String deviceId, Configuration config) {
-        getDevice(deviceId).getRuntime().onDeviceConfigurationUpdate(config);
-    }
-
-    @Override
-    public void onHobsonEvent(HobsonEvent event) {
-        if (event instanceof VariableUpdateRequestEvent) {
-            VariableUpdateRequestEvent vure = (VariableUpdateRequestEvent)event;
-            if (vure.getPluginId() == null || vure.getPluginId().equals(getId())) {
-                onSetDeviceVariable(vure.getDeviceId(), vure.getName(), vure.getValue());
-            }
-        }
-    }
-
-    @Override
-    public void onSetDeviceVariable(String deviceId, String variableName, Object value) {
-        getDevice(deviceId).getRuntime().onSetVariable(variableName, value);
-    }
+    /*
+     * Other methods
+     */
 
     /**
      * Sets the plugin version string.

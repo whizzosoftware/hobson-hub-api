@@ -1,6 +1,7 @@
 package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.config.Configuration;
+import com.whizzosoftware.hobson.api.image.ImageInputStream;
 
 import java.io.File;
 import java.util.Map;
@@ -48,6 +49,17 @@ public interface PluginManager {
      * @return a Dictionary (or null if there is no configuration)
      */
     public Configuration getPluginConfiguration(String userId, String hubId, HobsonPlugin plugin);
+
+    /**
+     * Returns a plugin's icon.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param pluginId the plugin ID
+     *
+     * @return an ImageInputStream (or null if the plugin has no icon and no default was found)
+     */
+    public ImageInputStream getPluginIcon(String userId, String hubId, String pluginId);
 
     /**
      * Returns the plugin level configuration.

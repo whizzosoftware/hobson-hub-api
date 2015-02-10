@@ -17,48 +17,6 @@ import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
  */
 public interface HobsonPlugin {
     /**
-     * Returns the plugin ID.
-     *
-     * @return the plugin ID
-     */
-    public String getId();
-
-    /**
-     * Returns the plugin name.
-     *
-     * @return the plugin name
-     */
-    public String getName();
-
-    /**
-     * Returns the plugin version string.
-     *
-     * @return the plugin version
-     */
-    public String getVersion();
-
-    /**
-     * Returns the type of plugin.
-     *
-     * @return a PluginType instance
-     */
-    public PluginType getType();
-
-    /**
-     * Returns the status of the plugin.
-     *
-     * @return a PluginStatus instance
-     */
-    public PluginStatus getStatus();
-
-    /**
-     * Indicates whether this plugin is configurable.
-     *
-     * @return a boolean
-     */
-    public boolean isConfigurable();
-
-    /**
      * Returns the configuration property meta-data associated with this plugin.
      *
      * @return a Collection of ConfigurationPropertyMetaData objects
@@ -73,6 +31,20 @@ public interface HobsonPlugin {
     public String[] getEventTopics();
 
     /**
+     * Returns the plugin ID.
+     *
+     * @return the plugin ID
+     */
+    public String getId();
+
+    /**
+     * Returns the plugin name.
+     *
+     * @return the plugin name
+     */
+    public String getName();
+
+    /**
      * Returns how often the refresh() method will be called.
      *
      * @return the refresh interval in seconds (a 0 value means never)
@@ -85,4 +57,32 @@ public interface HobsonPlugin {
      * @return a HobsonPluginExecution instance (or null if this object doesn't support a runtime)
      */
     public HobsonPluginRuntime getRuntime();
+
+    /**
+     * Returns the status of the plugin.
+     *
+     * @return a PluginStatus instance
+     */
+    public PluginStatus getStatus();
+
+    /**
+     * Returns the type of plugin.
+     *
+     * @return a PluginType instance
+     */
+    public PluginType getType();
+
+    /**
+     * Returns the plugin version string.
+     *
+     * @return the plugin version
+     */
+    public String getVersion();
+
+    /**
+     * Indicates whether this plugin is configurable.
+     *
+     * @return a boolean
+     */
+    public boolean isConfigurable();
 }

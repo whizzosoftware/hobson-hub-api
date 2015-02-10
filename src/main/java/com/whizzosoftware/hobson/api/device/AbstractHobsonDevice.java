@@ -42,6 +42,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
         this.plugin = plugin;
         this.id = id;
 
+        // register this device's "name" configuration property
         addConfigurationMetaData(new ConfigurationPropertyMetaData("name", "Name", "A descriptive name for this device", ConfigurationPropertyMetaData.Type.STRING));
     }
 

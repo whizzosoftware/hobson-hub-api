@@ -18,24 +18,17 @@ import java.util.Map;
  */
 public interface ActionManager {
     /**
-     * Publishes a new action.
-     *
-     * @param action the HobsonAction instance
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    public void publishAction(HobsonAction action);
-
-    /**
      * Executes an action.
      *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
      * @param pluginId the plugin ID associated with the action
      * @param actionId the action ID
      * @param properties the map of arguments to use for the execution
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void executeAction(String pluginId, String actionId, Map<String,Object> properties);
+    public void executeAction(String userId, String hubId, String pluginId, String actionId, Map<String,Object> properties);
 
     /**
      * Retrieves all published actions.
@@ -62,4 +55,6 @@ public interface ActionManager {
      * @since hobson-hub-api 0.1.6
      */
     public HobsonAction getAction(String userId, String hubId, String pluginId, String actionId);
+
+    public ActionPublisher getPublisher();
 }
