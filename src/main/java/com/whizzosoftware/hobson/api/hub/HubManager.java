@@ -135,8 +135,8 @@ public interface HubManager {
      *
      * @param userId the user ID that owns the hub
      * @param hubId the hub ID
-     * @param startIndex the starting index into the log file
-     * @param endIndex the ending index into the log file
+     * @param startIndex the starting index into the log file (or -1 if you want from the endIndex to end of file)
+     * @param endIndex the ending index into the log file (or -1 if you want from the startIndex to end of file)
      *
      * @return a LogContent instance
      */
