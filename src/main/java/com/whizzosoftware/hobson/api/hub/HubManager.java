@@ -7,8 +7,6 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.hub;
 
-import com.whizzosoftware.hobson.api.image.ImageInputStream;
-
 /**
  * A manager interface for Hub-related functions.
  *
@@ -93,6 +91,28 @@ public interface HubManager {
      * @param config an EmailConfiguration instance
      */
     public void setHubEmailConfiguration(String userId, String hubId, EmailConfiguration config);
+
+    /**
+     * Sends a test e-mail message using the provided e-mail configuration.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param config an EmailConfiguration instance
+     *
+     * @throws com.whizzosoftware.hobson.api.HobsonInvalidRequestException if the e-mail configuration is invalid
+     */
+    public void sendTestEmail(String userId, String hubId, EmailConfiguration config);
+
+    /**
+     * Sends an e-mail message using the provided e-mail configuration.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param recipientAddress the e-mail address of the recipient
+     * @param subject the e-mail subject line
+     * @param body the e-mail message body
+     */
+    public void sendEmail(String userId, String hubId, String recipientAddress, String subject, String body);
 
     /**
      * Indicates whether the Hub setup wizard has been completed.
