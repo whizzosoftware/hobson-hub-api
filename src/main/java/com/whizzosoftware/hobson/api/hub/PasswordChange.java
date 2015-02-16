@@ -13,6 +13,8 @@ package com.whizzosoftware.hobson.api.hub;
  * @author Dan Noguerol
  */
 public class PasswordChange {
+    private static final String PATTERN = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!\"'@#$%&*()_+=|<>?{}\\\\\\[\\]~-]).{8,14}";
+
     private String currentPassword;
     private String newPassword;
 
@@ -27,5 +29,14 @@ public class PasswordChange {
 
     public String getNewPassword() {
         return newPassword;
+    }
+
+    /**
+     * Indicates whether the new password meets complexity requirements.
+     *
+     * @return a boolean
+     */
+    public boolean isValid() {
+        return newPassword.matches(PATTERN);
     }
 }

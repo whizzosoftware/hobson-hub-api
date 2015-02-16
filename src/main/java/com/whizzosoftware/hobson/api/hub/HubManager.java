@@ -40,6 +40,8 @@ public interface HubManager {
      * @param userId the user ID that owns the hub
      * @param hubId the hub ID
      * @param change a PasswordChange instance
+     *
+     * @throws com.whizzosoftware.hobson.api.HobsonInvalidRequestException if password does not meet complexity requirements
      */
     public void setHubPassword(String userId, String hubId, PasswordChange change);
 
