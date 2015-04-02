@@ -8,18 +8,19 @@
 package com.whizzosoftware.hobson.api;
 
 /**
- * An unchecked exception indicating a request is invalid for some reason.
+ * An unchecked exception that occurs when an authentication or authorization failure has occurred.
  *
  * @author Dan Noguerol
  */
-public class HobsonInvalidRequestException extends HobsonRuntimeException {
-    public static final int CODE = 400;
+public class HobsonAuthException extends HobsonRuntimeException {
+    public static final int CODE = 401;
 
-    public HobsonInvalidRequestException(String message) {
+    /**
+     * Constructor.
+     *
+     * @param message the exception message
+     */
+    public HobsonAuthException(String message) {
         super(CODE, message);
-    }
-
-    public HobsonInvalidRequestException(String message, Throwable cause) {
-        super(CODE, message, cause);
     }
 }

@@ -13,13 +13,15 @@ package com.whizzosoftware.hobson.api;
  * @author Dan Noguerol
  */
 public class HobsonNotFoundException extends HobsonRuntimeException {
+    public static final int CODE = 404;
+
     /**
      * Constructor.
      *
      * @param message the exception message
      */
     public HobsonNotFoundException(String message) {
-        super(message);
+        super(CODE, message);
     }
 
     /**
@@ -29,6 +31,6 @@ public class HobsonNotFoundException extends HobsonRuntimeException {
      * @param cause the exception cause
      */
     public HobsonNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+        super(CODE, message, cause);
     }
 }

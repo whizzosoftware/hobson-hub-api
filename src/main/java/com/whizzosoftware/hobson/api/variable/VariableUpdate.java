@@ -7,6 +7,9 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.variable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A class representing a variable update.
  *
@@ -28,6 +31,18 @@ public class VariableUpdate {
      */
     public VariableUpdate(String pluginId, String name, Object value) {
         this(pluginId, null, name, value);
+    }
+
+    /**
+     * Constructor for global variable update.
+     *
+     * @param pluginId the plugin ID associated with the variable
+     * @param name the variable name
+     * @param value the variable value
+     * @param updateTime the time the variable was updated
+     */
+    public VariableUpdate(String pluginId, String name, Object value, long updateTime) {
+        this(pluginId, null, name, value, updateTime);
     }
 
     /**
@@ -57,6 +72,15 @@ public class VariableUpdate {
         this.name = name;
         this.value = value;
         this.updateTime = updateTime;
+    }
+
+    /**
+     * Returns whether this is a global variable update.
+     *
+     * @return a boolean
+     */
+    public boolean isGlobal() {
+        return (deviceId == null);
     }
 
     /**

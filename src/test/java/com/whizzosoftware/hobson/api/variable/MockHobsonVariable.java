@@ -8,15 +8,29 @@
 package com.whizzosoftware.hobson.api.variable;
 
 public class MockHobsonVariable implements HobsonVariable {
+    private String pluginId;
+    private String deviceId;
     private String name;
     private Object value;
     private Mask mask;
     private Long lastUpdate;
 
-    public MockHobsonVariable(String name, Object value, Mask mask) {
+    public MockHobsonVariable(String pluginId, String deviceId, String name, Object value, Mask mask) {
+        this.pluginId = pluginId;
+        this.deviceId = deviceId;
         this.name = name;
         this.value = value;
         this.mask = mask;
+    }
+
+    @Override
+    public String getPluginId() {
+        return pluginId;
+    }
+
+    @Override
+    public String getDeviceId() {
+        return deviceId;
     }
 
     @Override
@@ -37,5 +51,10 @@ public class MockHobsonVariable implements HobsonVariable {
     @Override
     public Long getLastUpdate() {
         return lastUpdate;
+    }
+
+    @Override
+    public boolean isGlobal() {
+        return (deviceId == null);
     }
 }

@@ -15,7 +15,6 @@ import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Dictionary;
 import java.util.List;
 
 /**

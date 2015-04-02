@@ -56,5 +56,23 @@ public interface ActionManager {
      */
     public HobsonAction getAction(String userId, String hubId, String pluginId, String actionId);
 
-    public ActionPublisher getPublisher();
+    /**
+     * Publishes a new action.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param action the action to publish
+     *
+     * @since hobson-hub-api 0.1.6
+     */
+    public void publishAction(String userId, String hubId, HobsonAction action);
+
+    /**
+     * Unpublishes all actions previous published by a plugin.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param pluginId the ID of the plugin that published the actions
+     */
+    public void unpublishAllActions(String userId, String hubId, String pluginId);
 }

@@ -7,6 +7,10 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event;
 
+import com.whizzosoftware.hobson.api.variable.VariableUpdate;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,46 +19,28 @@ import java.util.Map;
  * @author Dan Noguerol
  */
 public class VariableUpdateRequestEvent extends HobsonEvent {
-    public static final String ID = "setVariable";
-    public static final String PROP_PLUGIN_ID = "pluginId";
-    public static final String PROP_DEVICE_ID = "deviceId";
-    public static final String PROP_NAME = "name";
-    public static final String PROP_VALUE = "value";
+    public static final String ID = "varUpdateReq";
+    public static final String PROP_UPDATES = "updates";
 
-    public VariableUpdateRequestEvent(String pluginId, String name, Object value) {
-        this(pluginId, null, name, value);
-    }
-
-    public VariableUpdateRequestEvent(String pluginId, String deviceId, String name, Object value) {
+    public VariableUpdateRequestEvent(VariableUpdate update) {
         super(EventTopics.VARIABLES_TOPIC, ID);
 
-        setProperty(PROP_PLUGIN_ID, pluginId);
-        setProperty(PROP_DEVICE_ID, deviceId);
-        setProperty(PROP_NAME, name);
-        setProperty(PROP_VALUE, value);
+        List<VariableUpdate> updates = new ArrayList<>();
+        updates.add(update);
+        setProperty(PROP_UPDATES, updates);
+    }
+
+    public VariableUpdateRequestEvent(List<VariableUpdate> updates) {
+        super(EventTopics.VARIABLES_TOPIC, ID);
+
+        setProperty(PROP_UPDATES, updates);
     }
 
     public VariableUpdateRequestEvent(Map<String,Object> properties) {
         super(EventTopics.VARIABLES_TOPIC, properties);
     }
 
-    public String getPluginId() {
-        return (String)getProperty(PROP_PLUGIN_ID);
-    }
-
-    public String getDeviceId() {
-        return (String)getProperty(PROP_DEVICE_ID);
-    }
-
-    public String getName() {
-        return (String)getProperty(PROP_NAME);
-    }
-
-    public Object getValue() {
-        return getProperty(PROP_VALUE);
-    }
-
-    public boolean isGlobal() {
-        return (getDeviceId() == null);
+    public List<VariableUpdate> getUpdates() {
+        return (List<VariableUpdate>)getProperty(PROP_UPDATES);
     }
 }

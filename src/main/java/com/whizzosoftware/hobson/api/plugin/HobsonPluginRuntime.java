@@ -14,15 +14,16 @@ import com.whizzosoftware.hobson.api.device.DeviceManager;
 import com.whizzosoftware.hobson.api.disco.DiscoManager;
 import com.whizzosoftware.hobson.api.event.EventListener;
 import com.whizzosoftware.hobson.api.event.EventManager;
+import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.hub.HubManager;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
+import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableManager;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import io.netty.util.concurrent.Future;
 
-import java.util.Dictionary;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -39,6 +40,13 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param runnable a task to execute
      */
     public void executeInEventLoop(Runnable runnable);
+
+    /**
+     * Fires a HobsonEvent.
+     *
+     * @param event the event to fire
+     */
+    public void fireHobsonEvent(HobsonEvent event);
 
     /**
      * Fires a notification that a variable has been successfully updated.
@@ -215,6 +223,13 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param taskManager a TaskManager
      */
     public void setTaskManager(TaskManager taskManager);
+
+    /**
+     * Sets the TelemetryManager instance the plugin should use. This will be called before the init() method.
+     *
+     * @param telemetryManager a TelemetryManager
+     */
+    public void setTelemetryManager(TelemetryManager telemetryManager);
 
     /**
      * Execute a task using the plugin event loop. Note that this will tie up the event loop while the task is being

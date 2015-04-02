@@ -17,9 +17,9 @@ import com.whizzosoftware.hobson.api.HobsonRuntimeException;
  */
 public class ConfigurationException extends HobsonRuntimeException {
     public ConfigurationException(String msg, Throwable t) {
-        super(msg, t);
+        super(CODE_INTERNAL_ERROR, msg, t);
     }
     public ConfigurationException(String msg) {
-        super(msg);
+        super(CODE_INTERNAL_ERROR, msg);
     }
 }

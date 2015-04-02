@@ -7,21 +7,28 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.variable.manager;
 
+import com.whizzosoftware.hobson.api.device.DeviceContext;
+import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.variable.*;
-import com.whizzosoftware.hobson.api.variable.telemetry.TelemetryInterval;
-import com.whizzosoftware.hobson.api.variable.telemetry.TemporalValue;
+import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
 
 import java.util.*;
 
 public class MockVariableManager implements VariableManager {
-    public MockVariablePublisher publisher;
+    public final Map<String,HobsonVariable> publishedVariables = new HashMap<>();
+    public final List<VariableUpdate> firedUpdates = new ArrayList<>();
 
-    public MockVariableManager() {
-        this(new MockVariablePublisher());
+    public Map<String,HobsonVariable> getPublishedVariables() {
+        return publishedVariables;
     }
 
-    public MockVariableManager(MockVariablePublisher publisher) {
-        this.publisher = publisher;
+    public List<VariableUpdate> getFiredUpdates() {
+        return firedUpdates;
+    }
+
+    @Override
+    public Collection<HobsonVariable> getAllVariables(String userId, String hubId) {
+        return null;
     }
 
     @Override
@@ -46,7 +53,7 @@ public class MockVariableManager implements VariableManager {
 
     @Override
     public HobsonVariable getDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name) {
-        return publisher.getPublishedVariables().get(pluginId + "." + deviceId);
+        return getPublishedVariables().get(pluginId + "." + deviceId);
     }
 
     @Override
@@ -55,27 +62,57 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public Long setDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name, Object value) {
+    public void publishGlobalVariable(PluginContext ctx, String name, Object value, HobsonVariable.Mask mask) {
+
+    }
+
+    @Override
+    public void unpublishGlobalVariable(PluginContext ctx, String name) {
+
+    }
+
+    @Override
+    public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask) {
+        publishedVariables.put(ctx.getPluginId() + "." + ctx.getDeviceId(), new MockHobsonVariable(ctx.getPluginId(), ctx.getDeviceId(), name, value, mask));
+    }
+
+    @Override
+    public void unpublishDeviceVariable(DeviceContext ctx, String name) {
+
+    }
+
+    @Override
+    public void unpublishAllDeviceVariables(DeviceContext ctx) {
+
+    }
+
+    @Override
+    public void unpublishAllPluginVariables(PluginContext ctx) {
+
+    }
+
+    @Override
+    public Long setGlobalVariable(PluginContext ctx, String name, Object value) {
         return null;
     }
 
     @Override
-    public Map<String, Long> setDeviceVariables(String userId, String hubId, String pluginId, String deviceId, Map<String, Object> values) {
+    public Map<String, Long> setGlobalVariables(PluginContext ctx, Map<String, Object> values) {
         return null;
     }
 
     @Override
-    public void writeDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, Object value, long time) {
-
-    }
-
-    @Override
-    public Collection<TemporalValue> getDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, long startTime, TelemetryInterval interval) {
+    public Long setDeviceVariable(DeviceContext ctx, String name, Object value) {
         return null;
     }
 
     @Override
-    public VariablePublisher getPublisher() {
-        return publisher;
+    public Map<String, Long> setDeviceVariables(DeviceContext ctx, Map<String, Object> values) {
+        return null;
+    }
+
+    @Override
+    public void confirmVariableUpdates(String userId, String hubId, List<VariableUpdate> updates) {
+
     }
 }

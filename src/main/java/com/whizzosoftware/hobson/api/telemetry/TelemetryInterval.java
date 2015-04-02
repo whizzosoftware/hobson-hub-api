@@ -5,27 +5,15 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.variable.telemetry;
+package com.whizzosoftware.hobson.api.telemetry;
 
 /**
- * A value that has a time associated with it.
+ * An interval for telemetry data.
  *
  * @author Dan Noguerol
  */
-public class TemporalValue {
-    private long time;
-    private Object value;
-
-    public TemporalValue(long time, Object value) {
-        this.time = time;
-        this.value = value;
-    }
-
-    public long getTime() {
-        return time;
-    }
-
-    public Object getValue() {
-        return value;
-    }
+public enum TelemetryInterval {
+    HOURS_24,
+    DAYS_7,
+    DAYS_30
 }

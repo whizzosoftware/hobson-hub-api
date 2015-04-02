@@ -7,6 +7,10 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.hub;
 
+import com.whizzosoftware.hobson.api.config.EmailConfiguration;
+
+import java.util.Collection;
+
 /**
  * A manager interface for Hub-related functions.
  *
@@ -14,23 +18,67 @@ package com.whizzosoftware.hobson.api.hub;
  */
 public interface HubManager {
     /**
-     * Returns the name of the Hub.
+     * Returns the hubs associated with a user.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param userId the user ID that owns the hubs
      *
-     * @return a String
+     * @return a Collection of Hub objects
      */
-    public String getHubName(String userId, String hubId);
+    public Collection<HobsonHub> getHubs(String userId);
 
     /**
-     * Sets the name of the Hub.
+     * Returns a specific hub associated with a user.
      *
      * @param userId the user ID that owns the hub
      * @param hubId the hub ID
-     * @param name the name to set
+     *
+     * @return a Hub object
      */
-    public void setHubName(String userId, String hubId, String name);
+    public HobsonHub getHub(String userId, String hubId);
+
+    /**
+     * Returns content from the Hub log.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param startLine the starting line from the end of the file (e.g. 0 is the last line of the file)
+     * @param endLine the ending line from the end of the file (e.g. 0 is the last line of the file)
+     * @param appendable an Appendable to add the log content to
+     *
+     * @return a LineRage representing what was added to the appendable
+     */
+    public LineRange getLog(String userId, String hubId, long startLine, long endLine, Appendable appendable);
+
+    /**
+     * Returns a registrar interface for adding/removing new Hubs.
+     *
+     * @return a HubRegistrar interface
+     */
+    public HubRegistrar getRegistrar();
+
+    /**
+     * Returns a manager for the local hub (if one exists).
+     *
+     * @return a LocalHubManager or null if not available
+     */
+    public LocalHubManager getLocalManager();
+
+    /**
+     * Sets details for a hub.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     * @param hub the new information (can be partially populated)
+     */
+    public void setHubDetails(String userId, String hubId, HobsonHub hub);
+
+    /**
+     * Clears (deletes) the details for a hub.
+     *
+     * @param userId the user ID that owns the hub
+     * @param hubId the hub ID
+     */
+    public void clearHubDetails(String userId, String hubId);
 
     /**
      * Sets the Hub password.
@@ -42,55 +90,6 @@ public interface HubManager {
      * @throws com.whizzosoftware.hobson.api.HobsonInvalidRequestException if password does not meet complexity requirements
      */
     public void setHubPassword(String userId, String hubId, PasswordChange change);
-
-    /**
-     * Authenticates the admin password.
-     *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param password the password to check
-     *
-     * @return true if the password is valid
-     */
-    public boolean authenticateAdmin(String userId, String hubId, String password);
-
-    /**
-     * Returns the location of the Hub.
-     *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     *
-     * @return a HubLocation instance (or null if the location isn't set)
-     */
-    public HubLocation getHubLocation(String userId, String hubId);
-
-    /**
-     * Sets the location of the Hub.
-     *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param location a HubLocation instance
-     */
-    public void setHubLocation(String userId, String hubId, HubLocation location);
-
-    /**
-     * Returns the e-mail configuration of the Hub.
-     *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     *
-     * @return an EmailConfiguration instance (or null if no e-mail information has been set)
-     */
-    public EmailConfiguration getHubEmailConfiguration(String userId, String hubId);
-
-    /**
-     * Sets the e-mail configuration of the Hub.
-     *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param config an EmailConfiguration instance
-     */
-    public void setHubEmailConfiguration(String userId, String hubId, EmailConfiguration config);
 
     /**
      * Sends a test e-mail message using the provided e-mail configuration.
@@ -113,68 +112,4 @@ public interface HubManager {
      * @param body the e-mail message body
      */
     public void sendEmail(String userId, String hubId, String recipientAddress, String subject, String body);
-
-    /**
-     * Indicates whether the Hub setup wizard has been completed.
-     *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     *
-     * @return a boolean
-     */
-    public boolean isSetupWizardComplete(String userId, String hubId);
-
-    /**
-     * Sets the Hub setup wizard completion status.
-     *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param complete the completion status (true == complete)
-     */
-    public void setSetupWizardComplete(String userId, String hubId, boolean complete);
-
-    /**
-     * Returns the current hub log level.
-     *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     *
-     * @return a String
-     */
-    public String getLogLevel(String userId, String hubId);
-
-    /**
-     * Sets the current hub log level. This will take effect immediately.
-     *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param level the new level
-     */
-    public void setLogLevel(String userId, String hubId, String level);
-
-    /**
-     * Returns content from the Hub log.
-     *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param startIndex the starting index into the log file (or -1 if you want from the endIndex to end of file)
-     * @param endIndex the ending index into the log file (or -1 if you want from the startIndex to end of file)
-     *
-     * @return a LogContent instance
-     */
-    public LogContent getLog(String userId, String hubId, long startIndex, long endIndex);
-
-    /**
-     * Add a new appender for error logging.
-     *
-     * @param aAppender the appender to add
-     */
-    public void addErrorLogAppender(Object aAppender);
-
-    /**
-     * Remove an appender for error logging.
-     *
-     * @param aAppender the appender to remove
-     */
-    public void removeLogAppender(Object aAppender);
 }

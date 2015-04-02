@@ -59,6 +59,17 @@ public class Configuration {
     }
 
     /**
+     * Returns whether the configuration has a value for a particular property.
+     *
+     * @param id the property ID
+     *
+     * @return a boolean
+     */
+    public boolean hasProperty(String id) {
+        return (propertyMap.containsKey(id) && propertyMap.get(id) != null);
+    }
+
+    /**
      * Returns the value of a specific configuration property.
      *
      * @param id the ID of the desired property

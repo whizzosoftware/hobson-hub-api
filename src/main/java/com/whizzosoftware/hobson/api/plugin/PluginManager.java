@@ -1,11 +1,25 @@
+/*******************************************************************************
+ * Copyright (c) 2014 Whizzo Software, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.image.ImageInputStream;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Map;
 
+/**
+ * An interface for managing Hobson plugins.
+ *
+ * @author Dan Noguerol
+ * @since hobson-hub-api 0.1.6
+ */
 public interface PluginManager {
     /**
      * Returns a data file for a specific plugin.
@@ -16,6 +30,8 @@ public interface PluginManager {
      * @return a File instance (or null if not found)
      */
     public File getDataFile(String pluginId, String filename);
+
+    public Collection<HobsonPlugin> getAllPlugins(String userId, String hubId);
 
     /**
      * Retrieves a specific plugin.
@@ -29,7 +45,7 @@ public interface PluginManager {
     public HobsonPlugin getPlugin(String userId, String hubId, String pluginId);
 
     /**
-     * Retrieve a list of all plugins.
+     * Retrieve descriptors for all installed plugins.
      *
      * @param userId the user ID that owns the hub
      * @param hubId the hub ID
@@ -37,7 +53,7 @@ public interface PluginManager {
      *
      * @return a PluginList
      */
-    public PluginList getPlugins(String userId, String hubId, boolean includeRemoteInfo);
+    public PluginList getPluginDescriptors(String userId, String hubId, boolean includeRemoteInfo);
 
     /**
      * Returns the plugin level configuration.
@@ -94,6 +110,8 @@ public interface PluginManager {
      * @return the current version in x.x.x format
      */
     public String getPluginCurrentVersion(String userId, String hubId, String pluginId);
+
+    public void publishPlugin(String userId, String hubId, HobsonPlugin plugin);
 
     /**
      * Installs a specific version of a plugin.

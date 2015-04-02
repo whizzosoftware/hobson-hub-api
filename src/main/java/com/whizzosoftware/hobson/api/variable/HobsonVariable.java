@@ -15,6 +15,20 @@ package com.whizzosoftware.hobson.api.variable;
  */
 public interface HobsonVariable {
     /**
+     * Returns the ID of the plugin which published this variable.
+     *
+     * @return a plugin ID
+     */
+    public String getPluginId();
+
+    /**
+     * Returns the ID of the device which published this variable.
+     *
+     * @return a device ID
+     */
+    public String getDeviceId();
+
+    /**
      * Returns the variable name.
      *
      * @return the variable name
@@ -49,6 +63,13 @@ public interface HobsonVariable {
      * @since hobson-hub-api 0.1.6
      */
     public Long getLastUpdate();
+
+    /**
+     * Indicates whether this is a global variable.
+     *
+     * @return a boolean
+     */
+    public boolean isGlobal();
 
     public enum Mask {
         READ_ONLY,

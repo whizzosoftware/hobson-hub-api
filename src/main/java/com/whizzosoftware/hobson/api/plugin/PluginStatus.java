@@ -65,6 +65,46 @@ public class PluginStatus {
         return message;
     }
 
+    public static PluginStatus notInstalled() {
+        return new PluginStatus(Status.NOT_INSTALLED);
+    }
+
+    public static PluginStatus notInstalled(String message) {
+        return new PluginStatus(Status.NOT_INSTALLED, message);
+    }
+
+    public static PluginStatus stopped() {
+        return new PluginStatus(Status.STOPPED);
+    }
+
+    public static PluginStatus stopped(String message) {
+        return new PluginStatus(Status.STOPPED, message);
+    }
+
+    public static PluginStatus initializing() {
+        return new PluginStatus(Status.INITIALIZING);
+    }
+
+    public static PluginStatus notConfigured(String message) {
+        return new PluginStatus(Status.NOT_CONFIGURED, message);
+    }
+
+    public static PluginStatus failed(String message) {
+        return new PluginStatus(Status.FAILED, message);
+    }
+
+    public static PluginStatus running() {
+        return new PluginStatus(Status.RUNNING);
+    }
+
+    public static PluginStatus configChange() {
+        return new PluginStatus(Status.CONFIG_CHANGE);
+    }
+
+    public static PluginStatus stopping() {
+        return new PluginStatus(Status.STOPPING);
+    }
+
     public enum Status {
         /**
          * The plugin is not installed.

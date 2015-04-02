@@ -14,6 +14,7 @@ package com.whizzosoftware.hobson.api.event;
  */
 public class EventTopics {
     public static final String DEVICES_TOPIC = "com/whizzosoftware/hobson/event/devices";
+    public static final String STATE_TOPIC = "com/whizzosoftware/hobson/event/state";
     public static final String PLUGINS_TOPIC = "com/whizzosoftware/hobson/event/plugins";
     public static final String VARIABLES_TOPIC = "com/whizzosoftware/hobson/event/variables";
     public static final String PRESENCE_TOPIC = "com/whizzosoftware/hobson/event/presence";

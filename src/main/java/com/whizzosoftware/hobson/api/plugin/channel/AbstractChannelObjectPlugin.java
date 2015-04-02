@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.Dictionary;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -189,7 +188,7 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
         }
 
         if (serialDevice == null) {
-            setStatus(new PluginStatus(PluginStatus.Status.NOT_CONFIGURED, "Neither serial port nor serial hostname are configured"));
+            setStatus(PluginStatus.notConfigured("Neither serial port nor serial hostname are configured"));
         }
 
         return didConfigChange;
@@ -205,10 +204,10 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
             // attempt to connect
             try {
                 connect();
-                setStatus(new PluginStatus(PluginStatus.Status.RUNNING));
+                setStatus(PluginStatus.running());
             } catch (IOException e) {
                 logger.error("Error attempting to connect", e);
-                setStatus(new PluginStatus(PluginStatus.Status.FAILED, e.getLocalizedMessage()));
+                setStatus(PluginStatus.failed(e.getLocalizedMessage()));
             }
         }
     }

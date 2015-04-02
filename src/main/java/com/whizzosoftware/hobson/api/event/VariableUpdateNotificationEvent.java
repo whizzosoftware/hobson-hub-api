@@ -19,7 +19,7 @@ import java.util.Map;
  * @author Dan Noguerol
  */
 public class VariableUpdateNotificationEvent extends HobsonEvent {
-    public static final String ID = "variableUpdate";
+    public static final String ID = "varUpdateNotify";
     public static final String PROP_UPDATES = "updates";
 
     public VariableUpdateNotificationEvent(VariableUpdate update) {

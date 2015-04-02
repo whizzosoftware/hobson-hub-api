@@ -23,22 +23,6 @@ public class HubLocation {
     private Double latitude;
     private Double longitude;
 
-    public HubLocation(Dictionary d) {
-        text = (String)d.get(PROP_LOCATION_STRING);
-        if (d.get(PROP_LATITUDE) != null) {
-            latitude = (Double)d.get(PROP_LATITUDE);
-        }
-        if (d.get(PROP_LONGITUDE) != null) {
-            longitude = (Double)d.get(PROP_LONGITUDE);
-        }
-    }
-
-    public HubLocation(String text, Double latitude, Double longitude) {
-        this.text = text;
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
-
     public String getText() {
         return text;
     }
@@ -57,5 +41,39 @@ public class HubLocation {
 
     public Double getLongitude() {
         return longitude;
+    }
+
+    public static class Builder {
+        private HubLocation hubLocation = new HubLocation();
+
+        public Builder dictionary(Dictionary d) {
+            hubLocation.text =(String)d.get(PROP_LOCATION_STRING);
+            if (d.get(PROP_LATITUDE) != null) {
+                hubLocation.latitude = (Double)d.get(PROP_LATITUDE);
+            }
+            if (d.get(PROP_LONGITUDE) != null) {
+                hubLocation.longitude = (Double)d.get(PROP_LONGITUDE);
+            }
+            return this;
+        }
+
+        public Builder text(String text) {
+            hubLocation.text = text;
+            return this;
+        }
+
+        public Builder latitude(Double latitude) {
+            hubLocation.latitude = latitude;
+            return this;
+        }
+
+        public Builder longitude(Double longitude) {
+            hubLocation.longitude = longitude;
+            return this;
+        }
+
+        public HubLocation build() {
+            return hubLocation;
+        }
     }
 }

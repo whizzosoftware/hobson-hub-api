@@ -12,14 +12,17 @@ import com.whizzosoftware.hobson.api.action.HobsonAction;
 import com.whizzosoftware.hobson.api.action.ActionManager;
 import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
+import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.HobsonDevice;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
 import com.whizzosoftware.hobson.api.disco.DeviceAdvertisement;
 import com.whizzosoftware.hobson.api.disco.DiscoManager;
 import com.whizzosoftware.hobson.api.event.*;
+import com.whizzosoftware.hobson.api.hub.HobsonHub;
 import com.whizzosoftware.hobson.api.hub.HubManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.task.TaskManager;
+import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
 import com.whizzosoftware.hobson.api.util.UserUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
@@ -31,6 +34,7 @@ import io.netty.util.concurrent.Future;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -49,9 +53,10 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     private PluginManager pluginManager;
     private VariableManager variableManager;
     private TaskManager taskManager;
+    private TelemetryManager telemetryManager;
     private String pluginId;
     private String version;
-    private PluginStatus status = new PluginStatus(PluginStatus.Status.INITIALIZING);
+    private PluginStatus status = PluginStatus.initializing();
     private final List<ConfigurationPropertyMetaData> configMetaData = new ArrayList<>();
     private EventLoopGroup eventLoop;
 
@@ -123,15 +128,23 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public void fireVariableUpdateNotification(VariableUpdate variableUpdate) {
+    public void fireHobsonEvent(HobsonEvent event) {
+        validateEventManager();
+        eventManager.postEvent(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, event);
+    }
+
+    @Override
+    public void fireVariableUpdateNotification(VariableUpdate update) {
+        // post the variable update notification event
         validateVariableManager();
-        variableManager.getPublisher().fireVariableUpdateNotification(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this, variableUpdate);
+        variableManager.confirmVariableUpdates(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, Collections.singletonList(update));
     }
 
     @Override
     public void fireVariableUpdateNotifications(List<VariableUpdate> updates) {
+        // post the variable update notification event
         validateVariableManager();
-        variableManager.getPublisher().fireVariableUpdateNotifications(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this, updates);
+        variableManager.confirmVariableUpdates(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, updates);
     }
 
     @Override
@@ -147,12 +160,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
 
     @Override
     public void onHobsonEvent(HobsonEvent event) {
-        if (event instanceof VariableUpdateRequestEvent) {
-            VariableUpdateRequestEvent vure = (VariableUpdateRequestEvent)event;
-            if (vure.getPluginId() == null || vure.getPluginId().equals(getId())) {
-                onSetDeviceVariable(vure.getDeviceId(), vure.getName(), vure.getValue());
-            }
-        }
     }
 
     @Override
@@ -168,38 +175,38 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     public void onShutdown() {
         // unpublish all tasks published by this plugin
         if (taskManager != null) {
-            taskManager.getPublisher().unpublishAllTaskProviders(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId());
+            taskManager.unpublishAllTaskProviders(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId());
         }
 
         // unpublish all actions published by this plugin
         if (actionManager != null) {
-            actionManager.getPublisher().unpublishAllActions(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId());
+            actionManager.unpublishAllActions(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId());
         }
     }
 
     @Override
     public void publishAction(HobsonAction action) {
         validateActionManager();
-        actionManager.getPublisher().publishAction(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, action);
+        actionManager.publishAction(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, action);
     }
 
     @Override
     public void publishDeviceVariable(String deviceId, String name, Object value, HobsonVariable.Mask mask) {
         validateVariableManager();
-        variableManager.getPublisher().publishDeviceVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), deviceId, name, value, mask);
+        variableManager.publishDeviceVariable(new DeviceContext(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), deviceId), name, value, mask);
     }
 
     @Override
     public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask) {
         validateVariableManager();
-        variableManager.getPublisher().publishGlobalVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), name, value, mask);
+        variableManager.publishGlobalVariable(new PluginContext(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId()), name, value, mask);
     }
 
     @Override
     public void publishTaskProvider(TaskProvider taskProvider) {
         validateTaskManager();
         taskProvider.setActionManager(actionManager);
-        taskManager.getPublisher().publishTaskProvider(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, taskProvider);
+        taskManager.publishTaskProvider(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, taskProvider);
     }
 
     @Override
@@ -249,6 +256,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
+    public void setTelemetryManager(TelemetryManager telemetryManager) {
+        this.telemetryManager = telemetryManager;
+    }
+
+    @Override
     public void setVariableManager(VariableManager variableManager) {
         this.variableManager = variableManager;
     }
@@ -261,6 +273,15 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     /*
      * Other methods
      */
+
+    /**
+     * Returns information about the local Hub.
+     *
+     * @return a HobsonHub instance
+     */
+    public HobsonHub getHub() {
+        return hubManager.getHub(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB);
+    }
 
     /**
      * Sets the plugin version string.
@@ -329,7 +350,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
      */
     protected void publishDevice(final HobsonDevice device, boolean republish) {
         validateDeviceManager();
-        deviceManager.getPublisher().publishDevice(this, device, republish);
+        deviceManager.publishDevice(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this, device, republish);
     }
 
     /**
@@ -344,7 +365,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         executeInEventLoop(new Runnable() {
             @Override
             public void run() {
-            discoManager.requestDeviceAdvertisementSnapshot(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), protocolId);
+                discoManager.requestDeviceAdvertisementSnapshot(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), protocolId);
             }
         });
     }
@@ -371,6 +392,33 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     /**
+     * Retrieves all local HobsonPlugins that are installed.
+     *
+     * @return a PluginList instance
+     */
+    protected Collection<HobsonPlugin> getAllPlugins() {
+        return pluginManager.getAllPlugins(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB);
+    }
+
+    /**
+     * Retrieves all HobsonDevices that have been published.
+     *
+     * @return a Collection of HobsonDevice instances
+     */
+    protected Collection<HobsonDevice> getAllDevices() {
+        return deviceManager.getAllDevices(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB);
+    }
+
+    /**
+     * Retrieves all HobsonDevices that have been published by this plugin.
+     *
+     * @return a Collection of HobsonDevice instances
+     */
+    protected Collection<HobsonDevice> getAllPluginDevices() {
+        return deviceManager.getAllPluginDevices(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId());
+    }
+
+    /**
      * Retrieves a HobsonDevice with the specific device ID.
      *
      * @param deviceId the device ID
@@ -384,15 +432,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     /**
-     * Retrieves all HobsonDevices that have been published by this plugin.
-     *
-     * @return a Collection of HobsonDevice instances
-     */
-    protected Collection<HobsonDevice> getAllDevices() {
-        return deviceManager.getAllPluginDevices(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId());
-    }
-
-    /**
      * Unpublishes a published device after invoking its stop() method.
      *
      * @param deviceId the device ID to unpublish
@@ -400,8 +439,8 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     protected void unpublishDevice(final String deviceId) {
         validateVariableManager();
         validateDeviceManager();
-        variableManager.getPublisher().unpublishAllDeviceVariables(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), deviceId);
-        deviceManager.getPublisher().unpublishDevice(this, deviceId);
+        variableManager.unpublishAllDeviceVariables(new DeviceContext(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId(), deviceId));
+        deviceManager.unpublishDevice(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this, deviceId);
     }
 
     /**
@@ -410,20 +449,24 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     protected void unpublishAllDevices() {
         validateVariableManager();
         validateDeviceManager();
-        variableManager.getPublisher().unpublishAllPluginVariables(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId());
-        deviceManager.getPublisher().unpublishAllDevices(this);
+        variableManager.unpublishAllPluginVariables(new PluginContext(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, getId()));
+        deviceManager.unpublishAllDevices(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, this);
+    }
+
+    protected Collection<HobsonVariable> getAllVariables() {
+        return variableManager.getAllVariables(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB);
     }
 
     protected DeviceManager getDeviceManager() {
         return deviceManager;
     }
 
-    protected HubManager getHubManager() {
-        return hubManager;
-    }
-
     protected VariableManager getVariableManager() {
         return variableManager;
+    }
+
+    protected TelemetryManager getTelemetryManager() {
+        return telemetryManager;
     }
 
     private void validateActionManager() {
