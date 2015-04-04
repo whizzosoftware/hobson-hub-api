@@ -12,7 +12,7 @@ package com.whizzosoftware.hobson.api.user;
  *
  * @author Dan Noguerol
  */
-public class User {
+public class HobsonUser {
     private String id;
     private String firstName;
     private String lastName;
@@ -35,7 +35,7 @@ public class User {
     }
 
     public static class Builder {
-        private User user = new User();
+        private HobsonUser user = new HobsonUser();
 
         public Builder id(String id) {
             user.id = id;
@@ -57,7 +57,7 @@ public class User {
             return this;
         }
 
-        public User build() {
+        public HobsonUser build() {
             return user;
         }
     }

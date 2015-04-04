@@ -17,6 +17,20 @@ import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
  */
 public interface HobsonPlugin {
     /**
+     * Returns the context associated with this plugin.
+     *
+     * @return a PluginContext instance
+     */
+    public PluginContext getContext();
+
+    /**
+     * Returns the plugin name.
+     *
+     * @return the plugin name
+     */
+    public String getName();
+
+    /**
      * Returns the configuration property meta-data associated with this plugin.
      *
      * @return a Collection of ConfigurationPropertyMetaData objects
@@ -29,20 +43,6 @@ public interface HobsonPlugin {
      * @return an array of String topic names (or null if no events are desired)
      */
     public String[] getEventTopics();
-
-    /**
-     * Returns the plugin ID.
-     *
-     * @return the plugin ID
-     */
-    public String getId();
-
-    /**
-     * Returns the plugin name.
-     *
-     * @return the plugin name
-     */
-    public String getName();
 
     /**
      * Returns how often the refresh() method will be called.

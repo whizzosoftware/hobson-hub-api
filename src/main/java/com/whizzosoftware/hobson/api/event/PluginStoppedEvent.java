@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event;
 
+import com.whizzosoftware.hobson.api.plugin.PluginContext;
+
 import java.util.Map;
 
 /**
@@ -19,9 +21,9 @@ public class PluginStoppedEvent extends HobsonEvent {
 
     private static final String PROP_PLUGIN_ID = "pluginId";
 
-    public PluginStoppedEvent(String pluginId) {
+    public PluginStoppedEvent(PluginContext ctx) {
         super(EventTopics.PLUGINS_TOPIC, ID);
-        setProperty(PROP_PLUGIN_ID, pluginId);
+        setProperty(PROP_PLUGIN_ID, ctx.getPluginId());
     }
 
     public PluginStoppedEvent(Map<String,Object> properties) {

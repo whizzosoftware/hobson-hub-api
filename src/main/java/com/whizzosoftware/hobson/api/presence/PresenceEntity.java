@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.presence;
 
+import com.whizzosoftware.hobson.api.hub.HubContext;
+
 import java.util.UUID;
 
 /**
@@ -15,19 +17,19 @@ import java.util.UUID;
  * @author Dan Noguerol
  */
 public class PresenceEntity {
-    private String id;
+    private PresenceEntityContext ctx;
     protected String name;
     protected String location;
     protected Long lastUpdate;
 
-    public PresenceEntity(String name, String location) {
-        this.id = UUID.randomUUID().toString();
+    public PresenceEntity(HubContext ctx, String name, String location) {
+        this.ctx = PresenceEntityContext.create(ctx, UUID.randomUUID().toString());
         this.name = name;
         this.location = location;
     }
 
-    public String getId() {
-        return id;
+    public PresenceEntityContext getContext() {
+        return ctx;
     }
 
     public String getName() {

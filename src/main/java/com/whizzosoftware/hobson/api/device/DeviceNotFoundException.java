@@ -16,7 +16,7 @@ import com.whizzosoftware.hobson.api.HobsonNotFoundException;
  * @author Dan Noguerol
  */
 public class DeviceNotFoundException extends HobsonNotFoundException {
-    public DeviceNotFoundException(String pluginId, String deviceId) {
-        super("Device " + pluginId + "." + deviceId + " not found");
+    public DeviceNotFoundException(DeviceContext ctx) {
+        super("Device " + ctx + " not found");
     }
 }

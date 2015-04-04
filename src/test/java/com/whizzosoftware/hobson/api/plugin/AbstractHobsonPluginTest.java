@@ -10,9 +10,10 @@ package com.whizzosoftware.hobson.api.plugin;
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
+import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.MockAbstractHobsonDevice;
 import com.whizzosoftware.hobson.api.device.MockDeviceManager;
-import com.whizzosoftware.hobson.api.util.UserUtil;
+import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.manager.MockVariableManager;
@@ -39,10 +40,10 @@ public class AbstractHobsonPluginTest {
         MockDeviceManager dm = new MockDeviceManager();
         MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
         plugin.setDeviceManager(dm);
-        assertEquals(0, dm.getAllDevices(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB).size());
+        assertEquals(0, dm.getAllDevices(HubContext.createLocal()).size());
         plugin.publishDevice(new MockAbstractHobsonDevice(plugin, "did"));
-        assertEquals(1, dm.getAllDevices(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB).size());
-        assertEquals("did", dm.getAllDevices(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB).iterator().next().getId());
+        assertEquals(1, dm.getAllDevices(HubContext.createLocal()).size());
+        assertEquals("did", dm.getAllDevices(HubContext.createLocal()).iterator().next().getContext().getDeviceId());
     }
 
     @Test
@@ -66,7 +67,7 @@ public class AbstractHobsonPluginTest {
     public void testSetDeviceConfigurationPropertyWithNoConfigManager() {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.setDeviceConfigurationProperty("id", "name", true, true);
+            plugin.setDeviceConfigurationProperty(DeviceContext.create(plugin.getContext(), "id"), "name", true, true);
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }
@@ -76,7 +77,7 @@ public class AbstractHobsonPluginTest {
     public void testGetDeviceVariableWithNoVariableManager() {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.getDeviceVariable("id", "name");
+            plugin.getDeviceVariable(DeviceContext.create(plugin.getContext(), "id"), "name");
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }
@@ -87,7 +88,7 @@ public class AbstractHobsonPluginTest {
         MockVariableManager vm = new MockVariableManager();
         MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
         plugin.setVariableManager(vm);
-        HobsonVariable v = plugin.getDeviceVariable("id", "name");
+        HobsonVariable v = plugin.getDeviceVariable(DeviceContext.create(plugin.getContext(), "id"), "name");
         assertNull(v);
     }
 
@@ -105,7 +106,7 @@ public class AbstractHobsonPluginTest {
     public void testPublishDeviceVariableWithNoVariableManager() {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.publishDeviceVariable("id", "name", "value", HobsonVariable.Mask.READ_WRITE);
+            plugin.publishDeviceVariable(DeviceContext.create(plugin.getContext(), "id"), "name", "value", HobsonVariable.Mask.READ_WRITE);
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }
@@ -136,7 +137,7 @@ public class AbstractHobsonPluginTest {
     public void testOnDeviceConfigurationUpdateWithNoDeviceManager() {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.onDeviceConfigurationUpdate("id", new Configuration());
+            plugin.onDeviceConfigurationUpdate(DeviceContext.create(plugin.getContext(), "id"), new Configuration());
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }

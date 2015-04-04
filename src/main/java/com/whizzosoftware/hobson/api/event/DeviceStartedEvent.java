@@ -32,8 +32,4 @@ public class DeviceStartedEvent extends HobsonEvent {
     public HobsonDevice getDevice() {
         return (HobsonDevice)getProperty(PROP_DEVICE);
     }
-
-    public String getPluginId() {
-        return getDevice().getPluginId();
-    }
 }

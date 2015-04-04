@@ -7,48 +7,78 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device;
 
-import com.whizzosoftware.hobson.api.util.UserUtil;
+import com.whizzosoftware.hobson.api.hub.HubContext;
+import com.whizzosoftware.hobson.api.plugin.PluginContext;
 
 /**
- * Encapsulates contextual information for a device reference.
+ * A class that encapsulates the fully-qualified context of a device.
  *
  * @author Dan Noguerol
  */
 public class DeviceContext {
-    private String userId;
-    private String hubId;
-    private String pluginId;
+    private PluginContext ctx;
     private String deviceId;
 
     /**
-     * Creates a local device context.
+     * Creates a device context.
      *
-     * @param pluginId the plugin ID associated with the device
+     * @param ctx the plugin context associated with the device
      * @param deviceId the device ID
      *
      * @return a DeviceContext instance
      */
-    public static DeviceContext createLocal(String pluginId, String deviceId) {
-        return new DeviceContext(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, pluginId, deviceId);
+    public static DeviceContext create(PluginContext ctx, String deviceId) {
+        return new DeviceContext(ctx, deviceId);
     }
 
-    public DeviceContext(String userId, String hubId, String pluginId, String deviceId) {
-        this.userId = userId;
-        this.hubId = hubId;
-        this.pluginId = pluginId;
+    /**
+     * Creates a device context.
+     *
+     * @param hubContext the context of the hub that published the device
+     * @param pluginId the ID of the plugin that published the device
+     * @param deviceId the ID of the device
+     *
+     * @return a DeviceContext instance
+     */
+    public static DeviceContext create(HubContext hubContext, String pluginId, String deviceId) {
+        return create(PluginContext.create(hubContext, pluginId), deviceId);
+    }
+
+    /**
+     * Creates a local device context.
+     *
+     * @param pluginId the ID of the plugin that published the device
+     * @param deviceId the ID of the device
+     *
+     * @return a DeviceContext instance
+     */
+    public static DeviceContext createLocal(String pluginId, String deviceId) {
+        return create(PluginContext.createLocal(pluginId), deviceId);
+    }
+
+    private DeviceContext(PluginContext ctx, String deviceId) {
+        this.ctx = ctx;
         this.deviceId = deviceId;
     }
 
+    public HubContext getHubContext() {
+        return ctx.getHubContext();
+    }
+
+    public PluginContext getPluginContext() {
+        return ctx;
+    }
+
     public String getUserId() {
-        return userId;
+        return ctx.getUserId();
     }
 
     public String getHubId() {
-        return hubId;
+        return ctx.getHubId();
     }
 
     public String getPluginId() {
-        return pluginId;
+        return ctx.getPluginId();
     }
 
     public String getDeviceId() {

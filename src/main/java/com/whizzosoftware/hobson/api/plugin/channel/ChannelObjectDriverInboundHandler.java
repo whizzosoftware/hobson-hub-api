@@ -37,7 +37,11 @@ public class ChannelObjectDriverInboundHandler extends SimpleChannelInboundHandl
         plugin.executeInEventLoop(new Runnable() {
             @Override
             public void run() {
-                plugin.onChannelData(o);
+                try {
+                    plugin.onChannelData(o);
+                } catch (Throwable t) {
+                    logger.error("Error processing channel data", t);
+                }
             }
         });
     }

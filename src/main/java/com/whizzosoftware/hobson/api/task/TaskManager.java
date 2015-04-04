@@ -7,6 +7,9 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.task;
 
+import com.whizzosoftware.hobson.api.hub.HubContext;
+import com.whizzosoftware.hobson.api.plugin.PluginContext;
+
 import java.util.Collection;
 
 /**
@@ -19,105 +22,87 @@ public interface TaskManager {
     /**
      * Indicates whether a task provider has been published.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID of the task provider
+     * @param ctx the context of the plugin that published the provider
      * @param providerId the task provider ID
      *
      * @return a boolean
      *
      * @since hobson-hub-api 0.1.6
      */
-    public boolean hasTaskProvider(String userId, String hubId, String pluginId, String providerId);
+    public boolean hasTaskProvider(PluginContext ctx, String providerId);
 
     /**
      * Returns all tasks that have been published by all task providers.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the target hub
      *
      * @return a Collection of HobsonTask objects
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Collection<HobsonTask> getAllTasks(String userId, String hubId);
+    public Collection<HobsonTask> getAllTasks(HubContext ctx);
 
     /**
      * Returns a specific task.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param providerId the provider ID
-     * @param taskId the task ID
+     * @param ctx the context of the task
      *
      * @return a HobsonTask instance (or null if not found)
      *
      * @since hobson-hub-api 0.1.6
      */
-    public HobsonTask getTask(String userId, String hubId, String providerId, String taskId);
+    public HobsonTask getTask(TaskContext ctx);
 
     /**
      * Immediately executes a specific task.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param providerId the task provider ID
-     * @param taskId the task ID
+     * @param ctx the context of the target hub
      */
-    public void executeTask(String userId, String hubId, String providerId, String taskId);
+    public void executeTask(TaskContext ctx);
 
     /**
      * Publishes a new TaskProvider instance to the runtime.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
      * @param provider the task provider to publish
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void publishTaskProvider(String userId, String hubId, TaskProvider provider);
+    public void publishTaskProvider(TaskProvider provider);
 
     /**
      * Unpublishes all task providers published by a plugin.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID
+     * @param ctx the context of the target plugin
      */
-    public void unpublishAllTaskProviders(String userId, String hubId, String pluginId);
+    public void unpublishAllTaskProviders(PluginContext ctx);
 
     /**
      * Adds a new task. This should be called by task providers.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the target hub
      * @param providerId the task provider ID adding the task
      * @param task the task data
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void addTask(String userId, String hubId, String providerId, Object task);
+    public void addTask(HubContext ctx, String providerId, Object task);
 
     /**
      * Updates an existing task. This should be called by task providers.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the target hub
      * @param providerId the task provider ID adding the task
      * @param taskId the ID of the task being updated
      * @param task the task data
      */
-    public void updateTask(String userId, String hubId, String providerId, String taskId, Object task);
+    public void updateTask(HubContext ctx, String providerId, String taskId, Object task);
 
     /**
      * Deletes a previously added task.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param providerId the task provider ID that added the task
-     * @param taskId the task ID
+     * @param ctx the context of the task
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void deleteTask(String userId, String hubId, String providerId, String taskId);
+    public void deleteTask(TaskContext ctx);
 }

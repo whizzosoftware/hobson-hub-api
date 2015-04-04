@@ -8,12 +8,11 @@
 package com.whizzosoftware.hobson.api.device;
 
 import com.whizzosoftware.hobson.api.config.Configuration;
-import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
-import com.whizzosoftware.hobson.api.telemetry.TelemetryInterval;
-import com.whizzosoftware.hobson.api.telemetry.TemporalValue;
+import com.whizzosoftware.hobson.api.hub.HubContext;
+import com.whizzosoftware.hobson.api.plugin.EventLoopExecutor;
+import com.whizzosoftware.hobson.api.plugin.PluginContext;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * An interface for managing Hobson devices.
@@ -23,182 +22,154 @@ import java.util.Map;
  */
 public interface DeviceManager {
     /**
-     * Returns all published devices.
+     * Returns all devices published by a hub.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     *
-     * @return a Collection of HobsonDevice instances
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    public Collection<HobsonDevice> getAllDevices(String userId, String hubId);
-
-    /**
-     * Returns all devices published by a particular plugin
-     *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID
+     * @param ctx the context of the hub that published the devices
      *
      * @return a Collection of HobsonDevice instances
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Collection<HobsonDevice> getAllPluginDevices(String userId, String hubId, String pluginId);
+    public Collection<HobsonDevice> getAllDevices(HubContext ctx);
 
     /**
-     * Returns all devices for which telemetry has been enabled.
+     * Returns all devices published by a plugin.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the plugin that published the devices
+     *
+     * @return a Collection of HobsonDevice instances
+     *
+     * @since hobson-hub-api 0.1.6
+     */
+    public Collection<HobsonDevice> getAllDevices(PluginContext ctx);
+
+    /**
+     * Returns all hub devices for which telemetry has been enabled.
+     *
+     * @param ctx the context of the hub that published the devices
      *
      * @return a Collection of HobsonDevice instances
      */
-    public Collection<HobsonDevice> getAllTelemetryEnabledDevices(String userId, String hubId);
+    public Collection<HobsonDevice> getAllTelemetryEnabledDevices(HubContext ctx);
 
     /**
      * Returns a specific device.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID associated with the device
-     * @param deviceId the device ID
+     * @param ctx the context of the device to retrieve
      *
      * @return a HobsonDevice instance (or null if it wasn't found)
      * @throws DeviceNotFoundException if device isn't found
      *
      * @since hobson-hub-api 0.1.6
      */
-    public HobsonDevice getDevice(String userId, String hubId, String pluginId, String deviceId);
+    public HobsonDevice getDevice(DeviceContext ctx);
 
     /**
-     * Returns the device level configuration.
+     * Returns a specific device's configuration.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID that owns the device
-     * @param deviceId the device ID that owns the configuration
+     * @param ctx the context of the device to retrieve configuration for
      *
      * @return a Dictionary (or null if there is no configuration)
      */
-    public Configuration getDeviceConfiguration(String userId, String hubId, String pluginId, String deviceId);
+    public Configuration getDeviceConfiguration(DeviceContext ctx);
 
     /**
-     * Returns a device level configuration property.
+     * Returns a device configuration property.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID that owns the device
-     * @param deviceId the device ID that owns the configuration property.
+     * @param ctx the context of the device to retrieve configuration for
      * @param name the configuration property name
      *
      * @return the property value (or null if not set)
      */
-    public Object getDeviceConfigurationProperty(String userId, String hubId, String pluginId, String deviceId, String name);
+    public Object getDeviceConfigurationProperty(DeviceContext ctx, String name);
 
     /**
      * Indicates whether a device has been published.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID associated with the device
-     * @param deviceId the device ID
+     * @param ctx the context of the device to check
      *
      * @return a boolean
      *
      * @since hobson-hub-api 0.1.6
      */
-    public boolean hasDevice(String userId, String hubId, String pluginId, String deviceId);
+    public boolean hasDevice(DeviceContext ctx);
 
     /**
-     * Indicates whether a specific device has telemetry enabled.
+     * Indicates whether a device has telemetry enabled.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID of the device
-     * @param deviceId the device ID
+     * @param ctx the context of the device to check
      *
      * @return a boolean
      */
-    public boolean isDeviceTelemetryEnabled(String userId, String hubId, String pluginId, String deviceId);
+    public boolean isDeviceTelemetryEnabled(DeviceContext ctx);
 
     /**
      * Publishes a device to the device registry and starts it.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param plugin the HobsonPlugin instance performing the action
      * @param device the HobsonDevice to publish
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void publishDevice(String userId, String hubId, HobsonPlugin plugin, HobsonDevice device);
+    public void publishDevice(HobsonDevice device);
 
     /**
      * Publishes a device to the device registry and starts it.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param plugin the HobsonPlugin instance performing the action
      * @param device the HobsonDevice to publish
      * @param republish indicates whether this is a forced republish of an existing device
      *
      * @since hobson-hub-api 0.4.2
      */
-    public void publishDevice(String userId, String hubId, HobsonPlugin plugin, HobsonDevice device, boolean republish);
-
-    public void setDeviceConfiguration(String userId, String hubId, String pluginId, String deviceId, Configuration config);
+    public void publishDevice(HobsonDevice device, boolean republish);
 
     /**
-     * Set a device level configuration property.
+     * Sets configuration for a device.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID that owns the device
-     * @param deviceId the device ID that owns the configuration property.
+     * @param ctx the context of the target device
+     * @param config the new configuration
+     */
+    public void setDeviceConfiguration(DeviceContext ctx, Configuration config);
+
+    /**
+     * Set a device configuration property.
+     *
+     * @param ctx the context of the target device
      * @param name the configuration property name
      * @param value the configuration property value
      * @param overwrite indicates whether an existing key should be overwritten
      */
-    public void setDeviceConfigurationProperty(String userId, String hubId, String pluginId, String deviceId, String name, Object value, boolean overwrite);
+    public void setDeviceConfigurationProperty(DeviceContext ctx, String name, Object value, boolean overwrite);
 
     /**
-     * Sets the name of a specific device.
+     * Sets the name of a device.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID associated with the device
-     * @param deviceId the device ID
+     * @param ctx the context of the target device
      * @param name the new name of the device
      *
      * @throws DeviceNotFoundException if device isn't found
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void setDeviceName(String userId, String hubId, String pluginId, String deviceId, String name);
+    public void setDeviceName(DeviceContext ctx, String name);
 
     /**
      * Stops and unpublishes a device associated with a specific plugin. This allows plugins that require it
      * (e.g. the RadioRA plugin) to unpublish individual devices.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param plugin the HobsonPlugin instance performing the action
-     * @param deviceId the device ID
+     * @param ctx the context of the target device
+     * @param executor an executor used to call the plugin's onShutdown() lifecycle method
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void unpublishDevice(String userId, String hubId, HobsonPlugin plugin, String deviceId);
+    public void unpublishDevice(DeviceContext ctx, EventLoopExecutor executor);
 
     /**
      * Stops an unpublishes all devices associated with a specific plugin.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param plugin the HobsonPlugin instance performing the action
+     * @param ctx the context of the plugin that published the devices
+     * @param executor an executor used to call the plugins' onShutdown() lifecycle method
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void unpublishAllDevices(String userId, String hubId, HobsonPlugin plugin);
+    public void unpublishAllDevices(PluginContext ctx, EventLoopExecutor executor);
 }

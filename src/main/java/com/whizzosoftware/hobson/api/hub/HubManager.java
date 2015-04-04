@@ -29,25 +29,23 @@ public interface HubManager {
     /**
      * Returns a specific hub associated with a user.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the hub to retrieve
      *
      * @return a Hub object
      */
-    public HobsonHub getHub(String userId, String hubId);
+    public HobsonHub getHub(HubContext ctx);
 
     /**
      * Returns content from the Hub log.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the hub that owns the logs
      * @param startLine the starting line from the end of the file (e.g. 0 is the last line of the file)
      * @param endLine the ending line from the end of the file (e.g. 0 is the last line of the file)
      * @param appendable an Appendable to add the log content to
      *
      * @return a LineRage representing what was added to the appendable
      */
-    public LineRange getLog(String userId, String hubId, long startLine, long endLine, Appendable appendable);
+    public LineRange getLog(HubContext ctx, long startLine, long endLine, Appendable appendable);
 
     /**
      * Returns a registrar interface for adding/removing new Hubs.
@@ -66,50 +64,44 @@ public interface HubManager {
     /**
      * Sets details for a hub.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
      * @param hub the new information (can be partially populated)
      */
-    public void setHubDetails(String userId, String hubId, HobsonHub hub);
+    public void setHubDetails(HobsonHub hub);
 
     /**
      * Clears (deletes) the details for a hub.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the target hub
      */
-    public void clearHubDetails(String userId, String hubId);
+    public void clearHubDetails(HubContext ctx);
 
     /**
      * Sets the Hub password.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the target hub
      * @param change a PasswordChange instance
      *
      * @throws com.whizzosoftware.hobson.api.HobsonInvalidRequestException if password does not meet complexity requirements
      */
-    public void setHubPassword(String userId, String hubId, PasswordChange change);
+    public void setHubPassword(HubContext ctx, PasswordChange change);
 
     /**
      * Sends a test e-mail message using the provided e-mail configuration.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the target hub
      * @param config an EmailConfiguration instance
      *
      * @throws com.whizzosoftware.hobson.api.HobsonInvalidRequestException if the e-mail configuration is invalid
      */
-    public void sendTestEmail(String userId, String hubId, EmailConfiguration config);
+    public void sendTestEmail(HubContext ctx, EmailConfiguration config);
 
     /**
      * Sends an e-mail message using the provided e-mail configuration.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the target hub
      * @param recipientAddress the e-mail address of the recipient
      * @param subject the e-mail subject line
      * @param body the e-mail message body
      */
-    public void sendEmail(String userId, String hubId, String recipientAddress, String subject, String body);
+    public void sendEmail(HubContext ctx, String recipientAddress, String subject, String body);
 }

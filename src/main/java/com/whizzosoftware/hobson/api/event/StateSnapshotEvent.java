@@ -71,10 +71,10 @@ public class StateSnapshotEvent extends HobsonEvent {
     }
 
     public void addDevice(HobsonDevice device) {
-        List<HobsonDevice> devices = deviceMap.get(device.getPluginId());
+        List<HobsonDevice> devices = deviceMap.get(device.getContext().getPluginId());
         if (devices == null) {
             devices = new ArrayList<>();
-            deviceMap.put(device.getPluginId(), devices);
+            deviceMap.put(device.getContext().getPluginId(), devices);
         }
         devices.add(device);
     }

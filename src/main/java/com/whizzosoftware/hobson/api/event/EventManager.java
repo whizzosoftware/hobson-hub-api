@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event;
 
+import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 
@@ -22,44 +23,40 @@ public interface EventManager {
     /**
      * Subscribes a listener to a specific event topic.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the hub making the request
      * @param listener the listener
      * @param topics the topics to subscribe to
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void addListener(String userId, String hubId, EventListener listener, String[] topics);
+    public void addListener(HubContext ctx, EventListener listener, String[] topics);
 
     /**
      * Unsubscribes a listener from specific event topics.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the hub that added the listener
      * @param listener the listener
      * @param topics the topics to unsubscribe from
      */
-    public void removeListener(String userId, String hubId, EventListener listener, String[] topics);
+    public void removeListener(HubContext ctx, EventListener listener, String[] topics);
 
     /**
      * Unsubscribes a listener from all topics.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the hub that added the listener
      * @param listener the listener to remove
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void removeListenerFromAllTopics(String userId, String hubId, EventListener listener);
+    public void removeListenerFromAllTopics(HubContext ctx, EventListener listener);
 
     /**
      * Sends a system event.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the hub sending the event
      * @param event the event to send
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void postEvent(String userId, String hubId, HobsonEvent event);
+    public void postEvent(HubContext ctx, HobsonEvent event);
 }

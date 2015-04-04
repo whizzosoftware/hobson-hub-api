@@ -19,18 +19,11 @@ import java.util.Dictionary;
  */
 public interface HobsonDevice {
     /**
-     * Returns the ID of the plugin which created this device.
+     * Returns the context of this device.
      *
-     * @return a plugin ID
+     * @return a DeviceContext instance
      */
-    public String getPluginId();
-
-    /**
-     * Returns the device ID.
-     *
-     * @return the device ID
-     */
-    public String getId();
+    public DeviceContext getContext();
 
     /**
      * Returns the device name.

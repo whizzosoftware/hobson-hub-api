@@ -7,6 +7,9 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.action;
 
+import com.whizzosoftware.hobson.api.hub.HubContext;
+import com.whizzosoftware.hobson.api.plugin.PluginContext;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -20,59 +23,48 @@ public interface ActionManager {
     /**
      * Executes an action.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID associated with the action
-     * @param actionId the action ID
+     * @param ctx the context of the action
      * @param properties the map of arguments to use for the execution
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void executeAction(String userId, String hubId, String pluginId, String actionId, Map<String,Object> properties);
+    public void executeAction(ActionContext ctx, Map<String,Object> properties);
 
     /**
      * Retrieves all published actions.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the hub that published the actions
      *
      * @return a Collection of HobsonAction instances
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Collection<HobsonAction> getAllActions(String userId, String hubId);
+    public Collection<HobsonAction> getAllActions(HubContext ctx);
 
     /**
      * Retrieve a published action.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID that published the action
-     * @param actionId the action ID
+     * @param ctx the context of the action
      *
      * @return a HobsonAction instance (or null if not found)
      *
      * @since hobson-hub-api 0.1.6
      */
-    public HobsonAction getAction(String userId, String hubId, String pluginId, String actionId);
+    public HobsonAction getAction(ActionContext ctx);
 
     /**
      * Publishes a new action.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
      * @param action the action to publish
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void publishAction(String userId, String hubId, HobsonAction action);
+    public void publishAction(HobsonAction action);
 
     /**
      * Unpublishes all actions previous published by a plugin.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the ID of the plugin that published the actions
+     * @param ctx the context of the plugin that published the actions
      */
-    public void unpublishAllActions(String userId, String hubId, String pluginId);
+    public void unpublishAllActions(PluginContext ctx);
 }

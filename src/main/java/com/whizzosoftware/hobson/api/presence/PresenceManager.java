@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.presence;
 
+import com.whizzosoftware.hobson.api.hub.HubContext;
+
 import java.util.Collection;
 
 /**
@@ -17,45 +19,38 @@ import java.util.Collection;
  */
 public interface PresenceManager {
     /**
-     * Returns a summary of all presence entities.
+     * Returns all presence entities for a hub.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the target hub
      *
      * @return a Collection of PresenceEntity objects
      */
-    public Collection<PresenceEntity> getAllEntities(String userId, String hubId);
+    public Collection<PresenceEntity> getAllEntities(HubContext ctx);
 
     /**
      * Returns details of a presence entity.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param entityId the ID of the entity
+     * @param ctx the context of the entity
      *
      * @return a PresenceEntity object
      */
-    public PresenceEntity getEntity(String userId, String hubId, String entityId);
+    public PresenceEntity getEntity(PresenceEntityContext ctx);
 
     /**
      * Adds a new presence entity.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
      * @param entity the entity to add
      *
      * @return the ID of the newly created entity
      */
-    public String addEntity(String userId, String hubId, PresenceEntity entity);
+    public String addEntity(PresenceEntity entity);
 
     /**
      * Sends an update event for a presence entity.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param entityId the ID of the entity
+     * @param ctx the context of the entity
      * @param name the name of the entity (or null if unchanged)
      * @param location the location of the entity (or null if unknown)
      */
-    public void updateEntity(String userId, String hubId, String entityId, String name, String location);
+    public void updateEntity(PresenceEntityContext ctx, String name, String location);
 }

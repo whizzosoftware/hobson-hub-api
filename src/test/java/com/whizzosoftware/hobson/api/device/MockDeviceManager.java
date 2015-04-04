@@ -9,9 +9,9 @@ package com.whizzosoftware.hobson.api.device;
 
 import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.config.ConfigurationProperty;
-import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
-import com.whizzosoftware.hobson.api.telemetry.TelemetryInterval;
-import com.whizzosoftware.hobson.api.telemetry.TemporalValue;
+import com.whizzosoftware.hobson.api.hub.HubContext;
+import com.whizzosoftware.hobson.api.plugin.EventLoopExecutor;
+import com.whizzosoftware.hobson.api.plugin.PluginContext;
 
 import java.util.*;
 
@@ -20,19 +20,19 @@ public class MockDeviceManager implements DeviceManager {
     public final List<HobsonDevice> publishedDevices = new ArrayList<>();
 
     @Override
-    public Collection<HobsonDevice> getAllDevices(String userId, String hubId) {
+    public Collection<HobsonDevice> getAllDevices(HubContext ctx) {
         return getPublishedDevices();
     }
 
     @Override
-    public Collection<HobsonDevice> getAllPluginDevices(String userId, String hubId, String pluginId) {
+    public Collection<HobsonDevice> getAllDevices(PluginContext ctx) {
         return null;
     }
 
     @Override
-    public HobsonDevice getDevice(String userId, String hubId, String pluginId, String deviceId) {
+    public HobsonDevice getDevice(DeviceContext ctx) {
         for (HobsonDevice device : getPublishedDevices()) {
-            if (device.getPluginId().equals(pluginId) && device.getId().equals(deviceId)) {
+            if (device.getContext().getPluginId().equals(ctx.getPluginId()) && device.getContext().getDeviceId().equals(ctx.getDeviceId())) {
                 return device;
             }
         }
@@ -40,45 +40,45 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public boolean hasDevice(String userId, String hubId, String pluginId, String deviceId) {
-        return (getDevice(userId, hubId, pluginId, deviceId) != null);
+    public boolean hasDevice(DeviceContext ctx) {
+        return (getDevice(ctx) != null);
     }
 
     @Override
-    public boolean isDeviceTelemetryEnabled(String userId, String hubId, String pluginId, String deviceId) {
+    public boolean isDeviceTelemetryEnabled(DeviceContext ctx) {
         return false;
     }
 
     @Override
-    public Configuration getDeviceConfiguration(String userId, String hubId, String pluginId, String deviceId) {
+    public Configuration getDeviceConfiguration(DeviceContext ctx) {
         return null;
     }
 
     @Override
-    public Object getDeviceConfigurationProperty(String userId, String hubId, String pluginId, String deviceId, String name) {
+    public Object getDeviceConfigurationProperty(DeviceContext ctx, String name) {
         return null;
     }
 
     @Override
-    public Collection<HobsonDevice> getAllTelemetryEnabledDevices(String userId, String hubId) {
+    public Collection<HobsonDevice> getAllTelemetryEnabledDevices(HubContext ctx) {
         return null;
     }
 
     @Override
-    public void publishDevice(String userId, String hubId, HobsonPlugin plugin, HobsonDevice device) {
-        publishDevice(userId, hubId, plugin, device, false);
+    public void publishDevice(HobsonDevice device) {
+        publishDevice(device, false);
     }
 
     @Override
-    public void publishDevice(String userId, String hubId, HobsonPlugin plugin, HobsonDevice device, boolean republish) {
+    public void publishDevice(HobsonDevice device, boolean republish) {
         publishedDevices.add(device);
     }
 
     @Override
-    public void unpublishDevice(String userId, String hubId, HobsonPlugin plugin, String deviceId) {
+    public void unpublishDevice(DeviceContext ctx, EventLoopExecutor executor) {
         HobsonDevice unpublishDevice = null;
         for (HobsonDevice device : publishedDevices) {
-            if (device.getPluginId().equals(plugin.getId()) && device.getId().equals(deviceId)) {
+            if (device.getContext().getPluginId().equals(ctx.getPluginId()) && device.getContext().getDeviceId().equals(ctx.getDeviceId())) {
                 unpublishDevice = device;
             }
         }
@@ -87,11 +87,12 @@ public class MockDeviceManager implements DeviceManager {
         }
     }
 
+
     @Override
-    public void unpublishAllDevices(String userId, String hubId, HobsonPlugin plugin) {
+    public void unpublishAllDevices(PluginContext ctx, EventLoopExecutor executor) {
         List<HobsonDevice> unpublishList = new ArrayList<HobsonDevice>();
         for (HobsonDevice device : publishedDevices) {
-            if (device.getPluginId().equals(plugin.getId())) {
+            if (device.getContext().getPluginId().equals(ctx.getPluginId())) {
                 unpublishList.add(device);
             }
         }
@@ -101,19 +102,19 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public void setDeviceConfiguration(String userId, String hubId, String pluginId, String deviceId, Configuration config) {
+    public void setDeviceConfiguration(DeviceContext ctx, Configuration config) {
         for (ConfigurationProperty prop : config.getProperties()) {
-            setDeviceConfigurationProperty(userId, hubId, pluginId, deviceId, prop.getName(), prop.getValue(), true);
+            setDeviceConfigurationProperty(ctx, prop.getName(), prop.getValue(), true);
         }
     }
 
     @Override
-    public void setDeviceConfigurationProperty(String userId, String hubId, String pluginId, String deviceId, String name, Object value, boolean overwrite) {
-        configuration.put(pluginId + "." + deviceId + "." + name, value);
+    public void setDeviceConfigurationProperty(DeviceContext ctx, String name, Object value, boolean overwrite) {
+        configuration.put(ctx.getPluginId() + "." + ctx.getDeviceId() + "." + name, value);
     }
 
     @Override
-    public void setDeviceName(String userId, String hubId, String pluginId, String deviceId, String name) {
+    public void setDeviceName(DeviceContext ctx, String name) {
 
     }
 

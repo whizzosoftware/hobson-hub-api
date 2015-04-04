@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.image;
 
+import com.whizzosoftware.hobson.api.hub.HubContext;
+
 import java.util.List;
 
 /**
@@ -16,50 +18,47 @@ import java.util.List;
  */
 public interface ImageManager {
     /**
-     * Retrieves the current Hub image.
+     * Retrieves a Hub image.
      *
      * @return an ImageInputStream instance
      * @throws com.whizzosoftware.hobson.api.HobsonNotFoundException if an image does not exist
      */
-    public ImageInputStream getHubImage();
+    public ImageInputStream getHubImage(HubContext ctx);
 
     /**
      * Sets the current Hub image.
      *
-     * @param iis an ImageInputStream instance
+     * @param ctx the context of the target hub
      */
-    public void setHubImage(ImageInputStream iis);
+    public void setHubImage(HubContext ctx, ImageInputStream iis);
 
     /**
      * Retrieves all groups in the image library.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the target hub
      *
      * @return a List of ImageGroup objects
      */
-    public List<ImageGroup> getImageLibraryGroups(String userId, String hubId);
+    public List<ImageGroup> getImageLibraryGroups(HubContext ctx);
 
     /**
      * Retrieves all image IDs in a group.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the target hub
      * @param groupId the group ID
      *
      * @return a List of Strings
      */
-    public List<String> getImageLibraryImageIds(String userId, String hubId, String groupId);
+    public List<String> getImageLibraryImageIds(HubContext ctx, String groupId);
 
     /**
      * Retrieves binary representation of an image library image.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the target hub
      * @param imageId the ID of the image to retrieve
      *
      * @return an ImageInputStream object
      * @throws com.whizzosoftware.hobson.api.HobsonNotFoundException if an image does not exist
      */
-    public ImageInputStream getImageLibraryImage(String userId, String hubId, String imageId);
+    public ImageInputStream getImageLibraryImage(HubContext ctx, String imageId);
 }

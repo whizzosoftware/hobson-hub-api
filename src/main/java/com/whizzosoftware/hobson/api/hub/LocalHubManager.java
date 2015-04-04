@@ -16,13 +16,12 @@ public interface LocalHubManager {
     /**
      * Authenticates the admin password.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the hub context
      * @param password the password to check
      *
      * @return true if the password is valid
      */
-    public boolean authenticateAdmin(String userId, String hubId, String password);
+    public boolean authenticateAdmin(HubContext ctx, String password);
 
     /**
      * Add a new appender for error logging.

@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event;
 
+import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.HobsonDevice;
 
 import java.util.Map;
@@ -31,9 +32,5 @@ public class DeviceStoppedEvent extends HobsonEvent {
 
     public HobsonDevice getDevice() {
         return (HobsonDevice)getProperty(PROP_DEVICE);
-    }
-
-    public String getPluginId() {
-        return getDevice().getPluginId();
     }
 }

@@ -25,7 +25,7 @@ import java.util.List;
  */
 abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDeviceRuntime {
     private HobsonPlugin plugin;
-    private String id;
+    private DeviceContext ctx;
     private String name;
     private String defaultName;
     private DeviceError deviceError;
@@ -39,24 +39,15 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
      */
     public AbstractHobsonDevice(HobsonPlugin plugin, String id) {
         this.plugin = plugin;
-        this.id = id;
+        this.ctx = DeviceContext.create(plugin.getContext(), id);
 
         // register this device's "name" configuration property
         addConfigurationMetaData(new ConfigurationPropertyMetaData("name", "Name", "A descriptive name for this device", ConfigurationPropertyMetaData.Type.STRING));
     }
 
     @Override
-    public String getPluginId() {
-        if (getPlugin() != null) {
-            return getPlugin().getId();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public String getId() {
-        return id;
+    public DeviceContext getContext() {
+        return ctx;
     }
 
     @Override
@@ -105,7 +96,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
 
     @Override
     public void setConfigurationProperty(String name, Object value, boolean overwrite) {
-        getPlugin().getRuntime().setDeviceConfigurationProperty(getId(), name, value, overwrite);
+        getPlugin().getRuntime().setDeviceConfigurationProperty(getContext(), name, value, overwrite);
     }
 
     @Override
@@ -131,7 +122,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
         if (defaultName != null) {
             return defaultName;
         } else {
-            return getId();
+            return ctx.getDeviceId();
         }
     }
 
@@ -170,7 +161,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
      * @param mask the variable mask
      */
     protected void publishVariable(String name, Object value, HobsonVariable.Mask mask) {
-        getPlugin().getRuntime().publishDeviceVariable(getId(), name, value, mask);
+        getPlugin().getRuntime().publishDeviceVariable(getContext(), name, value, mask);
     }
 
     /**
@@ -189,7 +180,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
      * @param value the variable value
      */
     protected void fireVariableUpdateNotification(String name, Object value) {
-        getPlugin().getRuntime().fireVariableUpdateNotification(new VariableUpdate(getPluginId(), getId(), name, value));
+        getPlugin().getRuntime().fireVariableUpdateNotification(new VariableUpdate(ctx.getPluginId(), ctx.getDeviceId(), name, value));
     }
 
     /**
@@ -200,7 +191,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
      * @return a HobsonVariable instance
      */
     protected HobsonVariable getVariable(String variableName) {
-        return getPlugin().getRuntime().getDeviceVariable(getId(), variableName);
+        return getPlugin().getRuntime().getDeviceVariable(getContext(), variableName);
     }
 
     public String toString() {

@@ -13,7 +13,7 @@ import com.whizzosoftware.hobson.api.config.ConfigurationProperty;
 import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.MockAbstractHobsonPlugin;
-import com.whizzosoftware.hobson.api.util.UserUtil;
+import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.manager.MockVariableManager;
@@ -28,7 +28,7 @@ public class AbstractHobsonDeviceTest {
     public void testGetPluginId() {
         HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
         HobsonDevice d = new MockAbstractHobsonDevice(p, "did");
-        assertEquals("pid", d.getPluginId());
+        assertEquals("pid", d.getContext().getPluginId());
     }
 
     @Test
@@ -144,7 +144,7 @@ public class AbstractHobsonDeviceTest {
         p.getRuntime().setVariableManager(vm);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         d.publishVariable("var1", "val1", HobsonVariable.Mask.READ_WRITE);
-        HobsonVariable v = vm.getDeviceVariable(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, "pid", "did", "var1");
+        HobsonVariable v = vm.getDeviceVariable(DeviceContext.create(p.getContext(), "did"), "var1");
         assertNotNull(v);
         assertEquals("var1", v.getName());
         assertEquals("val1", v.getValue());
@@ -217,7 +217,7 @@ public class AbstractHobsonDeviceTest {
     @Test
     public void testGetVariableWithWithVariableManager() {
         MockVariableManager vm = new MockVariableManager();
-        vm.publishDeviceVariable(new DeviceContext(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, "pid", "did"), "var1", "val1", HobsonVariable.Mask.READ_WRITE);
+        vm.publishDeviceVariable(DeviceContext.create(PluginContext.createLocal("pid"), "did"), "var1", "val1", HobsonVariable.Mask.READ_WRITE);
         HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
         p.getRuntime().setVariableManager(vm);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");

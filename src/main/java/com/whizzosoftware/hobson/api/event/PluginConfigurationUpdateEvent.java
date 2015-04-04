@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.event;
 
 import com.whizzosoftware.hobson.api.config.Configuration;
+import com.whizzosoftware.hobson.api.plugin.PluginContext;
 
 import java.util.Dictionary;
 import java.util.Map;
@@ -23,9 +24,9 @@ public class PluginConfigurationUpdateEvent extends HobsonEvent {
     private static final String PROP_PLUGIN_ID = "pluginId";
     private static final String PROP_CONFIGURATION = "configuration";
 
-    public PluginConfigurationUpdateEvent(String pluginId, Configuration configuration) {
+    public PluginConfigurationUpdateEvent(PluginContext ctx, Configuration configuration) {
         super(EventTopics.CONFIG_TOPIC, ID);
-        setProperty(PROP_PLUGIN_ID, pluginId);
+        setProperty(PROP_PLUGIN_ID, ctx.getPluginId());
         setProperty(PROP_CONFIGURATION, configuration);
     }
 

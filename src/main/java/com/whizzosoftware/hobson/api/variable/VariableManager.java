@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.variable;
 
 import com.whizzosoftware.hobson.api.device.DeviceContext;
+import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 
 import java.util.Collection;
@@ -23,74 +24,62 @@ import java.util.Map;
  */
 public interface VariableManager {
     /**
-     * Returns all published variables.
+     * Returns all variables published by a hub.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the target hub
      *
      * @return a Collection of HobsonVariable instances
      *
      * @since hobson-hub-api 0.5.0
      */
-    public Collection<HobsonVariable> getAllVariables(String userId, String hubId);
+    public Collection<HobsonVariable> getAllVariables(HubContext ctx);
 
     /**
-     * Returns a collection of all published global variables.
+     * Returns a collection all global variables published by a hub.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the target hub
      *
      * @return a Collection of HobsonVariable instances
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Collection<HobsonVariable> getGlobalVariables(String userId, String hubId);
+    public Collection<HobsonVariable> getGlobalVariables(HubContext ctx);
 
     /**
-     * Returns a specific published global variable.
+     * Returns a specific global variable published by a hub.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the target hub
      * @param name the variable name
      *
      * @return a HobsonVariable instance
      * @throws GlobalVariableNotFoundException if not found
      */
-    public HobsonVariable getGlobalVariable(String userId, String hubId, String name);
+    public HobsonVariable getGlobalVariable(HubContext ctx, String name);
 
     /**
      * Returns all published variables for a device.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID of the device
-     * @param deviceId the device ID that published the variables
+     * @param ctx the device context the variables are associated with
      *
      * @return a Collection of HobsonVariable instances
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Collection<HobsonVariable> getDeviceVariables(String userId, String hubId, String pluginId, String deviceId);
+    public HobsonVariableCollection getDeviceVariables(DeviceContext ctx);
 
     /**
      * Returns all the variable change IDs that can be produced by a device.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID of the device
-     * @param deviceId the device ID
+     * @param ctx the device context to retrieve change IDs for
      *
      * @return a Collection of variable change IDs
      */
-    public Collection<String> getDeviceVariableChangeIds(String userId, String hubId, String pluginId, String deviceId);
+    public Collection<String> getDeviceVariableChangeIds(DeviceContext ctx);
 
     /**
      * Returns a specific published variable for a device.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID of the device that published the variable
-     * @param deviceId the device ID that published the variable
+     * @param ctx the device context the variable is associated with
      * @param name the variable name
      *
      * @return a HobsonVariable instance (or null if not found)
@@ -98,22 +87,19 @@ public interface VariableManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public HobsonVariable getDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name);
+    public HobsonVariable getDeviceVariable(DeviceContext ctx, String name);
 
     /**
      * Indicates whether a device variable has been published.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID of the device that published the variable
-     * @param deviceId the device ID that published the variable
+     * @param ctx the device context the variable is associated with
      * @param name the variable name
      *
      * @return a boolean
      *
      * @since hobson-hub-api 0.1.6
      */
-    public boolean hasDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name);
+    public boolean hasDeviceVariable(DeviceContext ctx, String name);
 
     /**
      * Publish a new global variable.
@@ -230,9 +216,8 @@ public interface VariableManager {
     /**
      * Called by a device or plugin to confirm that a variable update has been successfully applied.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the target hub
      * @param updates the successful variable updates
      */
-    public void confirmVariableUpdates(String userId, String hubId, List<VariableUpdate> updates);
+    public void confirmVariableUpdates(HubContext ctx, List<VariableUpdate> updates);
 }

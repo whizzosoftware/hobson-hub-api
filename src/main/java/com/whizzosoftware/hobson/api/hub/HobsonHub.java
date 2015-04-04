@@ -15,7 +15,7 @@ import com.whizzosoftware.hobson.api.config.EmailConfiguration;
  * @author Dan Noguerol
  */
 public class HobsonHub {
-    private String id;
+    private HubContext ctx;
     private String name;
     private String version;
     private HubLocation location;
@@ -24,12 +24,12 @@ public class HobsonHub {
     private Boolean setupComplete;
     private String cloudLinkUrl;
 
-    public HobsonHub(String id) {
-        this.id = id;
+    public HobsonHub(HubContext ctx) {
+        this.ctx = ctx;
     }
 
-    public String getId() {
-        return id;
+    public HubContext getContext() {
+        return ctx;
     }
 
     public boolean hasName() {
@@ -87,8 +87,8 @@ public class HobsonHub {
     public static class Builder {
         private HobsonHub hub;
 
-        public Builder(String id) {
-            hub = new HobsonHub(id);
+        public Builder(HubContext ctx) {
+            hub = new HobsonHub(ctx);
         }
 
         public Builder name(String name) {

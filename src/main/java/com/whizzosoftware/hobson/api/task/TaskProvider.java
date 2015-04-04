@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.task;
 
 import com.whizzosoftware.hobson.api.action.ActionManager;
+import com.whizzosoftware.hobson.api.hub.HubContext;
 
 import java.util.Collection;
 
@@ -22,7 +23,7 @@ public interface TaskProvider {
      *
      * @return a plugin ID
      */
-    public String getPluginId();
+    public HubContext getHubContext();
 
     /**
      * Returns the ID of this task provider.

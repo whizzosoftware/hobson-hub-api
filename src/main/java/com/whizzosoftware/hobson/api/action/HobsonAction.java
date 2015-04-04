@@ -9,6 +9,7 @@ package com.whizzosoftware.hobson.api.action;
 
 import com.whizzosoftware.hobson.api.action.meta.ActionMetaData;
 import com.whizzosoftware.hobson.api.hub.HubManager;
+import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.variable.VariableManager;
 
 import java.util.Collection;
@@ -21,18 +22,11 @@ import java.util.Map;
  */
 public interface HobsonAction {
     /**
-     * Returns the plugin ID that published the action.
+     * Returns the action context.
      *
-     * @return a plugin ID
+     * @return an ActionContext instance
      */
-    public String getPluginId();
-
-    /**
-     * Returns the action ID.
-     *
-     * @return an action ID
-     */
-    public String getId();
+    public ActionContext getContext();
 
     /**
      * Returns the name of the action.

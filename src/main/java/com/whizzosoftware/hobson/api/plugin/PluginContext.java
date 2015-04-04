@@ -7,7 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
-import com.whizzosoftware.hobson.api.util.UserUtil;
+import com.whizzosoftware.hobson.api.hub.HubContext;
 
 /**
  * Encapsulates contextual information for a plugin reference.
@@ -15,9 +15,20 @@ import com.whizzosoftware.hobson.api.util.UserUtil;
  * @author Dan Noguerol
  */
 public class PluginContext {
-    private String userId;
-    private String hubId;
+    private HubContext hubContext;
     private String pluginId;
+
+    /**
+     * Create a plugin context.
+     *
+     * @param ctx the hub context
+     * @param pluginId the plugin ID
+     *
+     * @return a PluginContext instance
+     */
+    public static PluginContext create(HubContext ctx, String pluginId) {
+        return new PluginContext(ctx, pluginId);
+    }
 
     /**
      * Creates a local plugin context.
@@ -27,28 +38,30 @@ public class PluginContext {
      * @return a PluginContext instance
      */
     public static PluginContext createLocal(String pluginId) {
-        return new PluginContext(UserUtil.DEFAULT_USER, UserUtil.DEFAULT_HUB, pluginId);
+        return new PluginContext(HubContext.createLocal(), pluginId);
     }
 
     /**
      * Constructor.
      *
-     * @param userId the user ID associated with the hub
-     * @param hubId the hub ID
+     * @param ctx the hub context
      * @param pluginId the plugin ID
      */
-    public PluginContext(String userId, String hubId, String pluginId) {
-        this.userId = userId;
-        this.hubId = hubId;
+    private PluginContext(HubContext ctx, String pluginId) {
+        this.hubContext = ctx;
         this.pluginId = pluginId;
     }
 
+    public HubContext getHubContext() {
+        return hubContext;
+    }
+
     public String getUserId() {
-        return userId;
+        return hubContext.getUserId();
     }
 
     public String getHubId() {
-        return hubId;
+        return hubContext.getHubId();
     }
 
     public String getPluginId() {

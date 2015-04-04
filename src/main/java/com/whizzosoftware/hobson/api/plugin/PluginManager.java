@@ -8,11 +8,11 @@
 package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.config.Configuration;
+import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.image.ImageInputStream;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * An interface for managing Hobson plugins.
@@ -24,132 +24,123 @@ public interface PluginManager {
     /**
      * Returns a data file for a specific plugin.
      *
-     * @param pluginId the plugin ID requesting the file
+     * @param ctx the context of the plugin requesting the file
      * @param filename the name of the data file
      *
      * @return a File instance (or null if not found)
      */
-    public File getDataFile(String pluginId, String filename);
+    public File getDataFile(PluginContext ctx, String filename);
 
-    public Collection<HobsonPlugin> getAllPlugins(String userId, String hubId);
+    /**
+     * Returns all plugins published by a specific hub.
+     *
+     * @param ctx the context of the target hub
+     *
+     * @return a Collection of HobsonPlugin instances
+     */
+    public Collection<HobsonPlugin> getAllPlugins(HubContext ctx);
 
     /**
      * Retrieves a specific plugin.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID
+     * @param ctx the context of the target plugin
      *
      * @return a HobsonPlugin instance (or null if not found)
      */
-    public HobsonPlugin getPlugin(String userId, String hubId, String pluginId);
+    public HobsonPlugin getPlugin(PluginContext ctx);
 
     /**
      * Retrieve descriptors for all installed plugins.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
+     * @param ctx the context of the target hub
      * @param includeRemoteInfo indicates whether online Hobson plugin directory information should be included
      *
      * @return a PluginList
      */
-    public PluginList getPluginDescriptors(String userId, String hubId, boolean includeRemoteInfo);
+    public PluginList getPluginDescriptors(HubContext ctx, boolean includeRemoteInfo);
 
     /**
      * Returns the plugin level configuration.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
      * @param plugin the plugin
      *
      * @return a Dictionary (or null if there is no configuration)
      */
-    public Configuration getPluginConfiguration(String userId, String hubId, HobsonPlugin plugin);
+    public Configuration getPluginConfiguration(HobsonPlugin plugin);
 
     /**
      * Returns a plugin's icon.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID
+     * @param ctx the context of the target plugin
      *
      * @return an ImageInputStream (or null if the plugin has no icon and no default was found)
      */
-    public ImageInputStream getPluginIcon(String userId, String hubId, String pluginId);
+    public ImageInputStream getPluginIcon(PluginContext ctx);
 
     /**
      * Returns the plugin level configuration.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID
+     * @param ctx the context of the target plugin
      *
      * @return a Dictionary (or null if there is no configuration)
      */
-    public Configuration getPluginConfiguration(String userId, String hubId, String pluginId);
+    public Configuration getPluginConfiguration(PluginContext ctx);
 
     /**
      * Returns a plugin level configuration property.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID
+     * @param ctx the context of the target plugin
      * @param name the name of the configuration property
      *
      * @return the configuration property value (or null if not set)
      */
-    public Object getPluginConfigurationProperty(String userId, String hubId, String pluginId, String name);
+    public Object getPluginConfigurationProperty(PluginContext ctx, String name);
 
     /**
      * Returns the current local version of a plugin.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID
+     * @param ctx the context of the target plugin
      *
      * @return the current version in x.x.x format
      */
-    public String getPluginCurrentVersion(String userId, String hubId, String pluginId);
+    public String getPluginCurrentVersion(PluginContext ctx);
 
-    public void publishPlugin(String userId, String hubId, HobsonPlugin plugin);
+    /**
+     * Publishes a plugin.
+     *
+     * @param plugin the plugin to publish
+     */
+    public void publishPlugin(HobsonPlugin plugin);
 
     /**
      * Installs a specific version of a plugin.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID to install
+     * @param ctx the context of the target plugin
      * @param pluginVersion the plugin version to install
      */
-    public void installPlugin(String userId, String hubId, String pluginId, String pluginVersion);
+    public void installPlugin(PluginContext ctx, String pluginVersion);
 
     /**
      * Sets the plugin level configuration.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID
+     * @param ctx the context of the target plugin
      * @param config the plugin configuration
      */
-    public void setPluginConfiguration(String userId, String hubId, String pluginId, Configuration config);
+    public void setPluginConfiguration(PluginContext ctx, Configuration config);
 
     /**
      * Sets an individual plugin level configuration property.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID
+     * @param ctx the context of the target hub
      * @param name the configuration property name
      * @param value the configuration property value
      */
-    public void setPluginConfigurationProperty(String userId, String hubId, String pluginId, String name, Object value);
+    public void setPluginConfigurationProperty(PluginContext ctx, String name, Object value);
 
     /**
      * Reloads the specified plugin.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID to reload
+     * @param ctx the context of the target plugin
      */
-    public void reloadPlugin(String userId, String hubId, String pluginId);
+    public void reloadPlugin(PluginContext ctx);
 }

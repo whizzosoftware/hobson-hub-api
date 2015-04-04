@@ -8,9 +8,9 @@
 package com.whizzosoftware.hobson.api.variable.manager;
 
 import com.whizzosoftware.hobson.api.device.DeviceContext;
+import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.variable.*;
-import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
 
 import java.util.*;
 
@@ -27,37 +27,37 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public Collection<HobsonVariable> getAllVariables(String userId, String hubId) {
+    public Collection<HobsonVariable> getAllVariables(HubContext ctx) {
         return null;
     }
 
     @Override
-    public Collection<HobsonVariable> getGlobalVariables(String userId, String hubId) {
+    public Collection<HobsonVariable> getGlobalVariables(HubContext ctx) {
         return null;
     }
 
     @Override
-    public HobsonVariable getGlobalVariable(String userId, String hubId, String name) {
+    public HobsonVariable getGlobalVariable(HubContext ctx, String name) {
         return null;
     }
 
     @Override
-    public Collection<HobsonVariable> getDeviceVariables(String userId, String hubId, String pluginId, String deviceId) {
+    public HobsonVariableCollection getDeviceVariables(DeviceContext ctx) {
         return null;
     }
 
     @Override
-    public Collection<String> getDeviceVariableChangeIds(String userId, String hubId, String pluginId, String deviceId) {
+    public Collection<String> getDeviceVariableChangeIds(DeviceContext ctx) {
         return null;
     }
 
     @Override
-    public HobsonVariable getDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name) {
-        return getPublishedVariables().get(pluginId + "." + deviceId);
+    public HobsonVariable getDeviceVariable(DeviceContext ctx, String name) {
+        return getPublishedVariables().get(ctx.getPluginId() + "." + ctx.getDeviceId());
     }
 
     @Override
-    public boolean hasDeviceVariable(String userId, String hubId, String pluginId, String deviceId, String name) {
+    public boolean hasDeviceVariable(DeviceContext ctx, String name) {
         return false;
     }
 
@@ -112,7 +112,7 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public void confirmVariableUpdates(String userId, String hubId, List<VariableUpdate> updates) {
+    public void confirmVariableUpdates(HubContext ctx, List<VariableUpdate> updates) {
 
     }
 }

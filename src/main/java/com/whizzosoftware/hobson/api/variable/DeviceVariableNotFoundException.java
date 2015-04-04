@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.variable;
 
 import com.whizzosoftware.hobson.api.HobsonNotFoundException;
+import com.whizzosoftware.hobson.api.device.DeviceContext;
 
 /**
  * An exception that occurs when a device variable cannot be found (e.g. when requesting one).
@@ -15,7 +16,7 @@ import com.whizzosoftware.hobson.api.HobsonNotFoundException;
  * @author Dan Noguerol
  */
 public class DeviceVariableNotFoundException extends HobsonNotFoundException {
-    public DeviceVariableNotFoundException(String pluginId, String deviceId, String name) {
-        super("Variable " + pluginId + "." + deviceId + "[" + name + "]" + " not found");
+    public DeviceVariableNotFoundException(DeviceContext ctx, String name) {
+        super("Variable " + ctx + "[" + name + "]" + " not found");
     }
 }

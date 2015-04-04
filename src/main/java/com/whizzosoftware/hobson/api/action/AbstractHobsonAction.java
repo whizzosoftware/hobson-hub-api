@@ -21,8 +21,7 @@ import java.util.List;
  * @since hobson-hub-api 0.1.6
  */
 abstract public class AbstractHobsonAction implements HobsonAction {
-    private String pluginId;
-    private String id;
+    private ActionContext ctx;
     private String name;
     private VariableManager variableManager;
     private List<ActionMetaData> metaList = new ArrayList<>();
@@ -30,38 +29,25 @@ abstract public class AbstractHobsonAction implements HobsonAction {
     /**
      * Constructor.
      *
-     * @param pluginId the ID Of the plugin creating the action
-     * @param id the action ID
+     * @param ctx the context of the action
      * @param name the action name
      *
      * @since hobson-hub-api 0.1.6
      */
-    public AbstractHobsonAction(String pluginId, String id, String name) {
-        this.pluginId = pluginId;
-        this.id = id;
+    public AbstractHobsonAction(ActionContext ctx, String name) {
+        this.ctx = ctx;
         this.name = name;
     }
 
     /**
-     * Retrieves the plugin ID.
+     * Retrieves the action context.
      *
      * @return the plugin ID
      *
-     * @since hobson-hub-api 0.1.6
+     * @since hobson-hub-api 0.5.0
      */
-    public String getPluginId() {
-        return pluginId;
-    }
-
-    /**
-     * Returns the action ID.
-     *
-     * @return the action ID
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    public String getId() {
-        return id;
+    public ActionContext getContext() {
+        return ctx;
     }
 
     /**

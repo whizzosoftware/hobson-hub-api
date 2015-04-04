@@ -21,53 +21,41 @@ public interface TelemetryManager {
     /**
      * Enables/disables telemetry for a specific device.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID of the device
-     * @param deviceId the device ID
+     * @param ctx the context of the target device
      * @param enabled whether to enable telemetry
      */
-    public void enableDeviceTelemetry(String userId, String hubId, String pluginId, String deviceId, boolean enabled);
+    public void enableDeviceTelemetry(DeviceContext ctx, boolean enabled);
 
     /**
      * Retrieves telemetry data for a specific device.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID of the device
-     * @param deviceId the device ID
+     * @param ctx the context of the target device
      * @param endTime the end time for the returned data
      * @param interval how much data to return (determines the start time of the data)
      *
      * @return a Map (keyed by variable name) to Collections of TemporalValue instances
      */
-    public Map<String,Collection<TemporalValue>> getDeviceTelemetry(String userId, String hubId, String pluginId, String deviceId, long endTime, TelemetryInterval interval);
+    public Map<String,Collection<TemporalValue>> getDeviceTelemetry(DeviceContext ctx, long endTime, TelemetryInterval interval);
 
     /**
      * Retrieves telemetry data for a device variable.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID of the device that published the variable
-     * @param deviceId the device ID that published the variable
+     * @param ctx the context of the target device
      * @param name the variable name
      * @param endTime the end time for which data is requested (in epoch time)
      * @param interval an interval representing the amount of data requested (endTime - interval == startTime)
      *
      * @return a Collection of TemporalValue instances
      */
-    public Collection<TemporalValue> getDeviceVariableTelemetry(String userId, String hubId, String pluginId, String deviceId, String name, long endTime, TelemetryInterval interval);
+    public Collection<TemporalValue> getDeviceVariableTelemetry(DeviceContext ctx, String name, long endTime, TelemetryInterval interval);
 
     /**
      * Writes telemetry data for a specific device.
      *
-     * @param userId the user ID that owns the hub
-     * @param hubId the hub ID
-     * @param pluginId the plugin ID of the device
-     * @param deviceId the device ID
+     * @param ctx the context of the target device
      * @param values a Map (keyed by variable name) to a TemporalValue
      */
-    public void writeDeviceTelemetry(String userId, String hubId, String pluginId, String deviceId, Map<String,TemporalValue> values);
+    public void writeDeviceTelemetry(DeviceContext ctx, Map<String,TemporalValue> values);
 
     /**
      * Writes telemetry data for a device variable.

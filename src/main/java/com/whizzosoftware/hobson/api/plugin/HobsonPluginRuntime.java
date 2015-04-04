@@ -10,6 +10,7 @@ package com.whizzosoftware.hobson.api.plugin;
 import com.whizzosoftware.hobson.api.action.ActionManager;
 import com.whizzosoftware.hobson.api.action.HobsonAction;
 import com.whizzosoftware.hobson.api.config.Configuration;
+import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
 import com.whizzosoftware.hobson.api.disco.DiscoManager;
 import com.whizzosoftware.hobson.api.event.EventListener;
@@ -33,13 +34,7 @@ import java.util.concurrent.TimeUnit;
  * @author Dan Noguerol
  */
 public interface HobsonPluginRuntime extends EventListener {
-    /**
-     * Execute a task using the plugin event loop. Note that this will tie up the event loop while the task is being
-     * executed so this should not be used for long running tasks.
-     *
-     * @param runnable a task to execute
-     */
-    public void executeInEventLoop(Runnable runnable);
+    public EventLoopExecutor getEventLoopExecutor();
 
     /**
      * Fires a HobsonEvent.
@@ -65,13 +60,13 @@ public interface HobsonPluginRuntime extends EventListener {
     /**
      * Retrieves a specific device variable.
      *
-     * @param deviceId the ID Of the device that published the variable
+     * @param ctx the context of the device that published the variable
      * @param variableName the variable name
      *
      * @return a HobsonVariable instance
      * @throws com.whizzosoftware.hobson.api.variable.DeviceVariableNotFoundException if the variable wasn't found
      */
-    public HobsonVariable getDeviceVariable(String deviceId, String variableName);
+    public HobsonVariable getDeviceVariable(DeviceContext ctx, String variableName);
 
     /**
      * Callback method invoked when the plugin starts up.
@@ -101,19 +96,19 @@ public interface HobsonPluginRuntime extends EventListener {
     /**
      * Called when the plugin device's configuration has changed.
      *
-     * @param deviceId the device ID
+     * @param ctx the context of the device that owns the configuration
      * @param config the new configuration
      */
-    public void onDeviceConfigurationUpdate(String deviceId, Configuration config);
+    public void onDeviceConfigurationUpdate(DeviceContext ctx, Configuration config);
 
     /**
      * Callback when a request to set a device variable has been received.
      *
-     * @param deviceId the ID Of the device that published the variable
+     * @param ctx the context of the device that owns the variable
      * @param variableName the variable name
      * @param value the variable value
      */
-    public void onSetDeviceVariable(String deviceId, String variableName, Object value);
+    public void onSetDeviceVariable(DeviceContext ctx, String variableName, Object value);
 
     /**
      * Publish a global variable.
@@ -127,12 +122,12 @@ public interface HobsonPluginRuntime extends EventListener {
     /**
      * Publish a device variable.
      *
-     * @param deviceId the ID of the device publishing the variable
+     * @param ctx the context of the device publishing the variable
      * @param name the name of the new variable to publish
      * @param value the value of the new variable (or null if not known)
      * @param mask the access mask of the new variable
      */
-    public void publishDeviceVariable(String deviceId, String name, Object value, HobsonVariable.Mask mask);
+    public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask);
 
     /**
      * Publish a task provider.
@@ -168,12 +163,12 @@ public interface HobsonPluginRuntime extends EventListener {
     /**
      * Sets a configuration property for a specific device.
      *
-     * @param id the ID of the device
+     * @param ctx the context of the device that owns the configuration
      * @param name the name of the variable
      * @param value the value of the variable
      * @param overwrite whether to overwrite the property if it already exists
      */
-    public void setDeviceConfigurationProperty(String id, String name, Object value, boolean overwrite);
+    public void setDeviceConfigurationProperty(DeviceContext ctx, String name, Object value, boolean overwrite);
 
     /**
      * Sets the DeviceManager instance the plugin should use. This will be called before the init() method.
