@@ -21,8 +21,8 @@ import com.whizzosoftware.hobson.api.event.*;
 import com.whizzosoftware.hobson.api.hub.HobsonHub;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.hub.HubManager;
-import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.task.TaskManager;
+import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
@@ -104,6 +104,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
+    public TaskProvider getTaskProvider() {
+        return null;
+    }
+
+    @Override
     public PluginType getType() {
         return PluginType.PLUGIN;
     }
@@ -136,14 +141,14 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     public void fireVariableUpdateNotification(VariableUpdate update) {
         // post the variable update notification event
         validateVariableManager();
-        variableManager.confirmVariableUpdates(HubContext.createLocal(), Collections.singletonList(update));
+        variableManager.applyVariableUpdates(HubContext.createLocal(), Collections.singletonList(update));
     }
 
     @Override
     public void fireVariableUpdateNotifications(List<VariableUpdate> updates) {
         // post the variable update notification event
         validateVariableManager();
-        variableManager.confirmVariableUpdates(HubContext.createLocal(), updates);
+        variableManager.applyVariableUpdates(HubContext.createLocal(), updates);
     }
 
     @Override
@@ -174,7 +179,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     public void onShutdown() {
         // unpublish all tasks published by this plugin
         if (taskManager != null) {
-            taskManager.unpublishAllTaskProviders(getContext());
+            taskManager.unpublishAllTasks(getContext());
         }
 
         // unpublish all actions published by this plugin
@@ -199,13 +204,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask) {
         validateVariableManager();
         variableManager.publishGlobalVariable(getContext(), name, value, mask);
-    }
-
-    @Override
-    public void publishTaskProvider(TaskProvider taskProvider) {
-        validateTaskManager();
-        taskProvider.setActionManager(actionManager);
-        taskManager.publishTaskProvider(taskProvider);
     }
 
     @Override

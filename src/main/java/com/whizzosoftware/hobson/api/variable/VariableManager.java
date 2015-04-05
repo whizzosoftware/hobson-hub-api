@@ -214,10 +214,11 @@ public interface VariableManager {
     public Map<String,Long> setDeviceVariables(DeviceContext ctx, Map<String,Object> values);
 
     /**
-     * Called by a device or plugin to confirm that a variable update has been successfully applied.
+     * Called by a device or plugin to apply variable updates that have been successfuly confirmed with the
+     * hardware being controlled.
      *
      * @param ctx the context of the target hub
      * @param updates the successful variable updates
      */
-    public void confirmVariableUpdates(HubContext ctx, List<VariableUpdate> updates);
+    public void applyVariableUpdates(HubContext ctx, List<VariableUpdate> updates);
 }

@@ -20,18 +20,11 @@ import java.util.Properties;
  */
 public interface HobsonTask {
     /**
-     * Returns the task ID.
+     * Returns the context of the task.
      *
-     * @return a String
+     * @return a TaskContext instance
      */
-    public String getId();
-
-    /**
-     * Returns the task provider ID.
-     *
-     * @return a String
-     */
-    public String getProviderId();
+    public TaskContext getContext();
 
     /**
      * Returns the task name.

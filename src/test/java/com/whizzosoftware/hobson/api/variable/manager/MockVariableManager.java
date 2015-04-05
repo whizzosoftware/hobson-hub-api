@@ -112,7 +112,7 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public void confirmVariableUpdates(HubContext ctx, List<VariableUpdate> updates) {
+    public void applyVariableUpdates(HubContext ctx, List<VariableUpdate> updates) {
 
     }
 }

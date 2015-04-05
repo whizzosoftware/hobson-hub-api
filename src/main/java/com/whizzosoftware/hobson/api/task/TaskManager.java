@@ -20,16 +20,13 @@ import java.util.Collection;
  */
 public interface TaskManager {
     /**
-     * Indicates whether a task provider has been published.
+     * Adds a new task to the system. This is called (e.g. by the REST API) when a request is received to add a new
+     * task to the system.
      *
-     * @param ctx the context of the plugin that published the provider
-     * @param providerId the task provider ID
-     *
-     * @return a boolean
-     *
-     * @since hobson-hub-api 0.1.6
+     * @param ctx the context of the plugin
+     * @param config the task configuration data
      */
-    public boolean hasTaskProvider(PluginContext ctx, String providerId);
+    public void addTask(PluginContext ctx, Object config);
 
     /**
      * Returns all tasks that have been published by all task providers.
@@ -61,41 +58,26 @@ public interface TaskManager {
     public void executeTask(TaskContext ctx);
 
     /**
-     * Publishes a new TaskProvider instance to the runtime.
+     * Publishes a task. This is called by plugins to fulfill requests to add new tasks to the system.
      *
-     * @param provider the task provider to publish
-     *
-     * @since hobson-hub-api 0.1.6
+     * @param task the task to publish
      */
-    public void publishTaskProvider(TaskProvider provider);
+    public void publishTask(HobsonTask task);
 
     /**
-     * Unpublishes all task providers published by a plugin.
+     * Unpublish all tasks published by a plugin.
      *
-     * @param ctx the context of the target plugin
+     * @param ctx the plugin context
      */
-    public void unpublishAllTaskProviders(PluginContext ctx);
+    public void unpublishAllTasks(PluginContext ctx);
 
     /**
-     * Adds a new task. This should be called by task providers.
+     * Updates an existing task.
      *
-     * @param ctx the context of the target hub
-     * @param providerId the task provider ID adding the task
-     * @param task the task data
-     *
-     * @since hobson-hub-api 0.1.6
+     * @param ctx the context of the task to update
+     * @param config the configuration data to update the task with
      */
-    public void addTask(HubContext ctx, String providerId, Object task);
-
-    /**
-     * Updates an existing task. This should be called by task providers.
-     *
-     * @param ctx the context of the target hub
-     * @param providerId the task provider ID adding the task
-     * @param taskId the ID of the task being updated
-     * @param task the task data
-     */
-    public void updateTask(HubContext ctx, String providerId, String taskId, Object task);
+    public void updateTask(TaskContext ctx, Object config);
 
     /**
      * Deletes a previously added task.

@@ -67,4 +67,8 @@ public class PluginContext {
     public String getPluginId() {
         return pluginId;
     }
+
+    public String toString() {
+        return hubContext.toString() + "." + pluginId;
+    }
 }

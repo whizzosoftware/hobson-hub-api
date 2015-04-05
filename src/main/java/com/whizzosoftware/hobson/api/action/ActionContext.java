@@ -19,6 +19,10 @@ public class ActionContext {
     private PluginContext ctx;
     private String actionId;
 
+    public static ActionContext create(HubContext ctx, String pluginId, String actionId) {
+        return create(PluginContext.create(ctx, pluginId), actionId);
+    }
+
     public static ActionContext create(PluginContext ctx, String actionId) {
         return new ActionContext(ctx, actionId);
     }

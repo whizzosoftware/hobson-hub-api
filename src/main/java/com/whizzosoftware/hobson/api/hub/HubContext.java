@@ -39,4 +39,8 @@ public class HubContext {
     public String getHubId() {
         return hubId;
     }
+
+    public String toString() {
+        return userId + "." + hubId;
+    }
 }

@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.task;
 
+import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 
 /**
@@ -16,24 +17,26 @@ import com.whizzosoftware.hobson.api.plugin.PluginContext;
  */
 public class TaskContext {
     private PluginContext ctx;
-    private String providerId;
     private String taskId;
 
-    public static TaskContext create(PluginContext ctx, String providerId, String taskId) {
-        return new TaskContext(ctx, providerId, taskId);
+    public static TaskContext create(HubContext ctx, String pluginId, String taskId) {
+        return create(PluginContext.create(ctx, pluginId), taskId);
     }
 
-    public static TaskContext createLocal(String pluginId, String providerId, String taskId) {
-        return new TaskContext(PluginContext.createLocal(pluginId), providerId, taskId);
+    public static TaskContext create(PluginContext ctx, String taskId) {
+        return new TaskContext(ctx, taskId);
     }
 
-    private TaskContext(PluginContext ctx, String providerId, String taskId) {
+    public static TaskContext createLocal(String pluginId, String taskId) {
+        return new TaskContext(PluginContext.createLocal(pluginId), taskId);
+    }
+
+    private TaskContext(PluginContext ctx, String taskId) {
         this.ctx = ctx;
-        this.providerId = providerId;
         this.taskId = taskId;
     }
 
-    public PluginContext getContext() {
+    public PluginContext getPluginContext() {
         return ctx;
     }
 
@@ -49,11 +52,11 @@ public class TaskContext {
         return ctx.getPluginId();
     }
 
-    public String getProviderId() {
-        return providerId;
-    }
-
     public String getTaskId() {
         return taskId;
+    }
+
+    public String toString() {
+        return ctx.toString() + "." + taskId;
     }
 }

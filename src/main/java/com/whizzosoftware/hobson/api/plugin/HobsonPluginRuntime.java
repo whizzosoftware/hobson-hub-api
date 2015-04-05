@@ -34,8 +34,6 @@ import java.util.concurrent.TimeUnit;
  * @author Dan Noguerol
  */
 public interface HobsonPluginRuntime extends EventListener {
-    public EventLoopExecutor getEventLoopExecutor();
-
     /**
      * Fires a HobsonEvent.
      *
@@ -69,6 +67,28 @@ public interface HobsonPluginRuntime extends EventListener {
     public HobsonVariable getDeviceVariable(DeviceContext ctx, String variableName);
 
     /**
+     * Returns the event loop executor for this plugin.
+     *
+     * @return an EventLoopExecutor instance
+     */
+    public EventLoopExecutor getEventLoopExecutor();
+
+    /**
+     * Returns the task provider associated with this plugin.
+     *
+     * @return a TaskProvider instance (or null if one is not available)
+     */
+    public TaskProvider getTaskProvider();
+
+    /**
+     * Called when the plugin device's configuration has changed.
+     *
+     * @param ctx the context of the device that owns the configuration
+     * @param config the new configuration
+     */
+    public void onDeviceConfigurationUpdate(DeviceContext ctx, Configuration config);
+
+    /**
      * Callback method invoked when the plugin starts up.
      *
      * @param config the plugin configuration
@@ -94,14 +114,6 @@ public interface HobsonPluginRuntime extends EventListener {
     public void onPluginConfigurationUpdate(Configuration config);
 
     /**
-     * Called when the plugin device's configuration has changed.
-     *
-     * @param ctx the context of the device that owns the configuration
-     * @param config the new configuration
-     */
-    public void onDeviceConfigurationUpdate(DeviceContext ctx, Configuration config);
-
-    /**
      * Callback when a request to set a device variable has been received.
      *
      * @param ctx the context of the device that owns the variable
@@ -111,13 +123,11 @@ public interface HobsonPluginRuntime extends EventListener {
     public void onSetDeviceVariable(DeviceContext ctx, String variableName, Object value);
 
     /**
-     * Publish a global variable.
+     * Publish an action.
      *
-     * @param name the name of the new variable to publish
-     * @param value the value of the new variable (or null if not known)
-     * @param mask the access mask of the new variable
+     * @param action the action to publish
      */
-    public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask);
+    public void publishAction(HobsonAction action);
 
     /**
      * Publish a device variable.
@@ -130,18 +140,13 @@ public interface HobsonPluginRuntime extends EventListener {
     public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask);
 
     /**
-     * Publish a task provider.
+     * Publish a global variable.
      *
-     * @param taskProvider the task provider object
+     * @param name the name of the new variable to publish
+     * @param value the value of the new variable (or null if not known)
+     * @param mask the access mask of the new variable
      */
-    public void publishTaskProvider(TaskProvider taskProvider);
-
-    /**
-     * Publish an action.
-     *
-     * @param action the action to publish
-     */
-    public void publishAction(HobsonAction action);
+    public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask);
 
     /**
      * Execute a recurring task.
@@ -206,13 +211,6 @@ public interface HobsonPluginRuntime extends EventListener {
     public void setPluginManager(PluginManager pluginManager);
 
     /**
-     * Sets the VariableManager instance the plugin should use. This will be called before the init() method.
-     *
-     * @param variableManager a VariableManager
-     */
-    public void setVariableManager(VariableManager variableManager);
-
-    /**
      * Sets the TaskManager instance the plugin should use. This will be called before the init() method.
      *
      * @param taskManager a TaskManager
@@ -225,6 +223,13 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param telemetryManager a TelemetryManager
      */
     public void setTelemetryManager(TelemetryManager telemetryManager);
+
+    /**
+     * Sets the VariableManager instance the plugin should use. This will be called before the init() method.
+     *
+     * @param variableManager a VariableManager
+     */
+    public void setVariableManager(VariableManager variableManager);
 
     /**
      * Execute a task using the plugin event loop. Note that this will tie up the event loop while the task is being

@@ -7,73 +7,30 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.task;
 
-import com.whizzosoftware.hobson.api.action.ActionManager;
-import com.whizzosoftware.hobson.api.hub.HubContext;
-
-import java.util.Collection;
-
 /**
- * Interface for classes that can contribute tasks to the system.
+ * Interface for plugins that can contribute tasks to the system.
  *
  * @author Dan Noguerol
  */
 public interface TaskProvider {
     /**
-     * Returns the ID of the plugin which created this task provider.
+     * Callback for a new task creation request.
      *
-     * @return a plugin ID
+     * @param config the configuration for the new task
      */
-    public HubContext getHubContext();
+    public void onAddTask(Object config);
 
     /**
-     * Returns the ID of this task provider.
+     * Callback for a task update request.
      *
-     * @return the task provider ID
+     * @param config the new configuration for the task
      */
-    public String getId();
+    public void onUpdateTask(HobsonTask task, Object config);
 
     /**
-     * Sets the ActionManager instance this provider should use to execute actions.
+     * Callback for a task deletion request.
      *
-     * @param actionManager an ActionManager instance
+     * @param task the task to remove
      */
-    public void setActionManager(ActionManager actionManager);
-
-    /**
-     * Returns all tasks for this provider.
-     *
-     * @return a Collection of HobsonTask instances
-     */
-    public Collection<HobsonTask> getTasks();
-
-    /**
-     * Returns a specific task.
-     *
-     * @param taskId the task ID
-     *
-     * @return a HobsonTask instance (or null if not found)
-     */
-    public HobsonTask getTask(String taskId);
-
-    /**
-     * Adds a new task.
-     *
-     * @param task the task
-     */
-    public void addTask(Object task);
-
-    /**
-     * Updates an existing task.
-     *
-     * @param taskId the ID of the task
-     * @param data the task data
-     */
-    public void updateTask(String taskId, Object data);
-
-    /**
-     * Removes an existing task.
-     *
-     * @param taskId the ID of the task
-     */
-    public void deleteTask(String taskId);
+    public void onDeleteTask(HobsonTask task);
 }

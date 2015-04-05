@@ -73,7 +73,7 @@ public interface HobsonDevice {
      *
      * @return a boolean
      */
-    public boolean hasTelemetry();
+    public boolean isTelemetryCapable();
 
     /**
      * Returns a an object that can be used to invoke methods related to device runtime execution.
