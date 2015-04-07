@@ -84,4 +84,8 @@ public class DeviceContext {
     public String getDeviceId() {
         return deviceId;
     }
+
+    public String toString() {
+        return getPluginContext() + "." + deviceId;
+    }
 }

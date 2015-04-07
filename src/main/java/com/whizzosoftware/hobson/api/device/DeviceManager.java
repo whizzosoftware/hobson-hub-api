@@ -13,6 +13,7 @@ import com.whizzosoftware.hobson.api.plugin.EventLoopExecutor;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * An interface for managing Hobson devices.
@@ -136,9 +137,18 @@ public interface DeviceManager {
      * @param ctx the context of the target device
      * @param name the configuration property name
      * @param value the configuration property value
-     * @param overwrite indicates whether an existing key should be overwritten
+     * @param overwrite indicates whether an existing configuration value should be overwritten
      */
     public void setDeviceConfigurationProperty(DeviceContext ctx, String name, Object value, boolean overwrite);
+
+    /**
+     * Sets device configuration properties.
+     *
+     * @param ctx the context of the target device
+     * @param values a map of configuration property name to values
+     * @param overwrite indicates whether an existing configuration value should be overwritten
+     */
+    public void setDeviceConfigurationProperties(DeviceContext ctx, Map<String,Object> values, boolean overwrite);
 
     /**
      * Sets the name of a device.

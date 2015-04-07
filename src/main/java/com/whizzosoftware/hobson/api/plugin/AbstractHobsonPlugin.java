@@ -201,9 +201,21 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
+    public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, String proxyType) {
+        validateVariableManager();
+        variableManager.publishDeviceVariable(ctx, name, value, mask, proxyType);
+    }
+
+    @Override
     public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask) {
         validateVariableManager();
         variableManager.publishGlobalVariable(getContext(), name, value, mask);
+    }
+
+    @Override
+    public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask, String proxyType) {
+        validateVariableManager();
+        variableManager.publishGlobalVariable(getContext(), name, value, mask, proxyType);
     }
 
     @Override

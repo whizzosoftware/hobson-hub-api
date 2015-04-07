@@ -20,6 +20,8 @@ public interface ImageManager {
     /**
      * Retrieves a Hub image.
      *
+     * @param ctx the hub context
+     *
      * @return an ImageInputStream instance
      * @throws com.whizzosoftware.hobson.api.HobsonNotFoundException if an image does not exist
      */
@@ -29,6 +31,7 @@ public interface ImageManager {
      * Sets the current Hub image.
      *
      * @param ctx the context of the target hub
+     * @param iis the image input stream
      */
     public void setHubImage(HubContext ctx, ImageInputStream iis);
 

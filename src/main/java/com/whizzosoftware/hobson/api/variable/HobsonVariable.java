@@ -15,36 +15,11 @@ package com.whizzosoftware.hobson.api.variable;
  */
 public interface HobsonVariable {
     /**
-     * Returns the ID of the plugin which published this variable.
-     *
-     * @return a plugin ID
-     */
-    public String getPluginId();
-
-    /**
      * Returns the ID of the device which published this variable.
      *
      * @return a device ID
      */
     public String getDeviceId();
-
-    /**
-     * Returns the variable name.
-     *
-     * @return the variable name
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    public String getName();
-
-    /**
-     * Returns the variable value.
-     *
-     * @return the variable value
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    public Object getValue();
 
     /**
      * Returns whether this variable is read-only.
@@ -56,6 +31,15 @@ public interface HobsonVariable {
     public Mask getMask();
 
     /**
+     * Returns the variable name.
+     *
+     * @return the variable name
+     *
+     * @since hobson-hub-api 0.1.6
+     */
+    public String getName();
+
+    /**
      * Returns the last time the variable was updated.
      *
      * @return a Long (or null if the variable has never been updated)
@@ -63,6 +47,38 @@ public interface HobsonVariable {
      * @since hobson-hub-api 0.1.6
      */
     public Long getLastUpdate();
+
+    /**
+     * Returns the ID of the plugin which published this variable.
+     *
+     * @return a plugin ID
+     */
+    public String getPluginId();
+
+    /**
+     * Indicates that this variable's value should be a proxy value rather than direct value. For example, smart
+     * device image and video URLs are not be returned directly; rather, a proxy URL is returned that forces those
+     * media requests to route through the Hobson REST API.
+     *
+     * @return a boolean indicating whether a proxy should be performed
+     */
+    public boolean hasProxyType();
+
+    /**
+     * Returns the variable proxy type.
+     *
+     * @return the type of proxy (or null if no proxy is necessary)
+     */
+    public String getProxyType();
+
+    /**
+     * Returns the variable value.
+     *
+     * @return the variable value
+     *
+     * @since hobson-hub-api 0.1.6
+     */
+    public Object getValue();
 
     /**
      * Indicates whether this is a global variable.

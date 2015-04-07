@@ -10,7 +10,6 @@ package com.whizzosoftware.hobson.api.device;
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.config.ConfigurationProperty;
-import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.MockAbstractHobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
@@ -78,17 +77,6 @@ public class AbstractHobsonDeviceTest {
         assertNotNull(d.getConfigurationPropertyMetaData());
         assertEquals(1, d.getConfigurationPropertyMetaData().size());
         assertEquals("name", d.getConfigurationPropertyMetaData().iterator().next().getId());
-    }
-
-    @Test
-    public void testAddConfigurationMeta() {
-        HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
-        MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
-        assertNotNull(d.getConfigurationPropertyMetaData());
-        assertEquals(1, d.getConfigurationPropertyMetaData().size());
-        d.addConfigurationMetaData(new ConfigurationPropertyMetaData("password", "Password", "", ConfigurationPropertyMetaData.Type.PASSWORD));
-        // make sure new didn't overwrite old
-        assertEquals(2, d.getConfigurationPropertyMetaData().size());
     }
 
     @Test

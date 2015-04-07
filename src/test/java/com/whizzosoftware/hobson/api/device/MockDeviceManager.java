@@ -114,6 +114,13 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
+    public void setDeviceConfigurationProperties(DeviceContext ctx, Map<String, Object> values, boolean overwrite) {
+        for (String name : values.keySet()) {
+            setDeviceConfigurationProperty(ctx, name, values.get(name), overwrite);
+        }
+    }
+
+    @Override
     public void setDeviceName(DeviceContext ctx, String name) {
 
     }

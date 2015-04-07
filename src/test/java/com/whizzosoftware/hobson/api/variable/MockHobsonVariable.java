@@ -29,6 +29,16 @@ public class MockHobsonVariable implements HobsonVariable {
     }
 
     @Override
+    public boolean hasProxyType() {
+        return (getProxyType() != null);
+    }
+
+    @Override
+    public String getProxyType() {
+        return null;
+    }
+
+    @Override
     public String getDeviceId() {
         return deviceId;
     }

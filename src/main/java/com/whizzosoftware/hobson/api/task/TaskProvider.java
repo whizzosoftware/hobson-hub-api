@@ -18,11 +18,12 @@ public interface TaskProvider {
      *
      * @param config the configuration for the new task
      */
-    public void onAddTask(Object config);
+    public void onCreateTask(Object config);
 
     /**
      * Callback for a task update request.
      *
+     * @param task the task being updated
      * @param config the new configuration for the task
      */
     public void onUpdateTask(HobsonTask task, Object config);

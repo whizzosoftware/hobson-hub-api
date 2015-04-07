@@ -140,6 +140,16 @@ public interface HobsonPluginRuntime extends EventListener {
     public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask);
 
     /**
+     * Publish a device variable.
+     *
+     * @param ctx the context of the device publishing the variable
+     * @param name the name of the new variable to publish
+     * @param value the value of the new variable (or null if not known)
+     * @param proxyType indicates the type of proxy that can perform value substitutions (or null if not applicable)
+     */
+    public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, String proxyType);
+
+    /**
      * Publish a global variable.
      *
      * @param name the name of the new variable to publish
@@ -147,6 +157,16 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param mask the access mask of the new variable
      */
     public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask);
+
+    /**
+     * Publish a global variable.
+     *
+     * @param name the name of the new variable to publish
+     * @param value the value of the new variable (or null if not known)
+     * @param mask the access mask of the new variable
+     * @param proxyType indicates the type of proxy that can perform value substitutions (or null if not applicable)
+     */
+    public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask, String proxyType);
 
     /**
      * Execute a recurring task.

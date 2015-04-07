@@ -42,7 +42,15 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
         this.ctx = DeviceContext.create(plugin.getContext(), id);
 
         // register this device's "name" configuration property
-        addConfigurationMetaData(new ConfigurationPropertyMetaData("name", "Name", "A descriptive name for this device", ConfigurationPropertyMetaData.Type.STRING));
+        configMeta.add(new ConfigurationPropertyMetaData("name", "Name", "A descriptive name for this device", ConfigurationPropertyMetaData.Type.STRING));
+
+        // register any additional configuration metadata
+        ConfigurationPropertyMetaData[] mds = createConfigurationPropertyMetaData();
+        if (mds != null) {
+            for (ConfigurationPropertyMetaData md : mds) {
+                configMeta.add(md);
+            }
+        }
     }
 
     @Override
@@ -109,10 +117,6 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
         }
     }
 
-    protected void addConfigurationMetaData(ConfigurationPropertyMetaData metaData) {
-        configMeta.add(metaData);
-    }
-
     /**
      * Returns the default name for the device.
      *
@@ -164,6 +168,10 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
         getPlugin().getRuntime().publishDeviceVariable(getContext(), name, value, mask);
     }
 
+    protected void publishVariable(String name, Object value, HobsonVariable.Mask mask, String proxyType) {
+        getPlugin().getRuntime().publishDeviceVariable(getContext(), name, value, mask, proxyType);
+    }
+
     /**
      * Fires a notification that variables has been successfully updated.
      *
@@ -193,6 +201,13 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     protected HobsonVariable getVariable(String variableName) {
         return getPlugin().getRuntime().getDeviceVariable(getContext(), variableName);
     }
+
+    /**
+     * Returns device-specific configuration property meda data.
+     *
+     * @return an Array of ConfigurationPropertyMetaData (or null if there is none)
+     */
+    abstract protected ConfigurationPropertyMetaData[] createConfigurationPropertyMetaData();
 
     public String toString() {
         return getName();

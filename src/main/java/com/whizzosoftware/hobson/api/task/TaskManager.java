@@ -20,13 +20,13 @@ import java.util.Collection;
  */
 public interface TaskManager {
     /**
-     * Adds a new task to the system. This is called (e.g. by the REST API) when a request is received to add a new
-     * task to the system.
+     * Creates a new task in the system. This is called (e.g. by the REST API) when a request is received to add a new
+     * task.
      *
      * @param ctx the context of the plugin
      * @param config the task configuration data
      */
-    public void addTask(PluginContext ctx, Object config);
+    public void createTask(PluginContext ctx, Object config);
 
     /**
      * Returns all tasks that have been published by all task providers.
