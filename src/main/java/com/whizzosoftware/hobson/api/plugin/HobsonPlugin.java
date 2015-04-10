@@ -38,20 +38,6 @@ public interface HobsonPlugin {
     public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData();
 
     /**
-     * Returns the topics this plugin is interested in receiving events for.
-     *
-     * @return an array of String topic names (or null if no events are desired)
-     */
-    public String[] getEventTopics();
-
-    /**
-     * Returns how often the refresh() method will be called.
-     *
-     * @return the refresh interval in seconds (a 0 value means never)
-     */
-    public long getRefreshInterval();
-
-    /**
      * Returns a an object that can be used to invoke methods related to plugin runtime execution.
      *
      * @return a HobsonPluginExecution instance (or null if this object doesn't support a runtime)

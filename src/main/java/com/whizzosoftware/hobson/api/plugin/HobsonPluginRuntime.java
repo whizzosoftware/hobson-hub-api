@@ -74,6 +74,20 @@ public interface HobsonPluginRuntime extends EventListener {
     public EventLoopExecutor getEventLoopExecutor();
 
     /**
+     * Returns the topics this plugin is interested in receiving events for.
+     *
+     * @return an array of String topic names (or null if no events are desired)
+     */
+    public String[] getEventTopics();
+
+    /**
+     * Returns how often the refresh() method will be called.
+     *
+     * @return the refresh interval in seconds (a 0 value means never)
+     */
+    public long getRefreshInterval();
+
+    /**
      * Returns the task provider associated with this plugin.
      *
      * @return a TaskProvider instance (or null if one is not available)
