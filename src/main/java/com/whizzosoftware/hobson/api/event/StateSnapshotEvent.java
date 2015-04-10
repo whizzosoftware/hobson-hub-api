@@ -27,8 +27,8 @@ public class StateSnapshotEvent extends HobsonEvent {
     private Map<String,List<HobsonDevice>> deviceMap = new HashMap<>();
     private Map<String,List<HobsonVariable>> variableMap = new HashMap<>();
 
-    public StateSnapshotEvent() {
-        super(EventTopics.STATE_TOPIC, ID);
+    public StateSnapshotEvent(long timestamp) {
+        super(timestamp, EventTopics.STATE_TOPIC, ID);
     }
 
     public boolean hasHub() {

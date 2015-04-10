@@ -20,8 +20,8 @@ public class PresenceUpdateEvent extends HobsonEvent {
     private static final String PROP_ENTITY_ID = "entityId";
     private static final String PROP_LOCATION = "location";
 
-    public PresenceUpdateEvent(String entityId, String location) {
-        super(EventTopics.PRESENCE_TOPIC, ID);
+    public PresenceUpdateEvent(long timestamp, String entityId, String location) {
+        super(timestamp, EventTopics.PRESENCE_TOPIC, ID);
 
         setProperty(PROP_ENTITY_ID, entityId);
         setProperty(PROP_LOCATION, location);

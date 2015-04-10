@@ -24,8 +24,8 @@ public class DeviceConfigurationUpdateEvent extends HobsonEvent {
     private static final String PROP_DEVICE_ID = "deviceId";
     private static final String PROP_CONFIGURATION = "configuration";
 
-    public DeviceConfigurationUpdateEvent(String pluginId, String deviceId, Configuration configuration) {
-        super(EventTopics.CONFIG_TOPIC, ID);
+    public DeviceConfigurationUpdateEvent(long timestamp, String pluginId, String deviceId, Configuration configuration) {
+        super(timestamp, EventTopics.CONFIG_TOPIC, ID);
         setProperty(PROP_PLUGIN_ID, pluginId);
         setProperty(PROP_DEVICE_ID, deviceId);
         setProperty(PROP_CONFIGURATION, configuration);

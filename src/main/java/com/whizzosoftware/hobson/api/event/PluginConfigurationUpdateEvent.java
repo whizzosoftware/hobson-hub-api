@@ -24,8 +24,8 @@ public class PluginConfigurationUpdateEvent extends HobsonEvent {
     private static final String PROP_PLUGIN_ID = "pluginId";
     private static final String PROP_CONFIGURATION = "configuration";
 
-    public PluginConfigurationUpdateEvent(PluginContext ctx, Configuration configuration) {
-        super(EventTopics.CONFIG_TOPIC, ID);
+    public PluginConfigurationUpdateEvent(long timestamp, PluginContext ctx, Configuration configuration) {
+        super(timestamp, EventTopics.CONFIG_TOPIC, ID);
         setProperty(PROP_PLUGIN_ID, ctx.getPluginId());
         setProperty(PROP_CONFIGURATION, configuration);
     }

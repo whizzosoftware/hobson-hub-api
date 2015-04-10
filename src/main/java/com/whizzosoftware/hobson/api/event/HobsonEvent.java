@@ -10,6 +10,10 @@ import java.util.Map;
  */
 abstract public class HobsonEvent {
     /**
+     * The event timestamp property.
+     */
+    public static final String PROP_TIMESTAMP = "timestamp";
+    /**
      * The event name property.
      */
     public static final String PROP_EVENT_ID = "eventId";
@@ -17,8 +21,9 @@ abstract public class HobsonEvent {
     private String topic;
     private Map<String,Object> properties;
 
-    public HobsonEvent(String topic, String eventId) {
+    public HobsonEvent(Long timestamp, String topic, String eventId) {
         this.topic = topic;
+        setProperty(PROP_TIMESTAMP, timestamp);
         setProperty(PROP_EVENT_ID, eventId);
     }
 
@@ -29,6 +34,10 @@ abstract public class HobsonEvent {
 
     public String getTopic() {
         return topic;
+    }
+
+    public Long getTimestamp() {
+        return (Long)getProperty(PROP_TIMESTAMP);
     }
 
     public String getEventId() {

@@ -127,7 +127,7 @@ public class AbstractHobsonPluginTest {
     public void testFireVariableUpdateNotificationWithNoVariableManager() {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.fireVariableUpdateNotification(new VariableUpdate("id", "name", "value"));
+            plugin.fireVariableUpdateNotification(new VariableUpdate(DeviceContext.createLocal("pluginId", "deviceId"), "name", "value"));
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }

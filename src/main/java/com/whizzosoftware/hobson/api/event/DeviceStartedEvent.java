@@ -20,8 +20,8 @@ public class DeviceStartedEvent extends HobsonEvent {
     public static final String ID = "deviceStarted";
     public static final String PROP_DEVICE = "device";
 
-    public DeviceStartedEvent(HobsonDevice device) {
-        super(EventTopics.DEVICES_TOPIC, ID);
+    public DeviceStartedEvent(long timestamp, HobsonDevice device) {
+        super(timestamp, EventTopics.DEVICES_TOPIC, ID);
         setProperty(PROP_DEVICE, device);
     }
 

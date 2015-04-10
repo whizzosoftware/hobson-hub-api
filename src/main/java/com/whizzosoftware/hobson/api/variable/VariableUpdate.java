@@ -7,8 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.variable;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.whizzosoftware.hobson.api.device.DeviceContext;
 
 /**
  * A class representing a variable update.
@@ -16,62 +15,35 @@ import java.util.List;
  * @author Dan Noguerol
  */
 public class VariableUpdate {
-    private String pluginId;
-    private String deviceId;
+    private DeviceContext ctx;
     private String name;
     private Object value;
-    private long updateTime;
+    private long timestamp;
 
     /**
-     * Constructor for global variable update.
+     * Constructor.
      *
-     * @param pluginId the plugin ID associated with the variable
+     * @param ctx the device context
      * @param name the variable name
      * @param value the variable value
      */
-    public VariableUpdate(String pluginId, String name, Object value) {
-        this(pluginId, null, name, value);
+    public VariableUpdate(DeviceContext ctx, String name, Object value) {
+        this(ctx, name, value, System.currentTimeMillis());
     }
 
     /**
-     * Constructor for global variable update.
+     * Constructor.
      *
-     * @param pluginId the plugin ID associated with the variable
+     * @param ctx the device context
      * @param name the variable name
      * @param value the variable value
-     * @param updateTime the time the variable was updated
+     * @param timestamp the time the variable was updated
      */
-    public VariableUpdate(String pluginId, String name, Object value, long updateTime) {
-        this(pluginId, null, name, value, updateTime);
-    }
-
-    /**
-     * Constructor for device variable update.
-     *
-     * @param pluginId the plugin ID associated with the variable
-     * @param deviceId the device ID associated with the variable
-     * @param name the variable name
-     * @param value the variable value
-     */
-    public VariableUpdate(String pluginId, String deviceId, String name, Object value) {
-        this(pluginId, deviceId, name, value, System.currentTimeMillis());
-    }
-
-    /**
-     * Constructor for device variable update.
-     *
-     * @param pluginId the plugin ID associated with the variable
-     * @param deviceId the device ID associated with the variable
-     * @param name the variable name
-     * @param value the variable value
-     * @param updateTime the time the variable was updated
-     */
-    public VariableUpdate(String pluginId, String deviceId, String name, Object value, long updateTime) {
-        this.pluginId = pluginId;
-        this.deviceId = deviceId;
+    public VariableUpdate(DeviceContext ctx, String name, Object value, long timestamp) {
+        this.ctx = ctx;
         this.name = name;
         this.value = value;
-        this.updateTime = updateTime;
+        this.timestamp = timestamp;
     }
 
     /**
@@ -80,7 +52,16 @@ public class VariableUpdate {
      * @return a boolean
      */
     public boolean isGlobal() {
-        return (deviceId == null);
+        return ctx.isGlobal();
+    }
+
+    /**
+     * Returns the device context associated with the update.
+     *
+     * @return a DeviceContext instance
+     */
+    public DeviceContext getDeviceContext() {
+        return ctx;
     }
 
     /**
@@ -89,7 +70,7 @@ public class VariableUpdate {
      * @return a plugin ID
      */
     public String getPluginId() {
-        return pluginId;
+        return ctx.getPluginId();
     }
 
     /**
@@ -98,7 +79,7 @@ public class VariableUpdate {
      * @return a device ID
      */
     public String getDeviceId() {
-        return deviceId;
+        return ctx.getDeviceId();
     }
 
     /**
@@ -124,11 +105,11 @@ public class VariableUpdate {
      *
      * @return a long
      */
-    public long getUpdateTime() {
-        return updateTime;
+    public long getTimestamp() {
+        return timestamp;
     }
 
     public String toString() {
-        return pluginId + "." + deviceId + "." + name + "=" + value;
+        return ctx.toString() + "." + name + "=" + value;
     }
 }

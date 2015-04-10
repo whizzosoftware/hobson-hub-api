@@ -45,6 +45,18 @@ public class DeviceContext {
     }
 
     /**
+     * Creates a global device context.
+     *
+     * @param hubContext the context of the hub
+     * @param pluginId the plugin associated with the global device
+     *
+     * @return a DeviceContext instance
+     */
+    public static DeviceContext createGlobal(HubContext hubContext, String pluginId) {
+        return create(PluginContext.create(hubContext, pluginId), null);
+    }
+
+    /**
      * Creates a local device context.
      *
      * @param pluginId the ID of the plugin that published the device
@@ -54,6 +66,17 @@ public class DeviceContext {
      */
     public static DeviceContext createLocal(String pluginId, String deviceId) {
         return create(PluginContext.createLocal(pluginId), deviceId);
+    }
+
+    /**
+     * Creates a local global device context.
+     *
+     * @param pluginId the plugin associated with the global device
+     *
+     * @return a DeviceContext instance
+     */
+    public static DeviceContext createLocalGlobal(String pluginId) {
+        return create(PluginContext.createLocal(pluginId), null);
     }
 
     private DeviceContext(PluginContext ctx, String deviceId) {
@@ -83,6 +106,10 @@ public class DeviceContext {
 
     public String getDeviceId() {
         return deviceId;
+    }
+
+    public boolean isGlobal() {
+        return (deviceId == null);
     }
 
     public String toString() {

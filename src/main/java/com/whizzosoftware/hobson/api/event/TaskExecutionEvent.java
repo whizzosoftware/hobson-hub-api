@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Whizzo Software, LLC.
+ * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,21 +7,23 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event;
 
-import java.util.Map;
-
 /**
- * Event that occurs when the hub's configuration is updated.
+ * Event that occurs when a task is executed.
  *
  * @author Dan Noguerol
  */
-public class HubConfigurationUpdateEvent extends HobsonEvent {
-    public static final String ID = "hubConfigurationUpdate";
+public class TaskExecutionEvent extends HobsonEvent {
+    public static final String ID = "taskExecute";
 
-    public HubConfigurationUpdateEvent(long timestamp) {
-        super(timestamp, EventTopics.CONFIG_TOPIC, ID);
+    private static final String PROP_NAME = "name";
+
+    public TaskExecutionEvent(long timestamp, String name) {
+        super(timestamp, EventTopics.STATE_TOPIC, ID);
+
+        setProperty(PROP_NAME, name);
     }
 
-    public HubConfigurationUpdateEvent(Map<String,Object> props) {
-        super(EventTopics.CONFIG_TOPIC, props);
+    public String getName() {
+        return (String)getProperty(PROP_NAME);
     }
 }

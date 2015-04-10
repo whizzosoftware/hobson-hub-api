@@ -21,8 +21,8 @@ public class PluginStoppedEvent extends HobsonEvent {
 
     private static final String PROP_PLUGIN_ID = "pluginId";
 
-    public PluginStoppedEvent(PluginContext ctx) {
-        super(EventTopics.PLUGINS_TOPIC, ID);
+    public PluginStoppedEvent(long timestamp, PluginContext ctx) {
+        super(timestamp, EventTopics.PLUGINS_TOPIC, ID);
         setProperty(PROP_PLUGIN_ID, ctx.getPluginId());
     }
 

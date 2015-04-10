@@ -22,16 +22,16 @@ public class VariableUpdateRequestEvent extends HobsonEvent {
     public static final String ID = "varUpdateReq";
     public static final String PROP_UPDATES = "updates";
 
-    public VariableUpdateRequestEvent(VariableUpdate update) {
-        super(EventTopics.VARIABLES_TOPIC, ID);
+    public VariableUpdateRequestEvent(long timestamp, VariableUpdate update) {
+        super(timestamp, EventTopics.VARIABLES_TOPIC, ID);
 
         List<VariableUpdate> updates = new ArrayList<>();
         updates.add(update);
         setProperty(PROP_UPDATES, updates);
     }
 
-    public VariableUpdateRequestEvent(List<VariableUpdate> updates) {
-        super(EventTopics.VARIABLES_TOPIC, ID);
+    public VariableUpdateRequestEvent(long timestamp, List<VariableUpdate> updates) {
+        super(timestamp, EventTopics.VARIABLES_TOPIC, ID);
 
         setProperty(PROP_UPDATES, updates);
     }

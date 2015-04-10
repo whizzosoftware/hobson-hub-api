@@ -188,7 +188,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
      * @param value the variable value
      */
     protected void fireVariableUpdateNotification(String name, Object value) {
-        getPlugin().getRuntime().fireVariableUpdateNotification(new VariableUpdate(ctx.getPluginId(), ctx.getDeviceId(), name, value));
+        getPlugin().getRuntime().fireVariableUpdateNotification(new VariableUpdate(ctx, name, value));
     }
 
     /**

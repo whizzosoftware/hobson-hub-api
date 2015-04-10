@@ -22,16 +22,16 @@ public class VariableUpdateNotificationEvent extends HobsonEvent {
     public static final String ID = "varUpdateNotify";
     public static final String PROP_UPDATES = "updates";
 
-    public VariableUpdateNotificationEvent(VariableUpdate update) {
-        super(EventTopics.VARIABLES_TOPIC, ID);
+    public VariableUpdateNotificationEvent(long timestamp, VariableUpdate update) {
+        super(timestamp, EventTopics.VARIABLES_TOPIC, ID);
 
         List<VariableUpdate> updates = new ArrayList<>();
         updates.add(update);
         setProperty(PROP_UPDATES, updates);
     }
 
-    public VariableUpdateNotificationEvent(List<VariableUpdate> updates) {
-        super(EventTopics.VARIABLES_TOPIC, ID);
+    public VariableUpdateNotificationEvent(long timestamp, List<VariableUpdate> updates) {
+        super(timestamp, EventTopics.VARIABLES_TOPIC, ID);
 
         setProperty(PROP_UPDATES, updates);
     }

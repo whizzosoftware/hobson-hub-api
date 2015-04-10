@@ -20,8 +20,8 @@ public class DeviceAdvertisementEvent extends HobsonEvent {
     public static final String ID = "deviceAdvertisement";
     public static final String PROP_ADVERTISEMENT = "advertisement";
 
-    public DeviceAdvertisementEvent(DeviceAdvertisement advertisement) {
-        super(EventTopics.createDiscoTopic(advertisement.getProtocolId()), ID);
+    public DeviceAdvertisementEvent(long timestamp, DeviceAdvertisement advertisement) {
+        super(timestamp, EventTopics.createDiscoTopic(advertisement.getProtocolId()), ID);
         setProperty(PROP_ADVERTISEMENT, advertisement);
     }
 
