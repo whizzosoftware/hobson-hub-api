@@ -8,6 +8,8 @@
 package com.whizzosoftware.hobson.api.telemetry;
 
 import com.whizzosoftware.hobson.api.device.DeviceContext;
+import com.whizzosoftware.hobson.api.device.HobsonDevice;
+import com.whizzosoftware.hobson.api.hub.HubContext;
 
 import java.util.Collection;
 import java.util.Map;
@@ -25,6 +27,15 @@ public interface TelemetryManager {
      * @param enabled whether to enable telemetry
      */
     public void enableDeviceTelemetry(DeviceContext ctx, boolean enabled);
+
+    /**
+     * Returns all hub devices for which telemetry has been enabled.
+     *
+     * @param ctx the context of the hub that published the devices
+     *
+     * @return a Collection of HobsonDevice instances
+     */
+    public Collection<HobsonDevice> getAllTelemetryEnabledDevices(HubContext ctx);
 
     /**
      * Retrieves telemetry data for a specific device.
@@ -48,6 +59,15 @@ public interface TelemetryManager {
      * @return a Collection of TemporalValue instances
      */
     public Collection<TemporalValue> getDeviceVariableTelemetry(DeviceContext ctx, String name, long endTime, TelemetryInterval interval);
+
+    /**
+     * Indicates whether a device's telemetry is enabled.
+     *
+     * @param ctx the context of the target device
+     *
+     * @return a boolean
+     */
+    public boolean isDeviceTelemetryEnabled(DeviceContext ctx);
 
     /**
      * Writes telemetry data for a specific device.

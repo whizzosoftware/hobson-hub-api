@@ -45,22 +45,12 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public boolean isDeviceTelemetryEnabled(DeviceContext ctx) {
-        return false;
-    }
-
-    @Override
     public Configuration getDeviceConfiguration(DeviceContext ctx) {
         return null;
     }
 
     @Override
     public Object getDeviceConfigurationProperty(DeviceContext ctx, String name) {
-        return null;
-    }
-
-    @Override
-    public Collection<HobsonDevice> getAllTelemetryEnabledDevices(HubContext ctx) {
         return null;
     }
 

@@ -45,15 +45,6 @@ public interface DeviceManager {
     public Collection<HobsonDevice> getAllDevices(PluginContext ctx);
 
     /**
-     * Returns all hub devices for which telemetry has been enabled.
-     *
-     * @param ctx the context of the hub that published the devices
-     *
-     * @return a Collection of HobsonDevice instances
-     */
-    public Collection<HobsonDevice> getAllTelemetryEnabledDevices(HubContext ctx);
-
-    /**
      * Returns a specific device.
      *
      * @param ctx the context of the device to retrieve
@@ -94,15 +85,6 @@ public interface DeviceManager {
      * @since hobson-hub-api 0.1.6
      */
     public boolean hasDevice(DeviceContext ctx);
-
-    /**
-     * Indicates whether a device has telemetry enabled.
-     *
-     * @param ctx the context of the device to check
-     *
-     * @return a boolean
-     */
-    public boolean isDeviceTelemetryEnabled(DeviceContext ctx);
 
     /**
      * Publishes a device to the device registry and starts it.
