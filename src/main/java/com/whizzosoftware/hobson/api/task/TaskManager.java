@@ -10,7 +10,6 @@ package com.whizzosoftware.hobson.api.task;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.*;
-import com.whizzosoftware.hobson.api.task.action.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -144,9 +143,8 @@ public interface TaskManager {
      * @param context a
      * @param name b
      * @param properties c
-     * @param executor d
      */
-    public void publishActionClass(PropertyContainerClassContext context, String name, List<TypedProperty> properties, TaskActionExecutor executor);
+    public void publishActionClass(PropertyContainerClassContext context, String name, List<TypedProperty> properties);
 
     /**
      * Creates and publishes a new action set.

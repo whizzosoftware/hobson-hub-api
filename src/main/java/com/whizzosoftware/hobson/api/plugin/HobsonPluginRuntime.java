@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.TypedProperty;
 import com.whizzosoftware.hobson.api.config.Configuration;
@@ -19,7 +20,6 @@ import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.hub.HubManager;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
-import com.whizzosoftware.hobson.api.task.action.TaskActionExecutor;
 import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableManager;
@@ -104,6 +104,35 @@ public interface HobsonPluginRuntime extends EventListener {
     public void onDeviceConfigurationUpdate(DeviceContext ctx, Configuration config);
 
     /**
+     * Called when an action that a plugin has published needs to be executed.
+     *
+     * @param action the action to execute
+     */
+    public void onExecuteAction(PropertyContainer action);
+
+    /**
+     * Called when the plugin's configuration has changed.
+     *
+     * @param config the new configuration
+     */
+    public void onPluginConfigurationUpdate(Configuration config);
+
+    /**
+     * Callback that gives a plugin the opportunity to perform work. This will be called every
+     * refresh interval.
+     */
+    public void onRefresh();
+
+    /**
+     * Callback when a request to set a device variable has been received.
+     *
+     * @param ctx the context of the device that owns the variable
+     * @param variableName the variable name
+     * @param value the variable value
+     */
+    public void onSetDeviceVariable(DeviceContext ctx, String variableName, Object value);
+
+    /**
      * Callback method invoked when the plugin starts up.
      *
      * @param config the plugin configuration
@@ -116,36 +145,13 @@ public interface HobsonPluginRuntime extends EventListener {
     public void onShutdown();
 
     /**
-     * Callback that gives a plugin the opportunity to perform work. This will be called every
-     * refresh interval.
-     */
-    public void onRefresh();
-
-    /**
-     * Called when the plugin's configuration has changed.
-     *
-     * @param config the new configuration
-     */
-    public void onPluginConfigurationUpdate(Configuration config);
-
-    /**
-     * Callback when a request to set a device variable has been received.
-     *
-     * @param ctx the context of the device that owns the variable
-     * @param variableName the variable name
-     * @param value the variable value
-     */
-    public void onSetDeviceVariable(DeviceContext ctx, String variableName, Object value);
-
-    /**
      * Publish an action class.
      *
      * @param context a
      * @param name b
      * @param properties c
-     * @param executor d
      */
-    public void publishActionClass(PropertyContainerClassContext context, String name, List<TypedProperty> properties, TaskActionExecutor executor);
+    public void publishActionClass(PropertyContainerClassContext context, String name, List<TypedProperty> properties);
 
     /**
      * Publish a condition class.

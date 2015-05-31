@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.TypedProperty;
 import com.whizzosoftware.hobson.api.config.Configuration;
@@ -23,7 +24,6 @@ import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.hub.HubManager;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
-import com.whizzosoftware.hobson.api.task.action.TaskActionExecutor;
 import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
@@ -164,6 +164,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
+    public void onExecuteAction(PropertyContainer action) {
+        // should be overriden by sub-classes
+    }
+
+    @Override
     public void onHobsonEvent(HobsonEvent event) {
     }
 
@@ -185,9 +190,9 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public void publishActionClass(PropertyContainerClassContext ctx, String name, List<TypedProperty> properties, TaskActionExecutor executor) {
+    public void publishActionClass(PropertyContainerClassContext ctx, String name, List<TypedProperty> properties) {
         validateTaskManager();
-        taskManager.publishActionClass(ctx, name, properties, executor);
+        taskManager.publishActionClass(ctx, name, properties);
     }
 
     @Override
