@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.task;
 
+import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
+
 /**
  * Interface for plugins that can contribute tasks to the system.
  *
@@ -16,22 +18,26 @@ public interface TaskProvider {
     /**
      * Callback for a new task creation request.
      *
-     * @param config the configuration for the new task
+     * @param name the name of the new task
+     * @param conditionSet conditions that must evaluate to true for the task to execute
+     * @param actionSet the action set to execute when the task runs
      */
-    public void onCreateTask(Object config);
+    public void onCreateTask(String name, PropertyContainerSet conditionSet, PropertyContainerSet actionSet);
 
     /**
      * Callback for a task update request.
      *
-     * @param task the task being updated
-     * @param config the new configuration for the task
+     * @param ctx the context of the task to update
+     * @param name the name of the new task
+     * @param conditionSet conditions that must evaluate to true for the task to execute
+     * @param actionSet the action set to execute when the task runs
      */
-    public void onUpdateTask(HobsonTask task, Object config);
+    public void onUpdateTask(TaskContext ctx, String name, PropertyContainerSet conditionSet, PropertyContainerSet actionSet);
 
     /**
      * Callback for a task deletion request.
      *
-     * @param task the task to remove
+     * @param ctx the context of the task to remove
      */
-    public void onDeleteTask(HobsonTask task);
+    public void onDeleteTask(TaskContext ctx);
 }

@@ -7,8 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
-import com.whizzosoftware.hobson.api.action.ActionManager;
-import com.whizzosoftware.hobson.api.action.HobsonAction;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
+import com.whizzosoftware.hobson.api.property.TypedProperty;
 import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
@@ -19,6 +19,7 @@ import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.hub.HubManager;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
+import com.whizzosoftware.hobson.api.task.action.TaskActionExecutor;
 import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableManager;
@@ -137,11 +138,23 @@ public interface HobsonPluginRuntime extends EventListener {
     public void onSetDeviceVariable(DeviceContext ctx, String variableName, Object value);
 
     /**
-     * Publish an action.
+     * Publish an action class.
      *
-     * @param action the action to publish
+     * @param context a
+     * @param name b
+     * @param properties c
+     * @param executor d
      */
-    public void publishAction(HobsonAction action);
+    public void publishActionClass(PropertyContainerClassContext context, String name, List<TypedProperty> properties, TaskActionExecutor executor);
+
+    /**
+     * Publish a condition class.
+     *
+     * @param ctx a
+     * @param name b
+     * @param properties c
+     */
+    public void publishConditionClass(PropertyContainerClassContext ctx, String name, List<TypedProperty> properties);
 
     /**
      * Publish a device variable.
@@ -159,6 +172,7 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param ctx the context of the device publishing the variable
      * @param name the name of the new variable to publish
      * @param value the value of the new variable (or null if not known)
+     * @param mask the variable mask
      * @param proxyType indicates the type of proxy that can perform value substitutions (or null if not applicable)
      */
     public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, String proxyType);
@@ -191,13 +205,6 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param unit the temporal unit for the time argument
      */
     public void scheduleAtFixedRateInEventLoop(Runnable runnable, long initialDelay, long time, TimeUnit unit);
-
-    /**
-     * Sets the ActionManager instance the plugin should use. This will be called before the init() method.
-     *
-     * @param actionManager an ActionManager
-     */
-    public void setActionManager(ActionManager actionManager);
 
     /**
      * Sets a configuration property for a specific device.

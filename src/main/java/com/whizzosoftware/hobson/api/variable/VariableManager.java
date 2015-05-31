@@ -91,15 +91,6 @@ public interface VariableManager {
     public HobsonVariable getDeviceVariable(DeviceContext ctx, String name, VariableProxyValueProvider proxyValueProvider);
 
     /**
-     * Returns all the variable change IDs that can be produced by a device.
-     *
-     * @param ctx the device context to retrieve change IDs for
-     *
-     * @return a Collection of variable change IDs
-     */
-    public Collection<String> getDeviceVariableChangeIds(DeviceContext ctx);
-
-    /**
      * Indicates whether a device variable has been published.
      *
      * @param ctx the device context the variable is associated with

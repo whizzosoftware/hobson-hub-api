@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.hub;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /**
  * A class that encapsulates the fully-qualified context of a hub.
  *
@@ -15,6 +17,8 @@ package com.whizzosoftware.hobson.api.hub;
 public class HubContext {
     public static final String DEFAULT_USER = "local";
     public static final String DEFAULT_HUB = "local";
+
+    public static final String DELIMITER = ":";
 
     public String userId;
     public String hubId;
@@ -27,7 +31,9 @@ public class HubContext {
         return create(DEFAULT_USER, DEFAULT_HUB);
     }
 
-    private HubContext(String userId, String hubId) {
+    public HubContext() {}
+
+    public HubContext(String userId, String hubId) {
         this.userId = userId;
         this.hubId = hubId;
     }
@@ -36,11 +42,31 @@ public class HubContext {
         return userId;
     }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public String getHubId() {
         return hubId;
     }
 
+    public void setHubId(String hubId) {
+        this.hubId = hubId;
+    }
+
+    public boolean equals(Object o) {
+        return (
+            o instanceof HubContext &&
+            ((HubContext)o).userId.equals(userId) &&
+            ((HubContext)o).hubId.equals(hubId)
+        );
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(userId).append(hubId).toHashCode();
+    }
+
     public String toString() {
-        return userId + "." + hubId;
+        return userId + DELIMITER + hubId;
     }
 }

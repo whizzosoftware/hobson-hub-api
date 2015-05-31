@@ -7,88 +7,166 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.task;
 
-import com.whizzosoftware.hobson.api.action.HobsonActionRef;
+import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
 
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * A generic interface for entities that trigger Hobson actions.
  *
  * @author Dan Noguerol
  */
-public interface HobsonTask {
+public class HobsonTask {
+    private TaskContext context;
+    private String name;
+    private String description;
+    private Map<String,Object> properties;
+    private PropertyContainerSet conditionSet;
+    private PropertyContainerSet actionSet;
+
+    public HobsonTask() {}
+
+    public HobsonTask(TaskContext context, String name, String description, Map<String, Object> properties, PropertyContainerSet conditionSet, PropertyContainerSet actionSet) {
+        this.context = context;
+        this.name = name;
+        this.description = description;
+        this.properties = properties;
+        this.conditionSet = conditionSet;
+        this.actionSet = actionSet;
+    }
+
     /**
      * Returns the context of the task.
      *
      * @return a TaskContext instance
      */
-    public TaskContext getContext();
+    public TaskContext getContext() {
+        return context;
+    }
+
+    /**
+     * Sets the context of the task.
+     *
+     * @param context a TaskContext intsance
+     */
+    public void setContext(TaskContext context) {
+        this.context = context;
+    }
 
     /**
      * Returns the task name.
      *
      * @return a String
      */
-    public String getName();
+    public String getName() {
+        return name;
+    }
 
     /**
-     * Returns the task type.
+     * Sets the task name.
      *
-     * @return a Type enum
+     * @param name the name
      */
-    public Type getType();
+    public void setName(String name) {
+        this.name = name;
+    }
 
     /**
-     * Returns the properties associated with this task.
+     * Returns a human-readable description of the task.
+     *
+     * @return a String
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets a human-readable description of the task.
+     *
+     * @param description the description
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * Indicates whether this task has any properties associated with it.
+     *
+     * @return a boolean
+     */
+    public boolean hasProperties() {
+        return (properties != null && properties.size() > 0);
+    }
+
+    /**
+     * A list of arbitrary properties associated with the task. For example, a scheduler might use one of these
+     * properties to indicate a task is scheduled for execution.
      *
      * @return a Properties object
      */
-    public Properties getProperties();
+    public Map<String,Object> getProperties() {
+        return properties;
+    }
 
     /**
-     * Returns whether this task has conditions associated with it.
+     * Sets a task property.
      *
-     * @return a boolean
+     * @param name the property name
+     * @param value the property value
      */
-    public boolean hasConditions();
+    public void setProperty(String name, Object value) {
+        if (properties == null) {
+            properties = new HashMap<>();
+        }
+        properties.put(name, value);
+    }
 
     /**
-     * Returns the conditions associated with this task.
+     * Sets the task properties.
      *
-     * @return a Collection of Maps
+     * @param properties the full set of task properties
      */
-    public Collection<Map<String,Object>> getConditions();
+    public void setProperties(Map<String, Object> properties) {
+        this.properties = properties;
+    }
 
     /**
-     * Returns whether this task has actions associated with it.
+     * Returns the condition set for this task.
      *
-     * @return a boolean
+     * @return a condition set (or null if one hasn't been set)
      */
-    public boolean hasActions();
+    public PropertyContainerSet getConditionSet() {
+        return conditionSet;
+    }
 
     /**
-     * Returns the actions associated with this task.
+     * Sets the condition set for this task.
      *
-     * @return a Collection of HobsonActionRef objects
+     * @param conditionSet the new condition set
      */
-    public Collection<HobsonActionRef> getActions();
+    public void setConditionSet(PropertyContainerSet conditionSet) {
+        this.conditionSet = conditionSet;
+    }
 
     /**
-     * Indicates whether this task is enabled.
+     * Returns the action set ID associated with this task.
      *
-     * @return a boolean
+     * @return the action set ID (or null if none is set)
      */
-    public boolean isEnabled();
+    public PropertyContainerSet getActionSet() {
+        return actionSet;
+    }
 
     /**
-     * Immediately executes the task.
+     * Sets the action set for this task.
+     *
+     * @param actionSet the new action set
      */
-    public void execute();
+    public void setActionSet(PropertyContainerSet actionSet) {
+        this.actionSet = actionSet;
+    }
 
-    public enum Type {
-        EVENT,
-        SCHEDULE
+    public void execute() {
     }
 }

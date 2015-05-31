@@ -7,7 +7,10 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.hub;
 
-import com.whizzosoftware.hobson.api.config.EmailConfiguration;
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
+
+import java.util.Map;
 
 /**
  * A class that encapsulates information about a hub.
@@ -18,11 +21,8 @@ public class HobsonHub {
     private HubContext ctx;
     private String name;
     private String version;
-    private HubLocation location;
-    private EmailConfiguration email;
-    private String logLevel;
-    private Boolean setupComplete;
-    private String cloudLinkUrl;
+    private HubConfigurationClass configurationClass = new HubConfigurationClass();
+    private PropertyContainer configuration;
 
     public HobsonHub(HubContext ctx) {
         this.ctx = ctx;
@@ -44,44 +44,12 @@ public class HobsonHub {
         return version;
     }
 
-    public boolean hasLocation() {
-        return (location != null);
+    public PropertyContainerClass getConfigurationClass() {
+        return configurationClass;
     }
 
-    public HubLocation getLocation() {
-        return location;
-    }
-
-    public boolean hasEmail() {
-        return (email != null);
-    }
-
-    public EmailConfiguration getEmail() {
-        return email;
-    }
-
-    public boolean hasLogLevel() {
-        return false;
-    }
-
-    public String getLogLevel() {
-        return logLevel;
-    }
-
-    public boolean hasSetupComplete() {
-        return (setupComplete != null);
-    }
-
-    public Boolean isSetupComplete() {
-        return setupComplete;
-    }
-
-    public boolean hasCloudLinkUrl() {
-        return (cloudLinkUrl != null);
-    }
-
-    public String getCloudLinkUrl() {
-        return cloudLinkUrl;
+    public PropertyContainer getConfiguration() {
+        return configuration;
     }
 
     public static class Builder {
@@ -101,28 +69,8 @@ public class HobsonHub {
             return this;
         }
 
-        public Builder location(HubLocation location) {
-            hub.location = location;
-            return this;
-        }
-
-        public Builder email(EmailConfiguration email) {
-            hub.email = email;
-            return this;
-        }
-
-        public Builder logLevel(String logLevel) {
-            hub.logLevel = logLevel;
-            return this;
-        }
-
-        public Builder setupComplete(Boolean setupComplete) {
-            hub.setupComplete = setupComplete;
-            return this;
-        }
-
-        public Builder cloudLinkUrl(String cloudLinkUrl) {
-            hub.cloudLinkUrl = cloudLinkUrl;
+        public Builder configuration(Map<String,Object> propertyValues) {
+            hub.configuration = new PropertyContainer(null, "Hub Configuration", hub.configurationClass.getContext(), propertyValues);
             return this;
         }
 

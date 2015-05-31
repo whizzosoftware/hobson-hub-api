@@ -17,6 +17,7 @@ public class HobsonUser {
     private String firstName;
     private String lastName;
     private String email;
+    private UserRemoteInfo remoteInfo;
 
     public String getId() {
         return id;
@@ -32,6 +33,18 @@ public class HobsonUser {
 
     public String getEmail() {
         return email;
+    }
+
+    public UserRemoteInfo getRemoteInfo() {
+        return remoteInfo;
+    }
+
+    public boolean isLocal() {
+        return (remoteInfo == null);
+    }
+
+    public boolean isRemote() {
+        return (remoteInfo != null);
     }
 
     public static class Builder {
@@ -54,6 +67,11 @@ public class HobsonUser {
 
         public Builder email(String email) {
             user.email = email;
+            return this;
+        }
+
+        public Builder remoteInfo(UserRemoteInfo remoteInfo) {
+            user.remoteInfo = remoteInfo;
             return this;
         }
 

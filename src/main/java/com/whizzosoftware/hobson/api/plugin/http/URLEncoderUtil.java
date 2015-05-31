@@ -17,11 +17,20 @@ import java.util.Map;
  * @author Dan Noguerol
  */
 public class URLEncoderUtil {
+    public static final String DEFAULT_ENCODING = "ISO-8859-1";
     private static final String PARAMETER_SEPARATOR = "&";
     private static final String KEY_VALUE_SEPARATOR = "=";
-    private static final String DEFAULT_ENCODING = "ISO-8859-1";
 
-    public static String format(Map<String, String> parameters, final String encoding) throws UnsupportedEncodingException {
+    /**
+     * Creates a URI query string from a map of parameters and encoding.
+     *
+     * @param parameters a map of parameters
+     * @param encoding the encoding for the resultant string
+     *
+     * @return a URI String
+     * @throws UnsupportedEncodingException on failure
+     */
+    public static String createQueryString(Map<String, String> parameters, final String encoding) throws UnsupportedEncodingException {
         final StringBuilder result = new StringBuilder();
         for (String key : parameters.keySet()) {
             final String encodedKey = URLEncoder.encode(key, (encoding != null ? encoding : DEFAULT_ENCODING));

@@ -31,6 +31,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.9</version>
@@ -134,7 +140,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Import-Package>org.apache.commons.codec.*,org.slf4j,io.netty.*,gnu.io.*</Import-Package>
+                        <Import-Package>org.apache.commons.*,org.slf4j,io.netty.*,gnu.io.*</Import-Package>
                         <Export-Package>com.whizzosoftware.hobson.api.*</Export-Package>
                     </instructions>
                 </configuration>

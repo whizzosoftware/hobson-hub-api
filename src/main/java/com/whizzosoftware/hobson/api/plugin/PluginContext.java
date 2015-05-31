@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.hub.HubContext;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * Encapsulates contextual information for a plugin reference.
@@ -15,8 +16,8 @@ import com.whizzosoftware.hobson.api.hub.HubContext;
  * @author Dan Noguerol
  */
 public class PluginContext {
-    private HubContext hubContext;
-    private String pluginId;
+    private final HubContext hubContext;
+    private final String pluginId;
 
     /**
      * Create a plugin context.
@@ -68,7 +69,19 @@ public class PluginContext {
         return pluginId;
     }
 
+    public boolean equals(Object o) {
+        return (
+            o instanceof PluginContext &&
+            ((PluginContext)o).hubContext.equals(hubContext) &&
+            ((PluginContext)o).pluginId.equals(pluginId)
+        );
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(hubContext).append(pluginId).toHashCode();
+    }
+
     public String toString() {
-        return hubContext.toString() + "." + pluginId;
+        return hubContext + HubContext.DELIMITER + pluginId;
     }
 }

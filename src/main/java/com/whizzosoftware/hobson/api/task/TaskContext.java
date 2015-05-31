@@ -40,6 +40,10 @@ public class TaskContext {
         return ctx;
     }
 
+    public HubContext getHubContext() {
+        return ctx.getHubContext();
+    }
+
     public String getHubId() {
         return ctx.getHubId();
     }
@@ -50,6 +54,10 @@ public class TaskContext {
 
     public String getPluginId() {
         return ctx.getPluginId();
+    }
+
+    public boolean hasTaskId() {
+        return (taskId != null);
     }
 
     public String getTaskId() {

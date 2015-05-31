@@ -14,14 +14,24 @@ package com.whizzosoftware.hobson.api.hub;
  */
 public interface LocalHubManager {
     /**
-     * Authenticates the admin password.
+     * Authenticates the local admin user.
      *
      * @param ctx the hub context
      * @param password the password to check
      *
      * @return true if the password is valid
      */
-    public boolean authenticateAdmin(HubContext ctx, String password);
+    public boolean authenticateLocal(HubContext ctx, String password);
+
+    /**
+     * Sets the password for the local admin user.
+     *
+     * @param ctx the context of the target hub
+     * @param change a PasswordChange instance
+     *
+     * @throws com.whizzosoftware.hobson.api.HobsonInvalidRequestException if password does not meet complexity requirements
+     */
+    public void setLocalPassword(HubContext ctx, PasswordChange change);
 
     /**
      * Add a new appender for error logging.

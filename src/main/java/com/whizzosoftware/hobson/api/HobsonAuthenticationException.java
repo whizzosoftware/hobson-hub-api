@@ -8,11 +8,11 @@
 package com.whizzosoftware.hobson.api;
 
 /**
- * An unchecked exception that occurs when an authentication or authorization failure has occurred.
+ * An unchecked exception that occurs when an authentication failure has occurred.
  *
  * @author Dan Noguerol
  */
-public class HobsonAuthException extends HobsonRuntimeException {
+public class HobsonAuthenticationException extends HobsonRuntimeException {
     public static final int CODE = 401;
 
     /**
@@ -20,7 +20,7 @@ public class HobsonAuthException extends HobsonRuntimeException {
      *
      * @param message the exception message
      */
-    public HobsonAuthException(String message) {
+    public HobsonAuthenticationException(String message) {
         super(CODE, message);
     }
 }

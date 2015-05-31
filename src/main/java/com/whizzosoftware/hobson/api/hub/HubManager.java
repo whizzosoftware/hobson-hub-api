@@ -36,6 +36,33 @@ public interface HubManager {
     public HobsonHub getHub(HubContext ctx);
 
     /**
+     * Associates a new hub with a user.
+     *
+     * @param userId the user ID that will own the hub
+     * @param name the name of the new hub
+     *
+     * @return a HubInfo object
+     */
+    public HobsonHub addHub(String userId, String name);
+
+    /**
+     * Removes a previously added hub.
+     *
+     * @param ctx the context of the hub to remove
+     */
+    public void removeHub(HubContext ctx);
+
+    /**
+     * Indicates whether Hub credentials are valid.
+     *
+     * @param ctx the context of the Hub to authenticate
+     * @param credentials the credentials to validate
+     *
+     * @return indicates whether the credentials are valid
+     */
+    public boolean authenticateHub(HubContext ctx, HubCredentials credentials);
+
+    /**
      * Returns content from the Hub log.
      *
      * @param ctx the context of the hub that owns the logs
@@ -46,13 +73,6 @@ public interface HubManager {
      * @return a LineRage representing what was added to the appendable
      */
     public LineRange getLog(HubContext ctx, long startLine, long endLine, Appendable appendable);
-
-    /**
-     * Returns a registrar interface for adding/removing new Hubs.
-     *
-     * @return a HubRegistrar interface
-     */
-    public HubRegistrar getRegistrar();
 
     /**
      * Returns a manager for the local hub (if one exists).
@@ -74,16 +94,6 @@ public interface HubManager {
      * @param ctx the context of the target hub
      */
     public void clearHubDetails(HubContext ctx);
-
-    /**
-     * Sets the Hub password.
-     *
-     * @param ctx the context of the target hub
-     * @param change a PasswordChange instance
-     *
-     * @throws com.whizzosoftware.hobson.api.HobsonInvalidRequestException if password does not meet complexity requirements
-     */
-    public void setHubPassword(HubContext ctx, PasswordChange change);
 
     /**
      * Sends a test e-mail message using the provided e-mail configuration.

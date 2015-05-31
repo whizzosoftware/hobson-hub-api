@@ -8,8 +8,8 @@
 package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
-import com.whizzosoftware.hobson.api.action.HobsonAction;
-import com.whizzosoftware.hobson.api.action.ActionManager;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
+import com.whizzosoftware.hobson.api.property.TypedProperty;
 import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
@@ -23,6 +23,7 @@ import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.hub.HubManager;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
+import com.whizzosoftware.hobson.api.task.action.TaskActionExecutor;
 import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
@@ -45,7 +46,6 @@ import java.util.concurrent.TimeUnit;
  * @author Dan Noguerol
  */
 abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPluginRuntime, EventLoopExecutor {
-    private ActionManager actionManager;
     private DeviceManager deviceManager;
     private DiscoManager discoManager;
     private EventManager eventManager;
@@ -126,6 +126,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     /*
      * HobsonPluginRuntime methods
      */
+
     @Override
     public EventLoopExecutor getEventLoopExecutor() {
         return this;
@@ -181,17 +182,18 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         if (taskManager != null) {
             taskManager.unpublishAllTasks(getContext());
         }
-
-        // unpublish all actions published by this plugin
-        if (actionManager != null) {
-            actionManager.unpublishAllActions(getContext());
-        }
     }
 
     @Override
-    public void publishAction(HobsonAction action) {
-        validateActionManager();
-        actionManager.publishAction(action);
+    public void publishActionClass(PropertyContainerClassContext ctx, String name, List<TypedProperty> properties, TaskActionExecutor executor) {
+        validateTaskManager();
+        taskManager.publishActionClass(ctx, name, properties, executor);
+    }
+
+    @Override
+    public void publishConditionClass(PropertyContainerClassContext ctx, String name, List<TypedProperty> properties) {
+        validateTaskManager();
+        taskManager.publishConditionClass(ctx, name, properties);
     }
 
     @Override
@@ -221,11 +223,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     @Override
     public void scheduleAtFixedRateInEventLoop(Runnable runnable, long initialDelay, long time, TimeUnit unit) {
         eventLoop.scheduleAtFixedRate(runnable, initialDelay, time, unit);
-    }
-
-    @Override
-    public void setActionManager(ActionManager actionManager) {
-        this.actionManager = actionManager;
     }
 
     @Override
@@ -488,10 +485,8 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         return telemetryManager;
     }
 
-    private void validateActionManager() {
-        if (actionManager == null) {
-            throw new HobsonRuntimeException("No action manager has been set");
-        }
+    protected TaskManager getTaskManager() {
+        return taskManager;
     }
 
     private void validateDeviceManager() {

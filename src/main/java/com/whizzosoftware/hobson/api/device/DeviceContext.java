@@ -10,6 +10,8 @@ package com.whizzosoftware.hobson.api.device;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 
+import java.util.StringTokenizer;
+
 /**
  * A class that encapsulates the fully-qualified context of a device.
  *
@@ -42,6 +44,11 @@ public class DeviceContext {
      */
     public static DeviceContext create(HubContext hubContext, String pluginId, String deviceId) {
         return create(PluginContext.create(hubContext, pluginId), deviceId);
+    }
+
+    public static DeviceContext create(String s) {
+        StringTokenizer tok = new StringTokenizer(s, HubContext.DELIMITER);
+        return DeviceContext.create(HubContext.create(tok.nextToken(), tok.nextToken()), tok.nextToken(), tok.nextToken());
     }
 
     /**
@@ -113,6 +120,6 @@ public class DeviceContext {
     }
 
     public String toString() {
-        return getPluginContext() + "." + deviceId;
+        return getPluginContext() + HubContext.DELIMITER + deviceId;
     }
 }
