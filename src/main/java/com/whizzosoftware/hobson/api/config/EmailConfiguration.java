@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.config;
 
 import java.util.Dictionary;
+import java.util.Map;
 
 /**
  * A class representing an e-mail configuration.
@@ -15,11 +16,11 @@ import java.util.Dictionary;
  * @author Dan Noguerol
  */
 public class EmailConfiguration {
-    public static final String PROP_MAIL_SERVER = "mail.server";
-    public static final String PROP_MAIL_SECURE = "mail.secure";
-    public static final String PROP_MAIL_USERNAME = "mail.username";
-    public static final String PROP_MAIL_PASSWORD = "mail.password";
-    public static final String PROP_MAIL_SENDER = "mail.sender";
+    public static final String PROP_MAIL_SERVER = "emailServer";
+    public static final String PROP_MAIL_SECURE = "emailSecure";
+    public static final String PROP_MAIL_USERNAME = "emailUsername";
+    public static final String PROP_MAIL_PASSWORD = "emailPassword";
+    public static final String PROP_MAIL_SENDER = "emailSender";
 
     private String server;
     private Boolean secure;
@@ -76,6 +77,15 @@ public class EmailConfiguration {
             config.username = (String)d.get(PROP_MAIL_USERNAME);
             config.password = (String)d.get(PROP_MAIL_PASSWORD);
             config.senderAddress = (String)d.get(PROP_MAIL_SENDER);
+            return this;
+        }
+
+        public Builder map(Map<String,Object> m) {
+            config.server = (String)m.get(PROP_MAIL_SERVER);
+            config.secure = (Boolean)m.get(PROP_MAIL_SECURE);
+            config.username = (String)m.get(PROP_MAIL_USERNAME);
+            config.password = (String)m.get(PROP_MAIL_PASSWORD);
+            config.senderAddress = (String)m.get(PROP_MAIL_SENDER);
             return this;
         }
 

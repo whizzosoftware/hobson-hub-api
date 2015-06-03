@@ -120,7 +120,7 @@ public interface HubManager {
 
     /**
      * Sets the configuration associated with a Hub.
-     * 
+     *
      * @param ctx the context of the hub
      * @param configuration the configuration to set
      */

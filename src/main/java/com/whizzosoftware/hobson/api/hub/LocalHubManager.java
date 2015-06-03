@@ -17,7 +17,7 @@ public interface LocalHubManager {
      * Authenticates the local admin user.
      *
      * @param ctx the hub context
-     * @param password the password to check
+     * @param password the password to check (plain text)
      *
      * @return true if the password is valid
      */
