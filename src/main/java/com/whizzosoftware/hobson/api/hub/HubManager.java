@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.hub;
 
 import com.whizzosoftware.hobson.api.config.EmailConfiguration;
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
 
 import java.util.Collection;
 
@@ -46,6 +47,13 @@ public interface HubManager {
     public HobsonHub addHub(String userId, String name);
 
     /**
+     * Deletes the configuration associated with a Hub.
+     *
+     * @param ctx the context of the hub
+     */
+    public void deleteConfiguration(HubContext ctx);
+
+    /**
      * Removes a previously added hub.
      *
      * @param ctx the context of the hub to remove
@@ -61,6 +69,15 @@ public interface HubManager {
      * @return indicates whether the credentials are valid
      */
     public boolean authenticateHub(HubContext ctx, HubCredentials credentials);
+
+    /**
+     * Returns the configuration associated with a Hub.
+     *
+     * @param ctx the context of the hub
+     *
+     * @return a PropertyContainer instance containing the configuration
+     */
+    public PropertyContainer getConfiguration(HubContext ctx);
 
     /**
      * Returns content from the Hub log.
@@ -82,20 +99,6 @@ public interface HubManager {
     public LocalHubManager getLocalManager();
 
     /**
-     * Sets details for a hub.
-     *
-     * @param hub the new information (can be partially populated)
-     */
-    public void setHubDetails(HobsonHub hub);
-
-    /**
-     * Clears (deletes) the details for a hub.
-     *
-     * @param ctx the context of the target hub
-     */
-    public void clearHubDetails(HubContext ctx);
-
-    /**
      * Sends a test e-mail message using the provided e-mail configuration.
      *
      * @param ctx the context of the target hub
@@ -114,4 +117,12 @@ public interface HubManager {
      * @param body the e-mail message body
      */
     public void sendEmail(HubContext ctx, String recipientAddress, String subject, String body);
+
+    /**
+     * Sets the configuration associated with a Hub.
+     * 
+     * @param ctx the context of the hub
+     * @param configuration the configuration to set
+     */
+    public void setConfiguration(HubContext ctx, PropertyContainer configuration);
 }

@@ -22,6 +22,10 @@ public class PropertyContainerClassContext {
     private String pluginId;
     private String containerClassId;
 
+    static public PropertyContainerClassContext create(HubContext ctx, String containerClassId) {
+        return create(ctx.getUserId(), ctx.getHubId(), null, containerClassId);
+    }
+
     static public PropertyContainerClassContext create(PluginContext pctx, String containerClassId) {
         return create(pctx.getUserId(), pctx.getHubId(), pctx.getPluginId(), containerClassId);
     }

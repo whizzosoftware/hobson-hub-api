@@ -49,6 +49,7 @@ public class TypedProperty {
         DEVICES,
         RECURRENCE,
         NUMBER,
+        SECURE_STRING,
         STRING,
         TIME
     }

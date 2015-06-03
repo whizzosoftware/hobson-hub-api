@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.property;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -86,6 +87,13 @@ public class PropertyContainer {
 
     public Map<String, Object> getPropertyValues() {
         return propertyValues;
+    }
+
+    public void setPropertyValue(String key, Object value) {
+        if (propertyValues == null) {
+            propertyValues = new HashMap<>();
+        }
+        propertyValues.put(key, value);
     }
 
     public void setPropertyValues(Map<String, Object> propertyValues) {

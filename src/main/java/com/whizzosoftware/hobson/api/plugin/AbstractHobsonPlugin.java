@@ -164,6 +164,12 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
+    public boolean onEvaluateCondition(PropertyContainer condition) {
+        // should be overriden by sub-classes
+        return false;
+    }
+
+    @Override
     public void onExecuteAction(PropertyContainer action) {
         // should be overriden by sub-classes
     }

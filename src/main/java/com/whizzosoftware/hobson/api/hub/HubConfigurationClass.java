@@ -16,13 +16,23 @@ import com.whizzosoftware.hobson.api.property.TypedProperty;
  * @author Dan Noguerol
  */
 public class HubConfigurationClass extends PropertyContainerClass {
+    public static final String EMAIL_PASSWORD = "emailPassword";
+    public static final String EMAIL_SECURE = "emailSecure";
+    public static final String EMAIL_SENDER = "emailSender";
+    public static final String EMAIL_SERVER = "emailServer";
+    public static final String EMAIL_USER = "emailUsername";
+    public static final String LATITUDE = "latitude";
+    public static final String LOG_LEVEL = "logLevel";
+    public static final String LONGITUDE = "longitude";
     public static final String NAME = "name";
     public static final String SETUP_COMPLETE = "setupComplete";
-    public static final String LOG_LEVEL = "logLevel";
-    public static final String LATITUDE = "latitude";
-    public static final String LONGITUDE = "longitude";
 
     public HubConfigurationClass() {
+        addSupportedProperty(new TypedProperty(EMAIL_PASSWORD, "E-mail password", "The e-mail password to use for sending mail", TypedProperty.Type.STRING));
+        addSupportedProperty(new TypedProperty(EMAIL_SECURE, "E-mail Secure", "Indicates whether the e-mail sending channel should be secure", TypedProperty.Type.BOOLEAN));
+        addSupportedProperty(new TypedProperty(EMAIL_SENDER, "E-mail sender address", "The sender address to use for sending mail", TypedProperty.Type.STRING));
+        addSupportedProperty(new TypedProperty(EMAIL_SERVER, "E-mail server", "The e-mail server to use for sending mail", TypedProperty.Type.STRING));
+        addSupportedProperty(new TypedProperty(EMAIL_USER, "E-mail user", "The e-mail user to use for sending mail", TypedProperty.Type.STRING));
         addSupportedProperty(new TypedProperty(LATITUDE, "Latitude", "The Hub location's latitude", TypedProperty.Type.NUMBER));
         addSupportedProperty(new TypedProperty(LOG_LEVEL, "Log level", "The granularity of Hub logging", TypedProperty.Type.STRING));
         addSupportedProperty(new TypedProperty(LONGITUDE, "Longitude", "The Hub location's longitude", TypedProperty.Type.NUMBER));

@@ -104,6 +104,15 @@ public interface HobsonPluginRuntime extends EventListener {
     public void onDeviceConfigurationUpdate(DeviceContext ctx, Configuration config);
 
     /**
+     * Called when a condition that a plugin published needs to be evaluated.
+     *
+     * @param condition the condition to evaluate
+     *
+     * @return the boolean results of the condition
+     */
+    public boolean onEvaluateCondition(PropertyContainer condition);
+
+    /**
      * Called when an action that a plugin has published needs to be executed.
      *
      * @param action the action to execute

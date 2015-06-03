@@ -50,14 +50,22 @@ public interface PluginManager {
     public HobsonPlugin getPlugin(PluginContext ctx);
 
     /**
-     * Retrieve descriptors for all installed plugins.
+     * Retrieve descriptors for all locally installed plugins.
      *
      * @param ctx the context of the target hub
-     * @param includeRemoteInfo indicates whether online Hobson plugin directory information should be included
      *
      * @return a PluginList
      */
-    public PluginList getPluginDescriptors(HubContext ctx, boolean includeRemoteInfo);
+    public Collection<PluginDescriptor> getLocalPluginDescriptors(HubContext ctx);
+
+    /**
+     * Retrieve descriptors for all remotely available plugins.
+     *
+     * @param ctx the context of the target hub
+     *
+     * @return a PluginList
+     */
+    public Collection<PluginDescriptor> getRemotePluginDescriptors(HubContext ctx);
 
     /**
      * Returns the plugin level configuration.

@@ -18,17 +18,16 @@ public class PluginDescriptor implements Comparable<PluginDescriptor> {
     private String description;
     private PluginStatus status;
     private PluginType type;
-    private String currentVersionString;
-    private String latestVersionString;
+    private String versionString;
     private boolean configurable;
 
-    public PluginDescriptor(String id, String name, String description, PluginType type, PluginStatus status, String currentVersionString) {
+    public PluginDescriptor(String id, String name, String description, PluginType type, PluginStatus status, String versionString) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
         this.type = type;
-        this.currentVersionString = currentVersionString;
+        this.versionString = versionString;
     }
 
     public String getId() {
@@ -83,37 +82,22 @@ public class PluginDescriptor implements Comparable<PluginDescriptor> {
         this.configurable = configurable;
     }
 
-    public boolean hasCurrentVersion() {
-        return currentVersionString != null;
+    public boolean hasVersion() {
+        return versionString != null;
     }
 
-    public String getCurrentVersionString() {
-        return currentVersionString;
+    public String getVersionString() {
+        return versionString;
     }
 
-    public boolean hasLaterVersion() {
-        return latestVersionString != null;
-    }
-
-    public String getLatestVersionString() {
-        return latestVersionString;
-    }
-
-    public void setLatestVersionString(String latestVersionString) {
-        this.latestVersionString = latestVersionString;
-    }
-
-    public boolean isUpdate() {
-        return hasCurrentVersion() && hasLaterVersion();
+    public void setVersionString(String versionString) {
+        this.versionString = versionString;
     }
 
     public String toString() {
         String s =  name + " (" + id + ")";
-        if (hasCurrentVersion()) {
-            s += "[c=" + currentVersionString + "]";
-        }
-        if (hasLaterVersion()) {
-            s += "[l=" + latestVersionString + "]";
+        if (hasVersion()) {
+            s += "[c=" + versionString + "]";
         }
         return s;
     }
