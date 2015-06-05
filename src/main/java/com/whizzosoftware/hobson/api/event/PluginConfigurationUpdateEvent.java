@@ -7,10 +7,9 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event;
 
-import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
 
-import java.util.Dictionary;
 import java.util.Map;
 
 /**
@@ -24,7 +23,7 @@ public class PluginConfigurationUpdateEvent extends HobsonEvent {
     private static final String PROP_PLUGIN_ID = "pluginId";
     private static final String PROP_CONFIGURATION = "configuration";
 
-    public PluginConfigurationUpdateEvent(long timestamp, PluginContext ctx, Configuration configuration) {
+    public PluginConfigurationUpdateEvent(long timestamp, PluginContext ctx, PropertyContainer configuration) {
         super(timestamp, EventTopics.CONFIG_TOPIC, ID);
         setProperty(PROP_PLUGIN_ID, ctx.getPluginId());
         setProperty(PROP_CONFIGURATION, configuration);
@@ -38,7 +37,7 @@ public class PluginConfigurationUpdateEvent extends HobsonEvent {
         return (String)getProperty(PROP_PLUGIN_ID);
     }
 
-    public Configuration getConfiguration() {
-        return (Configuration)getProperty(PROP_CONFIGURATION);
+    public PropertyContainer getConfiguration() {
+        return (PropertyContainer)getProperty(PROP_CONFIGURATION);
     }
 }

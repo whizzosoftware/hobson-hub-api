@@ -7,9 +7,9 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device;
 
-import com.whizzosoftware.hobson.api.config.Configuration;
-import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.property.TypedProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,12 +30,12 @@ public class MockAbstractHobsonDevice extends AbstractHobsonDevice {
     }
 
     @Override
-    public ConfigurationPropertyMetaData[] createConfigurationPropertyMetaData() {
-        return new ConfigurationPropertyMetaData[0];
+    public TypedProperty[] createConfigurationPropertyMetaData() {
+        return new TypedProperty[0];
     }
 
     @Override
-    public void onStartup(Configuration config) {
+    public void onStartup(PropertyContainer config) {
         wasStartupCalled = true;
     }
 

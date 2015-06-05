@@ -9,10 +9,9 @@ package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.TypedProperty;
-import com.whizzosoftware.hobson.api.config.Configuration;
-import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.HobsonDevice;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
@@ -33,7 +32,6 @@ import io.netty.channel.local.LocalEventLoopGroup;
 import io.netty.util.concurrent.Future;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -57,7 +55,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     private PluginContext ctx;
     private String version;
     private PluginStatus status = PluginStatus.initializing();
-    private final List<ConfigurationPropertyMetaData> configMetaData = new ArrayList<>();
+    private final PropertyContainerClass configClass = new PropertyContainerClass();
     private EventLoopGroup eventLoop;
 
     public AbstractHobsonPlugin(String pluginId) {
@@ -84,8 +82,8 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData() {
-        return configMetaData;
+    public PropertyContainerClass getConfigurationClass() {
+        return configClass;
     }
 
     @Override
@@ -120,7 +118,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
 
     @Override
     public boolean isConfigurable() {
-        return (configMetaData.size() > 0);
+        return configClass.hasSupportedProperties();
     }
 
     /*
@@ -159,7 +157,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public void onDeviceConfigurationUpdate(DeviceContext ctx, Configuration config) {
+    public void onDeviceConfigurationUpdate(DeviceContext ctx, PropertyContainer config) {
         getDevice(ctx).getRuntime().onDeviceConfigurationUpdate(config);
     }
 
@@ -321,10 +319,10 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     /**
      * Add configuration property metadata for this plugin.
      *
-     * @param metaData the metadata to add
+     * @param p the supported property to add
      */
-    protected void addConfigurationPropertyMetaData(ConfigurationPropertyMetaData metaData) {
-        configMetaData.add(metaData);
+    protected void addSupportedProperty(TypedProperty p) {
+        configClass.addSupportedProperty(p);
     }
 
     /**

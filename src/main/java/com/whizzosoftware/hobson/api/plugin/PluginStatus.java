@@ -65,6 +65,10 @@ public class PluginStatus {
         return message;
     }
 
+    public String toString() {
+        return this.status.name();
+    }
+
     public static PluginStatus notInstalled() {
         return new PluginStatus(Status.NOT_INSTALLED);
     }

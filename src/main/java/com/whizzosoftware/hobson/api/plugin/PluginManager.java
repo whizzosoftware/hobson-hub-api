@@ -7,9 +7,9 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
-import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.image.ImageInputStream;
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
 
 import java.io.File;
 import java.util.Collection;
@@ -68,15 +68,6 @@ public interface PluginManager {
     public Collection<PluginDescriptor> getRemotePluginDescriptors(HubContext ctx);
 
     /**
-     * Returns the plugin level configuration.
-     *
-     * @param plugin the plugin
-     *
-     * @return a Dictionary (or null if there is no configuration)
-     */
-    public Configuration getPluginConfiguration(HobsonPlugin plugin);
-
-    /**
      * Returns a plugin's icon.
      *
      * @param ctx the context of the target plugin
@@ -92,7 +83,7 @@ public interface PluginManager {
      *
      * @return a Dictionary (or null if there is no configuration)
      */
-    public Configuration getPluginConfiguration(PluginContext ctx);
+    public PropertyContainer getPluginConfiguration(PluginContext ctx);
 
     /**
      * Returns a plugin level configuration property.
@@ -130,11 +121,10 @@ public interface PluginManager {
 
     /**
      * Sets the plugin level configuration.
-     *
-     * @param ctx the context of the target plugin
+     *  @param ctx the context of the target plugin
      * @param config the plugin configuration
      */
-    public void setPluginConfiguration(PluginContext ctx, Configuration config);
+    public void setPluginConfiguration(PluginContext ctx, PropertyContainer config);
 
     /**
      * Sets an individual plugin level configuration property.

@@ -7,8 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
-import java.util.Collection;
-import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 
 /**
  * Interface for all Hobson Hub plugins.
@@ -33,9 +32,9 @@ public interface HobsonPlugin {
     /**
      * Returns the configuration property meta-data associated with this plugin.
      *
-     * @return a Collection of ConfigurationPropertyMetaData objects
+     * @return a PropertyContainerClass object
      */
-    public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData();
+    public PropertyContainerClass getConfigurationClass();
 
     /**
      * Returns a an object that can be used to invoke methods related to plugin runtime execution.

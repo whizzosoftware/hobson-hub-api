@@ -7,10 +7,10 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device;
 
-import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.EventLoopExecutor;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
 
 import java.util.Collection;
 import java.util.Map;
@@ -63,7 +63,7 @@ public interface DeviceManager {
      *
      * @return a Dictionary (or null if there is no configuration)
      */
-    public Configuration getDeviceConfiguration(DeviceContext ctx);
+    public PropertyContainer getDeviceConfiguration(DeviceContext ctx);
 
     /**
      * Returns a device configuration property.
@@ -107,11 +107,10 @@ public interface DeviceManager {
 
     /**
      * Sets configuration for a device.
-     *
-     * @param ctx the context of the target device
+     *  @param ctx the context of the target device
      * @param config the new configuration
      */
-    public void setDeviceConfiguration(DeviceContext ctx, Configuration config);
+    public void setDeviceConfiguration(DeviceContext ctx, PropertyContainer config);
 
     /**
      * Set a device configuration property.

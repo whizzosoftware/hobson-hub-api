@@ -18,6 +18,10 @@ public class TypedProperty {
     private String description;
     private Type type;
 
+    public TypedProperty(String id) {
+        this.id = id;
+    }
+
     public TypedProperty(String id, String name, String description, Type type) {
         this.id = id;
         this.name = name;

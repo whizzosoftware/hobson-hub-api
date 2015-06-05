@@ -7,10 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device;
 
-import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
-
-import java.util.Collection;
-import java.util.Dictionary;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 
 /**
  * Interface representing a Hobson device.
@@ -54,6 +51,13 @@ public interface HobsonDevice {
     public DeviceError getError();
 
     /**
+     * Indicates whether this device has a preferred variable.
+     *
+     * @return a boolean
+     */
+    public boolean hasPreferredVariableName();
+
+    /**
      * Returns the name of the device's "preferred variable" -- the one variable it deems the most important to expose
      * to the user.
      *
@@ -62,11 +66,11 @@ public interface HobsonDevice {
     public String getPreferredVariableName();
 
     /**
-     * Returns meta data about the configurable aspects of the device.
+     * Returns information about the configurable aspects of the device.
      *
-     * @return a Collection of ConfigurationMetaData objects (or null if there is none)
+     * @return a PropertyContainerClass object (or null if there is none)
      */
-    public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData();
+    public PropertyContainerClass getConfigurationClass();
 
     /**
      * Indicates whether this device can provide telemetry data.

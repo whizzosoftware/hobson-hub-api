@@ -7,7 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
-import com.whizzosoftware.hobson.api.config.Configuration;
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
 
 public class MockAbstractHobsonPlugin extends AbstractHobsonPlugin {
     private String name;
@@ -18,7 +18,7 @@ public class MockAbstractHobsonPlugin extends AbstractHobsonPlugin {
     }
 
     @Override
-    public void onStartup(Configuration config) {
+    public void onStartup(PropertyContainer config) {
 
     }
 
@@ -38,7 +38,7 @@ public class MockAbstractHobsonPlugin extends AbstractHobsonPlugin {
     }
 
     @Override
-    public void onPluginConfigurationUpdate(Configuration config) {
+    public void onPluginConfigurationUpdate(PropertyContainer config) {
 
     }
 

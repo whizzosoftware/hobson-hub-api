@@ -10,7 +10,6 @@ package com.whizzosoftware.hobson.api.plugin;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.TypedProperty;
-import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
 import com.whizzosoftware.hobson.api.disco.DiscoManager;
@@ -97,11 +96,10 @@ public interface HobsonPluginRuntime extends EventListener {
 
     /**
      * Called when the plugin device's configuration has changed.
-     *
-     * @param ctx the context of the device that owns the configuration
+     *  @param ctx the context of the device that owns the configuration
      * @param config the new configuration
      */
-    public void onDeviceConfigurationUpdate(DeviceContext ctx, Configuration config);
+    public void onDeviceConfigurationUpdate(DeviceContext ctx, PropertyContainer config);
 
     /**
      * Called when a condition that a plugin published needs to be evaluated.
@@ -124,7 +122,7 @@ public interface HobsonPluginRuntime extends EventListener {
      *
      * @param config the new configuration
      */
-    public void onPluginConfigurationUpdate(Configuration config);
+    public void onPluginConfigurationUpdate(PropertyContainer config);
 
     /**
      * Callback that gives a plugin the opportunity to perform work. This will be called every
@@ -146,7 +144,7 @@ public interface HobsonPluginRuntime extends EventListener {
      *
      * @param config the plugin configuration
      */
-    public void onStartup(Configuration config);
+    public void onStartup(PropertyContainer config);
 
     /**
      * Callback method invoked when the plugin shuts down.

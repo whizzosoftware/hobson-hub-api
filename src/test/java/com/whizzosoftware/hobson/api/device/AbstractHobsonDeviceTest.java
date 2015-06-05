@@ -8,11 +8,10 @@
 package com.whizzosoftware.hobson.api.device;
 
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
-import com.whizzosoftware.hobson.api.config.Configuration;
-import com.whizzosoftware.hobson.api.config.ConfigurationProperty;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.MockAbstractHobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.manager.MockVariableManager;
@@ -57,7 +56,7 @@ public class AbstractHobsonDeviceTest {
         d.setDefaultName("deviceName");
 
         assertFalse(d.wasStartupCalled);
-        d.onStartup(new Configuration());
+        d.onStartup(new PropertyContainer());
         assertTrue(d.wasStartupCalled);
     }
 
@@ -74,9 +73,9 @@ public class AbstractHobsonDeviceTest {
     public void testGetConfigurationMetaHasNameByDefault() {
         HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
-        assertNotNull(d.getConfigurationPropertyMetaData());
-        assertEquals(1, d.getConfigurationPropertyMetaData().size());
-        assertEquals("name", d.getConfigurationPropertyMetaData().iterator().next().getId());
+        assertNotNull(d.getConfigurationClass());
+        assertEquals(1, d.getConfigurationClass().getSupportedProperties().size());
+        assertEquals("name", d.getConfigurationClass().getSupportedProperties().get(0).getId());
     }
 
     @Test
@@ -94,8 +93,8 @@ public class AbstractHobsonDeviceTest {
         HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         assertEquals("did", d.getName());
-        Configuration config = new Configuration();
-        config.addProperty(ConfigurationProperty.create("name", "foo"));
+        PropertyContainer config = new PropertyContainer();
+        config.setPropertyValue("name", "foo");
         d.onDeviceConfigurationUpdate(config);
         assertEquals("foo", d.getName());
     }

@@ -7,14 +7,13 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device;
 
-import com.whizzosoftware.hobson.api.config.Configuration;
-import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
+import com.whizzosoftware.hobson.api.property.TypedProperty;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -29,7 +28,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     private String name;
     private String defaultName;
     private DeviceError deviceError;
-    private final List<ConfigurationPropertyMetaData> configMeta = new ArrayList<>();
+    private final PropertyContainerClass configClass = new PropertyContainerClass();
 
     /**
      * Constructor.
@@ -42,13 +41,13 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
         this.ctx = DeviceContext.create(plugin.getContext(), id);
 
         // register this device's "name" configuration property
-        configMeta.add(new ConfigurationPropertyMetaData("name", "Name", "A descriptive name for this device", ConfigurationPropertyMetaData.Type.STRING));
+        configClass.addSupportedProperty(new TypedProperty("name", "Name", "A descriptive name for this device", TypedProperty.Type.STRING));
 
         // register any additional configuration metadata
-        ConfigurationPropertyMetaData[] mds = createConfigurationPropertyMetaData();
+        TypedProperty[] mds = createConfigurationPropertyMetaData();
         if (mds != null) {
-            for (ConfigurationPropertyMetaData md : mds) {
-                configMeta.add(md);
+            for (TypedProperty md : mds) {
+                configClass.addSupportedProperty(md);
             }
         }
     }
@@ -78,13 +77,18 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     }
 
     @Override
+    public boolean hasPreferredVariableName() {
+        return (getPreferredVariableName() != null);
+    }
+
+    @Override
     public String getPreferredVariableName() {
         return null;
     }
 
     @Override
-    public Collection<ConfigurationPropertyMetaData> getConfigurationPropertyMetaData() {
-        return configMeta;
+    public PropertyContainerClass getConfigurationClass() {
+        return configClass;
     }
 
     @Override
@@ -108,7 +112,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     }
 
     @Override
-    public void onDeviceConfigurationUpdate(Configuration config) {
+    public void onDeviceConfigurationUpdate(PropertyContainer config) {
         if (config != null) {
             String s = (String)config.getPropertyValue("name");
             if (s != null) {
@@ -205,9 +209,9 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     /**
      * Returns device-specific configuration property meda data.
      *
-     * @return an Array of ConfigurationPropertyMetaData (or null if there is none)
+     * @return an Array of TypedProperty objects (or null if there is none)
      */
-    abstract protected ConfigurationPropertyMetaData[] createConfigurationPropertyMetaData();
+    abstract protected TypedProperty[] createConfigurationPropertyMetaData();
 
     public String toString() {
         return getName();

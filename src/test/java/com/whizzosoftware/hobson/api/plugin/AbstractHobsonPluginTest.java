@@ -8,12 +8,12 @@
 package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
-import com.whizzosoftware.hobson.api.config.Configuration;
-import com.whizzosoftware.hobson.api.config.ConfigurationPropertyMetaData;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.MockAbstractHobsonDevice;
 import com.whizzosoftware.hobson.api.device.MockDeviceManager;
 import com.whizzosoftware.hobson.api.hub.HubContext;
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.property.TypedProperty;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.manager.MockVariableManager;
@@ -49,17 +49,17 @@ public class AbstractHobsonPluginTest {
     @Test
     public void testGetConfigurationMetaData() {
         MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-        assertNotNull(plugin.getConfigurationPropertyMetaData());
-        assertEquals(0, plugin.getConfigurationPropertyMetaData().size());
-        plugin.addConfigurationPropertyMetaData(new ConfigurationPropertyMetaData("id", "name", "desc", ConfigurationPropertyMetaData.Type.STRING));
-        assertEquals(1, plugin.getConfigurationPropertyMetaData().size());
+        assertNotNull(plugin.getConfigurationClass());
+        assertFalse(plugin.getConfigurationClass().hasSupportedProperties());
+        plugin.addSupportedProperty(new TypedProperty("id", "name", "desc", TypedProperty.Type.STRING));
+        assertEquals(1, plugin.getConfigurationClass().getSupportedProperties().size());
     }
 
     @Test
     public void testIsConfigurable() {
         MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
         assertFalse(plugin.isConfigurable());
-        plugin.addConfigurationPropertyMetaData(new ConfigurationPropertyMetaData("id", "name", "desc", ConfigurationPropertyMetaData.Type.STRING));
+        plugin.addSupportedProperty(new TypedProperty("id", "name", "desc", TypedProperty.Type.STRING));
         assertTrue(plugin.isConfigurable());
     }
 
@@ -137,7 +137,7 @@ public class AbstractHobsonPluginTest {
     public void testOnDeviceConfigurationUpdateWithNoDeviceManager() {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.onDeviceConfigurationUpdate(DeviceContext.create(plugin.getContext(), "id"), new Configuration());
+            plugin.onDeviceConfigurationUpdate(DeviceContext.create(plugin.getContext(), "id"), new PropertyContainer());
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }

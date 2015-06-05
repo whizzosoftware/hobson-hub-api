@@ -8,9 +8,9 @@
 package com.whizzosoftware.hobson.api.plugin.channel;
 
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
-import com.whizzosoftware.hobson.api.config.Configuration;
 import com.whizzosoftware.hobson.api.plugin.AbstractHobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.PluginStatus;
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -50,7 +50,7 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
     }
 
     @Override
-    public void onStartup(Configuration config) {
+    public void onStartup(PropertyContainer config) {
         if (processConfig(config)) {
             connectionEventLoopGroup = createEventLoopGroup();
             attemptConnect();
@@ -58,7 +58,7 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
     }
 
     @Override
-    public void onPluginConfigurationUpdate(Configuration config) {
+    public void onPluginConfigurationUpdate(PropertyContainer config) {
         if (processConfig(config)) {
             connectionEventLoopGroup = createEventLoopGroup();
             attemptConnect();
@@ -168,7 +168,7 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
      */
     abstract protected void onChannelDisconnected();
 
-    private boolean processConfig(Configuration config) {
+    private boolean processConfig(PropertyContainer config) {
         boolean didConfigChange = false;
 
         if (config != null) {
