@@ -36,6 +36,7 @@ public class MockAbstractHobsonDevice extends AbstractHobsonDevice {
 
     @Override
     public void onStartup(PropertyContainer config) {
+        super.onStartup(config);
         wasStartupCalled = true;
     }
 

@@ -53,6 +53,13 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     }
 
     @Override
+    public void onStartup(PropertyContainer config) {
+        if (config != null && config.hasPropertyValue("name")) {
+            this.name = config.getPropertyValue("name").toString();
+        }
+    }
+
+    @Override
     public DeviceContext getContext() {
         return ctx;
     }

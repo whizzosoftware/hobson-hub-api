@@ -70,7 +70,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     /*
      * HobsonPlugin methods
      */
-
     @Override
     public PluginContext getContext() {
         return ctx;
@@ -389,7 +388,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         executeInEventLoop(new Runnable() {
             @Override
             public void run() {
-                discoManager.requestDeviceAdvertisementSnapshot(getContext(), protocolId);
+            discoManager.requestDeviceAdvertisementSnapshot(getContext(), protocolId);
             }
         });
     }

@@ -24,6 +24,10 @@ public class PropertyContainer {
 
     public PropertyContainer() {}
 
+    public PropertyContainer(Map<String,Object> propertyValues) {
+        this(null, null, null, propertyValues);
+    }
+
     public PropertyContainer(PropertyContainerClassContext containerClassContext, Map<String,Object> propertyValues) {
         this(null, null, containerClassContext, propertyValues);
     }
@@ -68,11 +72,11 @@ public class PropertyContainer {
     }
 
     public boolean hasPropertyValue(String name) {
-        return propertyValues.containsKey(name);
+        return propertyValues != null && propertyValues.containsKey(name);
     }
 
     public Object getPropertyValue(String name) {
-        return propertyValues.get(name);
+        return propertyValues != null ? propertyValues.get(name) : null;
     }
 
     public boolean getBooleanPropertyValue(String name) {
