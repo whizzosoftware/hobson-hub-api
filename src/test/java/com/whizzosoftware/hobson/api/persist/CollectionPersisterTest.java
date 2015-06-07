@@ -114,7 +114,7 @@ public class CollectionPersisterTest {
 
     public class MockTaskManager implements TaskManager {
         @Override
-        public void createTask(HubContext ctx, String name, PropertyContainerSet conditionSet, PropertyContainerSet actionSet) {
+        public void createTask(HubContext ctx, String name, String description, PropertyContainerSet conditionSet, PropertyContainerSet actionSet) {
 
         }
 
@@ -214,7 +214,11 @@ public class CollectionPersisterTest {
         }
 
         @Override
-        public void updateTask(TaskContext ctx, String name, PropertyContainerSet conditionSet, PropertyContainerSet actionSet) {
+        public void unpublishTask(TaskContext ctx) {
+        }
+
+        @Override
+        public void updateTask(TaskContext ctx, String name, String description, PropertyContainerSet conditionSet, PropertyContainerSet actionSet) {
 
         }
     }

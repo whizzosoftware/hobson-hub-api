@@ -23,13 +23,13 @@ import java.util.List;
 public interface TaskManager {
     /**
      * Creates a new task in the system. This is called (e.g. by the REST API) when a request is received to add a new task.
-     *
      * @param ctx the hub context
      * @param name the task name
+     * @param description the task description
      * @param conditionSet the task's condition set -- its primary condition will determine which plugin is used to create the task
      * @param actionSet the task's action set
      */
-    public void createTask(HubContext ctx, String name, PropertyContainerSet conditionSet, PropertyContainerSet actionSet);
+    public void createTask(HubContext ctx, String name, String description, PropertyContainerSet conditionSet, PropertyContainerSet actionSet);
 
     /**
      * Deletes a previously added task.
@@ -204,12 +204,19 @@ public interface TaskManager {
     public void unpublishAllTasks(PluginContext ctx);
 
     /**
-     * Updates an existing task.
+     * Unpublish a task.
      *
-     * @param ctx the context of the task to update
+     * @param ctx the task context
+     */
+    public void unpublishTask(TaskContext ctx);
+
+    /**
+     * Updates an existing task.
+     *  @param ctx the context of the task to update
      * @param name the new task name
+     * @param description the description of the new task
      * @param conditionSet a
      * @param actionSet b
      */
-    public void updateTask(TaskContext ctx, String name, PropertyContainerSet conditionSet, PropertyContainerSet actionSet);
+    public void updateTask(TaskContext ctx, String name, String description, PropertyContainerSet conditionSet, PropertyContainerSet actionSet);
 }

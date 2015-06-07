@@ -17,22 +17,22 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
 public interface TaskProvider {
     /**
      * Callback for a new task creation request.
-     *
-     * @param name the name of the new task
+     *  @param name the name of the new task
+     * @param description
      * @param conditionSet conditions that must evaluate to true for the task to execute
      * @param actionSet the action set to execute when the task runs
      */
-    public void onCreateTask(String name, PropertyContainerSet conditionSet, PropertyContainerSet actionSet);
+    public void onCreateTask(String name, String description, PropertyContainerSet conditionSet, PropertyContainerSet actionSet);
 
     /**
      * Callback for a task update request.
-     *
-     * @param ctx the context of the task to update
+     *  @param ctx the context of the task to update
      * @param name the name of the new task
+     * @param description
      * @param conditionSet conditions that must evaluate to true for the task to execute
      * @param actionSet the action set to execute when the task runs
      */
-    public void onUpdateTask(TaskContext ctx, String name, PropertyContainerSet conditionSet, PropertyContainerSet actionSet);
+    public void onUpdateTask(TaskContext ctx, String name, String description, PropertyContainerSet conditionSet, PropertyContainerSet actionSet);
 
     /**
      * Callback for a task deletion request.
