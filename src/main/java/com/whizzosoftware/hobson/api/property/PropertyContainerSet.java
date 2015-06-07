@@ -24,6 +24,10 @@ public class PropertyContainerSet {
     public PropertyContainerSet() {
     }
 
+    public PropertyContainerSet(String id) {
+        this(id, null, null, null);
+    }
+
     public PropertyContainerSet(String id, List<PropertyContainer> properties) {
         this(id, null, null, properties);
     }
@@ -79,7 +83,7 @@ public class PropertyContainerSet {
         return (properties != null && properties.size() > 0);
     }
 
-    public List<? extends PropertyContainer> getProperties() {
+    public List<PropertyContainer> getProperties() {
         return properties;
     }
 

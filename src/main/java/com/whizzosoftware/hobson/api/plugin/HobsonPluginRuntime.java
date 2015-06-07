@@ -17,6 +17,7 @@ import com.whizzosoftware.hobson.api.event.EventListener;
 import com.whizzosoftware.hobson.api.event.EventManager;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.hub.HubManager;
+import com.whizzosoftware.hobson.api.task.TaskActionClass;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
@@ -154,11 +155,9 @@ public interface HobsonPluginRuntime extends EventListener {
     /**
      * Publish an action class.
      *
-     * @param context a
-     * @param name b
-     * @param properties c
+     * @param actionClass the action class to publish
      */
-    public void publishActionClass(PropertyContainerClassContext context, String name, List<TypedProperty> properties);
+    public void publishActionClass(TaskActionClass actionClass);
 
     /**
      * Publish a condition class.

@@ -24,11 +24,12 @@ public interface TaskManager {
     /**
      * Creates a new task in the system. This is called (e.g. by the REST API) when a request is received to add a new task.
      *
+     * @param ctx the hub context
      * @param name the task name
      * @param conditionSet the task's condition set -- its primary condition will determine which plugin is used to create the task
      * @param actionSet the task's action set
      */
-    public void createTask(String name, PropertyContainerSet conditionSet, PropertyContainerSet actionSet);
+    public void createTask(HubContext ctx, String name, PropertyContainerSet conditionSet, PropertyContainerSet actionSet);
 
     /**
      * Deletes a previously added task.

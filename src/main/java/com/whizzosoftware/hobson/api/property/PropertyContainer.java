@@ -43,6 +43,10 @@ public class PropertyContainer {
         this.propertyValues = propertyValues;
     }
 
+    public boolean hasId() {
+        return (id != null);
+    }
+
     public String getId() {
         return id;
     }

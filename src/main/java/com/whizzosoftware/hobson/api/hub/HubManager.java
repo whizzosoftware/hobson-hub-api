@@ -9,6 +9,8 @@ package com.whizzosoftware.hobson.api.hub;
 
 import com.whizzosoftware.hobson.api.config.EmailConfiguration;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 
 import java.util.Collection;
 
@@ -78,6 +80,15 @@ public interface HubManager {
      * @return a PropertyContainer instance containing the configuration
      */
     public PropertyContainer getConfiguration(HubContext ctx);
+
+    /**
+     * Returns a published container class.
+     *
+     * @param ctx the context of the container class to return
+     *
+     * @return a PropertyContainerClass instance
+     */
+    public PropertyContainerClass getContainerClass(PropertyContainerClassContext ctx);
 
     /**
      * Returns content from the Hub log.

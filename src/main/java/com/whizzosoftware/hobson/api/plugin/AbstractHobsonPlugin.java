@@ -21,6 +21,7 @@ import com.whizzosoftware.hobson.api.event.*;
 import com.whizzosoftware.hobson.api.hub.HobsonHub;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.hub.HubManager;
+import com.whizzosoftware.hobson.api.task.TaskActionClass;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
@@ -32,9 +33,7 @@ import io.netty.channel.local.LocalEventLoopGroup;
 import io.netty.util.concurrent.Future;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,6 +56,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     private PluginStatus status = PluginStatus.initializing();
     private final PropertyContainerClass configClass = new PropertyContainerClass();
     private EventLoopGroup eventLoop;
+    private final Map<PropertyContainerClassContext,TaskActionClass> actionClasses = new HashMap<>();
 
     public AbstractHobsonPlugin(String pluginId) {
         this(pluginId, new LocalEventLoopGroup(1));
@@ -167,8 +167,16 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public void onExecuteAction(PropertyContainer action) {
-        // should be overriden by sub-classes
+    public void onExecuteAction(final PropertyContainer action) {
+        final TaskActionClass tac = actionClasses.get(action.getContainerClassContext());
+        if (tac != null) {
+            submitInEventLoop(new Runnable() {
+                @Override
+                public void run() {
+                    tac.getExecutor().executeAction(action);
+                }
+            });
+        }
     }
 
     @Override
@@ -193,9 +201,10 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public void publishActionClass(PropertyContainerClassContext ctx, String name, List<TypedProperty> properties) {
+    public void publishActionClass(TaskActionClass actionClass) {
         validateTaskManager();
-        taskManager.publishActionClass(ctx, name, properties);
+        taskManager.publishActionClass(actionClass.getContext(), actionClass.getName(), actionClass.getProperties());
+        actionClasses.put(actionClass.getContext(), actionClass);
     }
 
     @Override
@@ -483,6 +492,10 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
 
     protected DeviceManager getDeviceManager() {
         return deviceManager;
+    }
+
+    protected HubManager getHubManager() {
+        return hubManager;
     }
 
     protected VariableManager getVariableManager() {

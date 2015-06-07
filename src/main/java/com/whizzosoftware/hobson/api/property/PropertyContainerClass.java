@@ -64,6 +64,17 @@ public class PropertyContainerClass {
         return supportedProperties;
     }
 
+    public TypedProperty getSupportedProperty(String id) {
+        if (supportedProperties != null) {
+            for (TypedProperty tp : supportedProperties) {
+                if (tp.getId() != null && tp.getId().equals(id)) {
+                    return tp;
+                }
+            }
+        }
+        return null;
+    }
+
     public void setSupportedProperties(List<TypedProperty> supportedProperties) {
         this.supportedProperties = supportedProperties;
     }
