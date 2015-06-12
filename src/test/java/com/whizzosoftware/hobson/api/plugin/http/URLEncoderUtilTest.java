@@ -21,6 +21,7 @@ public class URLEncoderUtilTest {
         assertEquals("p1=val1", URLEncoderUtil.createQueryString(map, URLEncoderUtil.DEFAULT_ENCODING));
 
         map.put("p2", "val2");
-        assertEquals("p1=val1&p2=val2", URLEncoderUtil.createQueryString(map, URLEncoderUtil.DEFAULT_ENCODING));
+        String s = URLEncoderUtil.createQueryString(map, URLEncoderUtil.DEFAULT_ENCODING);
+        assertTrue("p1=val1&p2=val2".equals(s) || "p2=val2&p1=val1".equals(s));
     }
 }
