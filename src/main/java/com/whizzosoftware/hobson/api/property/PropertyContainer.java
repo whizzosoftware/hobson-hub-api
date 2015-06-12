@@ -83,6 +83,16 @@ public class PropertyContainer {
         return propertyValues != null ? propertyValues.get(name) : null;
     }
 
+    public String getStringPropertyValue(String name) {
+        if (propertyValues != null) {
+            Object o = propertyValues.get(name);
+            if (o != null) {
+                return o.toString();
+            }
+        }
+        return null;
+    }
+
     public boolean getBooleanPropertyValue(String name) {
         if (propertyValues != null) {
             Object o = propertyValues.get(name);
