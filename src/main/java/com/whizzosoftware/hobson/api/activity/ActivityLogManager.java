@@ -17,5 +17,12 @@ import java.util.List;
  * @since hobson-hub-api 0.1.6
  */
 public interface ActivityLogManager {
+    /**
+     * Returns entries from the activity log.
+     *
+     * @param entryCount the number of entries to return (starting from the end of the file)
+     *
+     * @return a List of ActivityLogEntry instances
+     */
     public List<ActivityLogEntry> getActivityLog(long entryCount);
 }

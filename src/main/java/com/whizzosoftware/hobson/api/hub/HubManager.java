@@ -7,7 +7,6 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.hub;
 
-import com.whizzosoftware.hobson.api.config.EmailConfiguration;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
@@ -117,7 +116,7 @@ public interface HubManager {
      *
      * @throws com.whizzosoftware.hobson.api.HobsonInvalidRequestException if the e-mail configuration is invalid
      */
-    public void sendTestEmail(HubContext ctx, EmailConfiguration config);
+    public void sendTestEmail(HubContext ctx, PropertyContainer config);
 
     /**
      * Sends an e-mail message using the provided e-mail configuration.

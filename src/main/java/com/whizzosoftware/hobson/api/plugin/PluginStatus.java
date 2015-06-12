@@ -13,26 +13,26 @@ package com.whizzosoftware.hobson.api.plugin;
  * @author Dan Noguerol
  */
 public class PluginStatus {
-    private Status status;
+    private Code code;
     private String message;
 
     /**
      * Constructor.
      *
-     * @param status the plugin status
+     * @param code the plugin status
      */
-    public PluginStatus(Status status) {
-        this(status, null);
+    public PluginStatus(Code code) {
+        this(code, null);
     }
 
     /**
      * Constructor.
      *
-     * @param status the plugin status
+     * @param code the plugin status
      * @param message a message associated with the plugin status
      */
-    public PluginStatus(Status status, String message) {
-        this.status = status;
+    public PluginStatus(Code code, String message) {
+        this.code = code;
         this.message = message;
     }
 
@@ -43,7 +43,7 @@ public class PluginStatus {
      * @param message a message associated with the plugin status
      */
     public PluginStatus(String status, String message) {
-        this.status = Status.valueOf(status.toUpperCase());
+        this.code = Code.valueOf(status.toUpperCase());
         this.message = message;
     }
 
@@ -52,8 +52,8 @@ public class PluginStatus {
      *
      * @return a Status
      */
-    public Status getStatus() {
-        return status;
+    public Code getCode() {
+        return code;
     }
 
     /**
@@ -66,50 +66,50 @@ public class PluginStatus {
     }
 
     public String toString() {
-        return this.status.name();
+        return this.code.name();
     }
 
     public static PluginStatus notInstalled() {
-        return new PluginStatus(Status.NOT_INSTALLED);
+        return new PluginStatus(Code.NOT_INSTALLED);
     }
 
     public static PluginStatus notInstalled(String message) {
-        return new PluginStatus(Status.NOT_INSTALLED, message);
+        return new PluginStatus(Code.NOT_INSTALLED, message);
     }
 
     public static PluginStatus stopped() {
-        return new PluginStatus(Status.STOPPED);
+        return new PluginStatus(Code.STOPPED);
     }
 
     public static PluginStatus stopped(String message) {
-        return new PluginStatus(Status.STOPPED, message);
+        return new PluginStatus(Code.STOPPED, message);
     }
 
     public static PluginStatus initializing() {
-        return new PluginStatus(Status.INITIALIZING);
+        return new PluginStatus(Code.INITIALIZING);
     }
 
     public static PluginStatus notConfigured(String message) {
-        return new PluginStatus(Status.NOT_CONFIGURED, message);
+        return new PluginStatus(Code.NOT_CONFIGURED, message);
     }
 
     public static PluginStatus failed(String message) {
-        return new PluginStatus(Status.FAILED, message);
+        return new PluginStatus(Code.FAILED, message);
     }
 
     public static PluginStatus running() {
-        return new PluginStatus(Status.RUNNING);
+        return new PluginStatus(Code.RUNNING);
     }
 
     public static PluginStatus configChange() {
-        return new PluginStatus(Status.CONFIG_CHANGE);
+        return new PluginStatus(Code.CONFIG_CHANGE);
     }
 
     public static PluginStatus stopping() {
-        return new PluginStatus(Status.STOPPING);
+        return new PluginStatus(Code.STOPPING);
     }
 
-    public enum Status {
+    public enum Code {
         /**
          * The plugin is not installed.
          */

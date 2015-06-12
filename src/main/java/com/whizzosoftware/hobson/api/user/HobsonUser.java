@@ -19,6 +19,10 @@ public class HobsonUser {
     private String email;
     private UserRemoteInfo remoteInfo;
 
+    public HobsonUser(String id) {
+        this.id = id;
+    }
+
     public String getId() {
         return id;
     }
@@ -48,11 +52,10 @@ public class HobsonUser {
     }
 
     public static class Builder {
-        private HobsonUser user = new HobsonUser();
+        private HobsonUser user;
 
-        public Builder id(String id) {
-            user.id = id;
-            return this;
+        public Builder(String id) {
+            user = new HobsonUser(id);
         }
 
         public Builder firstName(String firstName) {

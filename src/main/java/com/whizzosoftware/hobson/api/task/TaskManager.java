@@ -44,7 +44,7 @@ public interface TaskManager {
      * Executes an action set.
      *
      * @param ctx the context of the action set
-     * @param actionSetId a
+     * @param actionSetId the action set ID
      *
      * @since hobson-hub-api 0.5.0
      */
@@ -70,7 +70,7 @@ public interface TaskManager {
      * Returns a published action set.
      *
      * @param ctx the context of the action set
-     * @param actionSetId a
+     * @param actionSetId the action set ID
      *
      * @return a HobsonActionSet instance (or null if not found)
      *
@@ -141,9 +141,9 @@ public interface TaskManager {
     /**
      * Publish an action class.
      *
-     * @param context a
-     * @param name b
-     * @param properties c
+     * @param context the action class context
+     * @param name the action class name
+     * @param properties the list of supported properties
      */
     public void publishActionClass(PropertyContainerClassContext context, String name, List<TypedProperty> properties);
 
@@ -163,8 +163,9 @@ public interface TaskManager {
     /**
      * Publishes a condition class.
      *
-     * @param name a
-     * @param properties b
+     * @param ctx the condition class context
+     * @param name the name of the condition class
+     * @param properties a list of supported properties
      */
     public void publishConditionClass(PropertyContainerClassContext ctx, String name, List<TypedProperty> properties);
 
@@ -212,11 +213,12 @@ public interface TaskManager {
 
     /**
      * Updates an existing task.
-     *  @param ctx the context of the task to update
+     *
+     * @param ctx the context of the task to update
      * @param name the new task name
      * @param description the description of the new task
-     * @param conditionSet a
-     * @param actionSet b
+     * @param conditionSet the task's condition set
+     * @param actionSet  the task's action set
      */
     public void updateTask(TaskContext ctx, String name, String description, PropertyContainerSet conditionSet, PropertyContainerSet actionSet);
 }

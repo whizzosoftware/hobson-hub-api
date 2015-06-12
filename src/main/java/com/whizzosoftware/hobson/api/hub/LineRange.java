@@ -8,7 +8,7 @@
 package com.whizzosoftware.hobson.api.hub;
 
 /**
- * Represents a range of lines.
+ * Represents a range of lines (e.g. in a log file).
  *
  * @author Dan Noguerol
  */

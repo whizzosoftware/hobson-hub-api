@@ -17,8 +17,9 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
 public interface TaskProvider {
     /**
      * Callback for a new task creation request.
-     *  @param name the name of the new task
-     * @param description
+     *
+     * @param name the name of the new task
+     * @param description the task description
      * @param conditionSet conditions that must evaluate to true for the task to execute
      * @param actionSet the action set to execute when the task runs
      */
@@ -26,9 +27,10 @@ public interface TaskProvider {
 
     /**
      * Callback for a task update request.
-     *  @param ctx the context of the task to update
+     *
+     * @param ctx the context of the task to update
      * @param name the name of the new task
-     * @param description
+     * @param description the task description
      * @param conditionSet conditions that must evaluate to true for the task to execute
      * @param actionSet the action set to execute when the task runs
      */

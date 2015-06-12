@@ -1,0 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2015 Whizzo Software, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+package com.whizzosoftware.hobson.api.hub;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class HobsonHubTest {
+    @Test
+    public void testBuilder() {
+        HobsonHub h = new HobsonHub.Builder(HubContext.createLocal()).name("name").version("version").build();
+        assertEquals("local", h.getContext().getHubId());
+        assertEquals("local", h.getContext().getUserId());
+        assertEquals("name", h.getName());
+        assertEquals("version", h.getVersion());
+    }
+}
