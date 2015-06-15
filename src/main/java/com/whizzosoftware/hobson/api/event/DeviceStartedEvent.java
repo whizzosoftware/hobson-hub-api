@@ -21,12 +21,12 @@ public class DeviceStartedEvent extends HobsonEvent {
     public static final String PROP_DEVICE = "device";
 
     public DeviceStartedEvent(long timestamp, HobsonDevice device) {
-        super(timestamp, EventTopics.DEVICES_TOPIC, ID);
+        super(timestamp, EventTopics.STATE_TOPIC, ID);
         setProperty(PROP_DEVICE, device);
     }
 
     public DeviceStartedEvent(Map<String,Object> properties) {
-        super(EventTopics.DEVICES_TOPIC, properties);
+        super(EventTopics.STATE_TOPIC, properties);
     }
 
     public HobsonDevice getDevice() {

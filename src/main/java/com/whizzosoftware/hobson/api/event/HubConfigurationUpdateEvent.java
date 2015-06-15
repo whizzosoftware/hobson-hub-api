@@ -18,10 +18,10 @@ public class HubConfigurationUpdateEvent extends HobsonEvent {
     public static final String ID = "hubConfigurationUpdate";
 
     public HubConfigurationUpdateEvent(long timestamp) {
-        super(timestamp, EventTopics.CONFIG_TOPIC, ID);
+        super(timestamp, EventTopics.STATE_TOPIC, ID);
     }
 
     public HubConfigurationUpdateEvent(Map<String,Object> props) {
-        super(EventTopics.CONFIG_TOPIC, props);
+        super(EventTopics.STATE_TOPIC, props);
     }
 }

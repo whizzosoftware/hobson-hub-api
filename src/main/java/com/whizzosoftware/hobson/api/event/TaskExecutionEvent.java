@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event;
 
+import java.util.Map;
+
 /**
  * Event that occurs when a task is executed.
  *
@@ -24,6 +26,10 @@ public class TaskExecutionEvent extends HobsonEvent {
         if (error != null) {
             setProperty(PROP_ERROR, error);
         }
+    }
+
+    public TaskExecutionEvent(Map<String,Object> properties) {
+        super(EventTopics.STATE_TOPIC, properties);
     }
 
     public String getName() {

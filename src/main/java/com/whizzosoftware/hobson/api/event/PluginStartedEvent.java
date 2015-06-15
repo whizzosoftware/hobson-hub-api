@@ -21,12 +21,12 @@ public class PluginStartedEvent extends HobsonEvent {
     public static final String PROP_PLUGIN_ID = "pluginId";
 
     public PluginStartedEvent(long timestamp, PluginContext ctx) {
-        super(timestamp, EventTopics.PLUGINS_TOPIC, ID);
+        super(timestamp, EventTopics.STATE_TOPIC, ID);
         setProperty(PROP_PLUGIN_ID, ctx.getPluginId());
     }
 
     public PluginStartedEvent(Map<String,Object> properties) {
-        super(EventTopics.PLUGINS_TOPIC, properties);
+        super(EventTopics.STATE_TOPIC, properties);
     }
 
     public String getPluginId() {

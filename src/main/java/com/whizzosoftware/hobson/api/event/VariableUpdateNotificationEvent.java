@@ -23,7 +23,7 @@ public class VariableUpdateNotificationEvent extends HobsonEvent {
     public static final String PROP_UPDATES = "updates";
 
     public VariableUpdateNotificationEvent(long timestamp, VariableUpdate update) {
-        super(timestamp, EventTopics.VARIABLES_TOPIC, ID);
+        super(timestamp, EventTopics.STATE_TOPIC, ID);
 
         List<VariableUpdate> updates = new ArrayList<>();
         updates.add(update);
@@ -31,13 +31,13 @@ public class VariableUpdateNotificationEvent extends HobsonEvent {
     }
 
     public VariableUpdateNotificationEvent(long timestamp, List<VariableUpdate> updates) {
-        super(timestamp, EventTopics.VARIABLES_TOPIC, ID);
+        super(timestamp, EventTopics.STATE_TOPIC, ID);
 
         setProperty(PROP_UPDATES, updates);
     }
 
     public VariableUpdateNotificationEvent(Map<String,Object> properties) {
-        super(EventTopics.VARIABLES_TOPIC, properties);
+        super(EventTopics.STATE_TOPIC, properties);
     }
 
     public List<VariableUpdate> getUpdates() {

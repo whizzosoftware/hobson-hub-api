@@ -24,13 +24,13 @@ public class PluginConfigurationUpdateEvent extends HobsonEvent {
     private static final String PROP_CONFIGURATION = "configuration";
 
     public PluginConfigurationUpdateEvent(long timestamp, PluginContext ctx, PropertyContainer configuration) {
-        super(timestamp, EventTopics.CONFIG_TOPIC, ID);
+        super(timestamp, EventTopics.STATE_TOPIC, ID);
         setProperty(PROP_PLUGIN_ID, ctx.getPluginId());
         setProperty(PROP_CONFIGURATION, configuration);
     }
 
     public PluginConfigurationUpdateEvent(Map<String,Object> props) {
-        super(EventTopics.CONFIG_TOPIC, props);
+        super(EventTopics.STATE_TOPIC, props);
     }
 
     public String getPluginId() {

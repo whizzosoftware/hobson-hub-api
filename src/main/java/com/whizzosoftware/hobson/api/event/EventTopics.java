@@ -13,13 +13,9 @@ package com.whizzosoftware.hobson.api.event;
  * @author Dan Noguerol
  */
 public class EventTopics {
-    public static final String DEVICES_TOPIC = "com/whizzosoftware/hobson/event/devices";
     public static final String STATE_TOPIC = "com/whizzosoftware/hobson/event/state";
-    public static final String PLUGINS_TOPIC = "com/whizzosoftware/hobson/event/plugins";
-    public static final String VARIABLES_TOPIC = "com/whizzosoftware/hobson/event/variables";
     public static final String PRESENCE_TOPIC = "com/whizzosoftware/hobson/event/presence";
     public static final String DISCO_TOPIC = "com/whizzosoftware/hobson/event/disco";
-    public static final String CONFIG_TOPIC = "com/whizzosoftware/hobson/event/config";
 
     /**
      * Creates a protocol-specific discovery topic name that can be used to listen for DeviceAdvertisementEvents.
