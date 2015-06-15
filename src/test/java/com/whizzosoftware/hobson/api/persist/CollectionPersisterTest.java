@@ -221,6 +221,11 @@ public class CollectionPersisterTest {
         public void updateTask(TaskContext ctx, String name, String description, PropertyContainerSet conditionSet, PropertyContainerSet actionSet) {
 
         }
+
+        @Override
+        public void fireTaskExecutionEvent(HobsonTask task, long time, Throwable error) {
+
+        }
     }
 
 }

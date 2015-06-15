@@ -16,14 +16,25 @@ public class TaskExecutionEvent extends HobsonEvent {
     public static final String ID = "taskExecute";
 
     private static final String PROP_NAME = "name";
+    private static final String PROP_ERROR = "error";
 
-    public TaskExecutionEvent(long timestamp, String name) {
+    public TaskExecutionEvent(long timestamp, String name, Throwable error) {
         super(timestamp, EventTopics.STATE_TOPIC, ID);
-
         setProperty(PROP_NAME, name);
+        if (error != null) {
+            setProperty(PROP_ERROR, error);
+        }
     }
 
     public String getName() {
         return (String)getProperty(PROP_NAME);
+    }
+
+    public boolean hasError() {
+        return (getProperty(PROP_ERROR) != null);
+    }
+
+    public Throwable getError() {
+        return (Throwable)getProperty(PROP_ERROR);
     }
 }

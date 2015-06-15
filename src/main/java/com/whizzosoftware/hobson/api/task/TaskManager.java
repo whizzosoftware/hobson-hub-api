@@ -221,4 +221,11 @@ public interface TaskManager {
      * @param actionSet  the task's action set
      */
     public void updateTask(TaskContext ctx, String name, String description, PropertyContainerSet conditionSet, PropertyContainerSet actionSet);
+
+    /**
+     * Provides notification that a task has executed.
+     *
+     * @param task the task that executed
+     */
+    public void fireTaskExecutionEvent(HobsonTask task, long time, Throwable error);
 }
