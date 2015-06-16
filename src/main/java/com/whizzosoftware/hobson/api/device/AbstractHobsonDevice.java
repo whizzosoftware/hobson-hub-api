@@ -169,6 +169,15 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     }
 
     /**
+     * Adds a supported configuration property for the device.
+     *
+     * @param prop the property to add
+     */
+    protected void addSupportedProperty(TypedProperty prop) {
+        configClass.addSupportedProperty(prop);
+    }
+
+    /**
      * Publishes a device variable.
      *
      * @param name the variable name
