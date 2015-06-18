@@ -362,7 +362,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
      */
     protected void setPluginConfigurationProperty(PluginContext ctx, String name, Object value) {
         validatePluginManager();
-        pluginManager.setPluginConfigurationProperty(ctx, name, value);
+        pluginManager.setLocalPluginConfigurationProperty(ctx, name, value);
     }
 
     /**
@@ -421,15 +421,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
      */
     protected boolean hasDevice(DeviceContext ctx) {
         return deviceManager.hasDevice(ctx);
-    }
-
-    /**
-     * Retrieves all local HobsonPlugins that are installed.
-     *
-     * @return a PluginList instance
-     */
-    protected Collection<HobsonPlugin> getAllPlugins() {
-        return pluginManager.getAllPlugins(HubContext.createLocal());
     }
 
     /**

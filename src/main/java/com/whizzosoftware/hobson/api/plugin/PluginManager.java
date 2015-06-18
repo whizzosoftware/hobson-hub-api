@@ -32,22 +32,41 @@ public interface PluginManager {
     public File getDataFile(PluginContext ctx, String filename);
 
     /**
-     * Returns all plugins published by a specific hub.
-     *
-     * @param ctx the context of the target hub
-     *
-     * @return a Collection of HobsonPlugin instances
-     */
-    public Collection<HobsonPlugin> getAllPlugins(HubContext ctx);
-
-    /**
      * Retrieves a specific plugin.
      *
      * @param ctx the context of the target plugin
      *
      * @return a HobsonPlugin instance (or null if not found)
      */
-    public HobsonPlugin getPlugin(PluginContext ctx);
+    public HobsonPlugin getLocalPlugin(PluginContext ctx);
+
+    /**
+     * Returns the plugin level configuration.
+     *
+     * @param ctx the context of the target plugin
+     *
+     * @return a Dictionary (or null if there is no configuration)
+     */
+    public PropertyContainer getLocalPluginConfiguration(PluginContext ctx);
+
+    /**
+     * Returns a plugin level configuration property.
+     *
+     * @param ctx the context of the target plugin
+     * @param name the name of the configuration property
+     *
+     * @return the configuration property value (or null if not set)
+     */
+    public Object getLocalPluginConfigurationProperty(PluginContext ctx, String name);
+
+    /**
+     * Returns a plugin's icon.
+     *
+     * @param ctx the context of the target plugin
+     *
+     * @return an ImageInputStream (or null if the plugin has no icon and no default was found)
+     */
+    public ImageInputStream getLocalPluginIcon(PluginContext ctx);
 
     /**
      * Retrieve descriptors for all locally installed plugins.
@@ -59,6 +78,15 @@ public interface PluginManager {
     public Collection<PluginDescriptor> getLocalPluginDescriptors(HubContext ctx);
 
     /**
+     * Retrieves descriptor for a remotely available plugin.
+     *
+     * @param ctx the context of the plugin
+     * @param version the plugin version
+     * @return
+     */
+    public PluginDescriptor getRemotePluginDescriptor(PluginContext ctx, String version);
+
+    /**
      * Retrieve descriptors for all remotely available plugins.
      *
      * @param ctx the context of the target hub
@@ -68,63 +96,26 @@ public interface PluginManager {
     public Collection<PluginDescriptor> getRemotePluginDescriptors(HubContext ctx);
 
     /**
-     * Returns a plugin's icon.
-     *
-     * @param ctx the context of the target plugin
-     *
-     * @return an ImageInputStream (or null if the plugin has no icon and no default was found)
-     */
-    public ImageInputStream getPluginIcon(PluginContext ctx);
-
-    /**
-     * Returns the plugin level configuration.
-     *
-     * @param ctx the context of the target plugin
-     *
-     * @return a Dictionary (or null if there is no configuration)
-     */
-    public PropertyContainer getPluginConfiguration(PluginContext ctx);
-
-    /**
-     * Returns a plugin level configuration property.
-     *
-     * @param ctx the context of the target plugin
-     * @param name the name of the configuration property
-     *
-     * @return the configuration property value (or null if not set)
-     */
-    public Object getPluginConfigurationProperty(PluginContext ctx, String name);
-
-    /**
-     * Returns the current local version of a plugin.
-     *
-     * @param ctx the context of the target plugin
-     *
-     * @return the current version in x.x.x format
-     */
-    public String getPluginCurrentVersion(PluginContext ctx);
-
-    /**
-     * Publishes a plugin.
-     *
-     * @param plugin the plugin to publish
-     */
-    public void publishPlugin(HobsonPlugin plugin);
-
-    /**
-     * Installs a specific version of a plugin.
+     * Installs a specific version of a remote plugin.
      *
      * @param ctx the context of the target plugin
      * @param pluginVersion the plugin version to install
      */
-    public void installPlugin(PluginContext ctx, String pluginVersion);
+    public void installRemotePlugin(PluginContext ctx, String pluginVersion);
+
+    /**
+     * Reloads the specified plugin.
+     *
+     * @param ctx the context of the target plugin
+     */
+    public void reloadLocalPlugin(PluginContext ctx);
 
     /**
      * Sets the plugin level configuration.
      *  @param ctx the context of the target plugin
      * @param config the plugin configuration
      */
-    public void setPluginConfiguration(PluginContext ctx, PropertyContainer config);
+    public void setLocalPluginConfiguration(PluginContext ctx, PropertyContainer config);
 
     /**
      * Sets an individual plugin level configuration property.
@@ -133,12 +124,5 @@ public interface PluginManager {
      * @param name the configuration property name
      * @param value the configuration property value
      */
-    public void setPluginConfigurationProperty(PluginContext ctx, String name, Object value);
-
-    /**
-     * Reloads the specified plugin.
-     *
-     * @param ctx the context of the target plugin
-     */
-    public void reloadPlugin(PluginContext ctx);
+    public void setLocalPluginConfigurationProperty(PluginContext ctx, String name, Object value);
 }

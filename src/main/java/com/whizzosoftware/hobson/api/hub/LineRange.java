@@ -70,6 +70,10 @@ public class LineRange {
         return endLine;
     }
 
+    public Long getLineCount() {
+        return (startLine != null && endLine != null) ? endLine - startLine : 0;
+    }
+
     public String toString() {
         if (hasStartLine() && hasEndLine()) {
             return "lines=" + getStartLine() + "-" + getEndLine() + "/*";

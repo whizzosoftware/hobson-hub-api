@@ -14,8 +14,8 @@ package com.whizzosoftware.hobson.api.user;
  */
 public class HobsonUser {
     private String id;
-    private String firstName;
-    private String lastName;
+    private String givenName;
+    private String familyName;
     private String email;
     private UserRemoteInfo remoteInfo;
 
@@ -27,12 +27,12 @@ public class HobsonUser {
         return id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getGivenName() {
+        return givenName;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getFamilyName() {
+        return familyName;
     }
 
     public String getEmail() {
@@ -59,12 +59,12 @@ public class HobsonUser {
         }
 
         public Builder firstName(String firstName) {
-            user.firstName = firstName;
+            user.givenName = firstName;
             return this;
         }
 
         public Builder lastName(String lastName) {
-            user.lastName = lastName;
+            user.familyName = lastName;
             return this;
         }
 

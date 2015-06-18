@@ -21,8 +21,8 @@ public class HobsonUserTest {
             .build();
         assertEquals("uid", u.getId());
         assertEquals("email", u.getEmail());
-        assertEquals("name1", u.getFirstName());
-        assertEquals("name2", u.getLastName());
+        assertEquals("name1", u.getGivenName());
+        assertEquals("name2", u.getFamilyName());
         assertNotNull(u.getRemoteInfo());
         assertEquals(5, u.getRemoteInfo().getHubCount());
     }
