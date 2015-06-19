@@ -9,7 +9,6 @@ package com.whizzosoftware.hobson.api.device;
 
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
-import com.whizzosoftware.hobson.api.property.TypedProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,11 +26,6 @@ public class MockAbstractHobsonDevice extends AbstractHobsonDevice {
      */
     public MockAbstractHobsonDevice(HobsonPlugin plugin, String id) {
         super(plugin, id);
-    }
-
-    @Override
-    public TypedProperty[] createConfigurationPropertyMetaData() {
-        return new TypedProperty[0];
     }
 
     @Override

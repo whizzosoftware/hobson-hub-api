@@ -42,14 +42,6 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
 
         // register this device's "name" configuration property
         configClass.addSupportedProperty(new TypedProperty("name", "Name", "A descriptive name for this device", TypedProperty.Type.STRING));
-
-        // register any additional configuration metadata
-        TypedProperty[] mds = createConfigurationPropertyMetaData();
-        if (mds != null) {
-            for (TypedProperty md : mds) {
-                configClass.addSupportedProperty(md);
-            }
-        }
     }
 
     @Override
@@ -221,13 +213,6 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     protected HobsonVariable getVariable(String variableName) {
         return getPlugin().getRuntime().getDeviceVariable(getContext(), variableName);
     }
-
-    /**
-     * Returns device-specific configuration property meda data.
-     *
-     * @return an Array of TypedProperty objects (or null if there is none)
-     */
-    abstract protected TypedProperty[] createConfigurationPropertyMetaData();
 
     public String toString() {
         return getName();
