@@ -21,10 +21,10 @@ public class VariableConstants {
     public static final String ON = "on";
     public static final String TARGET_TEMP_C = "targetTempC";
     public static final String TARGET_TEMP_F = "targetTempF";
-    public static final String TARGET_HEAT_TEMP_C = "targetTempHeatC";
-    public static final String TARGET_HEAT_TEMP_F = "targetTempHeatF";
-    public static final String TARGET_COOL_TEMP_C = "targetTempCoolC";
-    public static final String TARGET_COOL_TEMP_F = "targetTempCoolF";
+    public static final String TARGET_HEAT_TEMP_C = "targetHeatTempC";
+    public static final String TARGET_HEAT_TEMP_F = "targetHeatTempF";
+    public static final String TARGET_COOL_TEMP_C = "targetCoolTempC";
+    public static final String TARGET_COOL_TEMP_F = "targetCoolTempF";
     public static final String TEMP_C = "tempC";
     public static final String TEMP_F = "tempF";
     public static final String TSTAT_FAN_MODE = "tstatFanMode";
