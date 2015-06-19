@@ -333,7 +333,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     /**
-     * Returns an array of supported properties the plugin supports. These will automatically
+     * Returns an array of configuration properties the plugin supports. These will automatically
      * be registered with the plugin's configuration class.
      *
      * @return an array of TypedProperty objects (or null if there are none)

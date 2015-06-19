@@ -129,8 +129,8 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     }
 
     /**
-     * Returns an array of supported properties the plugin supports. These will automatically
-     * be registered with the plugin's configuration class.
+     * Returns an array of configuration properties the device supports. These will automatically
+     * be registered with the device's configuration class.
      *
      * @return an array of TypedProperty objects (or null if there are none)
      */
