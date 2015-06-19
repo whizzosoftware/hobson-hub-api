@@ -42,6 +42,14 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
 
         // register this device's "name" configuration property
         configClass.addSupportedProperty(new TypedProperty("name", "Name", "A descriptive name for this device", TypedProperty.Type.STRING));
+
+        // register any supported properties the subclass needs
+        TypedProperty[] props = createSupportedProperties();
+        if (props != null) {
+            for (TypedProperty p : props) {
+                configClass.addSupportedProperty(p);
+            }
+        }
     }
 
     @Override
@@ -121,6 +129,14 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     }
 
     /**
+     * Returns an array of supported properties the plugin supports. These will automatically
+     * be registered with the plugin's configuration class.
+     *
+     * @return an array of TypedProperty objects (or null if there are none)
+     */
+    abstract protected TypedProperty[] createSupportedProperties();
+
+    /**
      * Returns the default name for the device.
      *
      * @return the default name that was set (or the device ID if not set)
@@ -158,15 +174,6 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
      */
     protected HobsonPlugin getPlugin() {
         return plugin;
-    }
-
-    /**
-     * Adds a supported configuration property for the device.
-     *
-     * @param prop the property to add
-     */
-    protected void addSupportedProperty(TypedProperty prop) {
-        configClass.addSupportedProperty(prop);
     }
 
     /**

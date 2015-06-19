@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.property.TypedProperty;
 
 public class MockAbstractHobsonPlugin extends AbstractHobsonPlugin {
     private String name;
@@ -25,6 +26,11 @@ public class MockAbstractHobsonPlugin extends AbstractHobsonPlugin {
     @Override
     public void onShutdown() {
 
+    }
+
+    @Override
+    protected TypedProperty[] createSupportedProperties() {
+        return null;
     }
 
     @Override

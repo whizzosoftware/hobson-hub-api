@@ -9,6 +9,7 @@ package com.whizzosoftware.hobson.api.device;
 
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.property.TypedProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,6 +47,11 @@ public class MockAbstractHobsonDevice extends AbstractHobsonDevice {
 
     @Override
     public DeviceError getError() {
+        return null;
+    }
+
+    @Override
+    protected TypedProperty[] createSupportedProperties() {
         return null;
     }
 

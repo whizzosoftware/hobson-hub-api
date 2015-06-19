@@ -65,6 +65,14 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     public AbstractHobsonPlugin(String pluginId, EventLoopGroup eventLoop) {
         this.ctx = PluginContext.createLocal(pluginId);
         this.eventLoop = eventLoop;
+
+        // register any supported properties the subclass needs
+        TypedProperty[] props = createSupportedProperties();
+        if (props != null) {
+            for (TypedProperty p : props) {
+                configClass.addSupportedProperty(p);
+            }
+        }
     }
 
     /*
@@ -325,13 +333,12 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     /**
-     * Add configuration property metadata for this plugin.
+     * Returns an array of supported properties the plugin supports. These will automatically
+     * be registered with the plugin's configuration class.
      *
-     * @param p the supported property to add
+     * @return an array of TypedProperty objects (or null if there are none)
      */
-    protected void addSupportedProperty(TypedProperty p) {
-        configClass.addSupportedProperty(p);
-    }
+    abstract protected TypedProperty[] createSupportedProperties();
 
     /**
      * Returns a File located in the plugin's directory sandbox.

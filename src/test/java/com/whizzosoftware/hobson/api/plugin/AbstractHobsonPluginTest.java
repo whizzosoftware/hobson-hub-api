@@ -51,7 +51,7 @@ public class AbstractHobsonPluginTest {
         MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
         assertNotNull(plugin.getConfigurationClass());
         assertFalse(plugin.getConfigurationClass().hasSupportedProperties());
-        plugin.addSupportedProperty(new TypedProperty("id", "name", "desc", TypedProperty.Type.STRING));
+        plugin.getConfigurationClass().addSupportedProperty(new TypedProperty("id", "name", "desc", TypedProperty.Type.STRING));
         assertEquals(1, plugin.getConfigurationClass().getSupportedProperties().size());
     }
 
@@ -59,7 +59,7 @@ public class AbstractHobsonPluginTest {
     public void testIsConfigurable() {
         MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
         assertFalse(plugin.isConfigurable());
-        plugin.addSupportedProperty(new TypedProperty("id", "name", "desc", TypedProperty.Type.STRING));
+        plugin.getConfigurationClass().addSupportedProperty(new TypedProperty("id", "name", "desc", TypedProperty.Type.STRING));
         assertTrue(plugin.isConfigurable());
     }
 
