@@ -27,6 +27,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     private DeviceContext ctx;
     private String name;
     private String defaultName;
+    private boolean started;
     private DeviceError deviceError;
     private final PropertyContainerClass configClass = new PropertyContainerClass();
 
@@ -53,7 +54,14 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     }
 
     @Override
+    public boolean isStarted() {
+        return started;
+    }
+
+    @Override
     public void onStartup(PropertyContainer config) {
+        started = true;
+
         if (config != null && config.hasPropertyValue("name")) {
             this.name = config.getPropertyValue("name").toString();
         }

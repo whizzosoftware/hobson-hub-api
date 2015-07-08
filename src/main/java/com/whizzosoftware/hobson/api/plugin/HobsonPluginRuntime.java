@@ -63,7 +63,7 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param variableName the variable name
      *
      * @return a HobsonVariable instance
-     * @throws com.whizzosoftware.hobson.api.variable.DeviceVariableNotFoundException if the variable wasn't found
+     * @throws com.whizzosoftware.hobson.api.variable.VariableNotFoundException if the variable wasn't found
      */
     public HobsonVariable getDeviceVariable(DeviceContext ctx, String variableName);
 

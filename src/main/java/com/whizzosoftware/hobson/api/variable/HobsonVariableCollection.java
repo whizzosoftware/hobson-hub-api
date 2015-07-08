@@ -19,8 +19,6 @@ import java.util.Map;
 public class HobsonVariableCollection {
     private Map<String,HobsonVariable> variableMap = new HashMap<>();
 
-    public HobsonVariableCollection() {}
-
     public HobsonVariableCollection(Collection<HobsonVariable> variables) {
         for (HobsonVariable var : variables) {
             add(var);

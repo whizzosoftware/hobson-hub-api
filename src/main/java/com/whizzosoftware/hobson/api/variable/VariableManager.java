@@ -56,7 +56,7 @@ public interface VariableManager {
      * @param name the variable name
      *
      * @return a HobsonVariable instance
-     * @throws GlobalVariableNotFoundException if not found
+     * @throws VariableNotFoundException if not found
      */
     public HobsonVariable getGlobalVariable(HubContext ctx, String name);
 
@@ -82,7 +82,7 @@ public interface VariableManager {
      * @param name the variable name
      *
      * @return a HobsonVariable instance (or null if not found)
-     * @throws DeviceVariableNotFoundException if not found
+     * @throws VariableNotFoundException if not found
      *
      * @since hobson-hub-api 0.1.6
      */
@@ -218,7 +218,7 @@ public interface VariableManager {
      * @param value the variable value
      *
      * @return the variable's last update time prior to this set call
-     * @throws DeviceVariableNotFoundException if not found
+     * @throws VariableNotFoundException if not found
      *
      * @since hobson-hub-api 0.1.6
      */

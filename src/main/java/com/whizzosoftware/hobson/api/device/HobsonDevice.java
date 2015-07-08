@@ -37,6 +37,13 @@ public interface HobsonDevice {
     public DeviceType getType();
 
     /**
+     * Indicates if the device has been started by the runtime.
+     *
+     * @return a boolean
+     */
+    public boolean isStarted();
+
+    /**
      * Indicates whether this device is in an error state.
      *
      * @return a boolean
