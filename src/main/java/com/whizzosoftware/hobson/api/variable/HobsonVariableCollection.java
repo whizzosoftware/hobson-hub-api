@@ -12,7 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A class representing an unordered collection of HobsonVariable objects.
+ * A class representing an unordered collection of HobsonVariable objects. This allows quick reference to a variable
+ * but its name.
  *
  * @author Dan Noguerol
  */
@@ -35,5 +36,12 @@ public class HobsonVariableCollection {
 
     public void add(HobsonVariable v) {
         variableMap.put(v.getName(), v);
+    }
+
+    public void applyProxyValueProvider(VariableProxyValueProvider proxy) {
+        for (String key : variableMap.keySet()) {
+            HobsonVariable v = variableMap.get(key);
+            variableMap.put(key, new HobsonVariableValueOverrider(v, proxy.getProxyValue(v)));
+        }
     }
 }
