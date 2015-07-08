@@ -14,6 +14,7 @@ import com.whizzosoftware.hobson.api.property.TypedProperty;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -200,22 +201,22 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     }
 
     /**
-     * Fires a notification that variables has been successfully updated.
-     *
-     * @param updates a List of VariableUpdate instances
-     */
-    protected void fireVariableUpdateNotifications(List<VariableUpdate> updates) {
-        getPlugin().getRuntime().fireVariableUpdateNotifications(updates);
-    }
-
-    /**
      * Fires a notification that a variable has been successfully updated.
      *
      * @param name the variable name
      * @param value the variable value
      */
     protected void fireVariableUpdateNotification(String name, Object value) {
-        getPlugin().getRuntime().fireVariableUpdateNotification(new VariableUpdate(ctx, name, value));
+        fireVariableUpdateNotifications(Collections.singletonList(new VariableUpdate(ctx, name, value)));
+    }
+
+    /**
+     * Fires a notification that variables has been successfully updated.
+     *
+     * @param updates a List of VariableUpdate instances
+     */
+    protected void fireVariableUpdateNotifications(List<VariableUpdate> updates) {
+        getPlugin().getRuntime().fireVariableUpdateNotifications(updates);
     }
 
     /**
