@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.property;
 
+import java.util.Map;
+
 /**
  * A property that specifies a type (such as STRING, NUMBER, etc).
  *
@@ -17,16 +19,31 @@ public class TypedProperty {
     private String name;
     private String description;
     private Type type;
+    private Map<TypedPropertyConstraint,String> constraints;
 
     public TypedProperty(String id) {
-        this.id = id;
+        this(id, null, null, null, null);
     }
 
     public TypedProperty(String id, String name, String description, Type type) {
+        this(id, name, description, type, null);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param id the ID of the property
+     * @param name a human-readable name for the property
+     * @param description a human-readable description for the property
+     * @param type the property type
+     * @param constraints a set of constraints that the property must adhere to
+     */
+    public TypedProperty(String id, String name, String description, Type type, Map<TypedPropertyConstraint,String> constraints) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.type = type;
+        this.constraints = constraints;
     }
 
     public String getId() {
@@ -43,6 +60,10 @@ public class TypedProperty {
 
     public Type getType() {
         return type;
+    }
+
+    public Map<TypedPropertyConstraint,String> getConstraints() {
+        return constraints;
     }
 
     public enum Type {
