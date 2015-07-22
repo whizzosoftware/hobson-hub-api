@@ -17,6 +17,7 @@ public class VariableConstants {
     public static final String ENERGY_CONSUMPTION_WATTS = "ecw";
     public static final String FIRMWARE_VERSION = "firmwareVersion";
     public static final String HUMIDITY_PERCENT = "humidityPct";
+    public static final String LX_LUX = "lxLux";
     public static final String IMAGE_STATUS_URL = "imageStatusUrl";
     public static final String LEVEL = "level";
     public static final String ON = "on";
