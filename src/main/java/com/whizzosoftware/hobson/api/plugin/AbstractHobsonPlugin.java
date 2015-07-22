@@ -341,6 +341,13 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     abstract protected TypedProperty[] createSupportedProperties();
 
     /**
+     * Returns a File for the plugin's directory sandbox.
+     */
+    protected File getDataDirectory() {
+        return pluginManager.getDataDirectory(getContext());
+    }
+
+    /**
      * Returns a File located in the plugin's directory sandbox.
      *
      * @param filename the filename

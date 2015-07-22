@@ -13,10 +13,11 @@ package com.whizzosoftware.hobson.api.device;
  * @author Dan Noguerol
  */
 public enum DeviceType {
-    UNKNOWN,
+    CAMERA,
+    IRRIGATION_CONTROLLER,
     LIGHTBULB,
+    SENSOR,
     SWITCH,
     THERMOSTAT,
-    CAMERA,
-    IRRIGATION_CONTROLLER
+    UNKNOWN
 }

@@ -22,7 +22,14 @@ import java.util.Collection;
  */
 public interface PluginManager {
     /**
-     * Returns a data file for a specific plugin.
+     * Returns a File for a plugin's data directory.
+     *
+     * @param ctx the context of the plugin
+     */
+    public File getDataDirectory(PluginContext ctx);
+
+    /**
+     * Returns a File for a named file located in a plugin's data directory.
      *
      * @param ctx the context of the plugin requesting the file
      * @param filename the name of the data file
