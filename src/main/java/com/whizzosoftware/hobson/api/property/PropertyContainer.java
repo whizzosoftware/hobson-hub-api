@@ -80,27 +80,40 @@ public class PropertyContainer {
     }
 
     public Object getPropertyValue(String name) {
-        return propertyValues != null ? propertyValues.get(name) : null;
+        return getPropertyValue(name, null);
+    }
+
+    public Object getPropertyValue(String name, Object defaultValue) {
+        Object o = propertyValues != null ? propertyValues.get(name) : null;
+        return o != null ? o : defaultValue;
     }
 
     public String getStringPropertyValue(String name) {
+        return getStringPropertyValue(name, null);
+    }
+
+    public String getStringPropertyValue(String name, String defaultValue) {
         if (propertyValues != null) {
             Object o = propertyValues.get(name);
             if (o != null) {
                 return o.toString();
             }
         }
-        return null;
+        return defaultValue;
     }
 
     public boolean getBooleanPropertyValue(String name) {
+        return getBooleanPropertyValue(name, false);
+    }
+
+    public boolean getBooleanPropertyValue(String name, boolean defaultValue) {
         if (propertyValues != null) {
             Object o = propertyValues.get(name);
             if (o != null && o instanceof Boolean) {
                 return (Boolean)o;
             }
         }
-        return false;
+        return defaultValue;
     }
 
     public Map<String, Object> getPropertyValues() {
