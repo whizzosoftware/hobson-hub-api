@@ -22,6 +22,14 @@ import java.util.Collection;
  */
 public interface PluginManager {
     /**
+     * Enable/disable a remote repository.
+     *
+     * @param url the URL of the repository
+     * @param enabled enable or disable?
+     */
+    public void enableRemoteRepository(String url, boolean enabled);
+
+    /**
      * Returns a File for a plugin's data directory.
      *
      * @param ctx the context of the plugin
