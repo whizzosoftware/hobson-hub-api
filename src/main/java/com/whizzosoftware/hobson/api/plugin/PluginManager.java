@@ -22,12 +22,11 @@ import java.util.Collection;
  */
 public interface PluginManager {
     /**
-     * Enable/disable a remote repository.
+     * Add a remote repository.
      *
-     * @param url the URL of the repository
-     * @param enabled enable or disable?
+     * @param uri the URI of the repository
      */
-    public void enableRemoteRepository(String url, boolean enabled);
+    public void addRemoteRepository(String uri);
 
     /**
      * Returns a File for a plugin's data directory.
@@ -111,6 +110,13 @@ public interface PluginManager {
     public Collection<PluginDescriptor> getRemotePluginDescriptors(HubContext ctx);
 
     /**
+     * Returns the remote repositories that have been enabled.
+     *
+     * @return a Collection of String URIs
+     */
+    public Collection<String> getRemoteRepositories();
+
+    /**
      * Installs a specific version of a remote plugin.
      *
      * @param ctx the context of the target plugin
@@ -124,6 +130,13 @@ public interface PluginManager {
      * @param ctx the context of the target plugin
      */
     public void reloadLocalPlugin(PluginContext ctx);
+
+    /**
+     * Removes a remote repository.
+     *
+     * @param uri the URI of the repository to remove
+     */
+    public void removeRemoteRepository(String uri);
 
     /**
      * Sets the plugin level configuration.
