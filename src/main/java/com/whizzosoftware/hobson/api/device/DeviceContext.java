@@ -9,7 +9,11 @@ package com.whizzosoftware.hobson.api.device;
 
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -46,9 +50,32 @@ public class DeviceContext {
         return create(PluginContext.create(hubContext, pluginId), deviceId);
     }
 
+    /**
+     * Creates a device context.
+     *
+     * @param s a String generated from DeviceContext's toString() method
+     *
+     * @return a DeviceContext instance
+     */
     public static DeviceContext create(String s) {
-        StringTokenizer tok = new StringTokenizer(s, HubContext.DELIMITER);
-        return DeviceContext.create(HubContext.create(tok.nextToken(), tok.nextToken()), tok.nextToken(), tok.nextToken());
+        String[] comps = StringUtils.split(s, HubContext.DELIMITER);
+        return DeviceContext.create(HubContext.create(comps[0], comps[1]), comps[2], comps[3]);
+    }
+
+    /**
+     * Creates a collection of device contexts.
+     *
+     * @param s a comma-separated list of Strings generated from DeviceContext's toString() method
+     *
+     * @return a Collection of DeviceContext instances
+     */
+    public static Collection<DeviceContext> createCollection(String s) {
+        List<DeviceContext> results = new ArrayList<>();
+        for (String ctx : StringUtils.split(s, ',')) {
+            String[] comps = StringUtils.split(ctx, HubContext.DELIMITER);
+            results.add(DeviceContext.create(HubContext.create(comps[0], comps[1]), comps[2], comps[3]));
+        }
+        return results;
     }
 
     /**
