@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.property;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -84,5 +85,22 @@ public class PropertyContainerClass {
             supportedProperties = new ArrayList<>();
         }
         supportedProperties.add(property);
+    }
+
+    /**
+     * Evaluates whether all the property constraints associated with this property container class are met
+     * (if they exist).
+     *
+     * @param publishedVariableNames a list of all published variable names
+     *
+     * @return a boolean
+     */
+    public boolean evaluatePropertyConstraints(Collection<String> publishedVariableNames) {
+        for (TypedProperty tp : supportedProperties) {
+            if (!tp.evaluateConstraints(publishedVariableNames)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

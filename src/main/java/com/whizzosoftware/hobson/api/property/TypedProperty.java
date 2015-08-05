@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.property;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -64,6 +65,28 @@ public class TypedProperty {
 
     public Map<TypedPropertyConstraint,String> getConstraints() {
         return constraints;
+    }
+
+    /**
+     * Evaluates whether all defined constraints are met.
+     *
+     * @param publishedVariableNames a list of all published variable names
+     *
+     * @return a boolean
+     */
+    public boolean evaluateConstraints(Collection<String> publishedVariableNames) {
+        if (constraints != null) {
+            for (TypedPropertyConstraint tpc : constraints.keySet()) {
+                switch (tpc) {
+                    case deviceVariable:
+                        if (!publishedVariableNames.contains(constraints.get(tpc))) {
+                            return false;
+                        }
+                        break;
+                }
+            }
+        }
+        return true;
     }
 
     public enum Type {

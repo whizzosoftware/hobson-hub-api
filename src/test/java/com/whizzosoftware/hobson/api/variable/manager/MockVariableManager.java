@@ -37,6 +37,11 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
+    public Collection<String> getPublishedVariableNames(HubContext ctx) {
+        return null;
+    }
+
+    @Override
     public Collection<HobsonVariable> getGlobalVariables(HubContext ctx) {
         return null;
     }

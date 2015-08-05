@@ -154,7 +154,7 @@ public class CollectionPersisterTest {
         }
 
         @Override
-        public Collection<PropertyContainerClass> getAllConditionClasses(HubContext ctx) {
+        public Collection<PropertyContainerClass> getAllConditionClasses(HubContext ctx, boolean applyConstraints) {
             return null;
         }
 

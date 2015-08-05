@@ -102,10 +102,11 @@ public interface TaskManager {
      * Returns all published condition classes.
      *
      * @param ctx the context of the hub that published the condition classes
+     * @param applyConstraints only return condition classes for which the constraints of their typed properties are met
      *
      * @return a Collection of TaskConditionClass instances
      */
-    public Collection<PropertyContainerClass> getAllConditionClasses(HubContext ctx);
+    public Collection<PropertyContainerClass> getAllConditionClasses(HubContext ctx, boolean applyConstraints);
 
     /**
      * Returns all tasks that have been published by all task providers.

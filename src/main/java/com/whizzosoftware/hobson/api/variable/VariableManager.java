@@ -36,6 +36,8 @@ public interface VariableManager {
 
     public Collection<HobsonVariable> getAllVariables(HubContext ctx, VariableProxyValueProvider proxyProvider);
 
+    public Collection<String> getPublishedVariableNames(HubContext ctx);
+
     /**
      * Returns a collection all global variables published by a hub.
      *
