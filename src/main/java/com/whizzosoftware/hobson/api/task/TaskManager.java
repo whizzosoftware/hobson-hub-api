@@ -82,12 +82,15 @@ public interface TaskManager {
      * Returns all published action classes.
      *
      * @param ctx the context of the hub that published the action classes
+     * @param applyConstraints only return condition classes for which the constraints of their typed properties can be
+     *                         met by the currently available system services (i.e. don't show the user things they
+     *                         can't do)
      *
      * @return a Collection of HobsonActionClass instances
      *
      * @since hobson-hub-api 0.5.0
      */
-    public Collection<PropertyContainerClass> getAllActionClasses(HubContext ctx);
+    public Collection<PropertyContainerClass> getAllActionClasses(HubContext ctx, boolean applyConstraints);
 
     /**
      * Returns all published action sets.
@@ -102,7 +105,9 @@ public interface TaskManager {
      * Returns all published condition classes.
      *
      * @param ctx the context of the hub that published the condition classes
-     * @param applyConstraints only return condition classes for which the constraints of their typed properties are met
+     * @param applyConstraints only return condition classes for which the constraints of their typed properties can be
+     *                         met by the currently available system services (i.e. don't show the user things they
+     *                         can't do)
      *
      * @return a Collection of TaskConditionClass instances
      */
