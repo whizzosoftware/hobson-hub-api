@@ -21,9 +21,11 @@ import com.whizzosoftware.hobson.api.event.*;
 import com.whizzosoftware.hobson.api.hub.HobsonHub;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.hub.HubManager;
-import com.whizzosoftware.hobson.api.task.TaskActionClass;
+import com.whizzosoftware.hobson.api.task.TaskContext;
+import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
+import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
 import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
@@ -57,6 +59,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     private final PropertyContainerClass configClass = new PropertyContainerClass();
     private EventLoopGroup eventLoop;
     private final Map<PropertyContainerClassContext,TaskActionClass> actionClasses = new HashMap<>();
+    private final Map<PropertyContainerClassContext,TaskConditionClass> conditionClasses = new HashMap<>();
 
     public AbstractHobsonPlugin(String pluginId) {
         this(pluginId, new LocalEventLoopGroup(1));
@@ -201,24 +204,17 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public void onShutdown() {
-        // unpublish all tasks published by this plugin
-        if (taskManager != null) {
-            taskManager.unpublishAllTasks(getContext());
-        }
-    }
-
-    @Override
     public void publishActionClass(TaskActionClass actionClass) {
         validateTaskManager();
-        taskManager.publishActionClass(actionClass.getContext(), actionClass.getName(), actionClass.getProperties());
+        taskManager.publishActionClass(actionClass);
         actionClasses.put(actionClass.getContext(), actionClass);
     }
 
     @Override
-    public void publishConditionClass(PropertyContainerClassContext ctx, String name, List<TypedProperty> properties) {
+    public void publishConditionClass(TaskConditionClass conditionClass) {
         validateTaskManager();
-        taskManager.publishConditionClass(ctx, name, properties);
+        taskManager.publishConditionClass(conditionClass);
+        conditionClasses.put(conditionClass.getContext(), conditionClass);
     }
 
     @Override
@@ -342,6 +338,8 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
 
     /**
      * Returns a File for the plugin's directory sandbox.
+     *
+     * @return a File object
      */
     protected File getDataDirectory() {
         return pluginManager.getDataDirectory(getContext());
@@ -424,6 +422,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     protected void fireDeviceAdvertisement(DeviceAdvertisement advertisement) {
         validateDiscoManager();
         discoManager.fireDeviceAdvertisement(HubContext.createLocal(), advertisement);
+    }
+
+    protected void executeTask(TaskContext context) {
+        validateTaskManager();
+        taskManager.fireTaskTrigger(context);
     }
 
     /**

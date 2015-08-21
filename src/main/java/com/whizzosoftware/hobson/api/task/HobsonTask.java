@@ -7,10 +7,12 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.task;
 
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
+import com.whizzosoftware.hobson.api.task.action.TaskActionClassProvider;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A generic interface for entities that trigger Hobson actions.
@@ -22,17 +24,17 @@ public class HobsonTask {
     private String name;
     private String description;
     private Map<String,Object> properties;
-    private PropertyContainerSet conditionSet;
+    private List<PropertyContainer> conditions;
     private PropertyContainerSet actionSet;
 
     public HobsonTask() {}
 
-    public HobsonTask(TaskContext context, String name, String description, Map<String, Object> properties, PropertyContainerSet conditionSet, PropertyContainerSet actionSet) {
+    public HobsonTask(TaskContext context, String name, String description, Map<String, Object> properties, List<PropertyContainer> conditions, PropertyContainerSet actionSet) {
         this.context = context;
         this.name = name;
         this.description = description;
         this.properties = properties;
-        this.conditionSet = conditionSet;
+        this.conditions = conditions;
         this.actionSet = actionSet;
     }
 
@@ -136,17 +138,26 @@ public class HobsonTask {
      *
      * @return a condition set (or null if one hasn't been set)
      */
-    public PropertyContainerSet getConditionSet() {
-        return conditionSet;
+    public List<PropertyContainer> getConditions() {
+        return conditions;
+    }
+
+    /**
+     * Returns whether this task has any conditions.
+     *
+     * @return a boolean
+     */
+    public boolean hasConditions() {
+        return (conditions != null && conditions.size() > 0);
     }
 
     /**
      * Sets the condition set for this task.
      *
-     * @param conditionSet the new condition set
+     * @param conditions the task conditions
      */
-    public void setConditionSet(PropertyContainerSet conditionSet) {
-        this.conditionSet = conditionSet;
+    public void setConditions(List<PropertyContainer> conditions) {
+        this.conditions = conditions;
     }
 
     /**
@@ -167,6 +178,28 @@ public class HobsonTask {
         this.actionSet = actionSet;
     }
 
-    public void execute() {
+    /**
+     * Returns the PropertyContainerClassContexts that this task is dependent on.
+     *
+     * @param actionClassProvider a provider to resolve action classes
+     *
+     * @return a Collection of PropertyContainerClassContext instances
+     */
+    public Collection<PropertyContainerClassContext> getDependencies(TaskActionClassProvider actionClassProvider) {
+        List<PropertyContainerClassContext> deps = new ArrayList<>();
+        if (conditions != null) {
+            for (PropertyContainer pcc : conditions) {
+                deps.add(pcc.getContainerClassContext());
+            }
+        }
+        if (actionSet != null && actionSet.hasId() && actionClassProvider != null) {
+            Collection<PropertyContainerClassContext> tacs = actionClassProvider.getActionSetClassContexts(actionSet.getId());
+            if (tacs != null) {
+                for (PropertyContainerClassContext pccc : tacs) {
+                    deps.add(pccc);
+                }
+            }
+        }
+        return deps;
     }
 }

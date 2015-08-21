@@ -25,19 +25,21 @@ import java.util.List;
 public class PropertyContainerClass {
     private PropertyContainerClassContext context;
     private String name;
+    private String descriptionTemplate;
     private List<TypedProperty> supportedProperties;
 
     public PropertyContainerClass() {
-        this(null, null, null);
+        this(null, null, null, null);
     }
 
     public PropertyContainerClass(PropertyContainerClassContext context) {
-        this(context, null, null);
+        this(context, null, null, null);
     }
 
-    public PropertyContainerClass(PropertyContainerClassContext context, String name, List<TypedProperty> supportedProperties) {
+    public PropertyContainerClass(PropertyContainerClassContext context, String name, String descriptionTemplate, List<TypedProperty> supportedProperties) {
         this.context = context;
         this.name = name;
+        this.descriptionTemplate = descriptionTemplate;
         this.supportedProperties = supportedProperties;
     }
 
@@ -55,6 +57,21 @@ public class PropertyContainerClass {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Returns the description template is a String that can be used by a user interface to generate a human-readable
+     * description of a property container (e.g. condition or action). The String can contain keys wrapped in
+     * curly braces (e.g. {message}) that will be replaced by the property container's value at runtime.
+     *
+     * @return a String
+     */
+    public String getDescriptionTemplate() {
+        return descriptionTemplate;
+    }
+
+    public void setDescriptionTemplate(String descriptionTemplate) {
+        this.descriptionTemplate = descriptionTemplate;
     }
 
     public boolean hasSupportedProperties() {

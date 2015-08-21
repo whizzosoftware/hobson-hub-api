@@ -32,6 +32,8 @@ public interface PluginManager {
      * Returns a File for a plugin's data directory.
      *
      * @param ctx the context of the plugin
+     *
+     * @return a File instance
      */
     public File getDataDirectory(PluginContext ctx);
 

@@ -10,9 +10,13 @@ package com.whizzosoftware.hobson.api.task;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.*;
+import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
+import com.whizzosoftware.hobson.api.task.condition.ConditionClassType;
+import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An interface for managing Hobson tasks.
@@ -23,13 +27,14 @@ import java.util.List;
 public interface TaskManager {
     /**
      * Creates a new task in the system. This is called (e.g. by the REST API) when a request is received to add a new task.
+     *
      * @param ctx the hub context
      * @param name the task name
      * @param description the task description
-     * @param conditionSet the task's condition set -- its primary condition will determine which plugin is used to create the task
+     * @param conditions the task's conditions
      * @param actionSet the task's action set
      */
-    public void createTask(HubContext ctx, String name, String description, PropertyContainerSet conditionSet, PropertyContainerSet actionSet);
+    void createTask(HubContext ctx, String name, String description, List<PropertyContainer> conditions, PropertyContainerSet actionSet);
 
     /**
      * Deletes a previously added task.
@@ -38,7 +43,7 @@ public interface TaskManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void deleteTask(TaskContext ctx);
+    void deleteTask(TaskContext ctx);
 
     /**
      * Executes an action set.
@@ -48,14 +53,17 @@ public interface TaskManager {
      *
      * @since hobson-hub-api 0.5.0
      */
-    public void executeActionSet(HubContext ctx, String actionSetId);
+    void executeActionSet(HubContext ctx, String actionSetId);
 
     /**
-     * Immediately executes a specific task.
+     * Indicates that a task trigger condition has been met. This is usually called by plugins that detect
+     * trigger conditions and will cause the TaskManager to evaluate any additional evaluator conditions the task
+     * may have. If they all evaluate to true, or if no evaluator conditions exist, the task's action set will be
+     * executed.
      *
      * @param ctx the context of the target hub
      */
-    public void executeTask(TaskContext ctx);
+    void fireTaskTrigger(TaskContext ctx);
 
     /**
      * Returns an action class.
@@ -64,7 +72,7 @@ public interface TaskManager {
      *
      * @return a TaskActionClass instance (or null if not found)
      */
-    public PropertyContainerClass getActionClass(PropertyContainerClassContext ctx);
+    TaskActionClass getActionClass(PropertyContainerClassContext ctx);
 
     /**
      * Returns a published action set.
@@ -76,7 +84,7 @@ public interface TaskManager {
      *
      * @since hobson-hub-api 0.5.0
      */
-    public PropertyContainerSet getActionSet(HubContext ctx, String actionSetId);
+    PropertyContainerSet getActionSet(HubContext ctx, String actionSetId);
 
     /**
      * Returns all published action classes.
@@ -86,11 +94,11 @@ public interface TaskManager {
      *                         met by the currently available system services (i.e. don't show the user things they
      *                         can't do)
      *
-     * @return a Collection of HobsonActionClass instances
+     * @return a Collection of TaskActionClass instances
      *
      * @since hobson-hub-api 0.5.0
      */
-    public Collection<PropertyContainerClass> getAllActionClasses(HubContext ctx, boolean applyConstraints);
+    Collection<TaskActionClass> getAllActionClasses(HubContext ctx, boolean applyConstraints);
 
     /**
      * Returns all published action sets.
@@ -99,19 +107,20 @@ public interface TaskManager {
      *
      * @return a Collection of TaskActionSet instances
      */
-    public Collection<PropertyContainerSet> getAllActionSets(HubContext ctx);
+    Collection<PropertyContainerSet> getAllActionSets(HubContext ctx);
 
     /**
      * Returns all published condition classes.
      *
      * @param ctx the context of the hub that published the condition classes
+     * @param type filter the results by a type of condition class (or null for all)
      * @param applyConstraints only return condition classes for which the constraints of their typed properties can be
      *                         met by the currently available system services (i.e. don't show the user things they
      *                         can't do)
      *
      * @return a Collection of TaskConditionClass instances
      */
-    public Collection<PropertyContainerClass> getAllConditionClasses(HubContext ctx, boolean applyConstraints);
+    Collection<TaskConditionClass> getAllConditionClasses(HubContext ctx, ConditionClassType type, boolean applyConstraints);
 
     /**
      * Returns all tasks that have been published by all task providers.
@@ -122,7 +131,7 @@ public interface TaskManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Collection<HobsonTask> getAllTasks(HubContext ctx);
+    Collection<HobsonTask> getAllTasks(HubContext ctx);
 
     /**
      * Returns a condition class.
@@ -131,7 +140,7 @@ public interface TaskManager {
      *
      * @return a TaskConditionClass object (or null if not found)
      */
-    public PropertyContainerClass getConditionClass(PropertyContainerClassContext ctx);
+    TaskConditionClass getConditionClass(PropertyContainerClassContext ctx);
 
     /**
      * Returns a specific task.
@@ -142,16 +151,14 @@ public interface TaskManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public HobsonTask getTask(TaskContext ctx);
+    HobsonTask getTask(TaskContext ctx);
 
     /**
      * Publish an action class.
      *
-     * @param context the action class context
-     * @param name the action class name
-     * @param properties the list of supported properties
+     * @param actionClass the action class to publish
      */
-    public void publishActionClass(PropertyContainerClassContext context, String name, List<TypedProperty> properties);
+    void publishActionClass(TaskActionClass actionClass);
 
     /**
      * Creates and publishes a new action set.
@@ -164,74 +171,45 @@ public interface TaskManager {
      *
      * @since hobson-hub-api 0.5.0
      */
-    public PropertyContainerSet publishActionSet(HubContext ctx, String name, List<PropertyContainer> actions);
+    PropertyContainerSet publishActionSet(HubContext ctx, String name, List<PropertyContainer> actions);
 
     /**
      * Publishes a condition class.
      *
-     * @param ctx the condition class context
-     * @param name the name of the condition class
-     * @param properties a list of supported properties
+     * @param conditionClass the condition class to publish
      */
-    public void publishConditionClass(PropertyContainerClassContext ctx, String name, List<TypedProperty> properties);
-
-    /**
-     * Publishes a task. This is called by plugins to fulfill requests to add new tasks to the system.
-     *
-     * @param task the task to publish
-     */
-    public void publishTask(HobsonTask task);
+    void publishConditionClass(TaskConditionClass conditionClass);
 
     /**
      * Unpublish all action classes published by a plugin.
      *
      * @param ctx the plugin context
      */
-    public void unpublishAllActionClasses(PluginContext ctx);
+    void unpublishAllActionClasses(PluginContext ctx);
 
     /**
      * Unpublishes all action sets previously published by a plugin.
      *
      * @param ctx the context of the plugin that published the action sets
      */
-    public void unpublishAllActionSets(PluginContext ctx);
+    void unpublishAllActionSets(PluginContext ctx);
 
     /**
      * Unpublish all condition classes published by a plugin.
      *
      * @param ctx the plugin context
      */
-    public void unpublishAllConditionClasses(PluginContext ctx);
-
-    /**
-     * Unpublish all tasks published by a plugin.
-     *
-     * @param ctx the plugin context
-     */
-    public void unpublishAllTasks(PluginContext ctx);
-
-    /**
-     * Unpublish a task.
-     *
-     * @param ctx the task context
-     */
-    public void unpublishTask(TaskContext ctx);
+    void unpublishAllConditionClasses(PluginContext ctx);
 
     /**
      * Updates an existing task.
-     *
      * @param ctx the context of the task to update
      * @param name the new task name
      * @param description the description of the new task
-     * @param conditionSet the task's condition set
+     * @param conditions the task's conditions
      * @param actionSet  the task's action set
      */
-    public void updateTask(TaskContext ctx, String name, String description, PropertyContainerSet conditionSet, PropertyContainerSet actionSet);
+    void updateTask(TaskContext ctx, String name, String description, List<PropertyContainer> conditions, PropertyContainerSet actionSet);
 
-    /**
-     * Provides notification that a task has executed.
-     *
-     * @param task the task that executed
-     */
-    public void fireTaskExecutionEvent(HobsonTask task, long time, Throwable error);
+    void updateTaskProperties(TaskContext ctx, Map<String,Object> properties);
 }

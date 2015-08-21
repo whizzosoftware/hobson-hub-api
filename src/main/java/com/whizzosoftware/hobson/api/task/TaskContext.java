@@ -8,7 +8,8 @@
 package com.whizzosoftware.hobson.api.task;
 
 import com.whizzosoftware.hobson.api.hub.HubContext;
-import com.whizzosoftware.hobson.api.plugin.PluginContext;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * A class that encapsulates the fully-qualified context of a task.
@@ -16,44 +17,37 @@ import com.whizzosoftware.hobson.api.plugin.PluginContext;
  * @author Dan Noguerol
  */
 public class TaskContext {
-    private PluginContext ctx;
-    private String taskId;
+    private final HubContext hubContext;
+    private final String taskId;
 
-    public static TaskContext create(HubContext ctx, String pluginId, String taskId) {
-        return create(PluginContext.create(ctx, pluginId), taskId);
-    }
-
-    public static TaskContext create(PluginContext ctx, String taskId) {
+    public static TaskContext create(HubContext ctx, String taskId) {
         return new TaskContext(ctx, taskId);
     }
 
-    public static TaskContext createLocal(String pluginId, String taskId) {
-        return new TaskContext(PluginContext.createLocal(pluginId), taskId);
+    public static TaskContext createLocal(String taskId) {
+        return new TaskContext(HubContext.createLocal(), taskId);
     }
 
-    private TaskContext(PluginContext ctx, String taskId) {
-        this.ctx = ctx;
+    public static TaskContext create(String s) {
+        String[] comps = StringUtils.split(s, HubContext.DELIMITER);
+        return TaskContext.create(HubContext.create(comps[0], comps[1]), comps[2]);
+    }
+
+    private TaskContext(HubContext hubContext, String taskId) {
+        this.hubContext = hubContext;
         this.taskId = taskId;
     }
 
-    public PluginContext getPluginContext() {
-        return ctx;
-    }
-
     public HubContext getHubContext() {
-        return ctx.getHubContext();
+        return hubContext;
     }
 
     public String getHubId() {
-        return ctx.getHubId();
+        return hubContext.getHubId();
     }
 
     public String getUserId() {
-        return ctx.getUserId();
-    }
-
-    public String getPluginId() {
-        return ctx.getPluginId();
+        return hubContext.getUserId();
     }
 
     public boolean hasTaskId() {
@@ -64,7 +58,19 @@ public class TaskContext {
         return taskId;
     }
 
+    public boolean equals(Object o) {
+        return (
+            o instanceof TaskContext &&
+                ((TaskContext)o).hubContext.equals(hubContext) &&
+                ((TaskContext)o).taskId.equals(taskId)
+        );
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(hubContext).append(taskId).toHashCode();
+    }
+
     public String toString() {
-        return ctx.toString() + "." + taskId;
+        return hubContext.toString() + HubContext.DELIMITER + taskId;
     }
 }

@@ -10,40 +10,33 @@ package com.whizzosoftware.hobson.api.property;
 import java.util.List;
 
 /**
- * A set of property container objects of which one may be optionally flagged as "primary". This "primary"
- * capability is used, for example, to flag a trigger condition in a set of conditionals.
+ * A named set of property container objects.
  *
  * @author Dan Noguerol
  */
 public class PropertyContainerSet {
     private String id;
     private String name;
-    private PropertyContainer primaryProperty;
     private List<PropertyContainer> properties;
 
     public PropertyContainerSet() {
     }
 
     public PropertyContainerSet(String id) {
-        this(id, null, null, null);
+        this(id, null, null);
     }
 
     public PropertyContainerSet(String id, List<PropertyContainer> properties) {
-        this(id, null, null, properties);
-    }
-
-    public PropertyContainerSet(PropertyContainer primaryProperty) {
-        this(null, null, primaryProperty, null);
+        this(id, null, properties);
     }
 
     public PropertyContainerSet(List<PropertyContainer> properties) {
-        this(null, null, null, properties);
+        this(null, null, properties);
     }
 
-    public PropertyContainerSet(String id, String name, PropertyContainer primaryProperty, List<PropertyContainer> properties) {
+    public PropertyContainerSet(String id, String name, List<PropertyContainer> properties) {
         this.id = id;
         this.name = name;
-        this.primaryProperty = primaryProperty;
         this.properties = properties;
     }
 
@@ -65,18 +58,6 @@ public class PropertyContainerSet {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public boolean hasPrimaryProperty() {
-        return (primaryProperty != null);
-    }
-
-    public PropertyContainer getPrimaryProperty() {
-        return primaryProperty;
-    }
-
-    public void setPrimaryProperty(PropertyContainer primaryProperty) {
-        this.primaryProperty = primaryProperty;
     }
 
     public boolean hasProperties() {

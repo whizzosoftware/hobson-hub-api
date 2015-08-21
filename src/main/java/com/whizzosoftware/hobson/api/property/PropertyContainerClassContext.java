@@ -9,6 +9,7 @@ package com.whizzosoftware.hobson.api.property;
 
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
@@ -28,6 +29,11 @@ public class PropertyContainerClassContext {
 
     static public PropertyContainerClassContext create(PluginContext pctx, String containerClassId) {
         return create(pctx.getUserId(), pctx.getHubId(), pctx.getPluginId(), containerClassId);
+    }
+
+    static public PropertyContainerClassContext create(String s) {
+        String[] comps = StringUtils.split(s, HubContext.DELIMITER);
+        return PropertyContainerClassContext.create(PluginContext.create(HubContext.create(comps[0], comps[1]), comps[2]), comps[3]);
     }
 
     static public PropertyContainerClassContext create(String userId, String hubId, String pluginId, String containerClassId) {

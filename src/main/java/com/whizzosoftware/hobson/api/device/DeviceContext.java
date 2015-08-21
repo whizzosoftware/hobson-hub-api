@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * A class that encapsulates the fully-qualified context of a device.

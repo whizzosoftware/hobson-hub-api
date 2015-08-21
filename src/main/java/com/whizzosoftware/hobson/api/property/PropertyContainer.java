@@ -24,10 +24,6 @@ public class PropertyContainer {
 
     public PropertyContainer() {}
 
-    public PropertyContainer(Map<String,Object> propertyValues) {
-        this(null, null, null, propertyValues);
-    }
-
     public PropertyContainer(PropertyContainerClassContext containerClassContext, Map<String,Object> propertyValues) {
         this(null, null, containerClassContext, propertyValues);
     }

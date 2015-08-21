@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.persist;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A context used when persisting collections using the CollectionPersister class.
@@ -22,10 +23,25 @@ public interface CollectionPersistenceContext {
      *
      * @return a Map instance
      */
-    public Map<String,String> getMap(String key);
+    Map<String,Object> getMap(String key);
+
+    /**
+     * Sets a named map.
+     *
+     * @param key the map key
+     * @param map the Map instance
+     */
+    void setMap(String key, Map<String,Object> map);
+
+    /**
+     * Returns the key set for all named maps.
+     *
+     * @return a set of String keys
+     */
+    Set<String> getKeySet();
 
     /**
      * Commits changes to maps.
      */
-    public void commit();
+    void commit();
 }

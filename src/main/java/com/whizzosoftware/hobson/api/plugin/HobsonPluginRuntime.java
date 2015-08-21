@@ -17,9 +17,10 @@ import com.whizzosoftware.hobson.api.event.EventListener;
 import com.whizzosoftware.hobson.api.event.EventManager;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.hub.HubManager;
-import com.whizzosoftware.hobson.api.task.TaskActionClass;
+import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
+import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
 import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableManager;
@@ -162,11 +163,9 @@ public interface HobsonPluginRuntime extends EventListener {
     /**
      * Publish a condition class.
      *
-     * @param ctx a
-     * @param name b
-     * @param properties c
+     * @param conditionClass the condition class to publish
      */
-    public void publishConditionClass(PropertyContainerClassContext ctx, String name, List<TypedProperty> properties);
+    public void publishConditionClass(TaskConditionClass conditionClass);
 
     /**
      * Publish a device variable.

@@ -14,22 +14,59 @@ import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
+import com.whizzosoftware.hobson.api.task.HobsonTask;
+import com.whizzosoftware.hobson.api.task.TaskContext;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.util.StringConversionUtil;
 
 import java.util.*;
 
 /**
- * A class that allows disk-based persistence of Hobson objects using Java Collection classes.
+ * A class that allows persistence of Hobson objects using Java Collection classes. This can be utilized
+ * by file-persistence libraries like MapDB as well as key-value stores like Redis.
  *
  * @author Dan Noguerol
  */
 public class CollectionPersister {
 
+    public void saveTask(CollectionPersistenceContext pctx, HobsonTask task) {
+        Map<String,Object> map = new HashMap<>();
+
+        map.put("name", task.getName());
+        map.put("description", task.getDescription());
+        if (task.hasProperties()) {
+            map.put("properties", new HashMap<>(task.getProperties()));
+        }
+        if (task.hasConditions()) {
+            List<Map<String,Object>> conditionList = new ArrayList<>();
+            map.put("conditions", conditionList);
+            for (PropertyContainer pc : task.getConditions()) {
+                conditionList.add(createPropertyContainerMap(pc));
+            }
+        }
+        map.put("actionSetId", task.getActionSet().getId());
+
+        pctx.setMap(task.getContext().toString(), map);
+        pctx.commit();
+    }
+
+    public HobsonTask restoreTask(CollectionPersistenceContext pctx, TaskContext taskContext) {
+        Map<String,Object> map = pctx.getMap(taskContext.toString());
+
+        return new HobsonTask(
+            taskContext,
+            (String)map.get("name"),
+            (String)map.get("description"),
+            (Map<String,Object>)map.get("properties"),
+            createPropertyContainerList((List<Map<String,Object>>)map.get("conditions")),
+            new PropertyContainerSet((String)map.get("actionSetId"))
+        );
+    }
+
     public void saveActionSet(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainerSet actionSet) {
         String key = createActionSetKey(ctx, actionSet.getId());
 
-        Map<String,String> map = pctx.getMap(key);
+        Map<String,Object> map = new HashMap<>();
         map.put("id", actionSet.getId());
         if (actionSet.getName() != null) {
             map.put("name", actionSet.getName());
@@ -50,20 +87,21 @@ public class CollectionPersister {
         }
         map.put("actions", sb.toString());
 
+        pctx.setMap(key, map);
         pctx.commit();
     }
 
     public PropertyContainerSet restoreActionSet(HubContext ctx, CollectionPersistenceContext pctx, TaskManager manager, String actionSetId) {
         String key = createActionSetKey(ctx, actionSetId);
 
-        Map<String,String> map = pctx.getMap(key);
+        Map<String,Object> map = pctx.getMap(key);
 
         if (map != null && map.size() > 0) {
             PropertyContainerSet tas = new PropertyContainerSet(actionSetId);
             if (map.containsKey("name")) {
-                tas.setName(map.get("name"));
+                tas.setName((String)map.get("name"));
             }
-            StringTokenizer tok = new StringTokenizer(map.get("actions"), ",");
+            StringTokenizer tok = new StringTokenizer((String)map.get("actions"), ",");
             List<PropertyContainer> actions = new ArrayList<>();
             while (tok.hasMoreTokens()) {
                 actions.add(restoreAction(pctx, manager, ctx, tok.nextToken()));
@@ -78,23 +116,25 @@ public class CollectionPersister {
     public void saveAction(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainer action) {
         String key = createActionKey(ctx, action.getId());
 
-        Map<String,String> map = pctx.getMap(key);
+        Map<String,Object> map = pctx.getMap(key);
         map.put("id", action.getId());
         map.put("pluginId", action.getContainerClassContext().getPluginId());
         map.put("containerClassId", action.getContainerClassContext().getContainerClassId());
 
         saveActionProperties(ctx, pctx, action);
+
+        pctx.setMap(key, map);
     }
 
     public PropertyContainer restoreAction(CollectionPersistenceContext pctx, TaskManager manager, HubContext ctx, String actionId) {
         String key = createActionKey(ctx, actionId);
 
-        Map<String,String> map = pctx.getMap(key);
+        Map<String,Object> map = pctx.getMap(key);
 
         if (manager != null) {
             return new PropertyContainer(
                 actionId,
-                PropertyContainerClassContext.create(PluginContext.create(ctx, map.get("pluginId")), map.get("containerClassId")),
+                PropertyContainerClassContext.create(PluginContext.create(ctx, (String) map.get("pluginId")), (String)map.get("containerClassId")),
                 restoreActionProperties(ctx, pctx, actionId)
             );
         } else {
@@ -105,21 +145,23 @@ public class CollectionPersister {
     public void saveActionProperties(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainer action) {
         String key = createActionPropertiesKey(ctx, action.getId());
 
-        Map<String,String> map = pctx.getMap(key);
+        Map<String,Object> map = pctx.getMap(key);
 
         for (String k : action.getPropertyValues().keySet()) {
             map.put(k, StringConversionUtil.createTypedValueString(action.getPropertyValues().get(k)));
         }
+
+        pctx.setMap(key, map);
     }
 
     public Map<String,Object> restoreActionProperties(HubContext ctx, CollectionPersistenceContext pctx, String actionId) {
         String key = createActionPropertiesKey(ctx, actionId);
 
-        Map<String,String> map = pctx.getMap(key);
+        Map<String,Object> map = pctx.getMap(key);
 
         Map<String,Object> resultMap = new HashMap<>();
         for (String k : map.keySet()) {
-            resultMap.put(k, StringConversionUtil.castTypedValueString(map.get(k)));
+            resultMap.put(k, StringConversionUtil.castTypedValueString((String) map.get(k)));
         }
 
         return resultMap;
@@ -150,5 +192,30 @@ public class CollectionPersister {
 
     protected String createActionPropertiesKey(HubContext ctx, String actionId) {
         return createActionKey(ctx, actionId) + HubContext.DELIMITER + "properties";
+    }
+
+    protected Map<String,Object> createPropertyContainerMap(PropertyContainer pc) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("ctx", pc.getContainerClassContext().toString());
+        map.put("name", pc.getName());
+        map.put("values", new HashMap<>(pc.getPropertyValues()));
+        return map;
+    }
+
+    protected List<PropertyContainer> createPropertyContainerList(List<Map<String,Object>> l) {
+        List<PropertyContainer> results = new ArrayList<>();
+        if (l != null) {
+            for (Map<String, Object> m : l) {
+                results.add(createPropertyContainer(m));
+            }
+        }
+        return results;
+    }
+
+    protected PropertyContainer createPropertyContainer(Map<String,Object> map) {
+        return new PropertyContainer(
+            PropertyContainerClassContext.create((String)map.get("ctx")),
+            (Map<String,Object>)map.get("values")
+        );
     }
 }

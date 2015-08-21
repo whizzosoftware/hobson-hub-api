@@ -12,37 +12,25 @@ import com.whizzosoftware.hobson.api.task.TaskContext;
 import java.util.Map;
 
 /**
- * Event that occurs when a task is executed.
+ * An event that occurs when a task is published to the runtime.
  *
  * @author Dan Noguerol
  */
-public class TaskExecutionEvent extends HobsonEvent {
-    public static final String ID = "taskExecute";
+public class TaskPublishedEvent extends HobsonEvent {
+    public static final String ID = "taskPublished";
 
     private static final String PROP_CONTEXT = "context";
-    private static final String PROP_ERROR = "error";
 
-    public TaskExecutionEvent(long timestamp, TaskContext context, Throwable error) {
+    public TaskPublishedEvent(long timestamp, TaskContext context) {
         super(timestamp, EventTopics.STATE_TOPIC, ID);
         setProperty(PROP_CONTEXT, context);
-        if (error != null) {
-            setProperty(PROP_ERROR, error);
-        }
     }
 
-    public TaskExecutionEvent(Map<String,Object> properties) {
+    public TaskPublishedEvent(Map<String,Object> properties) {
         super(EventTopics.STATE_TOPIC, properties);
     }
 
     public TaskContext getContext() {
         return (TaskContext)getProperty(PROP_CONTEXT);
-    }
-
-    public boolean hasError() {
-        return (getProperty(PROP_ERROR) != null);
-    }
-
-    public Throwable getError() {
-        return (Throwable)getProperty(PROP_ERROR);
     }
 }
