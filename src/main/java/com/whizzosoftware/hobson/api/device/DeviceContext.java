@@ -10,6 +10,7 @@ package com.whizzosoftware.hobson.api.device;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -143,6 +144,18 @@ public class DeviceContext {
 
     public boolean isGlobal() {
         return (deviceId == null);
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder().append(getPluginContext()).append(deviceId).toHashCode();
+    }
+
+    public boolean equals(Object o) {
+        return (
+            o instanceof DeviceContext &&
+                ((DeviceContext)o).getPluginContext().equals(getPluginContext()) &&
+                ((DeviceContext)o).deviceId.equals(deviceId)
+        );
     }
 
     public String toString() {

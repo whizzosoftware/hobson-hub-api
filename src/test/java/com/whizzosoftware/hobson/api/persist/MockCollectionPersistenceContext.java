@@ -1,11 +1,13 @@
 package com.whizzosoftware.hobson.api.persist;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
+
+import java.util.*;
 
 public class MockCollectionPersistenceContext implements CollectionPersistenceContext {
     private Map<String,Map<String,Object>> maps = new HashMap<>();
+    private Map<PropertyContainerClassContext,PropertyContainerClass> pccMap = new HashMap<>();
 
     @Override
     public Map<String, Object> getMap(String key) {
@@ -18,6 +20,17 @@ public class MockCollectionPersistenceContext implements CollectionPersistenceCo
     }
 
     @Override
+    public List<Map<String, Object>> getMapsWithPrefix(String keyPrefix) {
+        List<Map<String,Object>> results = new ArrayList<>();
+        for (String key : maps.keySet()) {
+            if (key.startsWith(keyPrefix)) {
+                results.add(maps.get(key));
+            }
+        }
+        return results;
+    }
+
+    @Override
     public void setMap(String key, Map<String,Object> map) {
         maps.put(key, map);
     }
@@ -25,6 +38,15 @@ public class MockCollectionPersistenceContext implements CollectionPersistenceCo
     @Override
     public Set<String> getKeySet() {
         return maps.keySet();
+    }
+
+    public void addPropertyContainerClass(PropertyContainerClass pcc) {
+        pccMap.put(pcc.getContext(), pcc);
+    }
+
+    @Override
+    public PropertyContainerClass getPropertyContainerClass(PropertyContainerClassContext ctx) {
+        return pccMap.get(ctx);
     }
 
     @Override
