@@ -40,15 +40,6 @@ public class MockCollectionPersistenceContext implements CollectionPersistenceCo
         return maps.keySet();
     }
 
-    public void addPropertyContainerClass(PropertyContainerClass pcc) {
-        pccMap.put(pcc.getContext(), pcc);
-    }
-
-    @Override
-    public PropertyContainerClass getPropertyContainerClass(PropertyContainerClassContext ctx) {
-        return pccMap.get(ctx);
-    }
-
     @Override
     public void commit() {
 

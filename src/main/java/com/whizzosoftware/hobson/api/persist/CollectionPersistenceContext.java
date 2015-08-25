@@ -7,9 +7,6 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.persist;
 
-import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
-import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,15 +49,6 @@ public interface CollectionPersistenceContext {
      * @return a set of String keys
      */
     Set<String> getKeySet();
-
-    /**
-     * Returns the PropertyContainerClass for a specific context.
-     *
-     * @param ctx the context
-     *
-     * @return a PropertyContainerClass instance (or null if not found)
-     */
-    PropertyContainerClass getPropertyContainerClass(PropertyContainerClassContext ctx);
 
     /**
      * Commits changes to maps.
