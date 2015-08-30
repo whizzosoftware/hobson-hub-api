@@ -19,5 +19,6 @@ public enum DeviceType {
     SENSOR,
     SWITCH,
     THERMOSTAT,
-    UNKNOWN
+    UNKNOWN,
+    WEATHER_STATION
 }

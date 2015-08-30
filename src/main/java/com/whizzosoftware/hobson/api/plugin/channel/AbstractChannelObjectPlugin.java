@@ -105,6 +105,24 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
     }
 
     /**
+     * Indicates whether the channel is connected.
+     *
+     * @return a boolean
+     */
+    protected boolean isConnected() {
+        return (channel != null && channel.isOpen());
+    }
+
+    /**
+     * Indicates the default network port.
+     *
+     * @return an int
+     */
+    protected int getDefaultPort() {
+        return 4999;
+    }
+
+    /**
      * Sends an object over the channel. It will be the job of the handler returned from getEncoder() to convert
      * the object into bytes for transmission over the channel.
      *
@@ -180,8 +198,21 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
             } else {
                 s = (String) config.getPropertyValue("serial.hostname");
                 if (s != null && s.trim().length() > 0 && !s.equals(serialDevice)) {
-                    serialDevice = s;
-                    setRemoteAddress(new InetSocketAddress(serialDevice, 4999));
+                    int port = getDefaultPort();
+
+                    // check if a port number is included in the serial device string
+                    int ix = s.indexOf(':');
+                    if (ix > 0) {
+                        serialDevice = s.substring(0, ix);
+                        try {
+                            port = Integer.parseInt(s.substring(ix + 1, s.length()));
+                        } catch (NumberFormatException e) {
+                            logger.error("Error parsing port number from serial.hostname", e);
+                        }
+                    } else {
+                        serialDevice = s;
+                    }
+                    setRemoteAddress(new InetSocketAddress(serialDevice, port));
                     didConfigChange = true;
                 }
             }
