@@ -13,6 +13,7 @@ package com.whizzosoftware.hobson.api.variable;
  * @author Dan Noguerol
  */
 public class VariableConstants {
+    public static final String BAROMETRIC_PRESSURE_INHG = "baromInHg";
     public static final String COLOR = "color";
     public static final String DEW_PT_F = "dewPtF";
     public static final String ENERGY_CONSUMPTION_WATTS = "ecw";
