@@ -167,6 +167,12 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
+    public boolean hasDeviceVariable(DeviceContext ctx, String variableName) {
+        validateVariableManager();
+        return variableManager.hasDeviceVariable(ctx, variableName);
+    }
+
+    @Override
     public void onDeviceConfigurationUpdate(DeviceContext ctx, PropertyContainer config) {
         getDevice(ctx).getRuntime().onDeviceConfigurationUpdate(config);
     }

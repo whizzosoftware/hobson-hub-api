@@ -14,6 +14,7 @@ package com.whizzosoftware.hobson.api.variable;
  */
 public class VariableConstants {
     public static final String COLOR = "color";
+    public static final String DEW_PT_F = "dewPtF";
     public static final String ENERGY_CONSUMPTION_WATTS = "ecw";
     public static final String FIRMWARE_VERSION = "firmwareVersion";
     public static final String INDOOR_RELATIVE_HUMIDITY = "inRh";

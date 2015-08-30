@@ -8,8 +8,6 @@
 package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
-import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
-import com.whizzosoftware.hobson.api.property.TypedProperty;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
 import com.whizzosoftware.hobson.api.disco.DiscoManager;
@@ -67,6 +65,16 @@ public interface HobsonPluginRuntime extends EventListener {
      * @throws com.whizzosoftware.hobson.api.variable.VariableNotFoundException if the variable wasn't found
      */
     public HobsonVariable getDeviceVariable(DeviceContext ctx, String variableName);
+
+    /**
+     * Indicates if a device has published a particular variable.
+     *
+     * @param ctx the context of the device that published the variable
+     * @param variableName the variable name
+     *
+     * @return a boolean
+     */
+    public boolean hasDeviceVariable(DeviceContext ctx, String variableName);
 
     /**
      * Returns the event loop executor for this plugin.
