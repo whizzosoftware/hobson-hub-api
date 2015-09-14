@@ -44,6 +44,13 @@ public interface CollectionPersistenceContext {
     void setMap(String key, Map<String,Object> map);
 
     /**
+     * Removes a named map.
+     *
+     * @param key the map key
+     */
+    void removeMap(String key);
+
+    /**
      * Returns the key set for all named maps.
      *
      * @return a set of String keys

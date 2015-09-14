@@ -36,6 +36,11 @@ public class MockCollectionPersistenceContext implements CollectionPersistenceCo
     }
 
     @Override
+    public void removeMap(String key) {
+        maps.remove(key);
+    }
+
+    @Override
     public Set<String> getKeySet() {
         return maps.keySet();
     }

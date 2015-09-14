@@ -71,6 +71,11 @@ public class CollectionPersister {
         pctx.commit();
     }
 
+    public void deleteTask(CollectionPersistenceContext pctx, TaskContext context) {
+        pctx.removeMap(KeyUtil.createTaskMetaKey(context));
+        pctx.commit();
+    }
+
     public HobsonTask restoreTask(CollectionPersistenceContext pctx, TaskContext taskContext) {
         Map<String,Object> taskMap = pctx.getMap(KeyUtil.createTaskMetaKey(taskContext));
 
