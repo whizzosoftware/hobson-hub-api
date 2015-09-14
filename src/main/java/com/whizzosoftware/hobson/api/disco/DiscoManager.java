@@ -10,6 +10,8 @@ package com.whizzosoftware.hobson.api.disco;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 
+import java.util.Collection;
+
 /**
  * A manager interface for managing device advertisement listeners.
  *
@@ -18,20 +20,24 @@ import com.whizzosoftware.hobson.api.plugin.PluginContext;
  */
 public interface DiscoManager {
     /**
-     * Allows a plugin to request all known device advertisements. This is an asynchronous call that will be serviced
-     * as multiple DeviceAdvertisementEvent events to the plugin's onHobsonEvent() callback.
+     * Allows a plugin to request all known external device advertisements. This is an asynchronous call that will be
+     * serviced as multiple DeviceAdvertisementEvent events to the plugin's onHobsonEvent() callback.
      *
      * @param ctx the context of the plugin requesting the snapshot
      * @param protocolId the protocol ID for the advertisements requested
      */
-    public void requestDeviceAdvertisementSnapshot(PluginContext ctx, String protocolId);
+    public void requestExternalDeviceAdvertisementSnapshot(PluginContext ctx, String protocolId);
+
+    public Collection<DeviceAdvertisement> getInternalDeviceAdvertisements(HubContext ctx, String protocolId);
+
+    public DeviceAdvertisement getInternalDeviceAdvertisement(HubContext ctx, String protocolId, String advId);
 
     /**
-     * Fires a DeviceAdvertisement. This should perform callbacks for any registered DeviceAdvertisementListeners
-     * that are available for the advertisement's protocol.
+     * Publishes an internal DeviceAdvertisement. This will insure that the advertisement is included in any discovery
+     * requests that external clients make for a particular protocol.
      *
      * @param ctx the context of the hub publishing the advertisement
      * @param advertisement the advertisement to publish
      */
-    public void fireDeviceAdvertisement(HubContext ctx, DeviceAdvertisement advertisement);
+    public void publishDeviceAdvertisement(HubContext ctx, DeviceAdvertisement advertisement, boolean internal);
 }

@@ -415,7 +415,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         executeInEventLoop(new Runnable() {
             @Override
             public void run() {
-            discoManager.requestDeviceAdvertisementSnapshot(getContext(), protocolId);
+            discoManager.requestExternalDeviceAdvertisementSnapshot(getContext(), protocolId);
             }
         });
     }
@@ -425,9 +425,9 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
      *
      * @param advertisement the advertisement to publish
      */
-    protected void fireDeviceAdvertisement(DeviceAdvertisement advertisement) {
+    protected void publishDeviceAdvertisement(DeviceAdvertisement advertisement, boolean internal) {
         validateDiscoManager();
-        discoManager.fireDeviceAdvertisement(HubContext.createLocal(), advertisement);
+        discoManager.publishDeviceAdvertisement(HubContext.createLocal(), advertisement, internal);
     }
 
     protected void executeTask(TaskContext context) {
@@ -506,6 +506,10 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
 
     protected DeviceManager getDeviceManager() {
         return deviceManager;
+    }
+
+    protected DiscoManager getDiscoManager() {
+        return discoManager;
     }
 
     protected HubManager getHubManager() {

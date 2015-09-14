@@ -19,6 +19,36 @@ public class MockDeviceManager implements DeviceManager {
     public final List<HobsonDevice> publishedDevices = new ArrayList<>();
 
     @Override
+    public DeviceBootstrap createDeviceBootstrap(HubContext hubContext, String deviceId) {
+        return null;
+    }
+
+    @Override
+    public Collection<DeviceBootstrap> getDeviceBootstraps(HubContext hubContext) {
+        return null;
+    }
+
+    @Override
+    public DeviceBootstrap getDeviceBootstrap(HubContext hubContext, String id) {
+        return null;
+    }
+
+    @Override
+    public DeviceBootstrap registerDeviceBootstrap(HubContext hubContext, String deviceId) {
+        return null;
+    }
+
+    @Override
+    public void deleteDeviceBootstrap(HubContext hubContext, String id) {
+
+    }
+
+    @Override
+    public boolean verifyDeviceBootstrap(HubContext hubContext, String id, String secret) {
+        return false;
+    }
+
+    @Override
     public Collection<HobsonDevice> getAllDevices(HubContext ctx) {
         return getPublishedDevices();
     }

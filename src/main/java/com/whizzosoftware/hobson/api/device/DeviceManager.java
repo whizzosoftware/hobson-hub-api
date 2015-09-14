@@ -23,6 +23,65 @@ import java.util.Map;
  */
 public interface DeviceManager {
     /**
+     * Creates a new bootstrap object for a new device with a globally unique ID.
+     *
+     *
+     * @param hubContext the hub context
+     * @param deviceId the globally unique device ID
+     *
+     * @return the device secret
+     */
+    public DeviceBootstrap createDeviceBootstrap(HubContext hubContext, String deviceId);
+
+    /**
+     * Returns a collection of all created device bootstraps.
+     *
+     * @param hubContext the hub context
+     *
+     * @return a Collection of DeviceBootstrap instances
+     */
+    public Collection<DeviceBootstrap> getDeviceBootstraps(HubContext hubContext);
+
+    /**
+     * Retrieves a device bootstrap.
+     *
+     * @param hubContext the hub context
+     * @param id the bootstrap ID
+     *
+     * @return a DeviceBootstrap instance
+     */
+    public DeviceBootstrap getDeviceBootstrap(HubContext hubContext, String id);
+
+    /**
+     * Registers a device bootstrap.
+     *
+     * @param hubContext the hub context
+     * @param deviceId the device ID
+     *
+     * @return a DeviceBootstrap
+     */
+    public DeviceBootstrap registerDeviceBootstrap(HubContext hubContext, String deviceId);
+
+    /**
+     * Deletes a device bootstrap.
+     *
+     * @param hubContext the hub context
+     * @param id the bootstrap ID
+     */
+    public void deleteDeviceBootstrap(HubContext hubContext, String id);
+
+    /**
+     * Authenticates a device bootstrap.
+     *
+     * @param hubContext the hub context
+     * @param id the globally unique device ID
+     * @param secret the secret to verify
+     *
+     * @return a boolean indicating whether the device ID and secret are valid
+     */
+    public boolean verifyDeviceBootstrap(HubContext hubContext, String id, String secret);
+
+    /**
      * Returns all devices published by a hub.
      *
      * @param ctx the context of the hub that published the devices

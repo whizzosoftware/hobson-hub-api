@@ -17,18 +17,22 @@ package com.whizzosoftware.hobson.api.disco;
 public class DeviceAdvertisement {
     private String id;
     private String protocolId;
+    private String uri;
     private String rawData;
     private Object object;
 
-    public DeviceAdvertisement(String id, String protocolId, String rawData) {
+    private DeviceAdvertisement(String id, String protocolId) {
         this.id = id;
         this.protocolId = protocolId;
-        this.rawData = rawData;
     }
 
-    public DeviceAdvertisement(String id, String protocolId, String rawData, Object object) {
-        this(id, protocolId, rawData);
-        this.object = object;
+    /**
+     * Returns a unique identifier for this device advertisement.
+     *
+     * @return an ID
+     */
+    public String getId() {
+        return id;
     }
 
     /**
@@ -40,13 +44,12 @@ public class DeviceAdvertisement {
         return protocolId;
     }
 
-    /**
-     * Returns a unique identifier for this device advertisement.
-     *
-     * @return an ID
-     */
-    public String getId() {
-        return id;
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
     /**
@@ -66,5 +69,32 @@ public class DeviceAdvertisement {
      */
     public String getRawData() {
         return rawData;
+    }
+
+    static public class Builder {
+        private DeviceAdvertisement da;
+
+        public Builder(String id, String protocolId) {
+            da = new DeviceAdvertisement(id, protocolId);
+        }
+
+        public Builder uri(String uri) {
+            da.uri = uri;
+            return this;
+        }
+
+        public Builder rawData(String rawData) {
+            da.rawData = rawData;
+            return this;
+        }
+
+        public Builder object(Object object) {
+            da.object = object;
+            return this;
+        }
+
+        public DeviceAdvertisement build() {
+            return da;
+        }
     }
 }

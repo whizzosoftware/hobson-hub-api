@@ -138,6 +138,10 @@ public class DeviceContext {
         return ctx.getPluginId();
     }
 
+    public boolean hasDeviceId() {
+        return (deviceId != null);
+    }
+
     public String getDeviceId() {
         return deviceId;
     }
