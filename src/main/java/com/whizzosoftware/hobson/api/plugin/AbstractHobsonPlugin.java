@@ -425,7 +425,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
      *
      * @param advertisement the advertisement to publish
      */
-    protected void publishDeviceAdvertisement(DeviceAdvertisement advertisement, boolean internal) {
+    public void publishDeviceAdvertisement(DeviceAdvertisement advertisement, boolean internal) {
         validateDiscoManager();
         discoManager.publishDeviceAdvertisement(HubContext.createLocal(), advertisement, internal);
     }

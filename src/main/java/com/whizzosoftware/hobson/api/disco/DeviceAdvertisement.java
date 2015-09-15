@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.disco;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 /**
  * A DeviceAdvertisement is a message that devices broadcast to indicate their availability (or lack thereof).
  * Generally, these objects will be consumed by plugins to determine if the advertised device is something they care
@@ -69,6 +71,14 @@ public class DeviceAdvertisement {
      */
     public String getRawData() {
         return rawData;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .append("protocol", getProtocolId())
+            .append("uri", getUri())
+            .toString();
     }
 
     static public class Builder {
