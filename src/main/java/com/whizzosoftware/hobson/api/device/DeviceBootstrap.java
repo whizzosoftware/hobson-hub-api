@@ -20,9 +20,14 @@ public class DeviceBootstrap {
     private String secret;
 
     public DeviceBootstrap(String id, String deviceId, long creationTime) {
+        this(id, deviceId, creationTime, null);
+    }
+
+    public DeviceBootstrap(String id, String deviceId, long creationTime, Long bootstrapTime) {
         this.id = id;
         this.deviceId = deviceId;
         this.creationTime = creationTime;
+        this.bootstrapTime = bootstrapTime;
     }
 
     public String getId() {
@@ -35,6 +40,10 @@ public class DeviceBootstrap {
 
     public long getCreationTime() {
         return creationTime;
+    }
+
+    public boolean hasBootstrapTime() {
+        return (bootstrapTime != null);
     }
 
     public Long getBootstrapTime() {

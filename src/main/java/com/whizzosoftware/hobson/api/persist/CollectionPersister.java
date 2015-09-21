@@ -9,6 +9,7 @@ package com.whizzosoftware.hobson.api.persist;
 
 import com.whizzosoftware.hobson.api.HobsonNotFoundException;
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
+import com.whizzosoftware.hobson.api.device.DeviceBootstrap;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
@@ -29,6 +30,20 @@ import java.util.*;
  * @author Dan Noguerol
  */
 public class CollectionPersister {
+
+    public void saveDeviceBootstrap(CollectionPersistenceContext pctx, DeviceBootstrap db) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("id", db.getId());
+        map.put("deviceId", db.getDeviceId());
+        map.put("secret", db.getSecret());
+        map.put("creationTime", db.getCreationTime());
+        if (db.hasBootstrapTime()) {
+            map.put("bootstrapTime", db.getBootstrapTime());
+        }
+
+        pctx.setMap(db.getId(), map);
+        pctx.commit();
+    }
 
     public void saveTask(CollectionPersistenceContext pctx, HobsonTask task) {
         Map<String,Object> map = new HashMap<>();
@@ -71,9 +86,27 @@ public class CollectionPersister {
         pctx.commit();
     }
 
+    public void deleteDeviceBootstrap(CollectionPersistenceContext pctx, String id) {
+        pctx.removeMap(id);
+        pctx.commit();
+    }
+
     public void deleteTask(CollectionPersistenceContext pctx, TaskContext context) {
         pctx.removeMap(KeyUtil.createTaskMetaKey(context));
         pctx.commit();
+    }
+
+    public DeviceBootstrap restoreDeviceBootstrap(CollectionPersistenceContext pctx, String id) {
+        Map<String,Object> map = pctx.getMap(id);
+        if (map != null) {
+            String deviceId = (String) map.get("deviceId");
+            if (deviceId != null) {
+                DeviceBootstrap db = new DeviceBootstrap(id, deviceId, (Long)map.get("creationTime"), (Long)map.get("bootstrapTime"));
+                db.setSecret((String)map.get("secret"));
+                return db;
+            }
+        }
+        return null;
     }
 
     public HobsonTask restoreTask(CollectionPersistenceContext pctx, TaskContext taskContext) {
