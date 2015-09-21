@@ -82,6 +82,15 @@ public interface DeviceManager {
     public boolean verifyDeviceBootstrap(HubContext hubContext, String id, String secret);
 
     /**
+     * Resets a device bootstrap to its initially created state. This will allow a device to successfully
+     * re-request its bootstrap information.
+     *
+     * @param hubContext the hub context
+     * @param id the globally unique device ID
+     */
+    public void resetDeviceBootstrap(HubContext hubContext, String id);
+
+    /**
      * Returns all devices published by a hub.
      *
      * @param ctx the context of the hub that published the devices
