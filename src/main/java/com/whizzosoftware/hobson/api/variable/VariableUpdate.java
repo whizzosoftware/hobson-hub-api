@@ -19,6 +19,7 @@ public class VariableUpdate {
     private String name;
     private Object value;
     private long timestamp;
+    private boolean initial;
 
     /**
      * Constructor.
@@ -40,10 +41,23 @@ public class VariableUpdate {
      * @param timestamp the time the variable was updated
      */
     public VariableUpdate(DeviceContext ctx, String name, Object value, long timestamp) {
+        this(ctx, name, value, timestamp, false);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param ctx the device context
+     * @param name the variable name
+     * @param value the variable value
+     * @param timestamp the time the variable was updated
+     */
+    public VariableUpdate(DeviceContext ctx, String name, Object value, long timestamp, boolean initial) {
         this.ctx = ctx;
         this.name = name;
         this.value = value;
         this.timestamp = timestamp;
+        this.initial = initial;
     }
 
     /**
@@ -107,6 +121,24 @@ public class VariableUpdate {
      */
     public long getTimestamp() {
         return timestamp;
+    }
+
+    /**
+     * Indicates if this is the first update for this variable (i.e. the first non-null value).
+     *
+     * @return a boolean
+     */
+    public boolean isInitial() {
+        return initial;
+    }
+
+    /**
+     * Sets the indicator that this is the first update for this variable (i.e. the first non-null value).
+     *
+     * @param initial a boolean
+     */
+    public void setInitial(boolean initial) {
+        this.initial = initial;
     }
 
     public String toString() {
