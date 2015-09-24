@@ -16,6 +16,13 @@ import com.whizzosoftware.hobson.api.property.PropertyContainer;
  */
 public interface HobsonDeviceRuntime {
     /**
+     * Updates a device's last check-in time.
+     *
+     * @param checkInTime the time to update with
+     */
+    public void checkInDevice(Long checkInTime);
+
+    /**
      * Sets a device configuration property.
      *
      * @param name the configuration property name

@@ -99,6 +99,11 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
+    public void checkInDevice(DeviceContext ctx, Long checkInTime) {
+
+    }
+
+    @Override
     public void unpublishDevice(DeviceContext ctx, EventLoopExecutor executor) {
         HobsonDevice unpublishDevice = null;
         for (HobsonDevice device : publishedDevices) {

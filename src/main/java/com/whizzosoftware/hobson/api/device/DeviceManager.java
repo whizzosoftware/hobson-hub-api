@@ -174,6 +174,14 @@ public interface DeviceManager {
     public void publishDevice(HobsonDevice device, boolean republish);
 
     /**
+     * Updates the last check-in time of the device.
+     *
+     * @param ctx the device context
+     * @param checkInTime the check-in time
+     */
+    public void checkInDevice(DeviceContext ctx, Long checkInTime);
+
+    /**
      * Sets configuration for a device.
      *  @param ctx the context of the target device
      * @param config the new configuration
