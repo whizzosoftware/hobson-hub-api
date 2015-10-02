@@ -58,6 +58,13 @@ public interface HobsonDevice {
     public DeviceError getError();
 
     /**
+     * Returns whether the device is considered available or not.
+     *
+     * @return a boolean
+     */
+    boolean isAvailable();
+
+    /**
      * Returns the last time contact was made with the device.
      *
      * @return a Long (or null if the device has never been contacted)
