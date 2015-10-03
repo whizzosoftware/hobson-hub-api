@@ -24,8 +24,6 @@ import java.util.List;
  * @author Dan Noguerol
  */
 abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDeviceRuntime {
-    private static final int AVAILABILITY_TIMEOUT_INTERVAL = 300000;
-
     private HobsonPlugin plugin;
     private DeviceContext ctx;
     private String name;
