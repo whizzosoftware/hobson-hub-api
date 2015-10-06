@@ -26,7 +26,7 @@ public interface TelemetryManager {
      * @param ctx the context of the target device
      * @param enabled whether to enable telemetry
      */
-    public void enableDeviceTelemetry(DeviceContext ctx, boolean enabled);
+    void enableDeviceTelemetry(DeviceContext ctx, boolean enabled);
 
     /**
      * Returns all hub devices for which telemetry has been enabled.
@@ -35,7 +35,7 @@ public interface TelemetryManager {
      *
      * @return a Collection of HobsonDevice instances
      */
-    public Collection<HobsonDevice> getAllTelemetryEnabledDevices(HubContext ctx);
+    Collection<HobsonDevice> getAllTelemetryEnabledDevices(HubContext ctx);
 
     /**
      * Retrieves telemetry data for a specific device.
@@ -46,7 +46,7 @@ public interface TelemetryManager {
      *
      * @return a Map (keyed by variable name) to Collections of TemporalValue instances
      */
-    public Map<String,Collection<TemporalValue>> getDeviceTelemetry(DeviceContext ctx, long endTime, TelemetryInterval interval);
+    Map<String,Collection<TemporalValue>> getDeviceTelemetry(DeviceContext ctx, long endTime, TelemetryInterval interval);
 
     /**
      * Retrieves telemetry data for a device variable.
@@ -58,7 +58,7 @@ public interface TelemetryManager {
      *
      * @return a Collection of TemporalValue instances
      */
-    public Collection<TemporalValue> getDeviceVariableTelemetry(DeviceContext ctx, String name, long endTime, TelemetryInterval interval);
+    Collection<TemporalValue> getDeviceVariableTelemetry(DeviceContext ctx, String name, long endTime, TelemetryInterval interval);
 
     /**
      * Indicates whether a device's telemetry is enabled.
@@ -67,7 +67,7 @@ public interface TelemetryManager {
      *
      * @return a boolean
      */
-    public boolean isDeviceTelemetryEnabled(DeviceContext ctx);
+    boolean isDeviceTelemetryEnabled(DeviceContext ctx);
 
     /**
      * Writes telemetry data for a specific device.
@@ -75,7 +75,7 @@ public interface TelemetryManager {
      * @param ctx the context of the target device
      * @param values a Map (keyed by variable name) to a TemporalValue
      */
-    public void writeDeviceTelemetry(DeviceContext ctx, Map<String,TemporalValue> values);
+    void writeDeviceTelemetry(DeviceContext ctx, Map<String,TemporalValue> values);
 
     /**
      * Writes telemetry data for a device variable.
@@ -83,7 +83,6 @@ public interface TelemetryManager {
      * @param ctx the context of the device that produced the data
      * @param name the variable name
      * @param value the variable value
-     * @param time the time the variable held the value (in epoch time)
      */
-    public void writeDeviceVariableTelemetry(DeviceContext ctx, String name, Object value, long time);
+    void writeDeviceVariableTelemetry(DeviceContext ctx, String name, TemporalValue value);
 }

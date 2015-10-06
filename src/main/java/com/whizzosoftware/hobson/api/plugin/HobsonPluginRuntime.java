@@ -39,21 +39,21 @@ public interface HobsonPluginRuntime extends EventListener {
      *
      * @param event the event to fire
      */
-    public void fireHobsonEvent(HobsonEvent event);
+    void fireHobsonEvent(HobsonEvent event);
 
     /**
      * Fires a notification that a variable has been successfully updated.
      *
      * @param variableUpdate a VariableUpdate instance
      */
-    public void fireVariableUpdateNotification(VariableUpdate variableUpdate);
+    void fireVariableUpdateNotification(VariableUpdate variableUpdate);
 
     /**
      * Fires a notification that variables has been successfully updated.
      *
      * @param updates a List of VariableUpdate instances
      */
-    public void fireVariableUpdateNotifications(List<VariableUpdate> updates);
+    void fireVariableUpdateNotifications(List<VariableUpdate> updates);
 
     /**
      * Retrieves a specific device variable.
@@ -64,7 +64,7 @@ public interface HobsonPluginRuntime extends EventListener {
      * @return a HobsonVariable instance
      * @throws com.whizzosoftware.hobson.api.variable.VariableNotFoundException if the variable wasn't found
      */
-    public HobsonVariable getDeviceVariable(DeviceContext ctx, String variableName);
+    HobsonVariable getDeviceVariable(DeviceContext ctx, String variableName);
 
     /**
      * Indicates if a device has published a particular variable.
@@ -74,71 +74,62 @@ public interface HobsonPluginRuntime extends EventListener {
      *
      * @return a boolean
      */
-    public boolean hasDeviceVariable(DeviceContext ctx, String variableName);
+    boolean hasDeviceVariable(DeviceContext ctx, String variableName);
 
     /**
      * Returns the event loop executor for this plugin.
      *
      * @return an EventLoopExecutor instance
      */
-    public EventLoopExecutor getEventLoopExecutor();
+    EventLoopExecutor getEventLoopExecutor();
 
     /**
      * Returns the topics this plugin is interested in receiving events for.
      *
      * @return an array of String topic names (or null if no events are desired)
      */
-    public String[] getEventTopics();
+    String[] getEventTopics();
 
     /**
      * Returns how often the refresh() method will be called.
      *
      * @return the refresh interval in seconds (a 0 value means never)
      */
-    public long getRefreshInterval();
+    long getRefreshInterval();
 
     /**
      * Returns the task provider associated with this plugin.
      *
      * @return a TaskProvider instance (or null if one is not available)
      */
-    public TaskProvider getTaskProvider();
+    TaskProvider getTaskProvider();
 
     /**
      * Called when the plugin device's configuration has changed.
      *  @param ctx the context of the device that owns the configuration
      * @param config the new configuration
      */
-    public void onDeviceConfigurationUpdate(DeviceContext ctx, PropertyContainer config);
-
-    /**
-     * Called when a condition that a plugin published needs to be evaluated.
-     *
-     * @param condition the condition to evaluate
-     *
-     * @return the boolean results of the condition
-     */
-    public boolean onEvaluateCondition(PropertyContainer condition);
+    void onDeviceConfigurationUpdate(DeviceContext ctx, PropertyContainer config);
 
     /**
      * Called when an action that a plugin has published needs to be executed.
      *
      * @param action the action to execute
      */
-    public void onExecuteAction(PropertyContainer action);
+    void onExecuteAction(PropertyContainer action);
 
     /**
      * Called when the plugin's configuration has changed.
      *
      * @param config the new configuration
      */
-    public void onPluginConfigurationUpdate(PropertyContainer config);
+    void onPluginConfigurationUpdate(PropertyContainer config);
 
     /**
      * Callback that gives a plugin the opportunity to perform work. This will be called every
      * refresh interval.
      */
-    public void onRefresh();
+    void onRefresh();
 
     /**
      * Callback when a request to set a device variable has been received.
@@ -147,33 +138,33 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param variableName the variable name
      * @param value the variable value
      */
-    public void onSetDeviceVariable(DeviceContext ctx, String variableName, Object value);
+    void onSetDeviceVariable(DeviceContext ctx, String variableName, Object value);
 
     /**
      * Callback method invoked when the plugin starts up.
      *
      * @param config the plugin configuration
      */
-    public void onStartup(PropertyContainer config);
+    void onStartup(PropertyContainer config);
 
     /**
      * Callback method invoked when the plugin shuts down.
      */
-    public void onShutdown();
+    void onShutdown();
 
     /**
      * Publish an action class.
      *
      * @param actionClass the action class to publish
      */
-    public void publishActionClass(TaskActionClass actionClass);
+    void publishActionClass(TaskActionClass actionClass);
 
     /**
      * Publish a condition class.
      *
      * @param conditionClass the condition class to publish
      */
-    public void publishConditionClass(TaskConditionClass conditionClass);
+    void publishConditionClass(TaskConditionClass conditionClass);
 
     /**
      * Publish a device variable.
@@ -183,7 +174,7 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param value the value of the new variable (or null if not known)
      * @param mask the access mask of the new variable
      */
-    public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask);
+    void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask);
 
     /**
      * Publish a device variable.
@@ -194,7 +185,7 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param mask the variable mask
      * @param proxyType indicates the type of proxy that can perform value substitutions (or null if not applicable)
      */
-    public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, String proxyType);
+    void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, String proxyType);
 
     /**
      * Publish a global variable.
@@ -203,7 +194,7 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param value the value of the new variable (or null if not known)
      * @param mask the access mask of the new variable
      */
-    public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask);
+    void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask);
 
     /**
      * Publish a global variable.
@@ -213,7 +204,7 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param mask the access mask of the new variable
      * @param proxyType indicates the type of proxy that can perform value substitutions (or null if not applicable)
      */
-    public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask, String proxyType);
+    void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask, String proxyType);
 
     /**
      * Execute a recurring task.
@@ -223,7 +214,7 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param time the wait interval between executions
      * @param unit the temporal unit for the time argument
      */
-    public void scheduleAtFixedRateInEventLoop(Runnable runnable, long initialDelay, long time, TimeUnit unit);
+    void scheduleAtFixedRateInEventLoop(Runnable runnable, long initialDelay, long time, TimeUnit unit);
 
     /**
      * Sets a configuration property for a specific device.
@@ -233,63 +224,63 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param value the value of the variable
      * @param overwrite whether to overwrite the property if it already exists
      */
-    public void setDeviceConfigurationProperty(DeviceContext ctx, String name, Object value, boolean overwrite);
+    void setDeviceConfigurationProperty(DeviceContext ctx, String name, Object value, boolean overwrite);
 
     /**
      * Sets the DeviceManager instance the plugin should use. This will be called before the init() method.
      *
      * @param deviceManager a DeviceManager
      */
-    public void setDeviceManager(DeviceManager deviceManager);
+    void setDeviceManager(DeviceManager deviceManager);
 
     /**
      * Sets the DiscoManager instance the plugin should use. This will be called before the init() method.
      *
      * @param discoManager a DiscoManager
      */
-    public void setDiscoManager(DiscoManager discoManager);
+    void setDiscoManager(DiscoManager discoManager);
 
     /**
      * Sets the EventManager instance the plugin should use. This will be called before the init() method.
      *
      * @param eventManager a EventManager
      */
-    public void setEventManager(EventManager eventManager);
+    void setEventManager(EventManager eventManager);
 
     /**
      * Sets the HubManager instance the plugin should use. This will be called before the init() method.
      *
      * @param hubManager a HubManager
      */
-    public void setHubManager(HubManager hubManager);
+    void setHubManager(HubManager hubManager);
 
     /**
      * Sets the PluginManager instance the plugin should use. This will be called before the init() method.
      *
      * @param pluginManager a PluginManager
      */
-    public void setPluginManager(PluginManager pluginManager);
+    void setPluginManager(PluginManager pluginManager);
 
     /**
      * Sets the TaskManager instance the plugin should use. This will be called before the init() method.
      *
      * @param taskManager a TaskManager
      */
-    public void setTaskManager(TaskManager taskManager);
+    void setTaskManager(TaskManager taskManager);
 
     /**
      * Sets the TelemetryManager instance the plugin should use. This will be called before the init() method.
      *
      * @param telemetryManager a TelemetryManager
      */
-    public void setTelemetryManager(TelemetryManager telemetryManager);
+    void setTelemetryManager(TelemetryManager telemetryManager);
 
     /**
      * Sets the VariableManager instance the plugin should use. This will be called before the init() method.
      *
      * @param variableManager a VariableManager
      */
-    public void setVariableManager(VariableManager variableManager);
+    void setVariableManager(VariableManager variableManager);
 
     /**
      * Execute a task using the plugin event loop. Note that this will tie up the event loop while the task is being
@@ -299,5 +290,5 @@ public interface HobsonPluginRuntime extends EventListener {
      *
      * @return a Future for monitoring the task execution status
      */
-    public Future submitInEventLoop(Runnable runnable);
+    Future submitInEventLoop(Runnable runnable);
 }

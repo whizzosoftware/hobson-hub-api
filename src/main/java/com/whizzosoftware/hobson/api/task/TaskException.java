@@ -16,7 +16,6 @@ public class TaskException extends RuntimeException {
     public TaskException(String msg) {
         super(msg);
     }
-
     public TaskException(String msg, Throwable t) {
         super(msg, t);
     }

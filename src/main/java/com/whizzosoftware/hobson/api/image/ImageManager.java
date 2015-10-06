@@ -25,7 +25,7 @@ public interface ImageManager {
      * @return an ImageInputStream instance
      * @throws com.whizzosoftware.hobson.api.HobsonNotFoundException if an image does not exist
      */
-    public ImageInputStream getHubImage(HubContext ctx);
+    ImageInputStream getHubImage(HubContext ctx);
 
     /**
      * Sets the current Hub image.
@@ -33,7 +33,7 @@ public interface ImageManager {
      * @param ctx the context of the target hub
      * @param iis the image input stream
      */
-    public void setHubImage(HubContext ctx, ImageInputStream iis);
+    void setHubImage(HubContext ctx, ImageInputStream iis);
 
     /**
      * Retrieves all groups in the image library.
@@ -42,7 +42,7 @@ public interface ImageManager {
      *
      * @return a List of ImageGroup objects
      */
-    public List<ImageGroup> getImageLibraryGroups(HubContext ctx);
+    List<ImageGroup> getImageLibraryGroups(HubContext ctx);
 
     /**
      * Retrieves all image IDs in a group.
@@ -52,7 +52,7 @@ public interface ImageManager {
      *
      * @return a List of Strings
      */
-    public List<String> getImageLibraryImageIds(HubContext ctx, String groupId);
+    List<String> getImageLibraryImageIds(HubContext ctx, String groupId);
 
     /**
      * Retrieves binary representation of an image library image.
@@ -63,5 +63,5 @@ public interface ImageManager {
      * @return an ImageInputStream object
      * @throws com.whizzosoftware.hobson.api.HobsonNotFoundException if an image does not exist
      */
-    public ImageInputStream getImageLibraryImage(HubContext ctx, String imageId);
+    ImageInputStream getImageLibraryImage(HubContext ctx, String imageId);
 }

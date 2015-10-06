@@ -13,7 +13,6 @@ import com.whizzosoftware.hobson.api.device.DeviceBootstrap;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
-import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
 import com.whizzosoftware.hobson.api.task.HobsonTask;
@@ -251,30 +250,5 @@ public class CollectionPersister {
 
     public String getActionSetIdFromKey(HubContext ctx, String key) {
         return key.substring(key.lastIndexOf(HubContext.DELIMITER) + 1);
-    }
-
-    protected Map<String,Object> createPropertyContainerMap(PropertyContainerClass pcc, PropertyContainer pc) {
-        Map<String,Object> map = new HashMap<>();
-        map.put("ctx", pc.getContainerClassContext().toString());
-        map.put("name", pc.getName());
-        map.put("values", new HashMap<>(pc.getPropertyValues()));
-        return map;
-    }
-
-    protected List<PropertyContainer> createPropertyContainerList(List<Map<String,Object>> l) {
-        List<PropertyContainer> results = new ArrayList<>();
-        if (l != null) {
-            for (Map<String, Object> m : l) {
-                results.add(createPropertyContainer(m));
-            }
-        }
-        return results;
-    }
-
-    protected PropertyContainer createPropertyContainer(Map<String,Object> map) {
-        return new PropertyContainer(
-            PropertyContainerClassContext.create((String)map.get("ctx")),
-            (Map<String,Object>)map.get("values")
-        );
     }
 }

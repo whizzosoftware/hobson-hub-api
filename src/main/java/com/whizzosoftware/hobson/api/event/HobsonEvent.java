@@ -14,7 +14,7 @@ abstract public class HobsonEvent {
      */
     public static final String PROP_TIMESTAMP = "timestamp";
     /**
-     * The event name property.
+     * The event ID property.
      */
     public static final String PROP_EVENT_ID = "eventId";
 

@@ -21,7 +21,7 @@ public interface LocalHubManager {
      *
      * @return true if the password is valid
      */
-    public boolean authenticateLocal(HubContext ctx, String password);
+    boolean authenticateLocal(HubContext ctx, String password);
 
     /**
      * Sets the password for the local admin user.
@@ -31,19 +31,19 @@ public interface LocalHubManager {
      *
      * @throws com.whizzosoftware.hobson.api.HobsonInvalidRequestException if password does not meet complexity requirements
      */
-    public void setLocalPassword(HubContext ctx, PasswordChange change);
+    void setLocalPassword(HubContext ctx, PasswordChange change);
 
     /**
      * Add a new appender for error logging.
      *
      * @param aAppender the appender to add
      */
-    public void addErrorLogAppender(Object aAppender);
+    void addErrorLogAppender(Object aAppender);
 
     /**
      * Remove an appender for error logging.
      *
      * @param aAppender the appender to remove
      */
-    public void removeLogAppender(Object aAppender);
+    void removeLogAppender(Object aAppender);
 }

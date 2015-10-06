@@ -20,7 +20,7 @@ public interface HobsonDeviceRuntime {
      *
      * @param checkInTime the time to update with
      */
-    public void checkInDevice(Long checkInTime);
+    void checkInDevice(Long checkInTime);
 
     /**
      * Sets a device configuration property.
@@ -29,26 +29,26 @@ public interface HobsonDeviceRuntime {
      * @param value the value
      * @param overwrite whether to overwrite a previously set value
      */
-    public void setConfigurationProperty(String name, Object value, boolean overwrite);
+    void setConfigurationProperty(String name, Object value, boolean overwrite);
 
     /**
      * Callback method invoked when the device is started.
      *
      * @param config the current device configuration
      */
-    public void onStartup(PropertyContainer config);
+    void onStartup(PropertyContainer config);
 
     /**
      * Callback method invoked when the device is stopped.
      */
-    public void onShutdown();
+    void onShutdown();
 
     /**
      * Called when the device's configuration has changed.
      *
      * @param config the updated new configuration
      */
-    public void onDeviceConfigurationUpdate(PropertyContainer config);
+    void onDeviceConfigurationUpdate(PropertyContainer config);
 
     /**
      * Called when a device should set one of its variables. The actual setting of the variable should be performed
@@ -61,5 +61,5 @@ public interface HobsonDeviceRuntime {
      * @param variableName the name of the variable
      * @param value the value of the variable
      */
-    public void onSetVariable(String variableName, Object value);
+    void onSetVariable(String variableName, Object value);
 }

@@ -17,6 +17,9 @@ import java.util.Collection;
 /**
  * An interface for managing Hobson plugins.
  *
+ * Note that this interface differentiates between local plugins (i.e. plugins installed on the hub) and remote
+ * plugins (i.e. plugins available from a remote repository).
+ *
  * @author Dan Noguerol
  * @since hobson-hub-api 0.1.6
  */
@@ -26,7 +29,7 @@ public interface PluginManager {
      *
      * @param uri the URI of the repository
      */
-    public void addRemoteRepository(String uri);
+    void addRemoteRepository(String uri);
 
     /**
      * Returns a File for a plugin's data directory.
@@ -35,7 +38,7 @@ public interface PluginManager {
      *
      * @return a File instance
      */
-    public File getDataDirectory(PluginContext ctx);
+    File getDataDirectory(PluginContext ctx);
 
     /**
      * Returns a File for a named file located in a plugin's data directory.
@@ -45,7 +48,7 @@ public interface PluginManager {
      *
      * @return a File instance (or null if not found)
      */
-    public File getDataFile(PluginContext ctx, String filename);
+    File getDataFile(PluginContext ctx, String filename);
 
     /**
      * Retrieves a specific plugin.
@@ -54,7 +57,7 @@ public interface PluginManager {
      *
      * @return a HobsonPlugin instance (or null if not found)
      */
-    public HobsonPlugin getLocalPlugin(PluginContext ctx);
+    HobsonPlugin getLocalPlugin(PluginContext ctx);
 
     /**
      * Returns the plugin level configuration.
@@ -63,17 +66,7 @@ public interface PluginManager {
      *
      * @return a Dictionary (or null if there is no configuration)
      */
-    public PropertyContainer getLocalPluginConfiguration(PluginContext ctx);
-
-    /**
-     * Returns a plugin level configuration property.
-     *
-     * @param ctx the context of the target plugin
-     * @param name the name of the configuration property
-     *
-     * @return the configuration property value (or null if not set)
-     */
-    public Object getLocalPluginConfigurationProperty(PluginContext ctx, String name);
+    PropertyContainer getLocalPluginConfiguration(PluginContext ctx);
 
     /**
      * Returns a plugin's icon.
@@ -82,7 +75,7 @@ public interface PluginManager {
      *
      * @return an ImageInputStream (or null if the plugin has no icon and no default was found)
      */
-    public ImageInputStream getLocalPluginIcon(PluginContext ctx);
+    ImageInputStream getLocalPluginIcon(PluginContext ctx);
 
     /**
      * Retrieve descriptors for all locally installed plugins.
@@ -91,7 +84,7 @@ public interface PluginManager {
      *
      * @return a PluginList
      */
-    public Collection<PluginDescriptor> getLocalPluginDescriptors(HubContext ctx);
+    Collection<PluginDescriptor> getLocalPluginDescriptors(HubContext ctx);
 
     /**
      * Retrieves descriptor for a remotely available plugin.
@@ -100,7 +93,7 @@ public interface PluginManager {
      * @param version the plugin version
      * @return
      */
-    public PluginDescriptor getRemotePluginDescriptor(PluginContext ctx, String version);
+    PluginDescriptor getRemotePluginDescriptor(PluginContext ctx, String version);
 
     /**
      * Retrieve descriptors for all remotely available plugins.
@@ -109,14 +102,14 @@ public interface PluginManager {
      *
      * @return a PluginList
      */
-    public Collection<PluginDescriptor> getRemotePluginDescriptors(HubContext ctx);
+    Collection<PluginDescriptor> getRemotePluginDescriptors(HubContext ctx);
 
     /**
      * Returns the remote repositories that have been enabled.
      *
      * @return a Collection of String URIs
      */
-    public Collection<String> getRemoteRepositories();
+    Collection<String> getRemoteRepositories();
 
     /**
      * Installs a specific version of a remote plugin.
@@ -124,28 +117,28 @@ public interface PluginManager {
      * @param ctx the context of the target plugin
      * @param pluginVersion the plugin version to install
      */
-    public void installRemotePlugin(PluginContext ctx, String pluginVersion);
+    void installRemotePlugin(PluginContext ctx, String pluginVersion);
 
     /**
      * Reloads the specified plugin.
      *
      * @param ctx the context of the target plugin
      */
-    public void reloadLocalPlugin(PluginContext ctx);
+    void reloadLocalPlugin(PluginContext ctx);
 
     /**
      * Removes a remote repository.
      *
      * @param uri the URI of the repository to remove
      */
-    public void removeRemoteRepository(String uri);
+    void removeRemoteRepository(String uri);
 
     /**
      * Sets the plugin level configuration.
      *  @param ctx the context of the target plugin
      * @param config the plugin configuration
      */
-    public void setLocalPluginConfiguration(PluginContext ctx, PropertyContainer config);
+    void setLocalPluginConfiguration(PluginContext ctx, PropertyContainer config);
 
     /**
      * Sets an individual plugin level configuration property.
@@ -154,5 +147,5 @@ public interface PluginManager {
      * @param name the configuration property name
      * @param value the configuration property value
      */
-    public void setLocalPluginConfigurationProperty(PluginContext ctx, String name, Object value);
+    void setLocalPluginConfigurationProperty(PluginContext ctx, String name, Object value);
 }

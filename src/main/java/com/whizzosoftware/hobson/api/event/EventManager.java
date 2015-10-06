@@ -29,7 +29,7 @@ public interface EventManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void addListener(HubContext ctx, EventListener listener, String[] topics);
+    void addListener(HubContext ctx, EventListener listener, String[] topics);
 
     /**
      * Unsubscribes a listener from specific event topics.
@@ -38,7 +38,7 @@ public interface EventManager {
      * @param listener the listener
      * @param topics the topics to unsubscribe from
      */
-    public void removeListener(HubContext ctx, EventListener listener, String[] topics);
+    void removeListener(HubContext ctx, EventListener listener, String[] topics);
 
     /**
      * Unsubscribes a listener from all topics.
@@ -48,7 +48,7 @@ public interface EventManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void removeListenerFromAllTopics(HubContext ctx, EventListener listener);
+    void removeListenerFromAllTopics(HubContext ctx, EventListener listener);
 
     /**
      * Sends a system event.
@@ -58,5 +58,5 @@ public interface EventManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void postEvent(HubContext ctx, HobsonEvent event);
+    void postEvent(HubContext ctx, HobsonEvent event);
 }

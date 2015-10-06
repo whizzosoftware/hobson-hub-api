@@ -27,6 +27,14 @@ public class FileWatcherThread extends Thread {
     private File watchedFile;
     private FileWatcherListener listener;
 
+    /**
+     * Constructor.
+     *
+     * @param watchedFile the file to watch
+     * @param listener the listener to alert when the watched file changes
+     *
+     * @throws IOException on failure
+     */
     public FileWatcherThread(File watchedFile, FileWatcherListener listener) throws IOException {
         super();
 

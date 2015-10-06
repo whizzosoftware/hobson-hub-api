@@ -20,14 +20,14 @@ public interface UserStore {
      *
      * @return a boolean
      */
-    public boolean hasDefaultUser();
+    boolean hasDefaultUser();
 
     /**
      * Returns the default user for this store.
      *
      * @return a String (or null if there is no default user)
      */
-    public String getDefaultUser();
+    String getDefaultUser();
 
     /**
      * Authenticates a user.
@@ -39,7 +39,7 @@ public interface UserStore {
      *
      * @throws HobsonAuthenticationException on failure
      */
-    public HobsonUser authenticate(String username, String password) throws HobsonAuthenticationException;
+    HobsonUser authenticate(String username, String password) throws HobsonAuthenticationException;
 
     /**
      * Returns a user's information.
@@ -48,5 +48,5 @@ public interface UserStore {
      *
      * @return a HobsonUser instance
      */
-    public HobsonUser getUser(String username);
+    HobsonUser getUser(String username);
 }

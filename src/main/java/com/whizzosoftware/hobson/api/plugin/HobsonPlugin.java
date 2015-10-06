@@ -20,54 +20,54 @@ public interface HobsonPlugin {
      *
      * @return a PluginContext instance
      */
-    public PluginContext getContext();
+    PluginContext getContext();
 
     /**
      * Returns the plugin name.
      *
      * @return the plugin name
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the configuration property meta-data associated with this plugin.
      *
      * @return a PropertyContainerClass object
      */
-    public PropertyContainerClass getConfigurationClass();
+    PropertyContainerClass getConfigurationClass();
 
     /**
      * Returns a an object that can be used to invoke methods related to plugin runtime execution.
      *
      * @return a HobsonPluginExecution instance (or null if this object doesn't support a runtime)
      */
-    public HobsonPluginRuntime getRuntime();
+    HobsonPluginRuntime getRuntime();
 
     /**
      * Returns the status of the plugin.
      *
      * @return a PluginStatus instance
      */
-    public PluginStatus getStatus();
+    PluginStatus getStatus();
 
     /**
      * Returns the type of plugin.
      *
      * @return a PluginType instance
      */
-    public PluginType getType();
+    PluginType getType();
 
     /**
      * Returns the plugin version string.
      *
      * @return the plugin version
      */
-    public String getVersion();
+    String getVersion();
 
     /**
      * Indicates whether this plugin is configurable.
      *
      * @return a boolean
      */
-    public boolean isConfigurable();
+    boolean isConfigurable();
 }

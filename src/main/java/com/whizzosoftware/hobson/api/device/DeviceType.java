@@ -8,7 +8,7 @@
 package com.whizzosoftware.hobson.api.device;
 
 /**
- * Enumeration for device types.
+ * Enumeration for common device types.
  *
  * @author Dan Noguerol
  */

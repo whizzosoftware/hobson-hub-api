@@ -19,7 +19,7 @@ public interface HobsonVariable {
      *
      * @return a device ID
      */
-    public String getDeviceId();
+    String getDeviceId();
 
     /**
      * Returns whether this variable is read-only.
@@ -28,7 +28,7 @@ public interface HobsonVariable {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Mask getMask();
+    Mask getMask();
 
     /**
      * Returns the variable name.
@@ -37,7 +37,7 @@ public interface HobsonVariable {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the last time the variable was updated.
@@ -46,14 +46,14 @@ public interface HobsonVariable {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Long getLastUpdate();
+    Long getLastUpdate();
 
     /**
      * Returns the ID of the plugin which published this variable.
      *
      * @return a plugin ID
      */
-    public String getPluginId();
+    String getPluginId();
 
     /**
      * Indicates that this variable's value should be a proxy value rather than direct value. For example, smart
@@ -62,14 +62,14 @@ public interface HobsonVariable {
      *
      * @return a boolean indicating whether a proxy should be performed
      */
-    public boolean hasProxyType();
+    boolean hasProxyType();
 
     /**
      * Returns the variable proxy type.
      *
      * @return the type of proxy (or null if no proxy is necessary)
      */
-    public String getProxyType();
+    String getProxyType();
 
     /**
      * Returns the variable value.
@@ -78,16 +78,16 @@ public interface HobsonVariable {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Object getValue();
+    Object getValue();
 
     /**
      * Indicates whether this is a global variable.
      *
      * @return a boolean
      */
-    public boolean isGlobal();
+    boolean isGlobal();
 
-    public enum Mask {
+    enum Mask {
         READ_ONLY,
         WRITE_ONLY,
         READ_WRITE

@@ -15,6 +15,11 @@ import java.util.Collection;
 /**
  * A manager interface for managing device advertisement listeners.
  *
+ * Note that this interface differentiates between "internal" and "external" advertisements. An internal advertisement
+ * is one that is published by a plugin and will be used when servicing external search requests -- they make internal
+ * Hub services discoverable. An external advertisement is one that was made by an external (to the Hub) entity -- they
+ * allow external entities to be discovered by Hub plugins.
+ *
  * @author Dan Noguerol
  * @since hobson-hub-api 0.1.6
  */
@@ -26,11 +31,27 @@ public interface DiscoManager {
      * @param ctx the context of the plugin requesting the snapshot
      * @param protocolId the protocol ID for the advertisements requested
      */
-    public void requestExternalDeviceAdvertisementSnapshot(PluginContext ctx, String protocolId);
+    void requestExternalDeviceAdvertisementSnapshot(PluginContext ctx, String protocolId);
 
-    public Collection<DeviceAdvertisement> getInternalDeviceAdvertisements(HubContext ctx, String protocolId);
+    /**
+     * Returns all published internal device advertisements.
+     * @param ctx the hub context
+     * @param protocolId the protocol associated with the advertisement
+     *
+     * @return a Collection of DeviceAdvertisement objects (or null if none are found)
+     */
+    Collection<DeviceAdvertisement> getInternalDeviceAdvertisements(HubContext ctx, String protocolId);
 
-    public DeviceAdvertisement getInternalDeviceAdvertisement(HubContext ctx, String protocolId, String advId);
+    /**
+     * Returns a specific published internal device advertisement.
+     *
+     * @param ctx the hub context
+     * @param protocolId the protocol associated with the advertisement
+     * @param advId a advertisement ID
+     *
+     * @return a DeviceAdvertisement instance (or null if the protocol/ID combination was not found)
+     */
+    DeviceAdvertisement getInternalDeviceAdvertisement(HubContext ctx, String protocolId, String advId);
 
     /**
      * Publishes an internal DeviceAdvertisement. This will insure that the advertisement is included in any discovery
@@ -39,5 +60,5 @@ public interface DiscoManager {
      * @param ctx the context of the hub publishing the advertisement
      * @param advertisement the advertisement to publish
      */
-    public void publishDeviceAdvertisement(HubContext ctx, DeviceAdvertisement advertisement, boolean internal);
+    void publishDeviceAdvertisement(HubContext ctx, DeviceAdvertisement advertisement, boolean internal);
 }

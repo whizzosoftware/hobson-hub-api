@@ -19,5 +19,5 @@ public interface EventLoopExecutor {
      *
      * @param runnable a task to execute
      */
-    public void executeInEventLoop(Runnable runnable);
+    void executeInEventLoop(Runnable runnable);
 }

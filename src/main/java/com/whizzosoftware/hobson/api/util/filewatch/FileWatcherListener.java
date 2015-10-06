@@ -15,5 +15,5 @@ import java.io.File;
  * @author Dan Noguerol
  */
 public interface FileWatcherListener {
-    public void onFileChanged(File ruleFile);
+    void onFileChanged(File ruleFile);
 }

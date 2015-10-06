@@ -15,5 +15,5 @@ import com.whizzosoftware.hobson.api.property.PropertyContainer;
  * @author Dan Noguerol
  */
 public interface TaskActionExecutor {
-    public void executeAction(PropertyContainer pc);
+    void executeAction(PropertyContainer pc);
 }

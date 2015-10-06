@@ -7,6 +7,11 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.util;
 
+/**
+ * Version related convenience methods.
+ *
+ * @author Dan Noguerol
+ */
 public class VersionUtil {
     /**
      * Compares two version strings.

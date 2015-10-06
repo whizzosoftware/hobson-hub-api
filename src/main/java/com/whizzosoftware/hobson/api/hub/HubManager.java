@@ -26,7 +26,7 @@ public interface HubManager {
      *
      * @return a Collection of Hub objects
      */
-    public Collection<HobsonHub> getHubs(String userId);
+    Collection<HobsonHub> getHubs(String userId);
 
     /**
      * Returns a specific hub associated with a user.
@@ -35,7 +35,7 @@ public interface HubManager {
      *
      * @return a Hub object
      */
-    public HobsonHub getHub(HubContext ctx);
+    HobsonHub getHub(HubContext ctx);
 
     /**
      * Associates a new hub with a user.
@@ -45,21 +45,21 @@ public interface HubManager {
      *
      * @return a HubInfo object
      */
-    public HobsonHub addHub(String userId, String name);
+    HobsonHub addHub(String userId, String name);
 
     /**
      * Deletes the configuration associated with a Hub.
      *
      * @param ctx the context of the hub
      */
-    public void deleteConfiguration(HubContext ctx);
+    void deleteConfiguration(HubContext ctx);
 
     /**
      * Removes a previously added hub.
      *
      * @param ctx the context of the hub to remove
      */
-    public void removeHub(HubContext ctx);
+    void removeHub(HubContext ctx);
 
     /**
      * Indicates whether Hub credentials are valid.
@@ -69,7 +69,7 @@ public interface HubManager {
      *
      * @return indicates whether the credentials are valid
      */
-    public boolean authenticateHub(HubContext ctx, HubCredentials credentials);
+    boolean authenticateHub(HubContext ctx, HubCredentials credentials);
 
     /**
      * Returns the configuration associated with a Hub.
@@ -78,7 +78,7 @@ public interface HubManager {
      *
      * @return a PropertyContainer instance containing the configuration
      */
-    public PropertyContainer getConfiguration(HubContext ctx);
+    PropertyContainer getConfiguration(HubContext ctx);
 
     /**
      * Returns a published container class.
@@ -87,7 +87,7 @@ public interface HubManager {
      *
      * @return a PropertyContainerClass instance
      */
-    public PropertyContainerClass getContainerClass(PropertyContainerClassContext ctx);
+    PropertyContainerClass getContainerClass(PropertyContainerClassContext ctx);
 
     /**
      * Returns content from the Hub log.
@@ -99,14 +99,14 @@ public interface HubManager {
      *
      * @return a LineRage representing what was added to the appendable
      */
-    public LineRange getLog(HubContext ctx, long startLine, long endLine, Appendable appendable);
+    LineRange getLog(HubContext ctx, long startLine, long endLine, Appendable appendable);
 
     /**
      * Returns a manager for the local hub (if one exists).
      *
      * @return a LocalHubManager or null if not available
      */
-    public LocalHubManager getLocalManager();
+    LocalHubManager getLocalManager();
 
     /**
      * Sends a test e-mail message using the provided e-mail configuration.
@@ -116,7 +116,7 @@ public interface HubManager {
      *
      * @throws com.whizzosoftware.hobson.api.HobsonInvalidRequestException if the e-mail configuration is invalid
      */
-    public void sendTestEmail(HubContext ctx, PropertyContainer config);
+    void sendTestEmail(HubContext ctx, PropertyContainer config);
 
     /**
      * Sends an e-mail message using the provided e-mail configuration.
@@ -126,7 +126,7 @@ public interface HubManager {
      * @param subject the e-mail subject line
      * @param body the e-mail message body
      */
-    public void sendEmail(HubContext ctx, String recipientAddress, String subject, String body);
+    void sendEmail(HubContext ctx, String recipientAddress, String subject, String body);
 
     /**
      * Sets the configuration associated with a Hub.
@@ -134,5 +134,5 @@ public interface HubManager {
      * @param ctx the context of the hub
      * @param configuration the configuration to set
      */
-    public void setConfiguration(HubContext ctx, PropertyContainer configuration);
+    void setConfiguration(HubContext ctx, PropertyContainer configuration);
 }

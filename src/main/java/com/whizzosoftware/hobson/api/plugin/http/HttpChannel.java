@@ -22,7 +22,7 @@ public interface HttpChannel {
      *
      * @param plugin the plugin instance
      */
-    public void setPlugin(AbstractHttpClientPlugin plugin);
+    void setPlugin(AbstractHttpClientPlugin plugin);
 
     /**
      * Sends an HTTP GET request. The response will be returned via the onHttpResponse() or onHttpRequestFailure()
@@ -32,7 +32,7 @@ public interface HttpChannel {
      * @param headers request headers (or null if none)
      * @param context a context object that will be returned in the response callback (or null if one is not needed)
      */
-    public void sendHttpGetRequest(URI uri, Map<String, String> headers, Object context);
+    void sendHttpGetRequest(URI uri, Map<String, String> headers, Object context);
 
     /**
      * Sends an HTTP POST request. The response will be returned via the onHttpResponse() or onHttpRequestFailure()
@@ -43,7 +43,7 @@ public interface HttpChannel {
      * @param data the request content
      * @param context a context object that will be returned in the response callback (or null if one is not needed)
      */
-    public void sendHttpPostRequest(URI uri, Map<String, String> headers, byte[] data, Object context);
+    void sendHttpPostRequest(URI uri, Map<String, String> headers, byte[] data, Object context);
 
     /**
      * Sends an HTTP PUT request. The response will be returned via the onHttpResponse() or onHttpRequestFailure()
@@ -54,7 +54,7 @@ public interface HttpChannel {
      * @param data the request content
      * @param context a context object that will be returned in the response callback (or null if one is not needed)
      */
-    public void sendHttpPutRequest(URI uri, Map<String, String> headers, byte[] data, Object context);
+    void sendHttpPutRequest(URI uri, Map<String, String> headers, byte[] data, Object context);
 
     /**
      * Sends an HTTP DELETE request. The response will be returned via the onHttpResponse() or onHttpRequestFailure()
@@ -65,7 +65,7 @@ public interface HttpChannel {
      * @param data the request content
      * @param context a context object that will be returned in the response callback (or null if one is not needed)
      */
-    public void sendHttpDeleteRequest(URI uri, Map<String, String> headers, byte[] data, Object context);
+    void sendHttpDeleteRequest(URI uri, Map<String, String> headers, byte[] data, Object context);
 
     /**
      * Sends an HTTP PATCH request. The response will be returned via the onHttpResponse() or onHttpRequestFailure()
@@ -76,5 +76,5 @@ public interface HttpChannel {
      * @param data the request content
      * @param context a context object that will be returned in the response callback (or null if one is not needed)
      */
-    public void sendHttpPatchRequest(URI uri, Map<String, String> headers, byte[] data, Object context);
+    void sendHttpPatchRequest(URI uri, Map<String, String> headers, byte[] data, Object context);
 }

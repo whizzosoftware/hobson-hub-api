@@ -31,7 +31,7 @@ public interface DeviceManager {
      *
      * @return the device secret
      */
-    public DeviceBootstrap createDeviceBootstrap(HubContext hubContext, String deviceId);
+    DeviceBootstrap createDeviceBootstrap(HubContext hubContext, String deviceId);
 
     /**
      * Returns a collection of all created device bootstraps.
@@ -40,7 +40,7 @@ public interface DeviceManager {
      *
      * @return a Collection of DeviceBootstrap instances
      */
-    public Collection<DeviceBootstrap> getDeviceBootstraps(HubContext hubContext);
+    Collection<DeviceBootstrap> getDeviceBootstraps(HubContext hubContext);
 
     /**
      * Retrieves a device bootstrap.
@@ -50,7 +50,7 @@ public interface DeviceManager {
      *
      * @return a DeviceBootstrap instance
      */
-    public DeviceBootstrap getDeviceBootstrap(HubContext hubContext, String id);
+    DeviceBootstrap getDeviceBootstrap(HubContext hubContext, String id);
 
     /**
      * Registers a device bootstrap.
@@ -60,7 +60,7 @@ public interface DeviceManager {
      *
      * @return a DeviceBootstrap
      */
-    public DeviceBootstrap registerDeviceBootstrap(HubContext hubContext, String deviceId);
+    DeviceBootstrap registerDeviceBootstrap(HubContext hubContext, String deviceId);
 
     /**
      * Deletes a device bootstrap.
@@ -68,7 +68,7 @@ public interface DeviceManager {
      * @param hubContext the hub context
      * @param id the bootstrap ID
      */
-    public void deleteDeviceBootstrap(HubContext hubContext, String id);
+    void deleteDeviceBootstrap(HubContext hubContext, String id);
 
     /**
      * Authenticates a device bootstrap.
@@ -79,7 +79,7 @@ public interface DeviceManager {
      *
      * @return a boolean indicating whether the device ID and secret are valid
      */
-    public boolean verifyDeviceBootstrap(HubContext hubContext, String id, String secret);
+    boolean verifyDeviceBootstrap(HubContext hubContext, String id, String secret);
 
     /**
      * Resets a device bootstrap to its initially created state. This will allow a device to successfully
@@ -88,7 +88,7 @@ public interface DeviceManager {
      * @param hubContext the hub context
      * @param id the globally unique device ID
      */
-    public void resetDeviceBootstrap(HubContext hubContext, String id);
+    void resetDeviceBootstrap(HubContext hubContext, String id);
 
     /**
      * Returns all devices published by a hub.
@@ -99,7 +99,7 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Collection<HobsonDevice> getAllDevices(HubContext ctx);
+    Collection<HobsonDevice> getAllDevices(HubContext ctx);
 
     /**
      * Returns all devices published by a plugin.
@@ -110,7 +110,7 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public Collection<HobsonDevice> getAllDevices(PluginContext ctx);
+    Collection<HobsonDevice> getAllDevices(PluginContext ctx);
 
     /**
      * Returns a specific device.
@@ -122,7 +122,7 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public HobsonDevice getDevice(DeviceContext ctx);
+    HobsonDevice getDevice(DeviceContext ctx);
 
     /**
      * Returns a specific device's configuration.
@@ -131,7 +131,7 @@ public interface DeviceManager {
      *
      * @return a Dictionary (or null if there is no configuration)
      */
-    public PropertyContainer getDeviceConfiguration(DeviceContext ctx);
+    PropertyContainer getDeviceConfiguration(DeviceContext ctx);
 
     /**
      * Returns a device configuration property.
@@ -141,7 +141,7 @@ public interface DeviceManager {
      *
      * @return the property value (or null if not set)
      */
-    public Object getDeviceConfigurationProperty(DeviceContext ctx, String name);
+    Object getDeviceConfigurationProperty(DeviceContext ctx, String name);
 
     /**
      * Indicates whether a device has been published.
@@ -152,7 +152,7 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public boolean hasDevice(DeviceContext ctx);
+    boolean hasDevice(DeviceContext ctx);
 
     /**
      * Publishes a device to the device registry and starts it.
@@ -161,7 +161,7 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void publishDevice(HobsonDevice device);
+    void publishDevice(HobsonDevice device);
 
     /**
      * Publishes a device to the device registry and starts it.
@@ -171,7 +171,7 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.4.2
      */
-    public void publishDevice(HobsonDevice device, boolean republish);
+    void publishDevice(HobsonDevice device, boolean republish);
 
     /**
      * Updates the last check-in time of the device.
@@ -179,14 +179,14 @@ public interface DeviceManager {
      * @param ctx the device context
      * @param checkInTime the check-in time
      */
-    public void checkInDevice(DeviceContext ctx, Long checkInTime);
+    void checkInDevice(DeviceContext ctx, Long checkInTime);
 
     /**
      * Sets configuration for a device.
      *  @param ctx the context of the target device
      * @param config the new configuration
      */
-    public void setDeviceConfiguration(DeviceContext ctx, PropertyContainer config);
+    void setDeviceConfiguration(DeviceContext ctx, PropertyContainer config);
 
     /**
      * Set a device configuration property.
@@ -196,7 +196,7 @@ public interface DeviceManager {
      * @param value the configuration property value
      * @param overwrite indicates whether an existing configuration value should be overwritten
      */
-    public void setDeviceConfigurationProperty(DeviceContext ctx, String name, Object value, boolean overwrite);
+    void setDeviceConfigurationProperty(DeviceContext ctx, String name, Object value, boolean overwrite);
 
     /**
      * Sets device configuration properties.
@@ -205,7 +205,7 @@ public interface DeviceManager {
      * @param values a map of configuration property name to values
      * @param overwrite indicates whether an existing configuration value should be overwritten
      */
-    public void setDeviceConfigurationProperties(DeviceContext ctx, Map<String,Object> values, boolean overwrite);
+    void setDeviceConfigurationProperties(DeviceContext ctx, Map<String,Object> values, boolean overwrite);
 
     /**
      * Sets the name of a device.
@@ -217,7 +217,7 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void setDeviceName(DeviceContext ctx, String name);
+    void setDeviceName(DeviceContext ctx, String name);
 
     /**
      * Stops and unpublishes a device associated with a specific plugin. This allows plugins that require it
@@ -228,7 +228,7 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void unpublishDevice(DeviceContext ctx, EventLoopExecutor executor);
+    void unpublishDevice(DeviceContext ctx, EventLoopExecutor executor);
 
     /**
      * Stops an unpublishes all devices associated with a specific plugin.
@@ -238,5 +238,5 @@ public interface DeviceManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    public void unpublishAllDevices(PluginContext ctx, EventLoopExecutor executor);
+    void unpublishAllDevices(PluginContext ctx, EventLoopExecutor executor);
 }

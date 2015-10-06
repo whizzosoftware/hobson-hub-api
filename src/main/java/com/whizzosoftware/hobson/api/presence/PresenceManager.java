@@ -25,7 +25,7 @@ public interface PresenceManager {
      *
      * @return a Collection of PresenceEntity objects
      */
-    public Collection<PresenceEntity> getAllEntities(HubContext ctx);
+    Collection<PresenceEntity> getAllEntities(HubContext ctx);
 
     /**
      * Returns details of a presence entity.
@@ -34,7 +34,7 @@ public interface PresenceManager {
      *
      * @return a PresenceEntity object
      */
-    public PresenceEntity getEntity(PresenceEntityContext ctx);
+    PresenceEntity getEntity(PresenceEntityContext ctx);
 
     /**
      * Adds a new presence entity.
@@ -43,7 +43,7 @@ public interface PresenceManager {
      *
      * @return the ID of the newly created entity
      */
-    public String addEntity(PresenceEntity entity);
+    String addEntity(PresenceEntity entity);
 
     /**
      * Sends an update event for a presence entity.
@@ -52,5 +52,5 @@ public interface PresenceManager {
      * @param name the name of the entity (or null if unchanged)
      * @param location the location of the entity (or null if unknown)
      */
-    public void updateEntity(PresenceEntityContext ctx, String name, String location);
+    void updateEntity(PresenceEntityContext ctx, String name, String location);
 }

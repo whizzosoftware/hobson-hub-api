@@ -24,7 +24,7 @@ public interface TaskActionClassProvider {
      *
      * @return a TaskActionClass instance (or null if not found)
      */
-    public TaskActionClass getActionClass(PropertyContainerClassContext ctx);
+    TaskActionClass getActionClass(PropertyContainerClassContext ctx);
 
     /**
      * Returns the list of action contexts associated with an action set.
@@ -33,5 +33,5 @@ public interface TaskActionClassProvider {
      *
      * @return a Collection of PropertyContainerClassContext objects
      */
-    public Collection<PropertyContainerClassContext> getActionSetClassContexts(String actionSetId);
+    Collection<PropertyContainerClassContext> getActionSetClassContexts(String actionSetId);
 }

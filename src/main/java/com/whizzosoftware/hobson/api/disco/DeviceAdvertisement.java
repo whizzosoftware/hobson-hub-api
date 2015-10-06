@@ -46,10 +46,20 @@ public class DeviceAdvertisement {
         return protocolId;
     }
 
+    /**
+     * Returns the URI associated with this advertisement.
+     *
+     * @return a URI String
+     */
     public String getUri() {
         return uri;
     }
 
+    /**
+     * Sets the URI associated with this advertisement.
+     *
+     * @param uri a URI String
+     */
     public void setUri(String uri) {
         this.uri = uri;
     }

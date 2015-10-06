@@ -20,5 +20,5 @@ public interface VariableProxyValueProvider {
      *
      * @return a value
      */
-    public Object getProxyValue(HobsonVariable v);
+    Object getProxyValue(HobsonVariable v);
 }
