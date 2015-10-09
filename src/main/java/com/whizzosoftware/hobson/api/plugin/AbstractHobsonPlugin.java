@@ -8,10 +8,7 @@
 package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
-import com.whizzosoftware.hobson.api.property.PropertyContainer;
-import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
-import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
-import com.whizzosoftware.hobson.api.property.TypedProperty;
+import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.HobsonDevice;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
@@ -56,7 +53,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     private PluginContext ctx;
     private String version;
     private PluginStatus status = PluginStatus.initializing();
-    private final PropertyContainerClass configClass = new PropertyContainerClass();
+    private final PropertyContainerClass configClass;
     private EventLoopGroup eventLoop;
     private final Map<PropertyContainerClassContext,TaskActionClass> actionClasses = new HashMap<>();
     private final Map<PropertyContainerClassContext,TaskConditionClass> conditionClasses = new HashMap<>();
@@ -68,6 +65,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     public AbstractHobsonPlugin(String pluginId, EventLoopGroup eventLoop) {
         this.ctx = PluginContext.createLocal(pluginId);
         this.eventLoop = eventLoop;
+        this.configClass = new PropertyContainerClass(PropertyContainerClassContext.create(ctx, "configurationClass"), PropertyContainerClassType.PLUGIN_CONFIG);
 
         // register any supported properties the subclass needs
         TypedProperty[] props = createSupportedProperties();

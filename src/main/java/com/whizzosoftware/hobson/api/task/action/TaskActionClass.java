@@ -10,6 +10,7 @@ package com.whizzosoftware.hobson.api.task.action;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClassType;
 import com.whizzosoftware.hobson.api.property.TypedProperty;
 
 import java.util.List;
@@ -40,7 +41,7 @@ abstract public class TaskActionClass extends PropertyContainerClass {
      * @param descriptionTemplate a description template for the action class. See {@link PropertyContainerClass#getDescriptionTemplate() getDescriptionTemplate} for more information.
      */
     public TaskActionClass(PropertyContainerClassContext context, String name, String descriptionTemplate) {
-        super(context);
+        super(context, PropertyContainerClassType.ACTION);
         setName(name);
         setDescriptionTemplate(descriptionTemplate);
         setSupportedProperties(createProperties());

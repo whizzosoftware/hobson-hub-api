@@ -41,7 +41,7 @@ public class TaskHelper {
                 // get the condition class for this condition
                 TaskConditionClass tcc = taskManager.getConditionClass(c.getContainerClassContext());
                 if (tcc != null) {
-                    if (tcc.getType() == ConditionClassType.trigger) {
+                    if (tcc.getConditionClassType() == ConditionClassType.trigger) {
                         if (trigger == null) {
                             trigger = c;
                         } else {

@@ -72,6 +72,15 @@ public interface HubManager {
     boolean authenticateHub(HubContext ctx, HubCredentials credentials);
 
     /**
+     * Returns the configuration class associated with a Hub.
+     *
+     * @param ctx the context of the hub
+     *
+     * @return a PropertyContainerClass instance
+     */
+    PropertyContainerClass getConfigurationClass(HubContext ctx);
+
+    /**
      * Returns the configuration associated with a Hub.
      *
      * @param ctx the context of the hub

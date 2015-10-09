@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.property;
 
+import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import org.apache.commons.lang3.StringUtils;
@@ -21,26 +22,41 @@ public class PropertyContainerClassContext {
     private String userId;
     private String hubId;
     private String pluginId;
+    private String deviceId;
     private String containerClassId;
 
     static public PropertyContainerClassContext create(HubContext ctx, String containerClassId) {
-        return create(ctx.getUserId(), ctx.getHubId(), null, containerClassId);
+        return create(ctx.getUserId(), ctx.getHubId(), null, null, containerClassId);
     }
 
     static public PropertyContainerClassContext create(PluginContext pctx, String containerClassId) {
-        return create(pctx.getUserId(), pctx.getHubId(), pctx.getPluginId(), containerClassId);
+        return create(pctx.getUserId(), pctx.getHubId(), pctx.getPluginId(), null, containerClassId);
+    }
+
+    static public PropertyContainerClassContext create(DeviceContext dctx, String containerClassId) {
+        return create(dctx.getUserId(), dctx.getHubId(), dctx.getPluginId(), dctx.getDeviceId(), containerClassId);
     }
 
     static public PropertyContainerClassContext create(String s) {
         String[] comps = StringUtils.split(s, HubContext.DELIMITER);
-        return PropertyContainerClassContext.create(PluginContext.create(HubContext.create(comps[0], comps[1]), comps[2]), comps[3]);
+        return PropertyContainerClassContext.create(
+            DeviceContext.create(
+                PluginContext.create(
+                    HubContext.create(comps[0], comps[1]),
+                    comps[2]
+                ),
+                comps[3] != null && !"null".equalsIgnoreCase(comps[3]) ? comps[3] : null
+            ),
+            comps[4]
+        );
     }
 
-    static public PropertyContainerClassContext create(String userId, String hubId, String pluginId, String containerClassId) {
+    static public PropertyContainerClassContext create(String userId, String hubId, String pluginId, String deviceId, String containerClassId) {
         PropertyContainerClassContext pccc = new PropertyContainerClassContext();
         pccc.userId = userId;
         pccc.hubId = hubId;
         pccc.pluginId = pluginId;
+        pccc.deviceId = deviceId;
         pccc.containerClassId = containerClassId;
         return pccc;
     }
@@ -55,6 +71,10 @@ public class PropertyContainerClassContext {
 
     public String getPluginId() {
         return pluginId;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
     }
 
     public String getContainerClassId() {
@@ -73,6 +93,10 @@ public class PropertyContainerClassContext {
         return (hasHubContext() && pluginId != null);
     }
 
+    public boolean hasDeviceContext() {
+        return (hasPluginContext() && deviceId != null);
+    }
+
     public PluginContext getPluginContext() {
         return PluginContext.create(getHubContext(), pluginId);
     }
@@ -83,6 +107,7 @@ public class PropertyContainerClassContext {
             ((PropertyContainerClassContext)o).userId.equals(userId) &&
             ((PropertyContainerClassContext)o).hubId.equals(hubId) &&
             ((PropertyContainerClassContext)o).pluginId.equals(pluginId) &&
+            (((PropertyContainerClassContext)o).deviceId == null || ((PropertyContainerClassContext)o).deviceId.equals(deviceId)) &&
             ((PropertyContainerClassContext)o).containerClassId.equals(containerClassId)
         );
     }
@@ -92,10 +117,13 @@ public class PropertyContainerClassContext {
         if (pluginId != null) {
             hcb.append(pluginId);
         }
+        if (deviceId != null) {
+            hcb.append(deviceId);
+        }
         return hcb.append(containerClassId).toHashCode();
     }
 
     public String toString() {
-        return userId + HubContext.DELIMITER + hubId + HubContext.DELIMITER + pluginId + HubContext.DELIMITER + containerClassId;
+        return userId + HubContext.DELIMITER + hubId + HubContext.DELIMITER + pluginId + HubContext.DELIMITER + deviceId + HubContext.DELIMITER + containerClassId;
     }
 }

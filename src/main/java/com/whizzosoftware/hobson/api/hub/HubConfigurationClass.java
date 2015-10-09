@@ -8,6 +8,8 @@
 package com.whizzosoftware.hobson.api.hub;
 
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClassType;
 import com.whizzosoftware.hobson.api.property.TypedProperty;
 
 /**
@@ -28,6 +30,7 @@ public class HubConfigurationClass extends PropertyContainerClass {
     public static final String SETUP_COMPLETE = "setupComplete";
 
     public HubConfigurationClass() {
+        super(PropertyContainerClassContext.create(HubContext.createLocal(), "configurationClass"), PropertyContainerClassType.HUB_CONFIG);
         addSupportedProperty(new TypedProperty(EMAIL_PASSWORD, "E-mail password", "The e-mail password to use for sending mail", TypedProperty.Type.STRING));
         addSupportedProperty(new TypedProperty(EMAIL_SECURE, "E-mail Secure", "Indicates whether the e-mail sending channel should be secure", TypedProperty.Type.BOOLEAN));
         addSupportedProperty(new TypedProperty(EMAIL_SENDER, "E-mail sender address", "The sender address to use for sending mail", TypedProperty.Type.STRING));

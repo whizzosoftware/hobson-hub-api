@@ -8,9 +8,7 @@
 package com.whizzosoftware.hobson.api.device;
 
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
-import com.whizzosoftware.hobson.api.property.PropertyContainer;
-import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
-import com.whizzosoftware.hobson.api.property.TypedProperty;
+import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 
@@ -31,7 +29,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     private boolean started;
     private Long lastCheckIn;
     private DeviceError deviceError;
-    private final PropertyContainerClass configClass = new PropertyContainerClass();
+    private final PropertyContainerClass configClass;
 
     /**
      * Constructor.
@@ -44,6 +42,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
         this.ctx = DeviceContext.create(plugin.getContext(), id);
 
         // register this device's "name" configuration property
+        configClass = new PropertyContainerClass(PropertyContainerClassContext.create(ctx, "configurationClass"), PropertyContainerClassType.DEVICE_CONFIG);
         configClass.addSupportedProperty(new TypedProperty("name", "Name", "A descriptive name for this device", TypedProperty.Type.STRING));
 
         // register any supported properties the subclass needs

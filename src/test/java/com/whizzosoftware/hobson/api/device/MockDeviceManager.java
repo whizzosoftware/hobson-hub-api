@@ -11,6 +11,7 @@ import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.EventLoopExecutor;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 
 import java.util.*;
 
@@ -80,6 +81,11 @@ public class MockDeviceManager implements DeviceManager {
 
     @Override
     public PropertyContainer getDeviceConfiguration(DeviceContext ctx) {
+        return null;
+    }
+
+    @Override
+    public PropertyContainerClass getDeviceConfigurationClass(DeviceContext ctx) {
         return null;
     }
 

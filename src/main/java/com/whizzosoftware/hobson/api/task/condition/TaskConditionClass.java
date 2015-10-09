@@ -8,10 +8,7 @@
 package com.whizzosoftware.hobson.api.task.condition;
 
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
-import com.whizzosoftware.hobson.api.property.PropertyContainer;
-import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
-import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
-import com.whizzosoftware.hobson.api.property.TypedProperty;
+import com.whizzosoftware.hobson.api.property.*;
 
 import java.util.List;
 
@@ -41,7 +38,7 @@ abstract public class TaskConditionClass extends PropertyContainerClass {
      * @param descriptionTemplate a description template for the condition class. See {@link PropertyContainerClass#getDescriptionTemplate() getDescriptionTemplate} for more information.
      */
     public TaskConditionClass(PropertyContainerClassContext context, String name, String descriptionTemplate) {
-        super(context);
+        super(context, PropertyContainerClassType.CONDITION);
         setName(name);
         setDescriptionTemplate(descriptionTemplate);
         setSupportedProperties(createProperties());
@@ -52,7 +49,7 @@ abstract public class TaskConditionClass extends PropertyContainerClass {
      *
      * @return a ConditionClassType enum value
      */
-    abstract public ConditionClassType getType();
+    abstract public ConditionClassType getConditionClassType();
 
     /**
      * Performs evaluation of the condition class against a PropertyContainer of values.

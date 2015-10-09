@@ -25,20 +25,18 @@ import java.util.List;
 public class PropertyContainerClass {
     private PropertyContainerClassContext context;
     private String name;
+    private PropertyContainerClassType type;
     private String descriptionTemplate;
     private List<TypedProperty> supportedProperties;
 
-    public PropertyContainerClass() {
-        this(null, null, null, null);
+    public PropertyContainerClass(PropertyContainerClassContext context, PropertyContainerClassType type) {
+        this(context, null, type, null, null);
     }
 
-    public PropertyContainerClass(PropertyContainerClassContext context) {
-        this(context, null, null, null);
-    }
-
-    public PropertyContainerClass(PropertyContainerClassContext context, String name, String descriptionTemplate, List<TypedProperty> supportedProperties) {
+    public PropertyContainerClass(PropertyContainerClassContext context, String name, PropertyContainerClassType type, String descriptionTemplate, List<TypedProperty> supportedProperties) {
         this.context = context;
         this.name = name;
+        this.type = type;
         this.descriptionTemplate = descriptionTemplate;
         this.supportedProperties = supportedProperties;
     }
@@ -57,6 +55,10 @@ public class PropertyContainerClass {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public PropertyContainerClassType getType() {
+        return type;
     }
 
     /**

@@ -11,6 +11,7 @@ import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.EventLoopExecutor;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 
 import java.util.Collection;
 import java.util.Map;
@@ -125,9 +126,18 @@ public interface DeviceManager {
     HobsonDevice getDevice(DeviceContext ctx);
 
     /**
+     * Returns a specific device's configuration class.
+     *
+     * @param ctx the context of the desired device
+     *
+     * @return a PropertyContainerClass object
+     */
+    PropertyContainerClass getDeviceConfigurationClass(DeviceContext ctx);
+
+    /**
      * Returns a specific device's configuration.
      *
-     * @param ctx the context of the device to retrieve configuration for
+     * @param ctx the context of the desired device
      *
      * @return a Dictionary (or null if there is no configuration)
      */

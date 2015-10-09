@@ -57,7 +57,7 @@ public class CollectionPersisterTest {
         m = cpctx.getMap("local:hubs:local:tasks:conditions:taskId1:conditionMeta:condition1");
         assertNotNull(m);
         assertEquals("My Condition", m.get("name"));
-        assertEquals("local:local:plugin1:cclass1", m.get("context"));
+        assertEquals("local:local:plugin1:null:cclass1", m.get("context"));
         m = cpctx.getMap("local:hubs:local:tasks:conditions:taskId1:conditionValues:condition1:foo");
         assertNotNull(m);
         assertEquals("foo", m.get("name"));
@@ -138,8 +138,8 @@ public class CollectionPersisterTest {
         // test save
         List<PropertyContainer> actions = new ArrayList<>();
         PropertyContainerSet as = new PropertyContainerSet("set1", "Action Set 1", null);
-        actions.add(new PropertyContainer("action1", PropertyContainerClassContext.create("local", "local", "plugin", "foo"), Collections.singletonMap("foo", (Object) "bar")));
-        actions.add(new PropertyContainer("action2", PropertyContainerClassContext.create("local", "local", "plugin", "foo"), Collections.singletonMap("bar", (Object) "foo")));
+        actions.add(new PropertyContainer("action1", PropertyContainerClassContext.create("local", "local", "plugin", null, "foo"), Collections.singletonMap("foo", (Object) "bar")));
+        actions.add(new PropertyContainer("action2", PropertyContainerClassContext.create("local", "local", "plugin", null, "foo"), Collections.singletonMap("bar", (Object) "foo")));
         as.setProperties(actions);
 
         MockCollectionPersistenceContext pctx = new MockCollectionPersistenceContext();
