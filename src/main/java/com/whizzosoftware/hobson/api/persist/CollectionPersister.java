@@ -65,15 +65,19 @@ public class CollectionPersister {
         if (task.hasConditions()) {
             for (PropertyContainer pc : task.getConditions()) {
                 Map<String,Object> cmap = new HashMap<>();
-                cmap.put("id", pc.getId());
-                cmap.put("name", pc.getName());
-                cmap.put("context", pc.getContainerClassContext().toString());
-                pctx.setMap(KeyUtil.createTaskConditionMetaKey(task.getContext(), pc.getId()), cmap);
-                for (String pvalName : pc.getPropertyValues().keySet()) {
-                    Map<String,Object> pvalmap = new HashMap<>();
-                    pvalmap.put("name", pvalName);
-                    pvalmap.put("value", StringConversionUtil.createTypedValueString(pc.getPropertyValues().get(pvalName)));
-                    pctx.setMap(KeyUtil.createTaskConditionValueKey(task.getContext(), pc.getId(), pvalName), pvalmap);
+                if (pc.getId() != null) {
+                    cmap.put("id", pc.getId());
+                    cmap.put("name", pc.getName());
+                    cmap.put("context", pc.getContainerClassContext().toString());
+                    pctx.setMap(KeyUtil.createTaskConditionMetaKey(task.getContext(), pc.getId()), cmap);
+                    for (String pvalName : pc.getPropertyValues().keySet()) {
+                        Map<String, Object> pvalmap = new HashMap<>();
+                        pvalmap.put("name", pvalName);
+                        pvalmap.put("value", StringConversionUtil.createTypedValueString(pc.getPropertyValues().get(pvalName)));
+                        pctx.setMap(KeyUtil.createTaskConditionValueKey(task.getContext(), pc.getId(), pvalName), pvalmap);
+                    }
+                } else {
+                    throw new HobsonNotFoundException("Unable to save condition with null ID: " + pc.getContainerClassContext());
                 }
             }
         }
