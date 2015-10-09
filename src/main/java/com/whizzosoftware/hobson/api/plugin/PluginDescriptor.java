@@ -20,6 +20,7 @@ public class PluginDescriptor implements Comparable<PluginDescriptor> {
     private PluginType type;
     private String versionString;
     private boolean configurable;
+    private boolean updatable;
 
     public PluginDescriptor(String id, String name, String description, PluginType type, PluginStatus status, String versionString) {
         this.id = id;
@@ -80,6 +81,14 @@ public class PluginDescriptor implements Comparable<PluginDescriptor> {
 
     public void setConfigurable(boolean configurable) {
         this.configurable = configurable;
+    }
+
+    public boolean isUpdatable() {
+        return updatable;
+    }
+
+    public void setUpdatable(boolean updatable) {
+        this.updatable = updatable;
     }
 
     public boolean hasVersion() {
