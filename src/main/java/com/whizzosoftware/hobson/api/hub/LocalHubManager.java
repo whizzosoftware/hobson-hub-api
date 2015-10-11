@@ -7,12 +7,21 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.hub;
 
+import java.io.IOException;
+
 /**
- * A manager interface for local Hub-related functions.
+ * A manager interface for functions that only apply to a local hub.
  *
  * @author Dan Noguerol
  */
 public interface LocalHubManager {
+    /**
+     * Returns a viable network interface to be used for communication.
+     *
+     * @return a NetworkInterface object
+     */
+    NetworkInfo getNetworkInfo() throws IOException;
+
     /**
      * Authenticates the local admin user.
      *
