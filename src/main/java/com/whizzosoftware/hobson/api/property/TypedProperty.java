@@ -7,8 +7,9 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.property;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
 /**
  * A property that specifies a type (such as STRING, NUMBER, etc).
@@ -20,15 +21,7 @@ public class TypedProperty {
     private String name;
     private String description;
     private Type type;
-    private Map<TypedPropertyConstraint,String> constraints;
-
-    public TypedProperty(String id) {
-        this(id, null, null, null, null);
-    }
-
-    public TypedProperty(String id, String name, String description, Type type) {
-        this(id, name, description, type, null);
-    }
+    private List<TypedPropertyConstraint> constraints;
 
     /**
      * Constructor.
@@ -39,7 +32,7 @@ public class TypedProperty {
      * @param type the property type
      * @param constraints a set of constraints that the property must adhere to
      */
-    public TypedProperty(String id, String name, String description, Type type, Map<TypedPropertyConstraint,String> constraints) {
+    private TypedProperty(String id, String name, String description, Type type, List<TypedPropertyConstraint> constraints) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -63,8 +56,15 @@ public class TypedProperty {
         return type;
     }
 
-    public Map<TypedPropertyConstraint,String> getConstraints() {
+    public Collection<TypedPropertyConstraint> getConstraints() {
         return constraints;
+    }
+
+    private void addConstraint(PropertyConstraintType type, Object argument) {
+        if (constraints == null) {
+            constraints = new ArrayList<>();
+        }
+        constraints.add(new TypedPropertyConstraint(type, argument));
     }
 
     /**
@@ -76,10 +76,10 @@ public class TypedProperty {
      */
     public boolean evaluateConstraints(Collection<String> publishedVariableNames) {
         if (constraints != null) {
-            for (TypedPropertyConstraint tpc : constraints.keySet()) {
-                switch (tpc) {
+            for (TypedPropertyConstraint tpc : constraints) {
+                switch (tpc.getType()) {
                     case deviceVariable:
-                        if (!publishedVariableNames.contains(constraints.get(tpc))) {
+                        if (!publishedVariableNames.contains(tpc.getArgument().toString())) {
                             return false;
                         }
                         break;
@@ -100,5 +100,22 @@ public class TypedProperty {
         SECURE_STRING,
         STRING,
         TIME
+    }
+
+    public static class Builder {
+        private TypedProperty prop;
+
+        public Builder(String id, String name, String description, Type type) {
+            prop = new TypedProperty(id, name, description, type, null);
+        }
+
+        public Builder constraint(PropertyConstraintType type, Object argument) {
+            prop.addConstraint(type, argument);
+            return this;
+        }
+
+        public TypedProperty build() {
+            return prop;
+        }
     }
 }

@@ -8,13 +8,36 @@
 package com.whizzosoftware.hobson.api.property;
 
 /**
- * An enumeration of constraints that can be placed on a typed property value.
+ * This is a constraint that applies to a property to determine whether it is valid and applicable. For example,
+ * a constraint of "deviceVariable" means that the property is only applicable for devices of that publish a variable
+ * with the name given by the constraint argument.
  *
  * @author Dan Noguerol
  */
-public enum TypedPropertyConstraint {
+public class TypedPropertyConstraint {
+    private PropertyConstraintType type;
+    private Object argument;
+
+    public TypedPropertyConstraint(PropertyConstraintType type, Object argument) {
+        this.type = type;
+        this.argument = argument;
+    }
+
     /**
-     * Indicates that a device must possess a certain variable.
+     * Returns the type of constraint.
+     *
+     * @return a PropertyConstraintType instance
      */
-    deviceVariable
+    public PropertyConstraintType getType() {
+        return type;
+    }
+
+    /**
+     * Returns an argument that is associated with the constraint. This will be specific to the constraint type.
+     *
+     * @return an Object (or null if there is no argument)
+     */
+    public Object getArgument() {
+        return argument;
+    }
 }

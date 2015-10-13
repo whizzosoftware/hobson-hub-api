@@ -43,7 +43,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
 
         // register this device's "name" configuration property
         configClass = new PropertyContainerClass(PropertyContainerClassContext.create(ctx, "configurationClass"), PropertyContainerClassType.DEVICE_CONFIG);
-        configClass.addSupportedProperty(new TypedProperty("name", "Name", "A descriptive name for this device", TypedProperty.Type.STRING));
+        configClass.addSupportedProperty(new TypedProperty.Builder("name", "Name", "A descriptive name for this device", TypedProperty.Type.STRING).build());
 
         // register any supported properties the subclass needs
         TypedProperty[] props = createSupportedProperties();

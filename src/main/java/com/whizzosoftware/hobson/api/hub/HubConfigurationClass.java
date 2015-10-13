@@ -31,15 +31,15 @@ public class HubConfigurationClass extends PropertyContainerClass {
 
     public HubConfigurationClass() {
         super(PropertyContainerClassContext.create(HubContext.createLocal(), "configurationClass"), PropertyContainerClassType.HUB_CONFIG);
-        addSupportedProperty(new TypedProperty(EMAIL_PASSWORD, "E-mail password", "The e-mail password to use for sending mail", TypedProperty.Type.STRING));
-        addSupportedProperty(new TypedProperty(EMAIL_SECURE, "E-mail Secure", "Indicates whether the e-mail sending channel should be secure", TypedProperty.Type.BOOLEAN));
-        addSupportedProperty(new TypedProperty(EMAIL_SENDER, "E-mail sender address", "The sender address to use for sending mail", TypedProperty.Type.STRING));
-        addSupportedProperty(new TypedProperty(EMAIL_SERVER, "E-mail server", "The e-mail server to use for sending mail", TypedProperty.Type.STRING));
-        addSupportedProperty(new TypedProperty(EMAIL_USER, "E-mail user", "The e-mail user to use for sending mail", TypedProperty.Type.STRING));
-        addSupportedProperty(new TypedProperty(LATITUDE, "Latitude", "The Hub location's latitude", TypedProperty.Type.NUMBER));
-        addSupportedProperty(new TypedProperty(LOG_LEVEL, "Log level", "The granularity of Hub logging", TypedProperty.Type.STRING));
-        addSupportedProperty(new TypedProperty(LONGITUDE, "Longitude", "The Hub location's longitude", TypedProperty.Type.NUMBER));
-        addSupportedProperty(new TypedProperty(NAME, "Hub name", "A descriptive name for the Hub (e.g. Home)", TypedProperty.Type.STRING));
-        addSupportedProperty(new TypedProperty(SETUP_COMPLETE, "Setup completed", "Indicates whether the Hub setup process has been completed", TypedProperty.Type.BOOLEAN));
+        addSupportedProperty(new TypedProperty.Builder(EMAIL_PASSWORD, "E-mail password", "The e-mail password to use for sending mail", TypedProperty.Type.STRING).build());
+        addSupportedProperty(new TypedProperty.Builder(EMAIL_SECURE, "E-mail Secure", "Indicates whether the e-mail sending channel should be secure", TypedProperty.Type.BOOLEAN).build());
+        addSupportedProperty(new TypedProperty.Builder(EMAIL_SENDER, "E-mail sender address", "The sender address to use for sending mail", TypedProperty.Type.STRING).build());
+        addSupportedProperty(new TypedProperty.Builder(EMAIL_SERVER, "E-mail server", "The e-mail server to use for sending mail", TypedProperty.Type.STRING).build());
+        addSupportedProperty(new TypedProperty.Builder(EMAIL_USER, "E-mail user", "The e-mail user to use for sending mail", TypedProperty.Type.STRING).build());
+        addSupportedProperty(new TypedProperty.Builder(LATITUDE, "Latitude", "The Hub location's latitude", TypedProperty.Type.NUMBER).build());
+        addSupportedProperty(new TypedProperty.Builder(LOG_LEVEL, "Log level", "The granularity of Hub logging", TypedProperty.Type.STRING).build());
+        addSupportedProperty(new TypedProperty.Builder(LONGITUDE, "Longitude", "The Hub location's longitude", TypedProperty.Type.NUMBER).build());
+        addSupportedProperty(new TypedProperty.Builder(NAME, "Hub name", "A descriptive name for the Hub (e.g. Home)", TypedProperty.Type.STRING).build());
+        addSupportedProperty(new TypedProperty.Builder(SETUP_COMPLETE, "Setup completed", "Indicates whether the Hub setup process has been completed", TypedProperty.Type.BOOLEAN).build());
     }
 }
