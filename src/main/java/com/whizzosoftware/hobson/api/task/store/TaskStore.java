@@ -57,7 +57,7 @@ public interface TaskStore {
      *
      * @return the task state after it has been added to the store
      */
-    HobsonTask addTask(HobsonTask task);
+    HobsonTask saveTask(HobsonTask task);
 
     /**
      * Deletes a task from the store.
