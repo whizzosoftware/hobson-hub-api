@@ -23,6 +23,7 @@ public class HobsonHub {
     private String version;
     private HubConfigurationClass configurationClass = new HubConfigurationClass();
     private PropertyContainer configuration;
+    private boolean local = true;
 
     public HobsonHub(HubContext ctx) {
         this.ctx = ctx;
@@ -52,6 +53,10 @@ public class HobsonHub {
         return configuration;
     }
 
+    public boolean isLocal() {
+        return local;
+    }
+
     public static class Builder {
         private HobsonHub hub;
 
@@ -71,6 +76,11 @@ public class HobsonHub {
 
         public Builder configuration(Map<String,Object> propertyValues) {
             hub.configuration = new PropertyContainer(null, "Hub Configuration", hub.configurationClass.getContext(), propertyValues);
+            return this;
+        }
+
+        public Builder local(boolean local) {
+            hub.local = local;
             return this;
         }
 
