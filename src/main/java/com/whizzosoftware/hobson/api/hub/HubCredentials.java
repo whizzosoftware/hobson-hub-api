@@ -8,24 +8,24 @@
 package com.whizzosoftware.hobson.api.hub;
 
 /**
- * Class that encapsulates credentials (key &amp; secret) for a Hub.
+ * Class that encapsulates credentials (userId &amp; apiKey) for a Hub.
  *
  * @author Dan Noguerol
  */
 public class HubCredentials {
-    private String key;
-    private String secret;
+    private String userId;
+    private String apiKey;
 
-    public HubCredentials(String key, String secret) {
-        this.key = key;
-        this.secret = secret;
+    public HubCredentials(String userId, String apiKey) {
+        this.userId = userId;
+        this.apiKey = apiKey;
     }
 
-    public String getKey() {
-        return key;
+    public String getUserId() {
+        return userId;
     }
 
-    public String getSecret() {
-        return secret;
+    public String getApiKey() {
+        return apiKey;
     }
 }

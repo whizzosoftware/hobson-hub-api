@@ -13,17 +13,19 @@ import static org.junit.Assert.*;
 public class HobsonUserTest {
     @Test
     public void testBuilder() {
+        long now = System.currentTimeMillis();
         HobsonUser u = new HobsonUser.Builder("uid")
             .email("email")
             .firstName("name1")
             .lastName("name2")
-            .remoteInfo(new UserRemoteInfo(5))
+            .account(new UserAccount(now, true))
             .build();
         assertEquals("uid", u.getId());
         assertEquals("email", u.getEmail());
         assertEquals("name1", u.getGivenName());
         assertEquals("name2", u.getFamilyName());
-        assertNotNull(u.getRemoteInfo());
-        assertEquals(5, u.getRemoteInfo().getHubCount());
+        assertNotNull(u.getAccount());
+        assertEquals(now, u.getAccount().getExpiration());
+        assertTrue(u.getAccount().hasAvailableHubs());
     }
 }

@@ -64,12 +64,11 @@ public interface HubManager {
     /**
      * Indicates whether Hub credentials are valid.
      *
-     * @param ctx the context of the Hub to authenticate
      * @param credentials the credentials to validate
      *
      * @return indicates whether the credentials are valid
      */
-    boolean authenticateHub(HubContext ctx, HubCredentials credentials);
+    boolean authenticateHub(HubCredentials credentials);
 
     /**
      * Returns the configuration class associated with a Hub.

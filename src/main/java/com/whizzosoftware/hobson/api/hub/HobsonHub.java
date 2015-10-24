@@ -21,9 +21,9 @@ public class HobsonHub {
     private HubContext ctx;
     private String name;
     private String version;
+    private String apiKey;
     private HubConfigurationClass configurationClass = new HubConfigurationClass();
     private PropertyContainer configuration;
-    private boolean local = true;
 
     public HobsonHub(HubContext ctx) {
         this.ctx = ctx;
@@ -45,6 +45,10 @@ public class HobsonHub {
         return version;
     }
 
+    public String getApiKey() {
+        return apiKey;
+    }
+
     public PropertyContainerClass getConfigurationClass() {
         return configurationClass;
     }
@@ -54,7 +58,7 @@ public class HobsonHub {
     }
 
     public boolean isLocal() {
-        return local;
+        return (apiKey == null);
     }
 
     public static class Builder {
@@ -79,8 +83,8 @@ public class HobsonHub {
             return this;
         }
 
-        public Builder local(boolean local) {
-            hub.local = local;
+        public Builder apiKey(String apiKey) {
+            hub.apiKey = apiKey;
             return this;
         }
 
