@@ -11,25 +11,25 @@ import com.whizzosoftware.hobson.api.hub.HubContext;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
- * A class that encapsulates the fully-qualified context of a presence entity.
+ * A class that encapsulates the fully-qualified context of a presence location.
  *
  * @author Dan Noguerol
  */
-public class PresenceEntityContext {
+public class PresenceLocationContext {
     private HubContext hubContext;
-    private String entityId;
+    private String locationId;
 
-    public static PresenceEntityContext create(HubContext ctx, String entityId) {
-        return new PresenceEntityContext(ctx, entityId);
+    public static PresenceLocationContext create(HubContext ctx, String entityId) {
+        return new PresenceLocationContext(ctx, entityId);
     }
 
-    public static PresenceEntityContext createLocal(String entityId) {
-        return new PresenceEntityContext(HubContext.createLocal(), entityId);
+    public static PresenceLocationContext createLocal(String entityId) {
+        return new PresenceLocationContext(HubContext.createLocal(), entityId);
     }
 
-    private PresenceEntityContext(HubContext hubContext, String entityId) {
+    private PresenceLocationContext(HubContext hubContext, String locationId) {
         this.hubContext = hubContext;
-        this.entityId = entityId;
+        this.locationId = locationId;
     }
 
     public HubContext getHubContext() {
@@ -44,23 +44,23 @@ public class PresenceEntityContext {
         return hubContext.getUserId();
     }
 
-    public String getEntityId() {
-        return entityId;
+    public String getLocationId() {
+        return locationId;
     }
 
     public boolean equals(Object o) {
         return (
-            o instanceof PresenceEntityContext &&
-                ((PresenceEntityContext)o).hubContext.equals(hubContext) &&
-                ((PresenceEntityContext)o).entityId.equals(entityId)
+            o instanceof PresenceLocationContext &&
+                ((PresenceLocationContext)o).hubContext.equals(hubContext) &&
+                ((PresenceLocationContext)o).locationId.equals(locationId)
         );
     }
 
     public int hashCode() {
-        return new HashCodeBuilder().append(hubContext).append(entityId).toHashCode();
+        return new HashCodeBuilder().append(hubContext).append(locationId).toHashCode();
     }
 
     public String toString() {
-        return hubContext + HubContext.DELIMITER + entityId;
+        return hubContext + HubContext.DELIMITER + locationId;
     }
 }

@@ -10,6 +10,8 @@ package com.whizzosoftware.hobson.api.persist;
 import com.whizzosoftware.hobson.api.HobsonNotFoundException;
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.device.DeviceBootstrap;
+import com.whizzosoftware.hobson.api.device.DeviceContext;
+import com.whizzosoftware.hobson.api.device.HobsonDevice;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
@@ -19,6 +21,7 @@ import com.whizzosoftware.hobson.api.task.HobsonTask;
 import com.whizzosoftware.hobson.api.task.TaskContext;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.util.StringConversionUtil;
+import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 
 import java.util.*;
 
@@ -29,6 +32,27 @@ import java.util.*;
  * @author Dan Noguerol
  */
 public class CollectionPersister {
+
+    public void saveDevice(CollectionPersistenceContext pctx, HobsonDevice device) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("name", device.getName());
+        map.put("type", device.getType().toString());
+        map.put("lastCheckIn", device.getLastCheckIn());
+        map.put("preferredVariableName", device.getPreferredVariableName());
+
+        pctx.setMap(KeyUtil.createDeviceKey(device.getContext()), map);
+        pctx.commit();
+    }
+
+    public void saveVariable(CollectionPersistenceContext pctx, HubContext hctx, HobsonVariable var) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("name", var.getName());
+        map.put("value", StringConversionUtil.createTypedValueString(var.getValue()));
+        map.put("lastUpdate", var.getLastUpdate());
+
+        pctx.setMap(KeyUtil.createDeviceVariableKey(DeviceContext.create(PluginContext.create(hctx, var.getPluginId()), var.getDeviceId()), var.getName()), map);
+        pctx.commit();
+    }
 
     public void saveDeviceBootstrap(CollectionPersistenceContext pctx, DeviceBootstrap db) {
         Map<String,Object> map = new HashMap<>();

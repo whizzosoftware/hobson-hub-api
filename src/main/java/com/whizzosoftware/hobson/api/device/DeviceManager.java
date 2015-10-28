@@ -24,6 +24,14 @@ import java.util.Map;
  */
 public interface DeviceManager {
     /**
+     * Updates the last check-in time of the device.
+     *
+     * @param ctx the device context
+     * @param checkInTime the check-in time
+     */
+    void checkInDevice(DeviceContext ctx, Long checkInTime);
+
+    /**
      * Creates a new bootstrap object for a new device with a globally unique ID.
      *
      *
@@ -35,61 +43,12 @@ public interface DeviceManager {
     DeviceBootstrap createDeviceBootstrap(HubContext hubContext, String deviceId);
 
     /**
-     * Returns a collection of all created device bootstraps.
-     *
-     * @param hubContext the hub context
-     *
-     * @return a Collection of DeviceBootstrap instances
-     */
-    Collection<DeviceBootstrap> getDeviceBootstraps(HubContext hubContext);
-
-    /**
-     * Retrieves a device bootstrap.
-     *
-     * @param hubContext the hub context
-     * @param id the bootstrap ID
-     *
-     * @return a DeviceBootstrap instance
-     */
-    DeviceBootstrap getDeviceBootstrap(HubContext hubContext, String id);
-
-    /**
-     * Registers a device bootstrap.
-     *
-     * @param hubContext the hub context
-     * @param deviceId the device ID
-     *
-     * @return a DeviceBootstrap
-     */
-    DeviceBootstrap registerDeviceBootstrap(HubContext hubContext, String deviceId);
-
-    /**
      * Deletes a device bootstrap.
      *
      * @param hubContext the hub context
      * @param id the bootstrap ID
      */
     void deleteDeviceBootstrap(HubContext hubContext, String id);
-
-    /**
-     * Authenticates a device bootstrap.
-     *
-     * @param hubContext the hub context
-     * @param id the globally unique device ID
-     * @param secret the secret to verify
-     *
-     * @return a boolean indicating whether the device ID and secret are valid
-     */
-    boolean verifyDeviceBootstrap(HubContext hubContext, String id, String secret);
-
-    /**
-     * Resets a device bootstrap to its initially created state. This will allow a device to successfully
-     * re-request its bootstrap information.
-     *
-     * @param hubContext the hub context
-     * @param id the globally unique device ID
-     */
-    void resetDeviceBootstrap(HubContext hubContext, String id);
 
     /**
      * Returns all devices published by a hub.
@@ -114,6 +73,15 @@ public interface DeviceManager {
     Collection<HobsonDevice> getAllDevices(PluginContext ctx);
 
     /**
+     * Returns a collection of all created device bootstraps.
+     *
+     * @param hubContext the hub context
+     *
+     * @return a Collection of DeviceBootstrap instances
+     */
+    Collection<DeviceBootstrap> getDeviceBootstraps(HubContext hubContext);
+
+    /**
      * Returns a specific device.
      *
      * @param ctx the context of the device to retrieve
@@ -126,13 +94,14 @@ public interface DeviceManager {
     HobsonDevice getDevice(DeviceContext ctx);
 
     /**
-     * Returns a specific device's configuration class.
+     * Retrieves a device bootstrap.
      *
-     * @param ctx the context of the desired device
+     * @param hubContext the hub context
+     * @param id the bootstrap ID
      *
-     * @return a PropertyContainerClass object
+     * @return a DeviceBootstrap instance
      */
-    PropertyContainerClass getDeviceConfigurationClass(DeviceContext ctx);
+    DeviceBootstrap getDeviceBootstrap(HubContext hubContext, String id);
 
     /**
      * Returns a specific device's configuration.
@@ -142,6 +111,15 @@ public interface DeviceManager {
      * @return a Dictionary (or null if there is no configuration)
      */
     PropertyContainer getDeviceConfiguration(DeviceContext ctx);
+
+    /**
+     * Returns a specific device's configuration class.
+     *
+     * @param ctx the context of the desired device
+     *
+     * @return a PropertyContainerClass object
+     */
+    PropertyContainerClass getDeviceConfigurationClass(DeviceContext ctx);
 
     /**
      * Returns a device configuration property.
@@ -184,12 +162,23 @@ public interface DeviceManager {
     void publishDevice(HobsonDevice device, boolean republish);
 
     /**
-     * Updates the last check-in time of the device.
+     * Registers a device bootstrap.
      *
-     * @param ctx the device context
-     * @param checkInTime the check-in time
+     * @param hubContext the hub context
+     * @param deviceId the device ID
+     *
+     * @return a DeviceBootstrap
      */
-    void checkInDevice(DeviceContext ctx, Long checkInTime);
+    DeviceBootstrap registerDeviceBootstrap(HubContext hubContext, String deviceId);
+
+    /**
+     * Resets a device bootstrap to its initially created state. This will allow a device to successfully
+     * re-request its bootstrap information.
+     *
+     * @param hubContext the hub context
+     * @param id the globally unique device ID
+     */
+    void resetDeviceBootstrap(HubContext hubContext, String id);
 
     /**
      * Sets configuration for a device.
@@ -230,6 +219,16 @@ public interface DeviceManager {
     void setDeviceName(DeviceContext ctx, String name);
 
     /**
+     * Stops an unpublishes all devices associated with a specific plugin.
+     *
+     * @param ctx the context of the plugin that published the devices
+     * @param executor an executor used to call the plugins' onShutdown() lifecycle method
+     *
+     * @since hobson-hub-api 0.1.6
+     */
+    void unpublishAllDevices(PluginContext ctx, EventLoopExecutor executor);
+
+    /**
      * Stops and unpublishes a device associated with a specific plugin. This allows plugins that require it
      * (e.g. the RadioRA plugin) to unpublish individual devices.
      *
@@ -241,12 +240,13 @@ public interface DeviceManager {
     void unpublishDevice(DeviceContext ctx, EventLoopExecutor executor);
 
     /**
-     * Stops an unpublishes all devices associated with a specific plugin.
+     * Authenticates a device bootstrap.
      *
-     * @param ctx the context of the plugin that published the devices
-     * @param executor an executor used to call the plugins' onShutdown() lifecycle method
+     * @param hubContext the hub context
+     * @param id the globally unique device ID
+     * @param secret the secret to verify
      *
-     * @since hobson-hub-api 0.1.6
+     * @return a boolean indicating whether the device ID and secret are valid
      */
-    void unpublishAllDevices(PluginContext ctx, EventLoopExecutor executor);
+    boolean verifyDeviceBootstrap(HubContext hubContext, String id, String secret);
 }

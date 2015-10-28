@@ -97,6 +97,8 @@ public class TypedProperty {
         DEVICES,
         RECURRENCE,
         NUMBER,
+        PRESENCE_ENTITY,
+        LOCATION,
         SECURE_STRING,
         STRING,
         TIME
