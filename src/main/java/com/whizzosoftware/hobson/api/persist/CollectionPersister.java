@@ -14,6 +14,10 @@ import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.HobsonDevice;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
+import com.whizzosoftware.hobson.api.presence.PresenceEntity;
+import com.whizzosoftware.hobson.api.presence.PresenceEntityContext;
+import com.whizzosoftware.hobson.api.presence.PresenceLocation;
+import com.whizzosoftware.hobson.api.presence.PresenceLocationContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
@@ -134,6 +138,62 @@ public class CollectionPersister {
             }
         }
         return null;
+    }
+
+    public PresenceEntity restorePresenceEntity(CollectionPersistenceContext pctx, PresenceEntityContext pectx) {
+        Map<String,Object> map = pctx.getMap(KeyUtil.createPresenceEntityKey(pectx));
+        if (map != null && map.size() > 0) {
+            return new PresenceEntity(pectx, (String)map.get("name"), (Long)map.get("lastUpdate"));
+        }
+        return null;
+    }
+
+    public void savePresenceEntity(CollectionPersistenceContext pctx, PresenceEntity pe) {
+        String key = KeyUtil.createPresenceEntityKey(pe.getContext());
+
+        Map<String,Object> map = pctx.getMap(key);
+        map.put("context", pe.getContext().toString());
+        map.put("name", pe.getName());
+        map.put("lastUpdate", pe.getLastUpdate());
+
+        pctx.setMap(key, map);
+        pctx.commit();
+    }
+
+    public void deletePresenceEntity(CollectionPersistenceContext pctx, PresenceEntityContext pectx) {
+        pctx.removeMap(KeyUtil.createPresenceEntityKey(pectx));
+        pctx.commit();
+    }
+
+    public PresenceLocation restorePresenceLocation(CollectionPersistenceContext pctx, PresenceLocationContext plctx) {
+        if (plctx != null) {
+            Map<String, Object> map = pctx.getMap(KeyUtil.createPresenceLocationKey(plctx));
+            if (map != null && map.size() > 0) {
+                return new PresenceLocation(plctx, (String) map.get("name"), (Double) map.get("latitude"), (Double) map.get("longitude"), (Double) map.get("radius"), (Integer) map.get("beaconMajor"), (Integer) map.get("beaconMinor"));
+            }
+        }
+        return null;
+    }
+
+    public void savePresenceLocation(CollectionPersistenceContext pctx, PresenceLocation pl) {
+        String key = KeyUtil.createPresenceLocationKey(pl.getContext());
+
+        Map<String,Object> map = pctx.getMap(key);
+        map.put("context", pl.getContext().toString());
+        map.put("name", pl.getName());
+        map.put("latitude", pl.getLatitude());
+        map.put("longitude", pl.getLongitude());
+        map.put("radius", pl.getRadius());
+        map.put("beaconMajor", pl.getBeaconMajor());
+        map.put("beaconMinor", pl.getBeaconMinor());
+
+        pctx.setMap(key, map);
+        pctx.commit();
+    }
+
+    public void deletePresenceLocation(CollectionPersistenceContext pctx, PresenceLocationContext plctx) {
+        pctx.removeMap(KeyUtil.createPresenceLocationKey(plctx));
+        pctx.commit();
     }
 
     public HobsonTask restoreTask(CollectionPersistenceContext pctx, TaskContext taskContext) {

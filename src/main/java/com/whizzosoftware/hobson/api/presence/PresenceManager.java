@@ -25,7 +25,7 @@ public interface PresenceManager {
      *
      * @return a Collection of PresenceEntity objects
      */
-    Collection<PresenceEntity> getAllEntities(HubContext ctx);
+    Collection<PresenceEntity> getAllPresenceEntities(HubContext ctx);
 
     /**
      * Returns details of a presence entity.
@@ -34,7 +34,7 @@ public interface PresenceManager {
      *
      * @return a PresenceEntity object
      */
-    PresenceEntity getEntity(PresenceEntityContext ctx);
+    PresenceEntity getPresenceEntity(PresenceEntityContext ctx);
 
     /**
      * Adds a new presence entity.
@@ -44,14 +44,14 @@ public interface PresenceManager {
      *
      * @return the ID of the newly created entity
      */
-    PresenceEntityContext addEntity(HubContext hctx, String name);
+    PresenceEntityContext addPresenceEntity(HubContext hctx, String name);
 
     /**
      * Deletes a presence entity.
      *
      * @param ctx the context of the presence entity
      */
-    void deleteEntity(PresenceEntityContext ctx);
+    void deletePresenceEntity(PresenceEntityContext ctx);
 
     /**
      * Retrieves the current location of a presence entity.
@@ -60,7 +60,7 @@ public interface PresenceManager {
      *
      * @return the current location (or null if unknown)
      */
-    PresenceLocation getEntityLocation(PresenceEntityContext ctx);
+    PresenceLocation getPresenceEntityLocation(PresenceEntityContext ctx);
 
     /**
      * Sends an update event for a presence entity.
@@ -68,7 +68,7 @@ public interface PresenceManager {
      * @param ectx the context of the entity
      * @param lctx the context of the new location
      */
-    void updateEntityLocation(PresenceEntityContext ectx, PresenceLocationContext lctx);
+    void updatePresenceEntityLocation(PresenceEntityContext ectx, PresenceLocationContext lctx);
 
     /**
      * Retrieves a lit of all presence locations.
@@ -77,7 +77,7 @@ public interface PresenceManager {
      *
      * @return a Collection of PresenceLocation objects
      */
-    Collection<PresenceLocation> getAllLocations(HubContext ctx);
+    Collection<PresenceLocation> getAllPresenceLocations(HubContext ctx);
 
     /**
      * Returns details of a presence location.
@@ -86,7 +86,7 @@ public interface PresenceManager {
      *
      * @return a PresenceLocation object
      */
-    PresenceLocation getLocation(PresenceLocationContext ctx);
+    PresenceLocation getPresenceLocation(PresenceLocationContext ctx);
 
     /**
      * Adds a new presence location.
@@ -101,12 +101,12 @@ public interface PresenceManager {
      *
      * @return the context of the newly created location
      */
-    PresenceLocationContext addLocation(HubContext hctx, String name, Double latitude, Double longitude, Double radius, Integer beaconMajor, Integer beaconMinor);
+    PresenceLocationContext addPresenceLocation(HubContext hctx, String name, Double latitude, Double longitude, Double radius, Integer beaconMajor, Integer beaconMinor);
 
     /**
      * Deletes a presence location.
      *
      * @param ctx the context of the presence location to delete
      */
-    void deleteLocation(PresenceLocationContext ctx);
+    void deletePresenceLocation(PresenceLocationContext ctx);
 }

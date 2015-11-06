@@ -10,6 +10,8 @@ package com.whizzosoftware.hobson.api.persist;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
+import com.whizzosoftware.hobson.api.presence.PresenceEntityContext;
+import com.whizzosoftware.hobson.api.presence.PresenceLocationContext;
 import com.whizzosoftware.hobson.api.task.TaskContext;
 
 public class KeyUtil {
@@ -75,6 +77,22 @@ public class KeyUtil {
 
     public static String createActionPropertiesKey(HubContext ctx, String actionId) {
         return createActionKey(ctx, actionId) + HubContext.DELIMITER + "properties";
+    }
+
+    public static String createPresenceEntitiesKey(HubContext ctx) {
+        return createHubKey(ctx) + HubContext.DELIMITER + "presenceEntities";
+    }
+
+    public static String createPresenceEntityKey(PresenceEntityContext ctx) {
+        return createPresenceEntitiesKey(ctx.getHubContext()) + HubContext.DELIMITER + ctx.getEntityId();
+    }
+
+    public static String createPresenceLocationsKey(HubContext ctx) {
+        return createHubKey(ctx) + HubContext.DELIMITER + "presenceLocations";
+    }
+
+    public static String createPresenceLocationKey(PresenceLocationContext ctx) {
+        return createPresenceLocationsKey(ctx.getHubContext()) + HubContext.DELIMITER + ctx.getLocationId();
     }
 
     public static String createTasksKey(HubContext ctx) {
