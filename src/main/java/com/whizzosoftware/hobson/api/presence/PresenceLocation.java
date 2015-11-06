@@ -27,15 +27,19 @@ public class PresenceLocation {
         this.name = name;
     }
 
-    public PresenceLocation(PresenceLocationContext context, String name, Double latitude, Double longitude, Double radius) {
+    public PresenceLocation(PresenceLocationContext context, String name, double latitude, double longitude, double radius) {
+        this(context, name, latitude, longitude, radius, null, null);
+    }
+
+    public PresenceLocation(PresenceLocationContext context, String name, int beaconMajor, int beaconMinor) {
+        this(context, name, null, null, null, beaconMajor, beaconMinor);
+    }
+
+    public PresenceLocation(PresenceLocationContext context, String name, Double latitude, Double longitude, Double radius, Integer beaconMajor, Integer beaconMinor) {
         this(context, name);
         this.latitude = latitude;
         this.longitude = longitude;
         this.radius = radius;
-    }
-
-    public PresenceLocation(PresenceLocationContext context, String name, Integer beaconMajor, Integer beaconMinor) {
-        this(context, name);
         this.beaconMajor = beaconMajor;
         this.beaconMinor = beaconMinor;
     }

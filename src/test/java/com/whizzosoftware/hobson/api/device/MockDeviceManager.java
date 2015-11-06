@@ -137,13 +137,6 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public void setDeviceConfiguration(DeviceContext ctx, PropertyContainer config) {
-        for (String key : config.getPropertyValues().keySet()) {
-            setDeviceConfigurationProperty(ctx, key, config.getPropertyValue(key), true);
-        }
-    }
-
-    @Override
     public void setDeviceConfigurationProperty(DeviceContext ctx, String name, Object value, boolean overwrite) {
         configuration.put(ctx.getPluginId() + "." + ctx.getDeviceId() + "." + name, value);
     }
@@ -153,11 +146,6 @@ public class MockDeviceManager implements DeviceManager {
         for (String name : values.keySet()) {
             setDeviceConfigurationProperty(ctx, name, values.get(name), overwrite);
         }
-    }
-
-    @Override
-    public void setDeviceName(DeviceContext ctx, String name) {
-
     }
 
     public void addPublishedDevice(HobsonDevice device) {

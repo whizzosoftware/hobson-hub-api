@@ -32,11 +32,6 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public Collection<HobsonVariable> getAllVariables(HubContext ctx, VariableProxyValueProvider proxyProvider) {
-        return null;
-    }
-
-    @Override
     public Collection<String> getPublishedVariableNames(HubContext ctx) {
         return null;
     }
@@ -47,17 +42,7 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public Collection<HobsonVariable> getGlobalVariables(HubContext ctx, VariableProxyValueProvider proxyProvider) {
-        return null;
-    }
-
-    @Override
     public HobsonVariable getGlobalVariable(HubContext ctx, String name) {
-        return null;
-    }
-
-    @Override
-    public HobsonVariable getGlobalVariable(HubContext ctx, String name, VariableProxyValueProvider proxyProvider) {
         return null;
     }
 
@@ -67,18 +52,8 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public HobsonVariableCollection getDeviceVariables(DeviceContext ctx, VariableProxyValueProvider proxyProvider) {
-        return null;
-    }
-
-    @Override
     public HobsonVariable getDeviceVariable(DeviceContext ctx, String name) {
         return getPublishedVariables().get(ctx.getPluginId() + "." + ctx.getDeviceId());
-    }
-
-    @Override
-    public HobsonVariable getDeviceVariable(DeviceContext ctx, String name, VariableProxyValueProvider proxyValueProvider) {
-        return null;
     }
 
     @Override
@@ -92,7 +67,7 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public void publishGlobalVariable(PluginContext ctx, String name, Object value, HobsonVariable.Mask mask, String proxyType) {
+    public void publishGlobalVariable(PluginContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableProxyType proxyType) {
 
     }
 
@@ -107,7 +82,7 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, String proxyType) {
+    public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableProxyType proxyType) {
         publishedVariables.put(ctx.getPluginId() + "." + ctx.getDeviceId(), new MockHobsonVariable(ctx.getPluginId(), ctx.getDeviceId(), name, value, mask));
     }
 

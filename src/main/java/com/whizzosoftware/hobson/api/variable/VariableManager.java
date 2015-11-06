@@ -35,17 +35,6 @@ public interface VariableManager {
     Collection<HobsonVariable> getAllVariables(HubContext ctx);
 
     /**
-     * Returns all variables published by a hub. Each variables value will be processed by the provided
-     * VariableProxyValueProvider before being returned.
-     *
-     * @param ctx the context of the target hub
-     * @param proxyProvider a proxy provider to use for value substitution
-     *
-     * @return a Collection of HobsonVariable instances
-     */
-    Collection<HobsonVariable> getAllVariables(HubContext ctx, VariableProxyValueProvider proxyProvider);
-
-    /**
      * Returns a collection of all distinct published variable names.
      *
      * @param ctx the context of the target hub
@@ -66,17 +55,6 @@ public interface VariableManager {
     Collection<HobsonVariable> getGlobalVariables(HubContext ctx);
 
     /**
-     * Returns a collection of all global variables published by a hub. Each variables value will be processed by
-     * the provided VariableProxyValueProvider before being returned.
-     *
-     * @param ctx the context of the target hub
-     * @param proxyProvider a proxy provider to use for value substitution
-     *
-     * @return a Collection of HobsonVariable instances
-     */
-    Collection<HobsonVariable> getGlobalVariables(HubContext ctx, VariableProxyValueProvider proxyProvider);
-
-    /**
      * Returns a specific global variable published by a hub.
      *
      * @param ctx the context of the target hub
@@ -86,19 +64,6 @@ public interface VariableManager {
      * @throws VariableNotFoundException if not found
      */
     HobsonVariable getGlobalVariable(HubContext ctx, String name);
-
-    /**
-     * Returns a specific global variable published by a hub. The variable's value will be processed by
-     * the provided VariableProxyValueProvider before being returned.
-     *
-     * @param ctx the context of the target hub
-     * @param name the variable name
-     * @param proxyProvider a proxy provider to use for value substitution
-     *
-     * @return a HobsonVariable instance
-     * @throws VariableNotFoundException if not found
-     */
-    HobsonVariable getGlobalVariable(HubContext ctx, String name, VariableProxyValueProvider proxyProvider);
 
     /**
      * Returns all published variables for a device.
@@ -112,18 +77,6 @@ public interface VariableManager {
     HobsonVariableCollection getDeviceVariables(DeviceContext ctx);
 
     /**
-     * Returns all published variables for a device. All variable values will be processed by the provided
-     * VariableProxyValueProvider before being returned.
-     *
-     * @param ctx the device context the variables are associated with
-     *
-     * @return a Collection of HobsonVariable instances
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    HobsonVariableCollection getDeviceVariables(DeviceContext ctx, VariableProxyValueProvider proxyProvider);
-
-    /**
      * Returns a specific published variable for a device.
      *
      * @param ctx the device context the variable is associated with
@@ -135,20 +88,6 @@ public interface VariableManager {
      * @since hobson-hub-api 0.1.6
      */
     HobsonVariable getDeviceVariable(DeviceContext ctx, String name);
-
-    /**
-     * Returns a specific published variable for a device. The variable's value will be processed by
-     * the provided VariableProxyValueProvider before being returned.
-     *
-     * @param ctx the device context the variable is associated with
-     * @param name the variable name
-     *
-     * @return a HobsonVariable instance (or null if not found)
-     * @throws VariableNotFoundException if not found
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    HobsonVariable getDeviceVariable(DeviceContext ctx, String name, VariableProxyValueProvider proxyValueProvider);
 
     /**
      * Indicates whether a device variable has been published.
@@ -183,7 +122,7 @@ public interface VariableManager {
      * @param mask the access mask of the new variable
      * @param proxyType indicates the type of proxy that can perform value substitutions (or null if not applicable)
      */
-    void publishGlobalVariable(PluginContext ctx, String name, Object value, HobsonVariable.Mask mask, String proxyType);
+    void publishGlobalVariable(PluginContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableProxyType proxyType);
 
     /**
      * Un-publish a global variable.
@@ -216,7 +155,7 @@ public interface VariableManager {
      * @param mask the access mask of the new variable
      * @param proxyType indicates the type of proxy that can perform value substitutions (or null if not applicable)
      */
-    void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, String proxyType);
+    void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableProxyType proxyType);
 
     /**
      * Un-publish a device variable.

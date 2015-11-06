@@ -52,7 +52,7 @@ public class HobsonVariableValueOverrider implements HobsonVariable {
     }
 
     @Override
-    public String getProxyType() {
+    public VariableProxyType getProxyType() {
         return variable.getProxyType();
     }
 

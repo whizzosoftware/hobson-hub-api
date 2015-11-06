@@ -46,6 +46,20 @@ public interface PresenceManager {
      */
     PresenceEntityContext addEntity(HubContext hctx, String name);
 
+    /**
+     * Deletes a presence entity.
+     *
+     * @param ctx the context of the presence entity
+     */
+    void deleteEntity(PresenceEntityContext ctx);
+
+    /**
+     * Retrieves the current location of a presence entity.
+     *
+     * @param ctx the presence entity context
+     *
+     * @return the current location (or null if unknown)
+     */
     PresenceLocation getEntityLocation(PresenceEntityContext ctx);
 
     /**
@@ -88,4 +102,11 @@ public interface PresenceManager {
      * @return the context of the newly created location
      */
     PresenceLocationContext addLocation(HubContext hctx, String name, Double latitude, Double longitude, Double radius, Integer beaconMajor, Integer beaconMinor);
+
+    /**
+     * Deletes a presence location.
+     *
+     * @param ctx the context of the presence location to delete
+     */
+    void deleteLocation(PresenceLocationContext ctx);
 }

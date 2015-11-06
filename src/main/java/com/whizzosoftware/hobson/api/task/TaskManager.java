@@ -13,6 +13,7 @@ import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
 import com.whizzosoftware.hobson.api.task.condition.ConditionClassType;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
+import com.whizzosoftware.hobson.api.task.condition.TaskConditionClassProvider;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.Map;
  * @author Dan Noguerol
  * @since hobson-hub-api 0.1.6
  */
-public interface TaskManager {
+public interface TaskManager extends TaskConditionClassProvider {
     /**
      * Creates a new task in the system. This is called (e.g. by the REST API) when a request is received to add a new task.
      *
@@ -132,15 +133,6 @@ public interface TaskManager {
      * @since hobson-hub-api 0.1.6
      */
     Collection<HobsonTask> getAllTasks(HubContext ctx);
-
-    /**
-     * Returns a condition class.
-     *
-     * @param ctx the context of the condition class
-     *
-     * @return a TaskConditionClass object (or null if not found)
-     */
-    TaskConditionClass getConditionClass(PropertyContainerClassContext ctx);
 
     /**
      * Returns a specific task.

@@ -11,6 +11,7 @@ import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.task.condition.ConditionClassType;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
+import com.whizzosoftware.hobson.api.task.condition.TaskConditionClassProvider;
 
 import java.util.List;
 
@@ -23,23 +24,23 @@ public class TaskHelper {
     /**
      * Returns the trigger condition from a list of conditions.
      *
-     * @param taskManager a task manager instance
+     * @param provider a task condition class provider
      * @param conditions the list of conditions
      *
      * @return a PropertyContainer instance (or null if no condition had a trigger type)
      */
-    public static PropertyContainer getTriggerCondition(TaskManager taskManager, List<PropertyContainer> conditions) {
+    public static PropertyContainer getTriggerCondition(TaskConditionClassProvider provider, List<PropertyContainer> conditions) {
         PropertyContainer trigger = null;
 
-        if (taskManager == null) {
-            throw new HobsonRuntimeException("No task manager found");
+        if (provider == null) {
+            throw new HobsonRuntimeException("No condition class provider found");
         }
 
         // iterate through the conditions
         if (conditions != null) {
             for (PropertyContainer c : conditions) {
                 // get the condition class for this condition
-                TaskConditionClass tcc = taskManager.getConditionClass(c.getContainerClassContext());
+                TaskConditionClass tcc = provider.getConditionClass(c.getContainerClassContext());
                 if (tcc != null) {
                     if (tcc.getConditionClassType() == ConditionClassType.trigger) {
                         if (trigger == null) {

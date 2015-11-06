@@ -13,6 +13,6 @@ package com.whizzosoftware.hobson.api.variable;
  *
  * @author Dan Noguerol
  */
-public class VariableProxyType {
-    public static final String MEDIA_URL = "mediaUrl";
+public enum VariableProxyType {
+    MEDIA
 }

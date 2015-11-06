@@ -22,6 +22,7 @@ import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
 import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableManager;
+import com.whizzosoftware.hobson.api.variable.VariableProxyType;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import io.netty.util.concurrent.Future;
 
@@ -185,7 +186,7 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param mask the variable mask
      * @param proxyType indicates the type of proxy that can perform value substitutions (or null if not applicable)
      */
-    void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, String proxyType);
+    void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableProxyType proxyType);
 
     /**
      * Publish a global variable.
@@ -204,7 +205,7 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param mask the access mask of the new variable
      * @param proxyType indicates the type of proxy that can perform value substitutions (or null if not applicable)
      */
-    void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask, String proxyType);
+    void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask, VariableProxyType proxyType);
 
     /**
      * Execute a recurring task.

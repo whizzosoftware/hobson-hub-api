@@ -14,6 +14,13 @@ package com.whizzosoftware.hobson.api.variable;
  */
 public interface VariableProxyValueProvider {
     /**
+     * Returns the proxy type for this provider.
+     *
+     * @return a VariableProxyType instance
+     */
+    VariableProxyType getProxyType();
+
+    /**
      * Returns the proxy value for a variable.
      *
      * @param v the variable

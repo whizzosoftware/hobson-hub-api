@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.presence;
 
 import com.whizzosoftware.hobson.api.hub.HubContext;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
@@ -21,6 +22,11 @@ public class PresenceEntityContext {
 
     public static PresenceEntityContext create(HubContext ctx, String entityId) {
         return new PresenceEntityContext(ctx, entityId);
+    }
+
+    public static PresenceEntityContext create(String s) {
+        String[] comps = StringUtils.split(s, HubContext.DELIMITER);
+        return PresenceEntityContext.create(HubContext.create(comps[0], comps[1]), comps[2]);
     }
 
     public static PresenceEntityContext createLocal(String entityId) {

@@ -10,6 +10,7 @@ package com.whizzosoftware.hobson.api.device;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
+import com.whizzosoftware.hobson.api.variable.VariableProxyType;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 
 import java.util.Collections;
@@ -214,7 +215,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
         getPlugin().getRuntime().publishDeviceVariable(getContext(), name, value, mask);
     }
 
-    protected void publishVariable(String name, Object value, HobsonVariable.Mask mask, String proxyType) {
+    protected void publishVariable(String name, Object value, HobsonVariable.Mask mask, VariableProxyType proxyType) {
         getPlugin().getRuntime().publishDeviceVariable(getContext(), name, value, mask, proxyType);
     }
 

@@ -69,10 +69,10 @@ public interface HobsonVariable {
      *
      * @return the type of proxy (or null if no proxy is necessary)
      */
-    String getProxyType();
+    VariableProxyType getProxyType();
 
     /**
-     * Returns the variable value.
+     * Returns the variable value (respecting any proxy that is defined).
      *
      * @return the variable value
      *

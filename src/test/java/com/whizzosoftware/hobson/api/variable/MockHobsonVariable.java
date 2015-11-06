@@ -34,7 +34,7 @@ public class MockHobsonVariable implements HobsonVariable {
     }
 
     @Override
-    public String getProxyType() {
+    public VariableProxyType getProxyType() {
         return null;
     }
 

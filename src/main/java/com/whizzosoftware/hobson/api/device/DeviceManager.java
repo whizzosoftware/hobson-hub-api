@@ -181,13 +181,6 @@ public interface DeviceManager {
     void resetDeviceBootstrap(HubContext hubContext, String id);
 
     /**
-     * Sets configuration for a device.
-     *  @param ctx the context of the target device
-     * @param config the new configuration
-     */
-    void setDeviceConfiguration(DeviceContext ctx, PropertyContainer config);
-
-    /**
      * Set a device configuration property.
      *
      * @param ctx the context of the target device
@@ -205,18 +198,6 @@ public interface DeviceManager {
      * @param overwrite indicates whether an existing configuration value should be overwritten
      */
     void setDeviceConfigurationProperties(DeviceContext ctx, Map<String,Object> values, boolean overwrite);
-
-    /**
-     * Sets the name of a device.
-     *
-     * @param ctx the context of the target device
-     * @param name the new name of the device
-     *
-     * @throws DeviceNotFoundException if device isn't found
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    void setDeviceName(DeviceContext ctx, String name);
 
     /**
      * Stops an unpublishes all devices associated with a specific plugin.

@@ -18,8 +18,13 @@ public class PresenceEntity {
     protected Long lastUpdate;
 
     public PresenceEntity(PresenceEntityContext ctx, String name) {
+        this(ctx, name, null);
+    }
+
+    public PresenceEntity(PresenceEntityContext ctx, String name, Long lastUpdate) {
         this.ctx = ctx;
         this.name = name;
+        this.lastUpdate = lastUpdate;
     }
 
     public PresenceEntityContext getContext() {
