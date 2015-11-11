@@ -20,6 +20,15 @@ import java.util.Collection;
  */
 public interface HubManager {
     /**
+     * Returns the version of the hub.
+     *
+     * @param hubContext the context of the hub
+     *
+     * @return a String
+     */
+    String getVersion(HubContext hubContext);
+
+    /**
      * Returns the hubs associated with a user.
      *
      * @param userId the user ID that owns the hubs
