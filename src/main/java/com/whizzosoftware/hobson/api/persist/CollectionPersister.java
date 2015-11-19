@@ -9,9 +9,7 @@ package com.whizzosoftware.hobson.api.persist;
 
 import com.whizzosoftware.hobson.api.HobsonNotFoundException;
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
-import com.whizzosoftware.hobson.api.device.DeviceBootstrap;
-import com.whizzosoftware.hobson.api.device.DeviceContext;
-import com.whizzosoftware.hobson.api.device.HobsonDevice;
+import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.presence.PresenceEntity;
@@ -36,6 +34,7 @@ import java.util.*;
  * @author Dan Noguerol
  */
 public class CollectionPersister {
+    private ContextPathIdProvider idProvider = new ContextPathIdProvider();
 
     public void saveDevice(CollectionPersistenceContext pctx, HobsonDevice device) {
         Map<String,Object> map = new HashMap<>();
@@ -44,7 +43,7 @@ public class CollectionPersister {
         map.put("lastCheckIn", device.getLastCheckIn());
         map.put("preferredVariableName", device.getPreferredVariableName());
 
-        pctx.setMap(KeyUtil.createDeviceKey(device.getContext()), map);
+        pctx.setMap(idProvider.createDeviceId(device.getContext()), map);
         pctx.commit();
     }
 
@@ -54,7 +53,7 @@ public class CollectionPersister {
         map.put("value", StringConversionUtil.createTypedValueString(var.getValue()));
         map.put("lastUpdate", var.getLastUpdate());
 
-        pctx.setMap(KeyUtil.createDeviceVariableKey(DeviceContext.create(PluginContext.create(hctx, var.getPluginId()), var.getDeviceId()), var.getName()), map);
+        pctx.setMap(idProvider.createDeviceVariableId(DeviceContext.create(PluginContext.create(hctx, var.getPluginId()), var.getDeviceId()), var.getName()), map);
         pctx.commit();
     }
 
@@ -85,7 +84,7 @@ public class CollectionPersister {
                 Map<String,Object> pmap = new HashMap<>();
                 pmap.put("name", name);
                 pmap.put("value", task.getProperties().get(name));
-                pctx.setMap(KeyUtil.createTaskPropertyKey(task.getContext(), name), pmap);
+                pctx.setMap(idProvider.createTaskPropertyId(task.getContext(), name), pmap);
             }
         }
 
@@ -97,12 +96,12 @@ public class CollectionPersister {
                     cmap.put("id", pc.getId());
                     cmap.put("name", pc.getName());
                     cmap.put("context", pc.getContainerClassContext().toString());
-                    pctx.setMap(KeyUtil.createTaskConditionMetaKey(task.getContext(), pc.getId()), cmap);
+                    pctx.setMap(idProvider.createTaskConditionMetaId(task.getContext(), pc.getId()), cmap);
                     for (String pvalName : pc.getPropertyValues().keySet()) {
                         Map<String, Object> pvalmap = new HashMap<>();
                         pvalmap.put("name", pvalName);
                         pvalmap.put("value", StringConversionUtil.createTypedValueString(pc.getPropertyValues().get(pvalName)));
-                        pctx.setMap(KeyUtil.createTaskConditionValueKey(task.getContext(), pc.getId(), pvalName), pvalmap);
+                        pctx.setMap(idProvider.createTaskConditionValueId(task.getContext(), pc.getId(), pvalName), pvalmap);
                     }
                 } else {
                     throw new HobsonNotFoundException("Unable to save condition with null ID: " + pc.getContainerClassContext());
@@ -113,7 +112,7 @@ public class CollectionPersister {
         // save task action set ID
         map.put("actionSetId", task.getActionSet().getId());
 
-        pctx.setMap(KeyUtil.createTaskMetaKey(task.getContext()), map);
+        pctx.setMap(idProvider.createTaskMetaId(task.getContext()), map);
         pctx.commit();
     }
 
@@ -123,7 +122,7 @@ public class CollectionPersister {
     }
 
     public void deleteTask(CollectionPersistenceContext pctx, TaskContext context) {
-        pctx.removeMap(KeyUtil.createTaskMetaKey(context));
+        pctx.removeMap(idProvider.createTaskMetaId(context));
         pctx.commit();
     }
 
@@ -141,7 +140,7 @@ public class CollectionPersister {
     }
 
     public PresenceEntity restorePresenceEntity(CollectionPersistenceContext pctx, PresenceEntityContext pectx) {
-        Map<String,Object> map = pctx.getMap(KeyUtil.createPresenceEntityKey(pectx));
+        Map<String,Object> map = pctx.getMap(idProvider.createPresenceEntityId(pectx));
         if (map != null && map.size() > 0) {
             return new PresenceEntity(pectx, (String)map.get("name"), (Long)map.get("lastUpdate"));
         }
@@ -149,7 +148,7 @@ public class CollectionPersister {
     }
 
     public void savePresenceEntity(CollectionPersistenceContext pctx, PresenceEntity pe) {
-        String key = KeyUtil.createPresenceEntityKey(pe.getContext());
+        String key = idProvider.createPresenceEntityId(pe.getContext());
 
         Map<String,Object> map = pctx.getMap(key);
         map.put("context", pe.getContext().toString());
@@ -161,13 +160,13 @@ public class CollectionPersister {
     }
 
     public void deletePresenceEntity(CollectionPersistenceContext pctx, PresenceEntityContext pectx) {
-        pctx.removeMap(KeyUtil.createPresenceEntityKey(pectx));
+        pctx.removeMap(idProvider.createPresenceEntityId(pectx));
         pctx.commit();
     }
 
     public PresenceLocation restorePresenceLocation(CollectionPersistenceContext pctx, PresenceLocationContext plctx) {
         if (plctx != null) {
-            Map<String, Object> map = pctx.getMap(KeyUtil.createPresenceLocationKey(plctx));
+            Map<String, Object> map = pctx.getMap(idProvider.createPresenceLocationId(plctx));
             if (map != null && map.size() > 0) {
                 return new PresenceLocation(plctx, (String) map.get("name"), (Double) map.get("latitude"), (Double) map.get("longitude"), (Double) map.get("radius"), (Integer) map.get("beaconMajor"), (Integer) map.get("beaconMinor"));
             }
@@ -176,7 +175,7 @@ public class CollectionPersister {
     }
 
     public void savePresenceLocation(CollectionPersistenceContext pctx, PresenceLocation pl) {
-        String key = KeyUtil.createPresenceLocationKey(pl.getContext());
+        String key = idProvider.createPresenceLocationId(pl.getContext());
 
         Map<String,Object> map = pctx.getMap(key);
         map.put("context", pl.getContext().toString());
@@ -192,17 +191,22 @@ public class CollectionPersister {
     }
 
     public void deletePresenceLocation(CollectionPersistenceContext pctx, PresenceLocationContext plctx) {
-        pctx.removeMap(KeyUtil.createPresenceLocationKey(plctx));
+        pctx.removeMap(idProvider.createPresenceLocationId(plctx));
         pctx.commit();
     }
 
+    public HobsonDevice restoreDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
+        Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(ctx));
+        return new HobsonDeviceStub(ctx, (String)deviceMap.get("name"), DeviceType.valueOf((String)deviceMap.get("type")), (Long)deviceMap.get("lastCheckIn"), (String)deviceMap.get("preferredVariableName"));
+    }
+
     public HobsonTask restoreTask(CollectionPersistenceContext pctx, TaskContext taskContext) {
-        Map<String,Object> taskMap = pctx.getMap(KeyUtil.createTaskMetaKey(taskContext));
+        Map<String,Object> taskMap = pctx.getMap(idProvider.createTaskMetaId(taskContext));
 
         HobsonTask task = new HobsonTask(taskContext, (String)taskMap.get("name"), (String)taskMap.get("description"), null, null, null);
 
         // restore properties
-        List<Map<String,Object>> mapList = pctx.getMapsWithPrefix(KeyUtil.createTaskPropertiesKey(taskContext));
+        List<Map<String,Object>> mapList = pctx.getMapsWithPrefix(idProvider.createTaskPropertiesId(taskContext));
         if (mapList != null) {
             for (Map<String, Object> map : mapList) {
                 task.setProperty((String) map.get("name"), map.get("value"));
@@ -211,13 +215,13 @@ public class CollectionPersister {
 
         // restore conditions
         List<PropertyContainer> conditions = new ArrayList<>();
-        mapList = pctx.getMapsWithPrefix(KeyUtil.createTaskConditionMetasKey(taskContext));
+        mapList = pctx.getMapsWithPrefix(idProvider.createTaskConditionMetasId(taskContext));
         if (mapList != null) {
             for (Map<String, Object> map : mapList) {
                 // restore condition values
                 Map<String, Object> values = new HashMap<>();
                 String conditionId = (String) map.get("id");
-                List<Map<String, Object>> valueList = pctx.getMapsWithPrefix(KeyUtil.createTaskConditionValuesKey(taskContext, conditionId));
+                List<Map<String, Object>> valueList = pctx.getMapsWithPrefix(idProvider.createTaskConditionValuesId(taskContext, conditionId));
                 for (Map<String, Object> vmap : valueList) {
                     values.put((String) vmap.get("name"), StringConversionUtil.castTypedValueString((String) vmap.get("value")));
                 }
@@ -233,7 +237,7 @@ public class CollectionPersister {
     }
 
     public void saveActionSet(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainerSet actionSet) {
-        String key = KeyUtil.createActionSetKey(ctx, actionSet.getId());
+        String key = idProvider.createActionSetId(ctx, actionSet.getId());
 
         Map<String,Object> map = new HashMap<>();
         map.put("id", actionSet.getId());
@@ -261,7 +265,7 @@ public class CollectionPersister {
     }
 
     public PropertyContainerSet restoreActionSet(HubContext ctx, CollectionPersistenceContext pctx, TaskManager manager, String actionSetId) {
-        String key = KeyUtil.createActionSetKey(ctx, actionSetId);
+        String key = idProvider.createActionSetId(ctx, actionSetId);
 
         Map<String,Object> map = pctx.getMap(key);
 
@@ -283,7 +287,7 @@ public class CollectionPersister {
     }
 
     public void saveAction(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainer action) {
-        String key = KeyUtil.createActionKey(ctx, action.getId());
+        String key = idProvider.createActionId(ctx, action.getId());
 
         Map<String,Object> map = pctx.getMap(key);
         map.put("id", action.getId());
@@ -296,7 +300,7 @@ public class CollectionPersister {
     }
 
     public PropertyContainer restoreAction(CollectionPersistenceContext pctx, TaskManager manager, HubContext ctx, String actionId) {
-        String key = KeyUtil.createActionKey(ctx, actionId);
+        String key = idProvider.createActionId(ctx, actionId);
 
         Map<String,Object> map = pctx.getMap(key);
 
@@ -312,7 +316,7 @@ public class CollectionPersister {
     }
 
     public void saveActionProperties(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainer action) {
-        String key = KeyUtil.createActionPropertiesKey(ctx, action.getId());
+        String key = idProvider.createActionPropertiesId(ctx, action.getId());
 
         Map<String,Object> map = pctx.getMap(key);
 
@@ -324,7 +328,7 @@ public class CollectionPersister {
     }
 
     public Map<String,Object> restoreActionProperties(HubContext ctx, CollectionPersistenceContext pctx, String actionId) {
-        String key = KeyUtil.createActionPropertiesKey(ctx, actionId);
+        String key = idProvider.createActionPropertiesId(ctx, actionId);
 
         Map<String,Object> map = pctx.getMap(key);
 

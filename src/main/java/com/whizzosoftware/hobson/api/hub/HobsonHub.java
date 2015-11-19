@@ -29,6 +29,11 @@ public class HobsonHub {
         this.ctx = ctx;
     }
 
+    public HobsonHub(HubContext ctx, String name) {
+        this(ctx);
+        this.name = name;
+    }
+
     public HubContext getContext() {
         return ctx;
     }

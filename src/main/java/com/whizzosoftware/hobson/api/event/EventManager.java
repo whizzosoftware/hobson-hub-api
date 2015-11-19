@@ -8,10 +8,6 @@
 package com.whizzosoftware.hobson.api.event;
 
 import com.whizzosoftware.hobson.api.hub.HubContext;
-import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
-import com.whizzosoftware.hobson.api.variable.VariableUpdate;
-
-import java.util.List;
 
 /**
  * An interface for sending and receiving system events.
