@@ -38,12 +38,20 @@ public class HubContext {
         this.hubId = hubId;
     }
 
+    public boolean hasUserId() {
+        return (userId != null);
+    }
+
     public String getUserId() {
         return userId;
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public boolean hasHubId() {
+        return (hubId != null);
     }
 
     public String getHubId() {
