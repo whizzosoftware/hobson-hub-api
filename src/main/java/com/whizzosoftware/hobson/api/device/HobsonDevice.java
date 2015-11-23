@@ -39,6 +39,27 @@ public interface HobsonDevice {
     DeviceType getType();
 
     /**
+     * Returns the name of the manufacturer of the device.
+     *
+     * @return the device manufacturer
+     */
+    String getManufacturerName();
+
+    /**
+     * Returns the model of the device.
+     *
+     * @return the device model
+     */
+    String getModelName();
+
+    /**
+     * Returns the manufacturer's version of the device.
+     *
+     * @return a version string
+     */
+    String getManufacturerVersion();
+
+    /**
      * Indicates if the device has been started by the runtime.
      *
      * @return a boolean

@@ -19,6 +19,9 @@ public class HobsonDeviceStub implements HobsonDevice {
     private DeviceContext ctx;
     private String name;
     private DeviceType type;
+    private String manufacturerName;
+    private String modelName;
+    private String manufacturerVersion;
     private Long lastCheckIn;
     private String preferredVariableName;
 
@@ -34,6 +37,9 @@ public class HobsonDeviceStub implements HobsonDevice {
         this.ctx = d.getContext();
         this.name = d.getName();
         this.type = d.getType();
+        this.manufacturerName = d.getManufacturerName();
+        this.modelName = d.getModelName();
+        this.manufacturerVersion = d.getManufacturerVersion();
         this.lastCheckIn = d.getLastCheckIn();
         this.preferredVariableName = d.getPreferredVariableName();
     }
@@ -51,6 +57,21 @@ public class HobsonDeviceStub implements HobsonDevice {
     @Override
     public DeviceType getType() {
         return type;
+    }
+
+    @Override
+    public String getManufacturerName() {
+        return manufacturerName;
+    }
+
+    @Override
+    public String getModelName() {
+        return modelName;
+    }
+
+    @Override
+    public String getManufacturerVersion() {
+        return manufacturerVersion;
     }
 
     @Override

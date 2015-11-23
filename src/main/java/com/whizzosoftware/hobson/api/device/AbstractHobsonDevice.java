@@ -87,6 +87,21 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     }
 
     @Override
+    public String getManufacturerName() {
+        return null;
+    }
+
+    @Override
+    public String getModelName() {
+        return null;
+    }
+
+    @Override
+    public String getManufacturerVersion() {
+        return null;
+    }
+
+    @Override
     public boolean hasError() {
         return (deviceError != null);
     }
