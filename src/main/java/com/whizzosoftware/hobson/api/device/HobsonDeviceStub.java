@@ -22,8 +22,6 @@ public class HobsonDeviceStub implements HobsonDevice {
     private String manufacturerName;
     private String modelName;
     private String manufacturerVersion;
-    private Long lastCheckIn;
-    private boolean available;
     private String preferredVariableName;
 
     private HobsonDeviceStub(DeviceContext ctx) {
@@ -76,16 +74,6 @@ public class HobsonDeviceStub implements HobsonDevice {
     }
 
     @Override
-    public boolean isAvailable() {
-        return available;
-    }
-
-    @Override
-    public Long getLastCheckIn() {
-        return lastCheckIn;
-    }
-
-    @Override
     public boolean hasPreferredVariableName() {
         return (preferredVariableName != null);
     }
@@ -129,8 +117,6 @@ public class HobsonDeviceStub implements HobsonDevice {
             stub.manufacturerName = d.getManufacturerName();
             stub.manufacturerVersion = d.getManufacturerVersion();
             stub.modelName = d.getModelName();
-            stub.available = d.isAvailable();
-            stub.lastCheckIn = d.getLastCheckIn();
             stub.preferredVariableName = d.getPreferredVariableName();
         }
 
@@ -156,16 +142,6 @@ public class HobsonDeviceStub implements HobsonDevice {
 
         public Builder manufacturerVersion(String manufacturerVersion) {
             stub.manufacturerVersion = manufacturerVersion;
-            return this;
-        }
-
-        public Builder lastCheckIn(Long lastCheckIn) {
-            stub.lastCheckIn = lastCheckIn;
-            return this;
-        }
-
-        public Builder available(boolean available) {
-            stub.available = available;
             return this;
         }
 

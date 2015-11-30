@@ -44,8 +44,6 @@ public class CollectionPersister {
         map.put(PropertyConstants.MANUFACTURER_NAME, device.getManufacturerName());
         map.put(PropertyConstants.MANUFACTURER_VERSION, device.getManufacturerVersion());
         map.put(PropertyConstants.MODEL_NAME, device.getModelName());
-        map.put(PropertyConstants.AVAILABLE, device.isAvailable());
-        map.put(PropertyConstants.LAST_CHECKIN, device.getLastCheckIn());
         map.put(PropertyConstants.PREFERRED_VARIABLE_NAME, device.getPreferredVariableName());
 
         pctx.setMap(idProvider.createDeviceId(device.getContext()), map);
@@ -60,8 +58,6 @@ public class CollectionPersister {
             manufacturerName((String)deviceMap.get(PropertyConstants.MANUFACTURER_NAME)).
             manufacturerVersion((String)deviceMap.get(PropertyConstants.MANUFACTURER_VERSION)).
             modelName((String)deviceMap.get(PropertyConstants.MODEL_NAME)).
-            available((Boolean)deviceMap.get(PropertyConstants.AVAILABLE)).
-            lastCheckIn((Long)deviceMap.get(PropertyConstants.LAST_CHECKIN)).
             preferredVariableName((String)deviceMap.get(PropertyConstants.PREFERRED_VARIABLE_NAME)).
             build();
     }

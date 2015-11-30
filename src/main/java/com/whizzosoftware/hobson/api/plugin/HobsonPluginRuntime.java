@@ -78,6 +78,14 @@ public interface HobsonPluginRuntime extends EventListener {
     boolean hasDeviceVariable(DeviceContext ctx, String variableName);
 
     /**
+     * Indicates that Hobson has just contacted a device.
+     *
+     * @param ctx the context of the device
+     * @param checkInTime the time the device was contacted
+     */
+    void checkInDevice(DeviceContext ctx, long checkInTime);
+
+    /**
      * Returns the event loop executor for this plugin.
      *
      * @return an EventLoopExecutor instance

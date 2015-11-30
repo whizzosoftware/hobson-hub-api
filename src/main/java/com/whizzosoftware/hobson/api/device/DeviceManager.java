@@ -73,15 +73,6 @@ public interface DeviceManager {
     Collection<HobsonDevice> getAllDevices(PluginContext ctx);
 
     /**
-     * Returns a collection of all created device bootstraps.
-     *
-     * @param hubContext the hub context
-     *
-     * @return a Collection of DeviceBootstrap instances
-     */
-    Collection<DeviceBootstrap> getDeviceBootstraps(HubContext hubContext);
-
-    /**
      * Returns a specific device.
      *
      * @param ctx the context of the device to retrieve
@@ -92,6 +83,15 @@ public interface DeviceManager {
      * @since hobson-hub-api 0.1.6
      */
     HobsonDevice getDevice(DeviceContext ctx);
+
+    /**
+     * Returns a collection of all created device bootstraps.
+     *
+     * @param hubContext the hub context
+     *
+     * @return a Collection of DeviceBootstrap instances
+     */
+    Collection<DeviceBootstrap> getDeviceBootstraps(HubContext hubContext);
 
     /**
      * Retrieves a device bootstrap.
@@ -130,6 +130,15 @@ public interface DeviceManager {
      * @return the property value (or null if not set)
      */
     Object getDeviceConfigurationProperty(DeviceContext ctx, String name);
+
+    /**
+     * Returns the last time the device was contacted.
+     *
+     * @param ctx the context of the device
+     *
+     * @return a Long value (or null if it has never been contacted)
+     */
+    Long getDeviceLastCheckIn(DeviceContext ctx);
 
     /**
      * Indicates whether a device has been published.

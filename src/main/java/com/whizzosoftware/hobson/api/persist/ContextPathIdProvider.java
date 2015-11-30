@@ -84,7 +84,7 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createDeviceConfigurationId(DeviceContext ctx) {
-        return createDeviceId(ctx) + HubContext.DELIMITER + "configuration";
+        return createHubId(ctx.getHubContext()) + HubContext.DELIMITER + "configuration" + HubContext.DELIMITER + "device" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId();
     }
 
     @Override

@@ -211,8 +211,6 @@ public class CollectionPersisterTest {
             manufacturerName("Mfg1").
             manufacturerVersion("1.0").
             modelName("model").
-            available(true).
-            lastCheckIn(1000L).
             preferredVariableName(VariableConstants.ON).
             build();
         cp.saveDevice(cpc, device);
@@ -224,8 +222,6 @@ public class CollectionPersisterTest {
         assertEquals("Mfg1", map.get("manufacturerName"));
         assertEquals("1.0", map.get("manufacturerVersion"));
         assertEquals("model", map.get("modelName"));
-        assertTrue((Boolean)map.get("available"));
-        assertEquals(1000L, (long)map.get("lastCheckIn"));
         assertEquals(VariableConstants.ON, map.get("preferredVariableName"));
 
         HobsonDevice d = cp.restoreDevice(cpc, dctx);
@@ -234,8 +230,6 @@ public class CollectionPersisterTest {
         assertEquals("Mfg1", d.getManufacturerName());
         assertEquals("1.0", d.getManufacturerVersion());
         assertEquals("model", d.getModelName());
-        assertTrue(d.isAvailable());
-        assertEquals(1000L, (long)d.getLastCheckIn());
         assertEquals(VariableConstants.ON, d.getPreferredVariableName());
     }
 

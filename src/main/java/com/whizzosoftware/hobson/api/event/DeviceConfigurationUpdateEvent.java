@@ -21,12 +21,14 @@ public class DeviceConfigurationUpdateEvent extends HobsonEvent {
 
     private static final String PROP_PLUGIN_ID = "pluginId";
     private static final String PROP_DEVICE_ID = "deviceId";
+    private static final String PROP_CONFIGURATION_CLASS_ID = "configurationClassId";
     private static final String PROP_CONFIGURATION = "configuration";
 
     public DeviceConfigurationUpdateEvent(long timestamp, String pluginId, String deviceId, PropertyContainer configuration) {
         super(timestamp, EventTopics.STATE_TOPIC, ID);
         setProperty(PROP_PLUGIN_ID, pluginId);
         setProperty(PROP_DEVICE_ID, deviceId);
+        setProperty(PROP_CONFIGURATION_CLASS_ID, configuration.getContainerClassContext().getContainerClassId());
         setProperty(PROP_CONFIGURATION, configuration);
     }
 
@@ -40,6 +42,10 @@ public class DeviceConfigurationUpdateEvent extends HobsonEvent {
 
     public String getDeviceId() {
         return (String)getProperty(PROP_DEVICE_ID);
+    }
+
+    public String getConfigurationClassId() {
+        return (String)getProperty(PROP_CONFIGURATION_CLASS_ID);
     }
 
     public PropertyContainer getConfiguration() {

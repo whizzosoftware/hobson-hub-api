@@ -95,6 +95,11 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
+    public Long getDeviceLastCheckIn(DeviceContext ctx) {
+        return null;
+    }
+
+    @Override
     public void publishDevice(HobsonDevice device) {
         publishDevice(device, false);
     }

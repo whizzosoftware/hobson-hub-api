@@ -28,7 +28,6 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     private String name;
     private String defaultName;
     private boolean started;
-    private Long lastCheckIn;
     private DeviceError deviceError;
     private final PropertyContainerClass configClass;
 
@@ -112,18 +111,8 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     }
 
     @Override
-    public boolean isAvailable() {
-        return (lastCheckIn != null && System.currentTimeMillis() - lastCheckIn < AVAILABILITY_TIMEOUT_INTERVAL);
-    }
-
-    @Override
-    public Long getLastCheckIn() {
-        return lastCheckIn;
-    }
-
-    @Override
     public void checkInDevice(Long checkInTime) {
-        this.lastCheckIn = checkInTime;
+        getPlugin().getRuntime().checkInDevice(getContext(), checkInTime);
     }
 
     @Override

@@ -24,14 +24,16 @@ import static org.junit.Assert.*;
 public class AbstractHobsonDeviceTest {
     @Test
     public void testGetPluginId() {
-        HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        MockAbstractHobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        p.setDeviceManager(new MockDeviceManager());
         HobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         assertEquals("pid", d.getContext().getPluginId());
     }
 
     @Test
     public void testGetName() {
-        HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        MockAbstractHobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        p.setDeviceManager(new MockDeviceManager());
         AbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         // name should default to device ID
         assertEquals("did", d.getName());
@@ -42,7 +44,8 @@ public class AbstractHobsonDeviceTest {
 
     @Test
     public void testGetPreferredVariableName() {
-        HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        MockAbstractHobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        p.setDeviceManager(new MockDeviceManager());
         AbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         // should be null by default
         assertNull(d.getPreferredVariableName());
@@ -50,7 +53,8 @@ public class AbstractHobsonDeviceTest {
 
     @Test
     public void testStart() {
-        HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        MockAbstractHobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        p.setDeviceManager(new MockDeviceManager());
 
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         d.setDefaultName("deviceName");
@@ -62,7 +66,8 @@ public class AbstractHobsonDeviceTest {
 
     @Test
     public void testStop() {
-        HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        MockAbstractHobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        p.setDeviceManager(new MockDeviceManager());
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         assertFalse(d.wasShutdownCalled);
         d.onShutdown();
@@ -71,7 +76,8 @@ public class AbstractHobsonDeviceTest {
 
     @Test
     public void testGetConfigurationMetaHasNameByDefault() {
-        HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        MockAbstractHobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        p.setDeviceManager(new MockDeviceManager());
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         assertNotNull(d.getConfigurationClass());
         assertEquals(1, d.getConfigurationClass().getSupportedProperties().size());
@@ -90,7 +96,8 @@ public class AbstractHobsonDeviceTest {
 
     @Test
     public void testOnDeviceConfigurationUpdate() {
-        HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        MockAbstractHobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        p.setDeviceManager(new MockDeviceManager());
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         assertEquals("did", d.getName());
         PropertyContainer config = new PropertyContainer();
@@ -101,7 +108,8 @@ public class AbstractHobsonDeviceTest {
 
     @Test
     public void testGetDefaultName() {
-        HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        MockAbstractHobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        p.setDeviceManager(new MockDeviceManager());
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         assertEquals("did", d.getDefaultName());
         d.setDefaultName("foo");
@@ -110,7 +118,8 @@ public class AbstractHobsonDeviceTest {
 
     @Test
     public void testGetPlugin() {
-        HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        MockAbstractHobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        p.setDeviceManager(new MockDeviceManager());
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         assertEquals(p, d.getPlugin());
     }
@@ -127,7 +136,8 @@ public class AbstractHobsonDeviceTest {
     @Test
     public void testPublishVariableWithVariableManager() {
         MockVariableManager vm = new MockVariableManager();
-        HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        MockAbstractHobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        p.setDeviceManager(new MockDeviceManager());
         p.getRuntime().setVariableManager(vm);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         d.publishVariable("var1", "val1", HobsonVariable.Mask.READ_WRITE);
@@ -205,7 +215,8 @@ public class AbstractHobsonDeviceTest {
     public void testGetVariableWithWithVariableManager() {
         MockVariableManager vm = new MockVariableManager();
         vm.publishDeviceVariable(DeviceContext.create(PluginContext.createLocal("pid"), "did"), "var1", "val1", HobsonVariable.Mask.READ_WRITE);
-        HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        MockAbstractHobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
+        p.setDeviceManager(new MockDeviceManager());
         p.getRuntime().setVariableManager(vm);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         HobsonVariable hv = d.getVariable("var1");
