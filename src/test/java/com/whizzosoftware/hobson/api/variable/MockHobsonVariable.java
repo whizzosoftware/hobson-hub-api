@@ -63,6 +63,10 @@ public class MockHobsonVariable implements HobsonVariable {
         return lastUpdate;
     }
 
+    public void setLastUpdate(Long lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
     @Override
     public boolean isGlobal() {
         return (deviceId == null);

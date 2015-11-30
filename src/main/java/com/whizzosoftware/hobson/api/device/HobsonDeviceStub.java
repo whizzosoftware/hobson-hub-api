@@ -23,25 +23,11 @@ public class HobsonDeviceStub implements HobsonDevice {
     private String modelName;
     private String manufacturerVersion;
     private Long lastCheckIn;
+    private boolean available;
     private String preferredVariableName;
 
-    public HobsonDeviceStub(DeviceContext ctx, String name, DeviceType type, Long lastCheckIn, String preferredVariableName) {
+    private HobsonDeviceStub(DeviceContext ctx) {
         this.ctx = ctx;
-        this.name = name;
-        this.type = type;
-        this.lastCheckIn = lastCheckIn;
-        this.preferredVariableName = preferredVariableName;
-    }
-
-    public HobsonDeviceStub(HobsonDevice d) {
-        this.ctx = d.getContext();
-        this.name = d.getName();
-        this.type = d.getType();
-        this.manufacturerName = d.getManufacturerName();
-        this.modelName = d.getModelName();
-        this.manufacturerVersion = d.getManufacturerVersion();
-        this.lastCheckIn = d.getLastCheckIn();
-        this.preferredVariableName = d.getPreferredVariableName();
     }
 
     @Override
@@ -91,7 +77,7 @@ public class HobsonDeviceStub implements HobsonDevice {
 
     @Override
     public boolean isAvailable() {
-        return false;
+        return available;
     }
 
     @Override
@@ -127,5 +113,69 @@ public class HobsonDeviceStub implements HobsonDevice {
     @Override
     public HobsonDeviceRuntime getRuntime() {
         return null;
+    }
+
+    static public class Builder {
+        private HobsonDeviceStub stub;
+
+        public Builder(DeviceContext dctx) {
+            stub = new HobsonDeviceStub(dctx);
+        }
+
+        public Builder(HobsonDevice d) {
+            stub = new HobsonDeviceStub(d.getContext());
+            stub.name = d.getName();
+            stub.type = d.getType();
+            stub.manufacturerName = d.getManufacturerName();
+            stub.manufacturerVersion = d.getManufacturerVersion();
+            stub.modelName = d.getModelName();
+            stub.available = d.isAvailable();
+            stub.lastCheckIn = d.getLastCheckIn();
+            stub.preferredVariableName = d.getPreferredVariableName();
+        }
+
+        public Builder name(String name) {
+            stub.name = name;
+            return this;
+        }
+
+        public Builder type(DeviceType type) {
+            stub.type = type;
+            return this;
+        }
+
+        public Builder manufacturerName(String manufacturerName) {
+            stub.manufacturerName = manufacturerName;
+            return this;
+        }
+
+        public Builder modelName(String modelName) {
+            stub.modelName = modelName;
+            return this;
+        }
+
+        public Builder manufacturerVersion(String manufacturerVersion) {
+            stub.manufacturerVersion = manufacturerVersion;
+            return this;
+        }
+
+        public Builder lastCheckIn(Long lastCheckIn) {
+            stub.lastCheckIn = lastCheckIn;
+            return this;
+        }
+
+        public Builder available(boolean available) {
+            stub.available = available;
+            return this;
+        }
+
+        public Builder preferredVariableName(String preferredVariableName) {
+            stub.preferredVariableName = preferredVariableName;
+            return this;
+        }
+
+        public HobsonDeviceStub build() {
+            return stub;
+        }
     }
 }

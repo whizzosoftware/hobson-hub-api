@@ -35,7 +35,9 @@ public interface IdProvider {
     String createDeviceTelemetryId(DeviceContext ctx);
     String createDeviceTelemetryDatasetId(DeviceContext ctx, String dataSetId);
     String createDeviceTelemetryDatasetsId(DeviceContext ctx);
+    DeviceContext createDeviceVariableContext(String variableId);
     String createDeviceVariableId(DeviceContext ctx, String name);
+    String createDeviceVariableName(String variableId);
     String createDeviceVariablesId(DeviceContext ctx);
     String createGlobalVariableId(HubContext ctx, String name);
     String createGlobalVariablesId(HubContext ctx);
@@ -75,4 +77,5 @@ public interface IdProvider {
     String createTaskConditionClassId(PropertyContainerClassContext ctx);
     String createTaskId(TaskContext ctx);
     String createTasksId(HubContext ctx);
+    String createVariablesId(HubContext ctx);
 }

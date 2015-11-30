@@ -108,23 +108,47 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
+    public DeviceContext createDeviceVariableContext(String variableId) {
+        String[] s = StringUtils.split(variableId, ":");
+        if (s.length >= 8) {
+            return DeviceContext.create(HubContext.create(s[0], s[2]), s[5], s[6]);
+        } else {
+            return null;
+        }
+    }
+
+    public String createVariablesId(HubContext ctx) {
+        return createHubId(ctx) + HubContext.DELIMITER + "variables";
+    }
+
+    @Override
     public String createDeviceVariableId(DeviceContext ctx, String variableName) {
-        return createHubId(ctx.getHubContext()) + HubContext.DELIMITER + "variables" + HubContext.DELIMITER + "device" + HubContext.DELIMITER + variableName;
+        return createDeviceVariablesId(ctx) + HubContext.DELIMITER + variableName;
+    }
+
+    @Override
+    public String createDeviceVariableName(String variableId) {
+        String[] s = StringUtils.split(variableId, ":");
+        if (s.length >= 8) {
+            return s[7];
+        } else {
+            return null;
+        }
     }
 
     @Override
     public String createDeviceVariablesId(DeviceContext ctx) {
-        return createDeviceId(ctx) + HubContext.DELIMITER + "variables";
+        return createVariablesId(ctx.getHubContext()) + HubContext.DELIMITER + "device" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId();
     }
 
     @Override
     public String createGlobalVariableId(HubContext ctx, String variableName) {
-        return createHubId(ctx) + HubContext.DELIMITER + "variables" + HubContext.DELIMITER + "global" + HubContext.DELIMITER + variableName;
+        return createGlobalVariablesId(ctx) + HubContext.DELIMITER + variableName;
     }
 
     @Override
     public String createGlobalVariablesId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "globalVariables";
+        return createVariablesId(ctx) + HubContext.DELIMITER + "global";
     }
 
     @Override

@@ -41,7 +41,9 @@ public class StringConversionUtil {
         } else if (o instanceof Double) {
             return "D" + Double.toString((Double)o);
         } else if (o instanceof Boolean) {
-            return "B" + Boolean.toString((Boolean) o);
+            return "B" + Boolean.toString((Boolean)o);
+        } else if (o instanceof Long) {
+            return "L" + Long.toString((Long)o);
         } else if (o instanceof DeviceContext) {
             return "E" + o.toString();
         } else if (o instanceof List) {
@@ -83,6 +85,8 @@ public class StringConversionUtil {
                     return Double.parseDouble(s.substring(1));
                 case 'B':
                     return Boolean.parseBoolean(s.substring(1));
+                case 'L':
+                    return Long.parseLong(s.substring(1));
                 case 'E':
                     return DeviceContext.create(s.substring(1));
                 case 'F':

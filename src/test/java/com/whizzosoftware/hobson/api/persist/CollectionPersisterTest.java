@@ -1,6 +1,9 @@
 package com.whizzosoftware.hobson.api.persist;
 
 import com.whizzosoftware.hobson.api.device.DeviceContext;
+import com.whizzosoftware.hobson.api.device.DeviceType;
+import com.whizzosoftware.hobson.api.device.HobsonDevice;
+import com.whizzosoftware.hobson.api.device.HobsonDeviceStub;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.*;
@@ -11,6 +14,9 @@ import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
 import com.whizzosoftware.hobson.api.task.action.TaskActionExecutor;
 import com.whizzosoftware.hobson.api.task.condition.ConditionClassType;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
+import com.whizzosoftware.hobson.api.variable.HobsonVariable;
+import com.whizzosoftware.hobson.api.variable.MockHobsonVariable;
+import com.whizzosoftware.hobson.api.variable.VariableConstants;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -191,6 +197,75 @@ public class CollectionPersisterTest {
         assertNotNull(ta.getPropertyValues());
         assertEquals(1, ta.getPropertyValues().size());
         assertEquals("foo", ta.getPropertyValues().get("bar"));
+    }
+
+    @Test
+    public void testSaveAndRestoreDevice() {
+        CollectionPersister cp = new CollectionPersister();
+        CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
+        DeviceContext dctx = DeviceContext.createLocal("plugin1", "device1");
+
+        HobsonDeviceStub device = new HobsonDeviceStub.Builder(dctx).
+            name("foo").
+            type(DeviceType.LIGHTBULB).
+            manufacturerName("Mfg1").
+            manufacturerVersion("1.0").
+            modelName("model").
+            available(true).
+            lastCheckIn(1000L).
+            preferredVariableName(VariableConstants.ON).
+            build();
+        cp.saveDevice(cpc, device);
+
+        Map<String,Object> map = cpc.getMap("local:hubs:local:devices:plugin1:device1");
+        assertNotNull(map);
+        assertEquals("foo", map.get("name"));
+        assertEquals("LIGHTBULB", map.get("type"));
+        assertEquals("Mfg1", map.get("manufacturerName"));
+        assertEquals("1.0", map.get("manufacturerVersion"));
+        assertEquals("model", map.get("modelName"));
+        assertTrue((Boolean)map.get("available"));
+        assertEquals(1000L, (long)map.get("lastCheckIn"));
+        assertEquals(VariableConstants.ON, map.get("preferredVariableName"));
+
+        HobsonDevice d = cp.restoreDevice(cpc, dctx);
+        assertEquals("foo", d.getName());
+        assertEquals(DeviceType.LIGHTBULB, d.getType());
+        assertEquals("Mfg1", d.getManufacturerName());
+        assertEquals("1.0", d.getManufacturerVersion());
+        assertEquals("model", d.getModelName());
+        assertTrue(d.isAvailable());
+        assertEquals(1000L, (long)d.getLastCheckIn());
+        assertEquals(VariableConstants.ON, d.getPreferredVariableName());
+    }
+
+    @Test
+    public void testSaveAndRestoreDeviceVariable() {
+        CollectionPersister cp = new CollectionPersister();
+        CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
+        DeviceContext dctx = DeviceContext.createLocal("plugin1", "device1");
+
+        MockHobsonVariable mhv = new MockHobsonVariable("plugin1", "device1", "foo", "bar", HobsonVariable.Mask.READ_ONLY);
+        mhv.setLastUpdate(1000L);
+
+        cp.saveDeviceVariable(cpc, dctx, mhv);
+
+        Map<String,Object> map = cpc.getMap("local:hubs:local:variables:device:plugin1:device1:foo");
+        assertEquals("plugin1", map.get(PropertyConstants.PLUGIN_ID));
+        assertEquals("device1", map.get(PropertyConstants.DEVICE_ID));
+        assertEquals("foo", map.get(PropertyConstants.NAME));
+        assertEquals("bar", map.get(PropertyConstants.VALUE));
+        assertEquals("READ_ONLY", map.get(PropertyConstants.MASK));
+        assertEquals(1000L, map.get(PropertyConstants.LAST_UPDATE));
+
+        HobsonVariable hv = cp.restoreDeviceVariable(cpc, dctx, "foo");
+        assertNotNull(hv);
+        assertEquals("plugin1", hv.getPluginId());
+        assertEquals("device1", hv.getDeviceId());
+        assertEquals("foo", hv.getName());
+        assertEquals("bar", hv.getValue());
+        assertEquals(HobsonVariable.Mask.READ_ONLY, hv.getMask());
+        assertEquals(1000L, (long)hv.getLastUpdate());
     }
 
     public class MockTaskManager implements TaskManager {

@@ -24,6 +24,7 @@ import com.whizzosoftware.hobson.api.task.TaskContext;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.util.StringConversionUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
+import com.whizzosoftware.hobson.api.variable.HobsonVariableStub;
 
 import java.util.*;
 
@@ -38,22 +39,68 @@ public class CollectionPersister {
 
     public void saveDevice(CollectionPersistenceContext pctx, HobsonDevice device) {
         Map<String,Object> map = new HashMap<>();
-        map.put("name", device.getName());
-        map.put("type", device.getType().toString());
-        map.put("lastCheckIn", device.getLastCheckIn());
-        map.put("preferredVariableName", device.getPreferredVariableName());
+        map.put(PropertyConstants.NAME, device.getName());
+        map.put(PropertyConstants.TYPE, device.getType().toString());
+        map.put(PropertyConstants.MANUFACTURER_NAME, device.getManufacturerName());
+        map.put(PropertyConstants.MANUFACTURER_VERSION, device.getManufacturerVersion());
+        map.put(PropertyConstants.MODEL_NAME, device.getModelName());
+        map.put(PropertyConstants.AVAILABLE, device.isAvailable());
+        map.put(PropertyConstants.LAST_CHECKIN, device.getLastCheckIn());
+        map.put(PropertyConstants.PREFERRED_VARIABLE_NAME, device.getPreferredVariableName());
 
         pctx.setMap(idProvider.createDeviceId(device.getContext()), map);
         pctx.commit();
     }
 
-    public void saveVariable(CollectionPersistenceContext pctx, HubContext hctx, HobsonVariable var) {
-        Map<String,Object> map = new HashMap<>();
-        map.put("name", var.getName());
-        map.put("value", StringConversionUtil.createTypedValueString(var.getValue()));
-        map.put("lastUpdate", var.getLastUpdate());
+    public HobsonDevice restoreDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
+        Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(ctx));
+        return new HobsonDeviceStub.Builder(ctx).
+            name((String)deviceMap.get(PropertyConstants.NAME)).
+            type(DeviceType.valueOf((String)deviceMap.get(PropertyConstants.TYPE))).
+            manufacturerName((String)deviceMap.get(PropertyConstants.MANUFACTURER_NAME)).
+            manufacturerVersion((String)deviceMap.get(PropertyConstants.MANUFACTURER_VERSION)).
+            modelName((String)deviceMap.get(PropertyConstants.MODEL_NAME)).
+            available((Boolean)deviceMap.get(PropertyConstants.AVAILABLE)).
+            lastCheckIn((Long)deviceMap.get(PropertyConstants.LAST_CHECKIN)).
+            preferredVariableName((String)deviceMap.get(PropertyConstants.PREFERRED_VARIABLE_NAME)).
+            build();
+    }
 
-        pctx.setMap(idProvider.createDeviceVariableId(DeviceContext.create(PluginContext.create(hctx, var.getPluginId()), var.getDeviceId()), var.getName()), map);
+    public void saveDeviceVariable(CollectionPersistenceContext pctx, DeviceContext dctx, HobsonVariable var) {
+        Map<String,Object> map = new HashMap<>();
+        map.put(PropertyConstants.PLUGIN_ID, var.getPluginId());
+        map.put(PropertyConstants.DEVICE_ID, var.getDeviceId());
+        map.put(PropertyConstants.NAME, var.getName());
+        map.put(PropertyConstants.MASK, var.getMask().toString());
+        map.put(PropertyConstants.LAST_UPDATE, var.getLastUpdate());
+        map.put(PropertyConstants.VALUE, var.getValue());
+
+        pctx.setMap(idProvider.createDeviceVariableId(dctx, var.getName()), map);
+        pctx.commit();
+    }
+
+    public HobsonVariable restoreDeviceVariable(CollectionPersistenceContext pctx, DeviceContext ctx, String name) {
+        Map<String,Object> varMap = pctx.getMap(idProvider.createDeviceVariableId(ctx, name));
+        return new HobsonVariableStub(
+            (String)varMap.get(PropertyConstants.PLUGIN_ID),
+            (String)varMap.get(PropertyConstants.DEVICE_ID),
+            (String)varMap.get(PropertyConstants.NAME),
+            varMap.containsKey(PropertyConstants.MASK) ? HobsonVariable.Mask.valueOf((String)varMap.get(PropertyConstants.MASK)) : null,
+            (Long)varMap.get(PropertyConstants.LAST_UPDATE),
+            varMap.get(PropertyConstants.VALUE),
+            false
+        );
+    }
+
+    public void saveGlobalVariable(CollectionPersistenceContext pctx, HubContext hctx, HobsonVariable var) {
+        Map<String,Object> map = new HashMap<>();
+        map.put(PropertyConstants.PLUGIN_ID, var.getPluginId());
+        map.put(PropertyConstants.NAME, var.getName());
+        map.put(PropertyConstants.MASK, var.getMask().toString());
+        map.put(PropertyConstants.LAST_UPDATE, var.getLastUpdate());
+        map.put(PropertyConstants.VALUE, StringConversionUtil.createTypedValueString(var.getValue()));
+
+        pctx.setMap(idProvider.createGlobalVariableId(hctx, var.getName()), map);
         pctx.commit();
     }
 
@@ -68,6 +115,24 @@ public class CollectionPersister {
         }
 
         pctx.setMap(db.getId(), map);
+        pctx.commit();
+    }
+
+    public DeviceBootstrap restoreDeviceBootstrap(CollectionPersistenceContext pctx, String id) {
+        Map<String,Object> map = pctx.getMap(id);
+        if (map != null) {
+            String deviceId = (String) map.get("deviceId");
+            if (deviceId != null) {
+                DeviceBootstrap db = new DeviceBootstrap(id, deviceId, (Long)map.get("creationTime"), (Long)map.get("bootstrapTime"));
+                db.setSecret((String)map.get("secret"));
+                return db;
+            }
+        }
+        return null;
+    }
+
+    public void deleteDeviceBootstrap(CollectionPersistenceContext pctx, String id) {
+        pctx.removeMap(id);
         pctx.commit();
     }
 
@@ -116,27 +181,45 @@ public class CollectionPersister {
         pctx.commit();
     }
 
-    public void deleteDeviceBootstrap(CollectionPersistenceContext pctx, String id) {
-        pctx.removeMap(id);
-        pctx.commit();
+    public HobsonTask restoreTask(CollectionPersistenceContext pctx, TaskContext taskContext) {
+        Map<String,Object> taskMap = pctx.getMap(idProvider.createTaskMetaId(taskContext));
+
+        HobsonTask task = new HobsonTask(taskContext, (String)taskMap.get("name"), (String)taskMap.get("description"), null, null, null);
+
+        // restore properties
+        List<Map<String,Object>> mapList = pctx.getMapsWithPrefix(idProvider.createTaskPropertiesId(taskContext));
+        if (mapList != null) {
+            for (Map<String, Object> map : mapList) {
+                task.setProperty((String) map.get("name"), map.get("value"));
+            }
+        }
+
+        // restore conditions
+        List<PropertyContainer> conditions = new ArrayList<>();
+        mapList = pctx.getMapsWithPrefix(idProvider.createTaskConditionMetasId(taskContext));
+        if (mapList != null) {
+            for (Map<String, Object> map : mapList) {
+                // restore condition values
+                Map<String, Object> values = new HashMap<>();
+                String conditionId = (String) map.get("id");
+                List<Map<String, Object>> valueList = pctx.getMapsWithPrefix(idProvider.createTaskConditionValuesId(taskContext, conditionId));
+                for (Map<String, Object> vmap : valueList) {
+                    values.put((String) vmap.get("name"), StringConversionUtil.castTypedValueString((String) vmap.get("value")));
+                }
+                conditions.add(new PropertyContainer(conditionId, (String) map.get("name"), PropertyContainerClassContext.create((String) map.get("context")), values));
+            }
+        }
+        task.setConditions(conditions);
+
+        // restore action set
+        task.setActionSet(new PropertyContainerSet((String)taskMap.get("actionSetId")));
+
+        return task;
     }
 
     public void deleteTask(CollectionPersistenceContext pctx, TaskContext context) {
         pctx.removeMap(idProvider.createTaskMetaId(context));
         pctx.commit();
-    }
-
-    public DeviceBootstrap restoreDeviceBootstrap(CollectionPersistenceContext pctx, String id) {
-        Map<String,Object> map = pctx.getMap(id);
-        if (map != null) {
-            String deviceId = (String) map.get("deviceId");
-            if (deviceId != null) {
-                DeviceBootstrap db = new DeviceBootstrap(id, deviceId, (Long)map.get("creationTime"), (Long)map.get("bootstrapTime"));
-                db.setSecret((String)map.get("secret"));
-                return db;
-            }
-        }
-        return null;
     }
 
     public PresenceEntity restorePresenceEntity(CollectionPersistenceContext pctx, PresenceEntityContext pectx) {
@@ -193,47 +276,6 @@ public class CollectionPersister {
     public void deletePresenceLocation(CollectionPersistenceContext pctx, PresenceLocationContext plctx) {
         pctx.removeMap(idProvider.createPresenceLocationId(plctx));
         pctx.commit();
-    }
-
-    public HobsonDevice restoreDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
-        Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(ctx));
-        return new HobsonDeviceStub(ctx, (String)deviceMap.get("name"), DeviceType.valueOf((String)deviceMap.get("type")), (Long)deviceMap.get("lastCheckIn"), (String)deviceMap.get("preferredVariableName"));
-    }
-
-    public HobsonTask restoreTask(CollectionPersistenceContext pctx, TaskContext taskContext) {
-        Map<String,Object> taskMap = pctx.getMap(idProvider.createTaskMetaId(taskContext));
-
-        HobsonTask task = new HobsonTask(taskContext, (String)taskMap.get("name"), (String)taskMap.get("description"), null, null, null);
-
-        // restore properties
-        List<Map<String,Object>> mapList = pctx.getMapsWithPrefix(idProvider.createTaskPropertiesId(taskContext));
-        if (mapList != null) {
-            for (Map<String, Object> map : mapList) {
-                task.setProperty((String) map.get("name"), map.get("value"));
-            }
-        }
-
-        // restore conditions
-        List<PropertyContainer> conditions = new ArrayList<>();
-        mapList = pctx.getMapsWithPrefix(idProvider.createTaskConditionMetasId(taskContext));
-        if (mapList != null) {
-            for (Map<String, Object> map : mapList) {
-                // restore condition values
-                Map<String, Object> values = new HashMap<>();
-                String conditionId = (String) map.get("id");
-                List<Map<String, Object>> valueList = pctx.getMapsWithPrefix(idProvider.createTaskConditionValuesId(taskContext, conditionId));
-                for (Map<String, Object> vmap : valueList) {
-                    values.put((String) vmap.get("name"), StringConversionUtil.castTypedValueString((String) vmap.get("value")));
-                }
-                conditions.add(new PropertyContainer(conditionId, (String) map.get("name"), PropertyContainerClassContext.create((String) map.get("context")), values));
-            }
-        }
-        task.setConditions(conditions);
-
-        // restore action set
-        task.setActionSet(new PropertyContainerSet((String)taskMap.get("actionSetId")));
-
-        return task;
     }
 
     public void saveActionSet(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainerSet actionSet) {

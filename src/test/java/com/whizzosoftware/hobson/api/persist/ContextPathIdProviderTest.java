@@ -53,4 +53,15 @@ public class ContextPathIdProviderTest {
         assertEquals("plugin1", ctx2.getPluginId());
         assertEquals("device1", ctx2.getDeviceId());
     }
+
+    @Test
+    public void testDeviceVariableContext() {
+        ContextPathIdProvider cpidp = new ContextPathIdProvider();
+
+        DeviceContext ctx = cpidp.createDeviceVariableContext("user1:hubs:hub1:variables:device:plugin1:device1:on");
+        assertEquals("user1", ctx.getUserId());
+        assertEquals("hub1", ctx.getHubId());
+        assertEquals("plugin1", ctx.getPluginId());
+        assertEquals("device1", ctx.getDeviceId());
+    }
 }
