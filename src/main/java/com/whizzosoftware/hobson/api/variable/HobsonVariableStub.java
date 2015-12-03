@@ -19,9 +19,14 @@ public class HobsonVariableStub implements HobsonVariable {
     private Mask mask;
     private Long lastUpdate;
     private Object value;
+    private VariableProxyType proxyType;
     private boolean global;
 
     public HobsonVariableStub(String pluginId, String deviceId, String name, Mask mask, Long lastUpdate, Object value, boolean global) {
+        this(pluginId, deviceId, name, mask, lastUpdate, value, global, null);
+    }
+
+    public HobsonVariableStub(String pluginId, String deviceId, String name, Mask mask, Long lastUpdate, Object value, boolean global, VariableProxyType proxyType) {
         this.pluginId = pluginId;
         this.deviceId = deviceId;
         this.name = name;
@@ -29,6 +34,7 @@ public class HobsonVariableStub implements HobsonVariable {
         this.lastUpdate = lastUpdate;
         this.value = value;
         this.global = global;
+        this.proxyType = proxyType;
     }
 
     @Override
@@ -58,12 +64,12 @@ public class HobsonVariableStub implements HobsonVariable {
 
     @Override
     public boolean hasProxyType() {
-        return false;
+        return (proxyType != null);
     }
 
     @Override
     public VariableProxyType getProxyType() {
-        return null;
+        return proxyType;
     }
 
     @Override

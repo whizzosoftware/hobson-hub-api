@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.variable;
 
+import com.whizzosoftware.hobson.api.hub.HubContext;
+
 /**
  * An interface for classes that can perform value substitutions on variables.
  *
@@ -27,5 +29,5 @@ public interface VariableProxyValueProvider {
      *
      * @return a value
      */
-    Object getProxyValue(HobsonVariable v);
+    Object getProxyValue(HubContext hubContext, HobsonVariable v);
 }

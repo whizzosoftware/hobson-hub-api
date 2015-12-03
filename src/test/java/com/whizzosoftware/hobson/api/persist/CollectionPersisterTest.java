@@ -17,6 +17,7 @@ import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.MockHobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableConstants;
+import com.whizzosoftware.hobson.api.variable.VariableProxyType;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -239,7 +240,7 @@ public class CollectionPersisterTest {
         CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
         DeviceContext dctx = DeviceContext.createLocal("plugin1", "device1");
 
-        MockHobsonVariable mhv = new MockHobsonVariable("plugin1", "device1", "foo", "bar", HobsonVariable.Mask.READ_ONLY);
+        MockHobsonVariable mhv = new MockHobsonVariable("plugin1", "device1", "foo", "bar", HobsonVariable.Mask.READ_ONLY, VariableProxyType.MEDIA);
         mhv.setLastUpdate(1000L);
 
         cp.saveDeviceVariable(cpc, dctx, mhv);
@@ -250,6 +251,7 @@ public class CollectionPersisterTest {
         assertEquals("foo", map.get(PropertyConstants.NAME));
         assertEquals("bar", map.get(PropertyConstants.VALUE));
         assertEquals("READ_ONLY", map.get(PropertyConstants.MASK));
+        assertEquals("MEDIA", map.get(PropertyConstants.PROXY_TYPE));
         assertEquals(1000L, map.get(PropertyConstants.LAST_UPDATE));
 
         HobsonVariable hv = cp.restoreDeviceVariable(cpc, dctx, "foo");
@@ -259,6 +261,7 @@ public class CollectionPersisterTest {
         assertEquals("foo", hv.getName());
         assertEquals("bar", hv.getValue());
         assertEquals(HobsonVariable.Mask.READ_ONLY, hv.getMask());
+        assertEquals(VariableProxyType.MEDIA, hv.getProxyType());
         assertEquals(1000L, (long)hv.getLastUpdate());
     }
 

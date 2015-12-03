@@ -25,6 +25,7 @@ import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.util.StringConversionUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.HobsonVariableStub;
+import com.whizzosoftware.hobson.api.variable.VariableProxyType;
 
 import java.util.*;
 
@@ -70,6 +71,9 @@ public class CollectionPersister {
         map.put(PropertyConstants.MASK, var.getMask().toString());
         map.put(PropertyConstants.LAST_UPDATE, var.getLastUpdate());
         map.put(PropertyConstants.VALUE, var.getValue());
+        if (var.hasProxyType()) {
+            map.put(PropertyConstants.PROXY_TYPE, var.getProxyType().toString());
+        }
 
         pctx.setMap(idProvider.createDeviceVariableId(dctx, var.getName()), map);
         pctx.commit();
@@ -77,6 +81,7 @@ public class CollectionPersister {
 
     public HobsonVariable restoreDeviceVariable(CollectionPersistenceContext pctx, DeviceContext ctx, String name) {
         Map<String,Object> varMap = pctx.getMap(idProvider.createDeviceVariableId(ctx, name));
+        String proxyType = (String)varMap.get(PropertyConstants.PROXY_TYPE);
         return new HobsonVariableStub(
             (String)varMap.get(PropertyConstants.PLUGIN_ID),
             (String)varMap.get(PropertyConstants.DEVICE_ID),
@@ -84,7 +89,8 @@ public class CollectionPersister {
             varMap.containsKey(PropertyConstants.MASK) ? HobsonVariable.Mask.valueOf((String)varMap.get(PropertyConstants.MASK)) : null,
             (Long)varMap.get(PropertyConstants.LAST_UPDATE),
             varMap.get(PropertyConstants.VALUE),
-            false
+            false,
+            proxyType != null ? VariableProxyType.valueOf(proxyType) : null
         );
     }
 

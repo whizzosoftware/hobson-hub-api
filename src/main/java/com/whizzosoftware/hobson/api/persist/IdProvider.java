@@ -46,6 +46,7 @@ public interface IdProvider {
     String createHubConfigurationId(HubContext ctx);
     String createHubLogId(HubContext ctx);
     String createHubsId(String userId);
+    String createHubUploadCredentialsId(HubContext ctx);
     String createLocalPluginConfigurationId(PluginContext ctx);
     String createLocalPluginConfigurationClassId(PluginContext ctx);
     String createLocalPluginId(PluginContext ctx);

@@ -13,5 +13,6 @@ public class PropertyConstants {
     public static final String MODEL_NAME = "modelName";
     public static final String PLUGIN_ID = "pluginId";
     public static final String PREFERRED_VARIABLE_NAME = "preferredVariableName";
+    public static final String PROXY_TYPE = "proxyType";
     public static final String VALUE = "value";
 }

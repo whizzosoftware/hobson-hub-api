@@ -162,6 +162,11 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
+    public String createHubUploadCredentialsId(HubContext ctx) {
+        return createHubId(ctx) + HubContext.DELIMITER + "uploadCredentials";
+    }
+
+    @Override
     public String createHubConfigurationId(HubContext ctx) {
         return null;
     }
