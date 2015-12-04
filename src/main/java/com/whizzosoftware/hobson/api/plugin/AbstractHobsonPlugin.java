@@ -25,7 +25,7 @@ import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
 import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
-import com.whizzosoftware.hobson.api.variable.VariableProxyType;
+import com.whizzosoftware.hobson.api.variable.VariableMediaType;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.VariableManager;
 import io.netty.channel.EventLoopGroup;
@@ -229,9 +229,9 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableProxyType proxyType) {
+    public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType) {
         validateVariableManager();
-        variableManager.publishDeviceVariable(ctx, name, value, mask, proxyType);
+        variableManager.publishDeviceVariable(ctx, name, value, mask, mediaType);
     }
 
     @Override
@@ -241,9 +241,9 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask, VariableProxyType proxyType) {
+    public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType) {
         validateVariableManager();
-        variableManager.publishGlobalVariable(getContext(), name, value, mask, proxyType);
+        variableManager.publishGlobalVariable(getContext(), name, value, mask, mediaType);
     }
 
     @Override

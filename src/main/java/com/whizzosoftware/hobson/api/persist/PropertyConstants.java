@@ -10,9 +10,9 @@ public class PropertyConstants {
     public static final String MANUFACTURER_NAME = "manufacturerName";
     public static final String MANUFACTURER_VERSION = "manufacturerVersion";
     public static final String MASK = "mask";
+    public static final String MEDIA_TYPE = "mediaType";
     public static final String MODEL_NAME = "modelName";
     public static final String PLUGIN_ID = "pluginId";
     public static final String PREFERRED_VARIABLE_NAME = "preferredVariableName";
-    public static final String PROXY_TYPE = "proxyType";
     public static final String VALUE = "value";
 }

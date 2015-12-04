@@ -7,27 +7,14 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.variable;
 
-import com.whizzosoftware.hobson.api.hub.HubContext;
-
 /**
- * An interface for classes that can perform value substitutions on variables.
+ * Indicates media types that a Hobson variable can reference.
  *
  * @author Dan Noguerol
  */
-public interface VariableProxyValueProvider {
-    /**
-     * Returns the proxy type for this provider.
-     *
-     * @return a VariableProxyType instance
-     */
-    VariableProxyType getProxyType();
-
-    /**
-     * Returns the proxy value for a variable.
-     *
-     * @param v the variable
-     *
-     * @return a value
-     */
-    Object getProxyValue(HubContext hubContext, HobsonVariable v);
+public enum VariableMediaType {
+    IMAGE_JPG,
+    IMAGE_PNG,
+    VIDEO_MP4,
+    VIDEO_MJPEG
 }

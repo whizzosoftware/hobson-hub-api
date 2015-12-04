@@ -7,34 +7,38 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.variable;
 
+import com.whizzosoftware.hobson.api.device.DeviceContext;
+
 /**
- * A stub implemention of HobsonVariable.
+ * An immutable implementation of HobsonVariable.
  *
  * @author Dan Noguerol
  */
-public class HobsonVariableStub implements HobsonVariable {
-    private String pluginId;
-    private String deviceId;
-    private String name;
-    private Mask mask;
-    private Long lastUpdate;
-    private Object value;
-    private VariableProxyType proxyType;
-    private boolean global;
+public class ImmutableHobsonVariable implements HobsonVariable {
+    protected String pluginId;
+    protected String deviceId;
+    protected String name;
+    protected Mask mask;
+    protected Long lastUpdate;
+    protected Object value;
+    protected VariableMediaType mediaType;
 
-    public HobsonVariableStub(String pluginId, String deviceId, String name, Mask mask, Long lastUpdate, Object value, boolean global) {
-        this(pluginId, deviceId, name, mask, lastUpdate, value, global, null);
+    public ImmutableHobsonVariable(DeviceContext dctx, String name, Mask mask, Object value, VariableMediaType mediaType, Long lastUpdate) {
+        this(dctx.getPluginId(), dctx.getDeviceId(), name, mask, value, mediaType, lastUpdate);
     }
 
-    public HobsonVariableStub(String pluginId, String deviceId, String name, Mask mask, Long lastUpdate, Object value, boolean global, VariableProxyType proxyType) {
+    public ImmutableHobsonVariable(String pluginId, String deviceId, String name, Mask mask, Object value, VariableMediaType mediaType, Long lastUpdate) {
         this.pluginId = pluginId;
         this.deviceId = deviceId;
         this.name = name;
         this.mask = mask;
         this.lastUpdate = lastUpdate;
         this.value = value;
-        this.global = global;
-        this.proxyType = proxyType;
+        this.mediaType = mediaType;
+    }
+
+    public ImmutableHobsonVariable(String pluginId, String name, Mask mask, Object value, VariableMediaType mediaType, Long lastUpdate) {
+        this(pluginId, null, name, mask, value, mediaType, lastUpdate);
     }
 
     @Override
@@ -63,13 +67,13 @@ public class HobsonVariableStub implements HobsonVariable {
     }
 
     @Override
-    public boolean hasProxyType() {
-        return (proxyType != null);
+    public boolean hasMediaType() {
+        return (mediaType != null);
     }
 
     @Override
-    public VariableProxyType getProxyType() {
-        return proxyType;
+    public VariableMediaType getMediaType() {
+        return mediaType;
     }
 
     @Override
@@ -79,6 +83,6 @@ public class HobsonVariableStub implements HobsonVariable {
 
     @Override
     public boolean isGlobal() {
-        return global;
+        return (deviceId == null);
     }
 }

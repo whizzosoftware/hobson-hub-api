@@ -56,20 +56,18 @@ public interface HobsonVariable {
     String getPluginId();
 
     /**
-     * Indicates that this variable's value should be a proxy value rather than direct value. For example, smart
-     * device image and video URLs are not be returned directly; rather, a proxy URL is returned that forces those
-     * media requests to route through the Hobson REST API.
+     * Indicates that this variable's value references a media stream of some sort (e.g. a JPEG image or MP4 video).
      *
-     * @return a boolean indicating whether a proxy should be performed
+     * @return a boolean
      */
-    boolean hasProxyType();
+    boolean hasMediaType();
 
     /**
-     * Returns the variable proxy type.
+     * Returns the variable media type.
      *
-     * @return the type of proxy (or null if no proxy is necessary)
+     * @return the type of media (or null if the variable references no media)
      */
-    VariableProxyType getProxyType();
+    VariableMediaType getMediaType();
 
     /**
      * Returns the variable value (respecting any proxy that is defined).

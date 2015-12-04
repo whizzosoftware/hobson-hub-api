@@ -24,8 +24,8 @@ import com.whizzosoftware.hobson.api.task.TaskContext;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.util.StringConversionUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
-import com.whizzosoftware.hobson.api.variable.HobsonVariableStub;
-import com.whizzosoftware.hobson.api.variable.VariableProxyType;
+import com.whizzosoftware.hobson.api.variable.ImmutableHobsonVariable;
+import com.whizzosoftware.hobson.api.variable.VariableMediaType;
 
 import java.util.*;
 
@@ -53,14 +53,21 @@ public class CollectionPersister {
 
     public HobsonDevice restoreDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
         Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(ctx));
-        return new HobsonDeviceStub.Builder(ctx).
-            name((String)deviceMap.get(PropertyConstants.NAME)).
-            type(DeviceType.valueOf((String)deviceMap.get(PropertyConstants.TYPE))).
-            manufacturerName((String)deviceMap.get(PropertyConstants.MANUFACTURER_NAME)).
-            manufacturerVersion((String)deviceMap.get(PropertyConstants.MANUFACTURER_VERSION)).
-            modelName((String)deviceMap.get(PropertyConstants.MODEL_NAME)).
-            preferredVariableName((String)deviceMap.get(PropertyConstants.PREFERRED_VARIABLE_NAME)).
-            build();
+        String name = (String)deviceMap.get(PropertyConstants.NAME);
+        String type = (String)deviceMap.get(PropertyConstants.TYPE);
+
+        if (name != null && type != null) {
+            return new HobsonDeviceStub.Builder(ctx).
+                name(name).
+                type(DeviceType.valueOf(type)).
+                manufacturerName((String)deviceMap.get(PropertyConstants.MANUFACTURER_NAME)).
+                manufacturerVersion((String)deviceMap.get(PropertyConstants.MANUFACTURER_VERSION)).
+                modelName((String)deviceMap.get(PropertyConstants.MODEL_NAME)).
+                preferredVariableName((String)deviceMap.get(PropertyConstants.PREFERRED_VARIABLE_NAME)).
+                build();
+        } else {
+            return null;
+        }
     }
 
     public void saveDeviceVariable(CollectionPersistenceContext pctx, DeviceContext dctx, HobsonVariable var) {
@@ -71,8 +78,8 @@ public class CollectionPersister {
         map.put(PropertyConstants.MASK, var.getMask().toString());
         map.put(PropertyConstants.LAST_UPDATE, var.getLastUpdate());
         map.put(PropertyConstants.VALUE, var.getValue());
-        if (var.hasProxyType()) {
-            map.put(PropertyConstants.PROXY_TYPE, var.getProxyType().toString());
+        if (var.hasMediaType()) {
+            map.put(PropertyConstants.MEDIA_TYPE, var.getMediaType().toString());
         }
 
         pctx.setMap(idProvider.createDeviceVariableId(dctx, var.getName()), map);
@@ -81,16 +88,13 @@ public class CollectionPersister {
 
     public HobsonVariable restoreDeviceVariable(CollectionPersistenceContext pctx, DeviceContext ctx, String name) {
         Map<String,Object> varMap = pctx.getMap(idProvider.createDeviceVariableId(ctx, name));
-        String proxyType = (String)varMap.get(PropertyConstants.PROXY_TYPE);
-        return new HobsonVariableStub(
+        String proxyType = (String)varMap.get(PropertyConstants.MEDIA_TYPE);
+        return new ImmutableHobsonVariable(
             (String)varMap.get(PropertyConstants.PLUGIN_ID),
             (String)varMap.get(PropertyConstants.DEVICE_ID),
             (String)varMap.get(PropertyConstants.NAME),
             varMap.containsKey(PropertyConstants.MASK) ? HobsonVariable.Mask.valueOf((String)varMap.get(PropertyConstants.MASK)) : null,
-            (Long)varMap.get(PropertyConstants.LAST_UPDATE),
-            varMap.get(PropertyConstants.VALUE),
-            false,
-            proxyType != null ? VariableProxyType.valueOf(proxyType) : null
+                varMap.get(PropertyConstants.VALUE), proxyType != null ? VariableMediaType.valueOf(proxyType) : null, (Long)varMap.get(PropertyConstants.LAST_UPDATE)
         );
     }
 

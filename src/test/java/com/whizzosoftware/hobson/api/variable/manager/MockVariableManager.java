@@ -67,7 +67,7 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public void publishGlobalVariable(PluginContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableProxyType proxyType) {
+    public void publishGlobalVariable(PluginContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType) {
 
     }
 
@@ -82,8 +82,8 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableProxyType proxyType) {
-        publishedVariables.put(ctx.getPluginId() + "." + ctx.getDeviceId(), new MockHobsonVariable(ctx.getPluginId(), ctx.getDeviceId(), name, value, mask));
+    public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType) {
+        publishedVariables.put(ctx.getPluginId() + "." + ctx.getDeviceId(), new ImmutableHobsonVariable(ctx.getPluginId(), ctx.getDeviceId(), name, mask, value, mediaType, 0L));
     }
 
     @Override

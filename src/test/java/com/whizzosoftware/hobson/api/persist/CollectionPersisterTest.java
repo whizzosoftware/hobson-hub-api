@@ -15,9 +15,9 @@ import com.whizzosoftware.hobson.api.task.action.TaskActionExecutor;
 import com.whizzosoftware.hobson.api.task.condition.ConditionClassType;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
-import com.whizzosoftware.hobson.api.variable.MockHobsonVariable;
+import com.whizzosoftware.hobson.api.variable.ImmutableHobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableConstants;
-import com.whizzosoftware.hobson.api.variable.VariableProxyType;
+import com.whizzosoftware.hobson.api.variable.VariableMediaType;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -235,14 +235,26 @@ public class CollectionPersisterTest {
     }
 
     @Test
+    public void testRestoreIncompleteDevice() {
+        CollectionPersister cp = new CollectionPersister();
+        CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
+        DeviceContext dctx = DeviceContext.createLocal("plugin1", "device1");
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("lastCheckIn", "L1449186686774");
+        cpc.setMap("local:hubs:local:devices:plugin1:device1", map);
+
+        HobsonDevice d = cp.restoreDevice(cpc, dctx);
+        assertNull(d);
+    }
+
+    @Test
     public void testSaveAndRestoreDeviceVariable() {
         CollectionPersister cp = new CollectionPersister();
         CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
         DeviceContext dctx = DeviceContext.createLocal("plugin1", "device1");
 
-        MockHobsonVariable mhv = new MockHobsonVariable("plugin1", "device1", "foo", "bar", HobsonVariable.Mask.READ_ONLY, VariableProxyType.MEDIA);
-        mhv.setLastUpdate(1000L);
-
+        ImmutableHobsonVariable mhv = new ImmutableHobsonVariable("plugin1", "device1", "foo", HobsonVariable.Mask.READ_ONLY, "bar", VariableMediaType.IMAGE_JPG, 1000L);
         cp.saveDeviceVariable(cpc, dctx, mhv);
 
         Map<String,Object> map = cpc.getMap("local:hubs:local:variables:device:plugin1:device1:foo");
@@ -251,7 +263,7 @@ public class CollectionPersisterTest {
         assertEquals("foo", map.get(PropertyConstants.NAME));
         assertEquals("bar", map.get(PropertyConstants.VALUE));
         assertEquals("READ_ONLY", map.get(PropertyConstants.MASK));
-        assertEquals("MEDIA", map.get(PropertyConstants.PROXY_TYPE));
+        assertEquals(VariableMediaType.IMAGE_JPG.toString(), map.get(PropertyConstants.MEDIA_TYPE));
         assertEquals(1000L, map.get(PropertyConstants.LAST_UPDATE));
 
         HobsonVariable hv = cp.restoreDeviceVariable(cpc, dctx, "foo");
@@ -261,7 +273,7 @@ public class CollectionPersisterTest {
         assertEquals("foo", hv.getName());
         assertEquals("bar", hv.getValue());
         assertEquals(HobsonVariable.Mask.READ_ONLY, hv.getMask());
-        assertEquals(VariableProxyType.MEDIA, hv.getProxyType());
+        assertEquals(VariableMediaType.IMAGE_JPG, hv.getMediaType());
         assertEquals(1000L, (long)hv.getLastUpdate());
     }
 

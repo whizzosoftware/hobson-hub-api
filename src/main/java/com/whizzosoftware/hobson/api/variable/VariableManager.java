@@ -120,9 +120,9 @@ public interface VariableManager {
      * @param name the name of the new variable to publish
      * @param value the value of the new variable (or null if not known)
      * @param mask the access mask of the new variable
-     * @param proxyType indicates the type of proxy that can perform value substitutions (or null if not applicable)
+     * @param mediaType indicates the type of media this variable references (or null if not applicable)
      */
-    void publishGlobalVariable(PluginContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableProxyType proxyType);
+    void publishGlobalVariable(PluginContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType);
 
     /**
      * Un-publish a global variable.
@@ -153,9 +153,9 @@ public interface VariableManager {
      * @param name the name of the new variable to publish
      * @param value the value of the new variable (or null if not known)
      * @param mask the access mask of the new variable
-     * @param proxyType indicates the type of proxy that can perform value substitutions (or null if not applicable)
+     * @param mediaType indicates the type of media this variable references (or null if not applicable)
      */
-    void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableProxyType proxyType);
+    void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType);
 
     /**
      * Un-publish a device variable.
