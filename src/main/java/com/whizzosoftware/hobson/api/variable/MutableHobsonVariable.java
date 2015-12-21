@@ -30,6 +30,10 @@ public class MutableHobsonVariable extends ImmutableHobsonVariable {
 
     public void setValue(Object value) {
         this.value = value;
-        this.lastUpdate = System.currentTimeMillis();
+        setLastUpdate(System.currentTimeMillis());
+    }
+
+    public void setLastUpdate(Long time) {
+        this.lastUpdate = time;
     }
 }
