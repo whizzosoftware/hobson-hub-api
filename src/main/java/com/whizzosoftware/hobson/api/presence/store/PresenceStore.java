@@ -16,13 +16,72 @@ import com.whizzosoftware.hobson.api.presence.PresenceLocationContext;
 import java.util.Collection;
 
 public interface PresenceStore {
+    /**
+     * Returns a collection of all presence entities.
+     *
+     * @param ctx the hub context
+     *
+     * @return a collection of PresenceEntity instances
+     */
     Collection<PresenceEntity> getAllPresenceEntities(HubContext ctx);
+
+    /**
+     * Returns a presence entity.
+     *
+     * @param ctx the context of the presence entity
+     *
+     * @return a PresenceEntity instance
+     */
     PresenceEntity getPresenceEntity(PresenceEntityContext ctx);
+
+    /**
+     * Saves a presence entity.
+     *
+     * @param pe the presence entity to save
+     */
     void savePresenceEntity(PresenceEntity pe);
+
+    /**
+     * Deletes an existing presence entity.
+     *
+     * @param ctx the context of the presence entity
+     */
     void deletePresenceEntity(PresenceEntityContext ctx);
+
+    /**
+     * Returns a collection of all presence locations.
+     *
+     * @param ctx the hub context
+     *
+     * @return a collection of PresenceLocation instances
+     */
     Collection<PresenceLocation> getAllPresenceLocations(HubContext ctx);
+
+    /**
+     * Returns a presence location.
+     *
+     * @param ctx the presence location context
+     *
+     * @return a PresenceLocation instance
+     */
     PresenceLocation getPresenceLocation(PresenceLocationContext ctx);
+
+    /**
+     * Saves a presence location.
+     *
+     * @param pl the presence location to save
+     */
     void savePresenceLocation(PresenceLocation pl);
+
+    /**
+     * Deletes a presence location.
+     *
+     * @param ctx the presence location context
+     */
     void deletePresenceLocation(PresenceLocationContext ctx);
+
+    /**
+     * Cleans up and closes the presence store.
+     */
     void close();
 }

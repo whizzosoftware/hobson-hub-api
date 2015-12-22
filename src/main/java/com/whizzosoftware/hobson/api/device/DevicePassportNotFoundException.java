@@ -10,12 +10,12 @@ package com.whizzosoftware.hobson.api.device;
 import com.whizzosoftware.hobson.api.HobsonNotFoundException;
 
 /**
- * Exception thrown when an attempt to retrieve a device boostrap fails.
+ * Exception thrown when an attempt to retrieve a device passport fails.
  *
  * @author Dan Noguerol
  */
-public class DeviceBootstrapNotFoundException extends HobsonNotFoundException {
-    public DeviceBootstrapNotFoundException() {
-        super("Device bootstrap was not found");
+public class DevicePassportNotFoundException extends HobsonNotFoundException {
+    public DevicePassportNotFoundException() {
+        super("Device passport was not found");
     }
 }

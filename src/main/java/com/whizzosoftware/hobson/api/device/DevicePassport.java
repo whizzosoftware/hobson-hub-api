@@ -8,26 +8,26 @@
 package com.whizzosoftware.hobson.api.device;
 
 /**
- * Represents the bootstrap information an external device needs to communicate with the Hobson Hub.
+ * Represents information an external device needs to communicate with the Hobson Hub.
  *
  * @author Dan Noguerol
  */
-public class DeviceBootstrap {
+public class DevicePassport {
     private String id;
     private String deviceId;
     private long creationTime;
-    private Long bootstrapTime;
+    private Long activationTime;
     private String secret;
 
-    public DeviceBootstrap(String id, String deviceId, long creationTime) {
+    public DevicePassport(String id, String deviceId, long creationTime) {
         this(id, deviceId, creationTime, null);
     }
 
-    public DeviceBootstrap(String id, String deviceId, long creationTime, Long bootstrapTime) {
+    public DevicePassport(String id, String deviceId, long creationTime, Long activationTime) {
         this.id = id;
         this.deviceId = deviceId;
         this.creationTime = creationTime;
-        this.bootstrapTime = bootstrapTime;
+        this.activationTime = activationTime;
     }
 
     public String getId() {
@@ -42,16 +42,16 @@ public class DeviceBootstrap {
         return creationTime;
     }
 
-    public boolean hasBootstrapTime() {
-        return (bootstrapTime != null);
+    public boolean isActivated() {
+        return (activationTime != null);
     }
 
-    public Long getBootstrapTime() {
-        return bootstrapTime;
+    public Long getActivationTime() {
+        return activationTime;
     }
 
-    public void setBootstrapTime(Long bootstrapTime) {
-        this.bootstrapTime = bootstrapTime;
+    public void setActivationTime(Long activationTime) {
+        this.activationTime = activationTime;
     }
 
     public String getSecret() {

@@ -24,6 +24,16 @@ import java.util.Map;
  */
 public interface DeviceManager {
     /**
+     * Activates a device passport.
+     *
+     * @param hubContext the hub context
+     * @param deviceId the device ID
+     *
+     * @return a DevicePassport
+     */
+    DevicePassport activateDevicePassport(HubContext hubContext, String deviceId);
+
+    /**
      * Updates the last check-in time of the device.
      *
      * @param ctx the device context
@@ -32,7 +42,7 @@ public interface DeviceManager {
     void checkInDevice(DeviceContext ctx, Long checkInTime);
 
     /**
-     * Creates a new bootstrap object for a new device with a globally unique ID.
+     * Creates a new device passport with a globally unique ID.
      *
      *
      * @param hubContext the hub context
@@ -40,15 +50,15 @@ public interface DeviceManager {
      *
      * @return the device secret
      */
-    DeviceBootstrap createDeviceBootstrap(HubContext hubContext, String deviceId);
+    DevicePassport createDevicePassport(HubContext hubContext, String deviceId);
 
     /**
-     * Deletes a device bootstrap.
+     * Deletes a device passport.
      *
      * @param hubContext the hub context
-     * @param id the bootstrap ID
+     * @param id the passport ID
      */
-    void deleteDeviceBootstrap(HubContext hubContext, String id);
+    void deleteDevicePassport(HubContext hubContext, String id);
 
     /**
      * Returns all devices published by a hub.
@@ -85,23 +95,23 @@ public interface DeviceManager {
     HobsonDevice getDevice(DeviceContext ctx);
 
     /**
-     * Returns a collection of all created device bootstraps.
+     * Returns a collection of all created device passports.
      *
      * @param hubContext the hub context
      *
-     * @return a Collection of DeviceBootstrap instances
+     * @return a Collection of DevicePassport instances
      */
-    Collection<DeviceBootstrap> getDeviceBootstraps(HubContext hubContext);
+    Collection<DevicePassport> getDevicePassports(HubContext hubContext);
 
     /**
-     * Retrieves a device bootstrap.
+     * Retrieves a device passport.
      *
      * @param hubContext the hub context
-     * @param id the bootstrap ID
+     * @param id the passport ID
      *
-     * @return a DeviceBootstrap instance
+     * @return a DevicePassport instance
      */
-    DeviceBootstrap getDeviceBootstrap(HubContext hubContext, String id);
+    DevicePassport getDevicePassport(HubContext hubContext, String id);
 
     /**
      * Returns a specific device's configuration.
@@ -171,23 +181,13 @@ public interface DeviceManager {
     void publishDevice(HobsonDevice device, boolean republish);
 
     /**
-     * Registers a device bootstrap.
-     *
-     * @param hubContext the hub context
-     * @param deviceId the device ID
-     *
-     * @return a DeviceBootstrap
-     */
-    DeviceBootstrap registerDeviceBootstrap(HubContext hubContext, String deviceId);
-
-    /**
-     * Resets a device bootstrap to its initially created state. This will allow a device to successfully
-     * re-request its bootstrap information.
+     * Resets a device passport to its initially created state. This will allow a device to successfully
+     * re-activate the passport.
      *
      * @param hubContext the hub context
      * @param id the globally unique device ID
      */
-    void resetDeviceBootstrap(HubContext hubContext, String id);
+    void resetDevicePassport(HubContext hubContext, String id);
 
     /**
      * Set a device configuration property.
@@ -230,7 +230,7 @@ public interface DeviceManager {
     void unpublishDevice(DeviceContext ctx, EventLoopExecutor executor);
 
     /**
-     * Authenticates a device bootstrap.
+     * Verifies a device passport.
      *
      * @param hubContext the hub context
      * @param id the globally unique device ID
@@ -238,5 +238,5 @@ public interface DeviceManager {
      *
      * @return a boolean indicating whether the device ID and secret are valid
      */
-    boolean verifyDeviceBootstrap(HubContext hubContext, String id, String secret);
+    boolean verifyDevicePassport(HubContext hubContext, String id, String secret);
 }

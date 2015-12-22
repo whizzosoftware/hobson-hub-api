@@ -20,37 +20,37 @@ public class MockDeviceManager implements DeviceManager {
     public final List<HobsonDevice> publishedDevices = new ArrayList<>();
 
     @Override
-    public DeviceBootstrap createDeviceBootstrap(HubContext hubContext, String deviceId) {
+    public DevicePassport createDevicePassport(HubContext hubContext, String deviceId) {
         return null;
     }
 
     @Override
-    public Collection<DeviceBootstrap> getDeviceBootstraps(HubContext hubContext) {
+    public Collection<DevicePassport> getDevicePassports(HubContext hubContext) {
         return null;
     }
 
     @Override
-    public DeviceBootstrap getDeviceBootstrap(HubContext hubContext, String id) {
+    public DevicePassport getDevicePassport(HubContext hubContext, String id) {
         return null;
     }
 
     @Override
-    public DeviceBootstrap registerDeviceBootstrap(HubContext hubContext, String deviceId) {
+    public DevicePassport activateDevicePassport(HubContext hubContext, String deviceId) {
         return null;
     }
 
     @Override
-    public void deleteDeviceBootstrap(HubContext hubContext, String id) {
+    public void deleteDevicePassport(HubContext hubContext, String id) {
 
     }
 
     @Override
-    public boolean verifyDeviceBootstrap(HubContext hubContext, String id, String secret) {
+    public boolean verifyDevicePassport(HubContext hubContext, String id, String secret) {
         return false;
     }
 
     @Override
-    public void resetDeviceBootstrap(HubContext hubContext, String id) {
+    public void resetDevicePassport(HubContext hubContext, String id) {
 
     }
 

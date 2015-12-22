@@ -28,8 +28,8 @@ public interface IdProvider {
     DeviceContext createDeviceContext(String deviceId);
     DeviceContext createDeviceContextWithHub(HubContext ctx, String deviceId);
     String createDeviceId(DeviceContext ctx);
-    String createDeviceBootstrapId(HubContext ctx, String deviceId);
-    String createDeviceBootstrapsId(HubContext ctx);
+    String createDevicePassportId(HubContext ctx, String deviceId);
+    String createDevicePassportsId(HubContext ctx);
     String createDeviceConfigurationId(DeviceContext ctx);
     String createDeviceConfigurationClassId(DeviceContext ctx);
     String createDeviceTelemetryId(DeviceContext ctx);

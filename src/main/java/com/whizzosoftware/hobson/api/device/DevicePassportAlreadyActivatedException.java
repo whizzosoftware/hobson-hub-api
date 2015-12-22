@@ -10,15 +10,15 @@ package com.whizzosoftware.hobson.api.device;
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 
 /**
- * An exception thrown when a device bootstrap attempt is repeated.
+ * An exception thrown when a device passport attempt is repeated.
  *
  * @author Dan Noguerol
  */
-public class DeviceAlreadyBoostrappedException extends HobsonRuntimeException {
+public class DevicePassportAlreadyActivatedException extends HobsonRuntimeException {
     private String id;
 
-    public DeviceAlreadyBoostrappedException(String id) {
-        super("Device has already been bootstrapped");
+    public DevicePassportAlreadyActivatedException(String id) {
+        super("Device passport has already been activated");
         this.id = id;
     }
 

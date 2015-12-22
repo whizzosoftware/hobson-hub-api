@@ -73,12 +73,12 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public String createDeviceBootstrapId(HubContext ctx, String deviceId) {
+    public String createDevicePassportId(HubContext ctx, String deviceId) {
         return null;
     }
 
     @Override
-    public String createDeviceBootstrapsId(HubContext ctx) {
+    public String createDevicePassportsId(HubContext ctx) {
         return null;
     }
 
