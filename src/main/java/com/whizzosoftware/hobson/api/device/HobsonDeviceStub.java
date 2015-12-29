@@ -23,6 +23,7 @@ public class HobsonDeviceStub implements HobsonDevice {
     private String modelName;
     private String manufacturerVersion;
     private String preferredVariableName;
+    private boolean started;
 
     private HobsonDeviceStub(DeviceContext ctx) {
         this.ctx = ctx;
@@ -60,7 +61,7 @@ public class HobsonDeviceStub implements HobsonDevice {
 
     @Override
     public boolean isStarted() {
-        return false;
+        return started;
     }
 
     @Override
@@ -147,6 +148,11 @@ public class HobsonDeviceStub implements HobsonDevice {
 
         public Builder preferredVariableName(String preferredVariableName) {
             stub.preferredVariableName = preferredVariableName;
+            return this;
+        }
+
+        public Builder started(boolean started) {
+            stub.started = started;
             return this;
         }
 
