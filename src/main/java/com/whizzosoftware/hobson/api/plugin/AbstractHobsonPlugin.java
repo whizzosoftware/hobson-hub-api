@@ -57,7 +57,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     private final PropertyContainerClass configClass;
     private EventLoopGroup eventLoop;
     private final Map<PropertyContainerClassContext,TaskActionClass> actionClasses = new HashMap<>();
-    private final Map<PropertyContainerClassContext,TaskConditionClass> conditionClasses = new HashMap<>();
 
     public AbstractHobsonPlugin(String pluginId) {
         this(pluginId, new LocalEventLoopGroup(1));
@@ -219,7 +218,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     public void publishConditionClass(TaskConditionClass conditionClass) {
         validateTaskManager();
         taskManager.publishConditionClass(conditionClass);
-        conditionClasses.put(conditionClass.getContext(), conditionClass);
     }
 
     @Override
