@@ -7,7 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event;
 
-import com.whizzosoftware.hobson.api.variable.VariableUpdate;
+import com.whizzosoftware.hobson.api.variable.VariableChange;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +22,15 @@ public class VariableUpdateNotificationEvent extends HobsonEvent {
     public static final String ID = "varUpdateNotify";
     public static final String PROP_UPDATES = "updates";
 
-    public VariableUpdateNotificationEvent(long timestamp, VariableUpdate update) {
+    public VariableUpdateNotificationEvent(long timestamp, VariableChange update) {
         super(timestamp, EventTopics.STATE_TOPIC, ID);
 
-        List<VariableUpdate> updates = new ArrayList<>();
+        List<VariableChange> updates = new ArrayList<>();
         updates.add(update);
         setProperty(PROP_UPDATES, updates);
     }
 
-    public VariableUpdateNotificationEvent(long timestamp, List<VariableUpdate> updates) {
+    public VariableUpdateNotificationEvent(long timestamp, List<VariableChange> updates) {
         super(timestamp, EventTopics.STATE_TOPIC, ID);
 
         setProperty(PROP_UPDATES, updates);
@@ -40,7 +40,7 @@ public class VariableUpdateNotificationEvent extends HobsonEvent {
         super(EventTopics.STATE_TOPIC, properties);
     }
 
-    public List<VariableUpdate> getUpdates() {
-        return (List<VariableUpdate>)getProperty(PROP_UPDATES);
+    public List<VariableChange> getUpdates() {
+        return (List<VariableChange>)getProperty(PROP_UPDATES);
     }
 }

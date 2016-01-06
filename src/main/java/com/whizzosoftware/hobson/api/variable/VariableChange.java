@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Whizzo Software, LLC.
+ * Copyright (c) 2016 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,15 @@ package com.whizzosoftware.hobson.api.variable;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 
 /**
- * A class representing a variable update.
+ * A class representing a variable change - both the old value and new value.
  *
  * @author Dan Noguerol
  */
-public class VariableUpdate {
+public class VariableChange {
     private DeviceContext ctx;
     private String name;
-    private Object value;
+    private Object oldValue;
+    private Object newValue;
     private long timestamp;
 
     /**
@@ -25,10 +26,10 @@ public class VariableUpdate {
      *
      * @param ctx the device context
      * @param name the variable name
-     * @param value the variable value
+     * @param newValue the new variable value
      */
-    public VariableUpdate(DeviceContext ctx, String name, Object value) {
-        this(ctx, name, value, System.currentTimeMillis());
+    public VariableChange(DeviceContext ctx, String name, Object oldValue, Object newValue) {
+        this(ctx, name, oldValue, newValue, System.currentTimeMillis());
     }
 
     /**
@@ -36,13 +37,14 @@ public class VariableUpdate {
      *
      * @param ctx the device context
      * @param name the variable name
-     * @param value the variable value
+     * @param newValue the new variable value
      * @param timestamp the time the variable was updated
      */
-    public VariableUpdate(DeviceContext ctx, String name, Object value, long timestamp) {
+    public VariableChange(DeviceContext ctx, String name, Object oldValue, Object newValue, long timestamp) {
         this.ctx = ctx;
         this.name = name;
-        this.value = value;
+        this.oldValue = oldValue;
+        this.newValue = newValue;
         this.timestamp = timestamp;
     }
 
@@ -92,12 +94,21 @@ public class VariableUpdate {
     }
 
     /**
+     * Returns the previous variable value.
+     *
+     * @return an Object
+     */
+    public Object getOldValue() {
+        return oldValue;
+    }
+
+    /**
      * Returns the new variable value.
      *
      * @return an Object
      */
-    public Object getValue() {
-        return value;
+    public Object getNewValue() {
+        return newValue;
     }
 
     /**
@@ -109,11 +120,43 @@ public class VariableUpdate {
         return timestamp;
     }
 
-    public boolean hasValue() {
-        return (value != null);
+    /**
+     * Indicates whether this change has an old value.
+     *
+     * @return a boolean
+     */
+    public boolean hasOldValue() {
+        return (oldValue != null);
+    }
+
+    /**
+     * Indicates whether this change has a new value.
+     *
+     * @return a boolean
+     */
+    public boolean hasNewValue() {
+        return (newValue != null);
+    }
+
+    /**
+     * Indicates if this is the first update for this variable (i.e. the first non-null value).
+     *
+     * @return a boolean
+     */
+    public boolean isInitial() {
+        return (oldValue == null);
+    }
+
+    /**
+     * Indicates if there is a difference between old and new values.
+     *
+     * @return a boolean
+     */
+    public boolean isChanged() {
+        return (newValue != null && !newValue.equals(oldValue)) || (oldValue != null && !oldValue.equals(newValue));
     }
 
     public String toString() {
-        return ctx.toString() + "." + name + "=" + value;
+        return ctx.toString() + "." + name + "=" + oldValue + " to " + newValue;
     }
 }
