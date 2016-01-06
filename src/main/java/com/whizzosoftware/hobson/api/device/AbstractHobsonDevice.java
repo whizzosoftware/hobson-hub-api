@@ -54,7 +54,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
         }
 
         // assume if this device is being created, it has checked-in
-        checkInDevice(System.currentTimeMillis());
+        setDeviceAvailability(true, System.currentTimeMillis());
     }
 
     @Override
@@ -111,8 +111,8 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     }
 
     @Override
-    public void checkInDevice(Long checkInTime) {
-        getPlugin().getRuntime().checkInDevice(getContext(), checkInTime);
+    public void setDeviceAvailability(boolean available, Long checkInTime) {
+        getPlugin().getRuntime().setDeviceAvailability(getContext(), available, checkInTime);
     }
 
     @Override

@@ -55,6 +55,11 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
+    public void setDeviceAvailability(DeviceContext ctx, boolean available, Long checkInTime) {
+
+    }
+
+    @Override
     public Collection<HobsonDevice> getAllDevices(HubContext ctx) {
         return getPublishedDevices();
     }
@@ -95,6 +100,11 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
+    public boolean isDeviceAvailable(DeviceContext ctx) {
+        return false;
+    }
+
+    @Override
     public Long getDeviceLastCheckIn(DeviceContext ctx) {
         return null;
     }
@@ -107,11 +117,6 @@ public class MockDeviceManager implements DeviceManager {
     @Override
     public void publishDevice(HobsonDevice device, boolean republish) {
         publishedDevices.add(device);
-    }
-
-    @Override
-    public void checkInDevice(DeviceContext ctx, Long checkInTime) {
-
     }
 
     @Override

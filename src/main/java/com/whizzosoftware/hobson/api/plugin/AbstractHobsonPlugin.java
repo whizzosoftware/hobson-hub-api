@@ -171,9 +171,9 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public void checkInDevice(DeviceContext ctx, long checkInTime) {
+    public void setDeviceAvailability(DeviceContext ctx, boolean available, Long checkInTime) {
         validateDeviceManager();
-        deviceManager.checkInDevice(ctx, checkInTime);
+        deviceManager.setDeviceAvailability(ctx, available, checkInTime);
     }
 
     @Override

@@ -16,11 +16,12 @@ import com.whizzosoftware.hobson.api.property.PropertyContainer;
  */
 public interface HobsonDeviceRuntime {
     /**
-     * Updates a device's last check-in time.
+     * Updates a device's availability information.
      *
-     * @param checkInTime the time to update with
+     * @param available the device's current availability
+     * @param checkInTime the last time the device checked in (or null to leave the value unchanged)
      */
-    void checkInDevice(Long checkInTime);
+    void setDeviceAvailability(boolean available, Long checkInTime);
 
     /**
      * Sets a device configuration property.

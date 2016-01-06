@@ -79,11 +79,11 @@ public interface HobsonPluginRuntime extends EventListener {
 
     /**
      * Indicates that Hobson has just contacted a device.
-     *
-     * @param ctx the context of the device
-     * @param checkInTime the time the device was contacted
+     *  @param ctx the context of the device
+     * @param available whether the device is currently available
+     * @param checkInTime the time the device was contacted (or null to leave the last check-in time unchanged)
      */
-    void checkInDevice(DeviceContext ctx, long checkInTime);
+    void setDeviceAvailability(DeviceContext ctx, boolean available, Long checkInTime);
 
     /**
      * Returns the event loop executor for this plugin.

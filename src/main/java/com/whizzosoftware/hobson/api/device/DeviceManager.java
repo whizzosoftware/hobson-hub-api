@@ -34,14 +34,6 @@ public interface DeviceManager {
     DevicePassport activateDevicePassport(HubContext hubContext, String deviceId);
 
     /**
-     * Updates the last check-in time of the device.
-     *
-     * @param ctx the device context
-     * @param checkInTime the check-in time
-     */
-    void checkInDevice(DeviceContext ctx, Long checkInTime);
-
-    /**
      * Creates a new device passport with a globally unique ID.
      *
      *
@@ -162,6 +154,15 @@ public interface DeviceManager {
     boolean hasDevice(DeviceContext ctx);
 
     /**
+     * Returns whether a device is available.
+     *
+     * @param ctx the context of the device
+     *
+     * @return a boolean
+     */
+    boolean isDeviceAvailable(DeviceContext ctx);
+
+    /**
      * Publishes a device to the device registry and starts it.
      *
      * @param device the HobsonDevice to publish
@@ -188,6 +189,14 @@ public interface DeviceManager {
      * @param id the globally unique device ID
      */
     void resetDevicePassport(HubContext hubContext, String id);
+
+    /**
+     * Updates the a device's availability.
+     *
+     * @param ctx the device context
+     * @param checkInTime the check-in time
+     */
+    void setDeviceAvailability(DeviceContext ctx, boolean available, Long checkInTime);
 
     /**
      * Set a device configuration property.
