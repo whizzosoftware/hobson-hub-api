@@ -9,6 +9,10 @@ package com.whizzosoftware.hobson.api.plugin.http;
 
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 /**
  * An AsyncCompletionHandler that calls a HobsonPlugin's onHttpResponse() or onHttpRequestFailure() method
@@ -17,6 +21,8 @@ import com.ning.http.client.Response;
  * @author Dan Noguerol
  */
 public class HttpChannelCompletionHandler extends AsyncCompletionHandler<Response> {
+    private final static Logger logger = LoggerFactory.getLogger(HttpChannelCompletionHandler.class);
+
     private AbstractHttpClientPlugin plugin;
     private Object context;
 
@@ -26,13 +32,32 @@ public class HttpChannelCompletionHandler extends AsyncCompletionHandler<Respons
     }
 
     @Override
-    public Response onCompleted(Response response) throws Exception {
-        plugin.onHttpResponse(response.getStatusCode(), null, response.getResponseBody(), context);
+    public Response onCompleted(final Response response) throws Exception {
+        plugin.executeInEventLoop(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    plugin.onHttpResponse(response.getStatusCode(), null, response.getResponseBody(), context);
+                } catch (Throwable t) {
+                    logger.error("Error processing HTTP response", t);
+                }
+            }
+        });
+
         return response;
     }
 
     @Override
-    public void onThrowable(Throwable t) {
-        plugin.onHttpRequestFailure(t, context);
+    public void onThrowable(final Throwable t) {
+        plugin.executeInEventLoop(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    plugin.onHttpRequestFailure(t, context);
+                } catch (Throwable t) {
+                    logger.error("Error processing HTTP failure", t);
+                }
+            }
+        });
     }
 }

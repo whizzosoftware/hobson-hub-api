@@ -15,7 +15,7 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
  * @author Dan Noguerol
  */
 public interface HobsonDevice {
-    int AVAILABILITY_TIMEOUT_INTERVAL = 300000;
+    int AVAILABILITY_TIMEOUT_INTERVAL = 600000; // default to 10 minutes
 
     /**
      * Returns the context of this device.
