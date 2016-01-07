@@ -20,5 +20,6 @@ public enum DeviceType {
     SWITCH,
     THERMOSTAT,
     UNKNOWN,
-    WEATHER_STATION
+    WEATHER_STATION,
+    SECURITY_PANEL
 }

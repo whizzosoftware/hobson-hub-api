@@ -24,5 +24,5 @@ public interface ActivityLogManager {
      *
      * @return a List of ActivityLogEntry instances
      */
-    public List<ActivityLogEntry> getActivityLog(long entryCount);
+    List<ActivityLogEntry> getActivityLog(long entryCount);
 }
