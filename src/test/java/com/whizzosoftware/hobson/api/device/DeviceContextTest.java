@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device;
 
+import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -41,5 +42,11 @@ public class DeviceContextTest {
             assertTrue("plugin1".equals(ctx.getPluginId()) || "plugin2".equals(ctx.getPluginId()));
             assertTrue("device1".equals(ctx.getDeviceId()) || "device2".equals(ctx.getDeviceId()));
         }
+    }
+
+    @Test
+    public void testIsGlobal() {
+        DeviceContext dctx = DeviceContext.createGlobal(PluginContext.createLocal("plugin1"));
+        assertTrue(dctx.isGlobal());
     }
 }

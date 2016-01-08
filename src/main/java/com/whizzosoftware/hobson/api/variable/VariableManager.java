@@ -62,7 +62,7 @@ public interface VariableManager {
      *
      * @since hobson-hub-api 0.1.6
      */
-    HobsonVariableCollection getVariables(DeviceContext ctx);
+    Collection<HobsonVariable> getDeviceVariables(DeviceContext ctx);
 
     /**
      * Returns a specific published variable.
@@ -160,7 +160,7 @@ public interface VariableManager {
      *
      * @since hobson-hub-api 0.5.0
      */
-    Map<String,Long> setVariables(DeviceContext ctx, Map<String,Object> values);
+    Map<String,Long> setDeviceVariables(DeviceContext ctx, Map<String,Object> values);
 
     /**
      * Called by a device or plugin to notify that variable updates have been successfully confirmed with the

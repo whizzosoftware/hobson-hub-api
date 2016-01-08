@@ -42,7 +42,7 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public HobsonVariableCollection getVariables(DeviceContext ctx) {
+    public Collection<HobsonVariable> getDeviceVariables(DeviceContext ctx) {
         return null;
     }
 
@@ -87,7 +87,7 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public Map<String, Long> setVariables(DeviceContext ctx, Map<String, Object> values) {
+    public Map<String, Long> setDeviceVariables(DeviceContext ctx, Map<String, Object> values) {
         return null;
     }
 

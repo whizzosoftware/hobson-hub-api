@@ -148,7 +148,7 @@ public class DeviceContext {
     }
 
     public boolean isGlobal() {
-        return (deviceId == null);
+        return (GLOBAL.equals(deviceId));
     }
 
     public int hashCode() {

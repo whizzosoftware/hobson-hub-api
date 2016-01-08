@@ -73,7 +73,8 @@ public class PluginContext {
         return (
             o instanceof PluginContext &&
             ((PluginContext)o).hubContext.equals(hubContext) &&
-            ((PluginContext)o).pluginId.equals(pluginId)
+            (((PluginContext)o).pluginId == null && pluginId == null ||
+                ((PluginContext)o).pluginId.equals(pluginId))
         );
     }
 
