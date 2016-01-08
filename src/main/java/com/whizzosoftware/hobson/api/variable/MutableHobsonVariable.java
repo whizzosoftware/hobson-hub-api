@@ -7,25 +7,14 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.variable;
 
-import com.whizzosoftware.hobson.api.device.DeviceContext;
-
 /**
  * Concrete implementation of HobsonVariable.
  *
  * @author Dan Noguerol
  */
 public class MutableHobsonVariable extends ImmutableHobsonVariable {
-
-    public MutableHobsonVariable(DeviceContext dctx, String name, Mask mask, Object value, VariableMediaType mediaType) {
-        super(dctx, name, mask, value, mediaType, value != null ? System.currentTimeMillis() : null);
-    }
-
-    public MutableHobsonVariable(String pluginId, String deviceId, String name, Mask mask, Object value, VariableMediaType mediaType) {
-        super(pluginId, deviceId, name, mask, value, mediaType, value != null ? System.currentTimeMillis() : null);
-    }
-
-    public MutableHobsonVariable(String pluginId, String name, Mask mask, Object value, VariableMediaType mediaType) {
-        super(pluginId, name, mask, value, mediaType, null);
+    public MutableHobsonVariable(VariableContext ctx, Mask mask, Object value, VariableMediaType mediaType) {
+        super(ctx, mask, value, mediaType, null);
     }
 
     public void setValue(Object value) {

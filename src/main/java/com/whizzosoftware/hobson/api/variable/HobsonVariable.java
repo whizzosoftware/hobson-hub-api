@@ -15,6 +15,13 @@ package com.whizzosoftware.hobson.api.variable;
  */
 public interface HobsonVariable {
     /**
+     * Returns the context of the variable.
+     *
+     * @return a VariableContext instance
+     */
+    VariableContext getContext();
+
+    /**
      * Returns the ID of the device which published this variable.
      *
      * @return a device ID

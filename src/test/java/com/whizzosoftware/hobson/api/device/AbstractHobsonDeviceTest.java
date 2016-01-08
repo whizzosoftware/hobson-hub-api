@@ -12,6 +12,7 @@ import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.MockAbstractHobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.variable.VariableContext;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.manager.MockVariableManager;
@@ -141,7 +142,7 @@ public class AbstractHobsonDeviceTest {
         p.getRuntime().setVariableManager(vm);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
         d.publishVariable("var1", "val1", HobsonVariable.Mask.READ_WRITE);
-        HobsonVariable v = vm.getDeviceVariable(DeviceContext.create(p.getContext(), "did"), "var1");
+        HobsonVariable v = vm.getVariable(VariableContext.create(p.getContext(), "did", "var1"));
         assertNotNull(v);
         assertEquals("var1", v.getName());
         assertEquals("val1", v.getValue());
@@ -214,7 +215,7 @@ public class AbstractHobsonDeviceTest {
     @Test
     public void testGetVariableWithWithVariableManager() {
         MockVariableManager vm = new MockVariableManager();
-        vm.publishDeviceVariable(DeviceContext.create(PluginContext.createLocal("pid"), "did"), "var1", "val1", HobsonVariable.Mask.READ_WRITE);
+        vm.publishVariable(VariableContext.create(PluginContext.createLocal("pid"), "did", "var1"), "val1", HobsonVariable.Mask.READ_WRITE);
         MockAbstractHobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
         p.setDeviceManager(new MockDeviceManager());
         p.getRuntime().setVariableManager(vm);

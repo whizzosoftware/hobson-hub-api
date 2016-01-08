@@ -22,6 +22,8 @@ import java.util.List;
  * @author Dan Noguerol
  */
 public class DeviceContext {
+    public static final String GLOBAL = "$GLOBAL$";
+
     private PluginContext ctx;
     private String deviceId;
 
@@ -81,13 +83,12 @@ public class DeviceContext {
     /**
      * Creates a global device context.
      *
-     * @param hubContext the context of the hub
-     * @param pluginId the plugin associated with the global device
+     * @param ctx the context of the plugin
      *
      * @return a DeviceContext instance
      */
-    public static DeviceContext createGlobal(HubContext hubContext, String pluginId) {
-        return create(PluginContext.create(hubContext, pluginId), null);
+    public static DeviceContext createGlobal(PluginContext ctx) {
+        return create(ctx, DeviceContext.GLOBAL);
     }
 
     /**

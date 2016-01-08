@@ -7,41 +7,35 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.variable;
 
-import com.whizzosoftware.hobson.api.device.DeviceContext;
-
 /**
  * A class representing a variable update.
  *
  * @author Dan Noguerol
  */
 public class VariableUpdate {
-    private DeviceContext ctx;
-    private String name;
+    private VariableContext ctx;
     private Object value;
     private long timestamp;
 
     /**
      * Constructor.
      *
-     * @param ctx the device context
-     * @param name the variable name
+     * @param ctx the variable context
      * @param value the variable value
      */
-    public VariableUpdate(DeviceContext ctx, String name, Object value) {
-        this(ctx, name, value, System.currentTimeMillis());
+    public VariableUpdate(VariableContext ctx, Object value) {
+        this(ctx, value, System.currentTimeMillis());
     }
 
     /**
      * Constructor.
      *
-     * @param ctx the device context
-     * @param name the variable name
+     * @param ctx the variable context
      * @param value the variable value
      * @param timestamp the time the variable was updated
      */
-    public VariableUpdate(DeviceContext ctx, String name, Object value, long timestamp) {
+    public VariableUpdate(VariableContext ctx, Object value, long timestamp) {
         this.ctx = ctx;
-        this.name = name;
         this.value = value;
         this.timestamp = timestamp;
     }
@@ -56,11 +50,11 @@ public class VariableUpdate {
     }
 
     /**
-     * Returns the device context associated with the update.
+     * Returns the variable context associated with the update.
      *
-     * @return a DeviceContext instance
+     * @return a VariableContext instance
      */
-    public DeviceContext getDeviceContext() {
+    public VariableContext getContext() {
         return ctx;
     }
 
@@ -88,7 +82,7 @@ public class VariableUpdate {
      * @return a String
      */
     public String getName() {
-        return name;
+        return ctx.getName();
     }
 
     /**
@@ -114,6 +108,6 @@ public class VariableUpdate {
     }
 
     public String toString() {
-        return ctx.toString() + "." + name + "=" + value;
+        return ctx.toString() + "=" + value;
     }
 }

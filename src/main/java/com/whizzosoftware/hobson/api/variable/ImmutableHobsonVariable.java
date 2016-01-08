@@ -7,43 +7,34 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.variable;
 
-import com.whizzosoftware.hobson.api.device.DeviceContext;
-
 /**
  * An immutable implementation of HobsonVariable.
  *
  * @author Dan Noguerol
  */
 public class ImmutableHobsonVariable implements HobsonVariable {
-    protected String pluginId;
-    protected String deviceId;
-    protected String name;
+    protected VariableContext ctx;
     protected Mask mask;
     protected Long lastUpdate;
     protected Object value;
     protected VariableMediaType mediaType;
 
-    public ImmutableHobsonVariable(DeviceContext dctx, String name, Mask mask, Object value, VariableMediaType mediaType, Long lastUpdate) {
-        this(dctx.getPluginId(), dctx.getDeviceId(), name, mask, value, mediaType, lastUpdate);
-    }
-
-    public ImmutableHobsonVariable(String pluginId, String deviceId, String name, Mask mask, Object value, VariableMediaType mediaType, Long lastUpdate) {
-        this.pluginId = pluginId;
-        this.deviceId = deviceId;
-        this.name = name;
+    public ImmutableHobsonVariable(VariableContext ctx, Mask mask, Object value, VariableMediaType mediaType, Long lastUpdate) {
+        this.ctx = ctx;
         this.mask = mask;
         this.lastUpdate = lastUpdate;
         this.value = value;
         this.mediaType = mediaType;
     }
 
-    public ImmutableHobsonVariable(String pluginId, String name, Mask mask, Object value, VariableMediaType mediaType, Long lastUpdate) {
-        this(pluginId, null, name, mask, value, mediaType, lastUpdate);
+    @Override
+    public VariableContext getContext() {
+        return ctx;
     }
 
     @Override
     public String getDeviceId() {
-        return deviceId;
+        return ctx.getDeviceId();
     }
 
     @Override
@@ -53,7 +44,7 @@ public class ImmutableHobsonVariable implements HobsonVariable {
 
     @Override
     public String getName() {
-        return name;
+        return ctx.getName();
     }
 
     @Override
@@ -63,7 +54,7 @@ public class ImmutableHobsonVariable implements HobsonVariable {
 
     @Override
     public String getPluginId() {
-        return pluginId;
+        return ctx.getPluginId();
     }
 
     @Override
@@ -83,6 +74,6 @@ public class ImmutableHobsonVariable implements HobsonVariable {
 
     @Override
     public boolean isGlobal() {
-        return (deviceId == null);
+        return ctx.isGlobal();
     }
 }

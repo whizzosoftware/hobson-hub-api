@@ -10,6 +10,7 @@ package com.whizzosoftware.hobson.api.device;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
+import com.whizzosoftware.hobson.api.variable.VariableContext;
 import com.whizzosoftware.hobson.api.variable.VariableMediaType;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 
@@ -216,11 +217,19 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
      * @param mask the variable mask
      */
     protected void publishVariable(String name, Object value, HobsonVariable.Mask mask) {
-        getPlugin().getRuntime().publishDeviceVariable(getContext(), name, value, mask);
+        getPlugin().getRuntime().publishVariable(VariableContext.create(getContext(), name), value, mask);
     }
 
+    /**
+     * Publishes a device variable.
+     *
+     * @param name the variable name
+     * @param value the variable value
+     * @param mask the variable mask
+     * @param mediaType the variable media type
+     */
     protected void publishVariable(String name, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType) {
-        getPlugin().getRuntime().publishDeviceVariable(getContext(), name, value, mask, mediaType);
+        getPlugin().getRuntime().publishVariable(VariableContext.create(getContext(), name), value, mask, mediaType);
     }
 
     /**
@@ -230,7 +239,7 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
      * @param value the variable value
      */
     protected void fireVariableUpdateNotification(String name, Object value) {
-        fireVariableUpdateNotifications(Collections.singletonList(new VariableUpdate(ctx, name, value)));
+        fireVariableUpdateNotifications(Collections.singletonList(new VariableUpdate(VariableContext.create(getContext(), name), value)));
     }
 
     /**

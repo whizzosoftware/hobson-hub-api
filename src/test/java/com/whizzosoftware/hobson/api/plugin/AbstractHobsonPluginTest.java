@@ -15,6 +15,7 @@ import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.TypedProperty;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
+import com.whizzosoftware.hobson.api.variable.VariableContext;
 import com.whizzosoftware.hobson.api.variable.VariableUpdate;
 import com.whizzosoftware.hobson.api.variable.manager.MockVariableManager;
 import org.junit.Test;
@@ -96,7 +97,7 @@ public class AbstractHobsonPluginTest {
     public void testPublishGlobalVariableWithNoVariableManager() {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.publishGlobalVariable("name", "value", HobsonVariable.Mask.READ_WRITE);
+            plugin.publishVariable(VariableContext.createGlobal(plugin.getContext(), "name"), "value", HobsonVariable.Mask.READ_WRITE);
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }
@@ -106,7 +107,7 @@ public class AbstractHobsonPluginTest {
     public void testPublishDeviceVariableWithNoVariableManager() {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.publishDeviceVariable(DeviceContext.create(plugin.getContext(), "id"), "name", "value", HobsonVariable.Mask.READ_WRITE);
+            plugin.publishVariable(VariableContext.create(DeviceContext.create(plugin.getContext(), "id"), "name"), "value", HobsonVariable.Mask.READ_WRITE);
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }
@@ -127,7 +128,7 @@ public class AbstractHobsonPluginTest {
     public void testFireVariableUpdateNotificationWithNoVariableManager() {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.fireVariableUpdateNotification(new VariableUpdate(DeviceContext.createLocal("pluginId", "deviceId"), "name", "value"));
+            plugin.fireVariableUpdateNotification(new VariableUpdate(VariableContext.createLocal("pluginId", "deviceId", "name"), "value"));
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }

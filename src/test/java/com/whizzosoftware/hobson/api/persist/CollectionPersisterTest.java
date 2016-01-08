@@ -14,10 +14,7 @@ import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
 import com.whizzosoftware.hobson.api.task.action.TaskActionExecutor;
 import com.whizzosoftware.hobson.api.task.condition.ConditionClassType;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
-import com.whizzosoftware.hobson.api.variable.HobsonVariable;
-import com.whizzosoftware.hobson.api.variable.ImmutableHobsonVariable;
-import com.whizzosoftware.hobson.api.variable.VariableConstants;
-import com.whizzosoftware.hobson.api.variable.VariableMediaType;
+import com.whizzosoftware.hobson.api.variable.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -254,7 +251,7 @@ public class CollectionPersisterTest {
         CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
         DeviceContext dctx = DeviceContext.createLocal("plugin1", "device1");
 
-        ImmutableHobsonVariable mhv = new ImmutableHobsonVariable("plugin1", "device1", "foo", HobsonVariable.Mask.READ_ONLY, "bar", VariableMediaType.IMAGE_JPG, 1000L);
+        ImmutableHobsonVariable mhv = new ImmutableHobsonVariable(VariableContext.createLocal("plugin1", "device1", "foo"), HobsonVariable.Mask.READ_ONLY, "bar", VariableMediaType.IMAGE_JPG, 1000L);
         cp.saveDeviceVariable(cpc, dctx, mhv);
 
         Map<String,Object> map = cpc.getMap("local:hubs:local:variables:device:plugin1:device1:foo");

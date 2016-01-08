@@ -24,10 +24,7 @@ import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
 import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
-import com.whizzosoftware.hobson.api.variable.HobsonVariable;
-import com.whizzosoftware.hobson.api.variable.VariableMediaType;
-import com.whizzosoftware.hobson.api.variable.VariableUpdate;
-import com.whizzosoftware.hobson.api.variable.VariableManager;
+import com.whizzosoftware.hobson.api.variable.*;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.local.LocalEventLoopGroup;
 import io.netty.util.concurrent.Future;
@@ -148,26 +145,26 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     public void fireVariableUpdateNotification(VariableUpdate update) {
         // post the variable update notification event
         validateVariableManager();
-        variableManager.applyVariableUpdates(HubContext.createLocal(), Collections.singletonList(update));
+        variableManager.fireVariableUpdateNotifications(HubContext.createLocal(), Collections.singletonList(update));
     }
 
     @Override
     public void fireVariableUpdateNotifications(List<VariableUpdate> updates) {
         // post the variable update notification event
         validateVariableManager();
-        variableManager.applyVariableUpdates(HubContext.createLocal(), updates);
+        variableManager.fireVariableUpdateNotifications(HubContext.createLocal(), updates);
     }
 
     @Override
     public HobsonVariable getDeviceVariable(DeviceContext ctx, String variableName) {
         validateVariableManager();
-        return variableManager.getDeviceVariable(ctx, variableName);
+        return variableManager.getVariable(VariableContext.create(ctx, variableName));
     }
 
     @Override
     public boolean hasDeviceVariable(DeviceContext ctx, String variableName) {
         validateVariableManager();
-        return variableManager.hasDeviceVariable(ctx, variableName);
+        return variableManager.hasVariable(VariableContext.create(ctx, variableName));
     }
 
     @Override
@@ -221,27 +218,15 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask) {
+    public void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask) {
         validateVariableManager();
-        variableManager.publishDeviceVariable(ctx, name, value, mask);
+        variableManager.publishVariable(ctx, value, mask);
     }
 
     @Override
-    public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType) {
+    public void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType) {
         validateVariableManager();
-        variableManager.publishDeviceVariable(ctx, name, value, mask, mediaType);
-    }
-
-    @Override
-    public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask) {
-        validateVariableManager();
-        variableManager.publishGlobalVariable(getContext(), name, value, mask);
-    }
-
-    @Override
-    public void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType) {
-        validateVariableManager();
-        variableManager.publishGlobalVariable(getContext(), name, value, mask, mediaType);
+        variableManager.publishVariable(ctx, value, mask, mediaType);
     }
 
     @Override
@@ -401,6 +386,29 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     /**
+     * Convenience method for publishing a global variable.
+     *
+     * @param name the variable name
+     * @param value the variable value
+     * @param mask the variable mask
+     */
+    protected void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask) {
+        publishVariable(VariableContext.createGlobal(getContext(), name), value, mask);
+    }
+
+    /**
+     * Convenience method for publishing a global variable.
+     *
+     * @param name the variable name
+     * @param value the variable value
+     * @param mask the variable mask
+     * @param mediaType the variable media type
+     */
+    protected void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType) {
+        publishVariable(VariableContext.createGlobal(getContext(), name), value, mask, mediaType);
+    }
+
+    /**
      * Requests all currently known device advertisements. This is an asynchronous call that will be serviced
      * as multiple DeviceAdvertisementEvent events to the plugin's onHobsonEvent() callback.
      *
@@ -483,7 +491,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         validateVariableManager();
         validateDeviceManager();
         DeviceContext dctx = DeviceContext.create(getContext(), deviceId);
-        variableManager.unpublishAllDeviceVariables(dctx);
+        variableManager.unpublishAllVariables(dctx);
         deviceManager.unpublishDevice(dctx, this);
     }
 
@@ -493,7 +501,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     protected void unpublishAllDevices() {
         validateVariableManager();
         validateDeviceManager();
-        variableManager.unpublishAllPluginVariables(getContext());
+        variableManager.unpublishAllVariables(getContext());
         deviceManager.unpublishAllDevices(getContext(), this);
     }
 

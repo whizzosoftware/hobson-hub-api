@@ -25,6 +25,7 @@ import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.util.StringConversionUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.ImmutableHobsonVariable;
+import com.whizzosoftware.hobson.api.variable.VariableContext;
 import com.whizzosoftware.hobson.api.variable.VariableMediaType;
 
 import java.util.*;
@@ -90,11 +91,13 @@ public class CollectionPersister {
         Map<String,Object> varMap = pctx.getMap(idProvider.createDeviceVariableId(ctx, name));
         String proxyType = (String)varMap.get(PropertyConstants.MEDIA_TYPE);
         return new ImmutableHobsonVariable(
-            (String)varMap.get(PropertyConstants.PLUGIN_ID),
-            (String)varMap.get(PropertyConstants.DEVICE_ID),
-            (String)varMap.get(PropertyConstants.NAME),
+            VariableContext.createLocal(
+                (String)varMap.get(PropertyConstants.PLUGIN_ID),
+                (String)varMap.get(PropertyConstants.DEVICE_ID),
+                (String)varMap.get(PropertyConstants.NAME)
+            ),
             varMap.containsKey(PropertyConstants.MASK) ? HobsonVariable.Mask.valueOf((String)varMap.get(PropertyConstants.MASK)) : null,
-                varMap.get(PropertyConstants.VALUE), proxyType != null ? VariableMediaType.valueOf(proxyType) : null, (Long)varMap.get(PropertyConstants.LAST_UPDATE)
+            varMap.get(PropertyConstants.VALUE), proxyType != null ? VariableMediaType.valueOf(proxyType) : null, (Long)varMap.get(PropertyConstants.LAST_UPDATE)
         );
     }
 

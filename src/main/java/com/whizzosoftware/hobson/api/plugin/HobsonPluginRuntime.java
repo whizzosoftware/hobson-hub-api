@@ -20,10 +20,7 @@ import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
 import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
-import com.whizzosoftware.hobson.api.variable.HobsonVariable;
-import com.whizzosoftware.hobson.api.variable.VariableManager;
-import com.whizzosoftware.hobson.api.variable.VariableMediaType;
-import com.whizzosoftware.hobson.api.variable.VariableUpdate;
+import com.whizzosoftware.hobson.api.variable.*;
 import io.netty.util.concurrent.Future;
 
 import java.util.List;
@@ -178,42 +175,21 @@ public interface HobsonPluginRuntime extends EventListener {
     /**
      * Publish a device variable.
      *
-     * @param ctx the context of the device publishing the variable
-     * @param name the name of the new variable to publish
+     * @param ctx the context of the variable to publish
      * @param value the value of the new variable (or null if not known)
      * @param mask the access mask of the new variable
      */
-    void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask);
+    void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask);
 
     /**
      * Publish a device variable.
      *
-     * @param ctx the context of the device publishing the variable
-     * @param name the name of the new variable to publish
+     * @param ctx the context of the variable to publish
      * @param value the value of the new variable (or null if not known)
      * @param mask the variable mask
      * @param mediaType indicates the type of media this variable references (or null if not applicable)
      */
-    void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType);
-
-    /**
-     * Publish a global variable.
-     *
-     * @param name the name of the new variable to publish
-     * @param value the value of the new variable (or null if not known)
-     * @param mask the access mask of the new variable
-     */
-    void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask);
-
-    /**
-     * Publish a global variable.
-     *
-     * @param name the name of the new variable to publish
-     * @param value the value of the new variable (or null if not known)
-     * @param mask the access mask of the new variable
-     * @param mediaType indicates the type of media this variable references (or null if not applicable)
-     */
-    void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType);
+    void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType);
 
     /**
      * Execute a recurring task.

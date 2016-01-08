@@ -42,87 +42,57 @@ public class MockVariableManager implements VariableManager {
     }
 
     @Override
-    public HobsonVariable getGlobalVariable(HubContext ctx, String name) {
+    public HobsonVariableCollection getVariables(DeviceContext ctx) {
         return null;
     }
 
     @Override
-    public HobsonVariableCollection getDeviceVariables(DeviceContext ctx) {
-        return null;
-    }
-
-    @Override
-    public HobsonVariable getDeviceVariable(DeviceContext ctx, String name) {
+    public HobsonVariable getVariable(VariableContext ctx) {
         return getPublishedVariables().get(ctx.getPluginId() + "." + ctx.getDeviceId());
     }
 
     @Override
-    public boolean hasDeviceVariable(DeviceContext ctx, String name) {
+    public boolean hasVariable(VariableContext ctx) {
         return false;
     }
 
     @Override
-    public void publishGlobalVariable(PluginContext ctx, String name, Object value, HobsonVariable.Mask mask) {
-        publishGlobalVariable(ctx, name, value, null);
+    public void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask) {
+        publishVariable(ctx, value, mask, null);
     }
 
     @Override
-    public void publishGlobalVariable(PluginContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType) {
-
+    public void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType) {
+        publishedVariables.put(ctx.getPluginId() + "." + ctx.getDeviceId(), new ImmutableHobsonVariable(ctx, mask, value, mediaType, 0L));
     }
 
     @Override
-    public void unpublishGlobalVariable(PluginContext ctx, String name) {
-
-    }
-
-    @Override
-    public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask) {
-        publishDeviceVariable(ctx, name, value, mask, null);
-    }
-
-    @Override
-    public void publishDeviceVariable(DeviceContext ctx, String name, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType) {
-        publishedVariables.put(ctx.getPluginId() + "." + ctx.getDeviceId(), new ImmutableHobsonVariable(ctx.getPluginId(), ctx.getDeviceId(), name, mask, value, mediaType, 0L));
-    }
-
-    @Override
-    public void unpublishDeviceVariable(DeviceContext ctx, String name) {
+    public void unpublishVariable(VariableContext ctx) {
 
     }
 
     @Override
-    public void unpublishAllDeviceVariables(DeviceContext ctx) {
+    public void unpublishAllVariables(DeviceContext ctx) {
 
     }
 
     @Override
-    public void unpublishAllPluginVariables(PluginContext ctx) {
+    public void unpublishAllVariables(PluginContext ctx) {
 
     }
 
     @Override
-    public Long setGlobalVariable(PluginContext ctx, String name, Object value) {
+    public Long setVariable(VariableContext ctx, Object value) {
         return null;
     }
 
     @Override
-    public Map<String, Long> setGlobalVariables(PluginContext ctx, Map<String, Object> values) {
+    public Map<String, Long> setVariables(DeviceContext ctx, Map<String, Object> values) {
         return null;
     }
 
     @Override
-    public Long setDeviceVariable(DeviceContext ctx, String name, Object value) {
-        return null;
-    }
-
-    @Override
-    public Map<String, Long> setDeviceVariables(DeviceContext ctx, Map<String, Object> values) {
-        return null;
-    }
-
-    @Override
-    public void applyVariableUpdates(HubContext ctx, List<VariableUpdate> updates) {
+    public void fireVariableUpdateNotifications(HubContext ctx, List<VariableUpdate> updates) {
 
     }
 }
