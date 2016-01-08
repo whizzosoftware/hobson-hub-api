@@ -70,6 +70,10 @@ public class VariableContext {
         return ctx.getHubId();
     }
 
+    public boolean hasPluginId() {
+        return (ctx.getPluginId() != null);
+    }
+
     public String getPluginId() {
         return ctx.getPluginId();
     }
@@ -80,6 +84,10 @@ public class VariableContext {
 
     public String getDeviceId() {
         return ctx.getDeviceId();
+    }
+
+    public boolean hasName() {
+        return (name != null);
     }
 
     public String getName() {
