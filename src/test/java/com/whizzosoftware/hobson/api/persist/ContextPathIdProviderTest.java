@@ -10,6 +10,7 @@ package com.whizzosoftware.hobson.api.persist;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
+import com.whizzosoftware.hobson.api.variable.VariableContext;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -63,5 +64,17 @@ public class ContextPathIdProviderTest {
         assertEquals("hub1", ctx.getHubId());
         assertEquals("plugin1", ctx.getPluginId());
         assertEquals("device1", ctx.getDeviceId());
+    }
+
+    @Test
+    public void testVariableContext() {
+        ContextPathIdProvider cpidp = new ContextPathIdProvider();
+
+        VariableContext ctx = cpidp.createVariableContext("user1:hubs:hub1:variables:device:plugin1:device1:videoStatusUrl");
+        assertEquals("user1", ctx.getUserId());
+        assertEquals("hub1", ctx.getHubId());
+        assertEquals("plugin1", ctx.getPluginId());
+        assertEquals("device1", ctx.getDeviceId());
+        assertEquals("videoStatusUrl", ctx.getName());
     }
 }

@@ -47,7 +47,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     private PluginManager pluginManager;
     private VariableManager variableManager;
     private TaskManager taskManager;
-    private TelemetryManager telemetryManager;
     private PluginContext ctx;
     private String version;
     private PluginStatus status = PluginStatus.initializing();
@@ -268,11 +267,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     @Override
     public void setTaskManager(TaskManager taskManager) {
         this.taskManager = taskManager;
-    }
-
-    @Override
-    public void setTelemetryManager(TelemetryManager telemetryManager) {
-        this.telemetryManager = telemetryManager;
     }
 
     @Override
@@ -523,10 +517,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
 
     protected VariableManager getVariableManager() {
         return variableManager;
-    }
-
-    protected TelemetryManager getTelemetryManager() {
-        return telemetryManager;
     }
 
     protected TaskManager getTaskManager() {

@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.hub;
 
+import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
+
 import java.io.IOException;
 
 /**
@@ -55,4 +57,11 @@ public interface LocalHubManager {
      * @param aAppender the appender to remove
      */
     void removeLogAppender(Object aAppender);
+
+    /**
+     * Adds a manager to use for telemetry functions.
+     *
+     * @param manager the manager
+     */
+    void addTelemetryManager(TelemetryManager manager);
 }

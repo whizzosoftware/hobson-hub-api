@@ -16,6 +16,7 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassType;
 import com.whizzosoftware.hobson.api.task.TaskContext;
+import com.whizzosoftware.hobson.api.variable.VariableContext;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -40,6 +41,11 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public String createActivityLogId(HubContext ctx) {
         return null;
+    }
+
+    @Override
+    public String createAllHubsId() {
+        return "hubs";
     }
 
     @Override
@@ -93,17 +99,7 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public String createDeviceTelemetryId(DeviceContext ctx) {
-        return null;
-    }
-
-    @Override
-    public String createDeviceTelemetryDatasetId(DeviceContext ctx, String dataSetId) {
-        return null;
-    }
-
-    @Override
-    public String createDeviceTelemetryDatasetsId(DeviceContext ctx) {
+    public String createTelemetryDatasetId(HubContext ctx, String dataSetId) {
         return null;
     }
 
@@ -153,12 +149,22 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createHubId(HubContext ctx) {
-        return createHubsId(ctx.getUserId()) + HubContext.DELIMITER + ctx.getHubId();
+        return createUserHubsId(ctx.getUserId()) + HubContext.DELIMITER + ctx.getHubId();
     }
 
     @Override
-    public String createHubsId(String userId) {
+    public String createUserHubsId(String userId) {
         return userId + HubContext.DELIMITER + "hubs";
+    }
+
+    @Override
+    public VariableContext createVariableContext(String variableId) {
+        String[] s = StringUtils.split(variableId, ":");
+        if (s.length >= 8) {
+            return VariableContext.create(DeviceContext.create(PluginContext.create(HubContext.create(s[0], s[2]), s[5]), s[6]), s[7]);
+        } else {
+            return null;
+        }
     }
 
     @Override

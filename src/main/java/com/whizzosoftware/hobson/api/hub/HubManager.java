@@ -29,13 +29,20 @@ public interface HubManager {
     String getVersion(HubContext hubContext);
 
     /**
+     * Returns all hubs the system knows about.
+     *
+     * @return a Collection of HobsonHub instances
+     */
+    Collection<HubContext> getAllHubs();
+
+    /**
      * Returns the hubs associated with a user.
      *
      * @param userId the user ID that owns the hubs
      *
-     * @return a Collection of Hub objects
+     * @return a Collection of HobsonHub instances
      */
-    Collection<HobsonHub> getHubs(String userId);
+    Collection<HubContext> getHubs(String userId);
 
     /**
      * Returns a specific hub associated with a user.
@@ -47,14 +54,13 @@ public interface HubManager {
     HobsonHub getHub(HubContext ctx);
 
     /**
-     * Associates a new hub with a user.
+     * Returns the user ID associated with the given hub ID.
      *
-     * @param userId the user ID that will own the hub
-     * @param name the name of the new hub
+     * @param hubId the hub ID
      *
-     * @return a HubInfo object
+     * @return a String (or null if not found)
      */
-    HobsonHub addHub(String userId, String name);
+    String getUserIdForHubId(String hubId);
 
     /**
      * Deletes the configuration associated with a Hub.
@@ -62,13 +68,6 @@ public interface HubManager {
      * @param ctx the context of the hub
      */
     void deleteConfiguration(HubContext ctx);
-
-    /**
-     * Removes a previously added hub.
-     *
-     * @param ctx the context of the hub to remove
-     */
-    void removeHub(HubContext ctx);
 
     /**
      * Indicates whether Hub credentials are valid.

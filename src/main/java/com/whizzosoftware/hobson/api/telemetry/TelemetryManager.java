@@ -7,11 +7,11 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.telemetry;
 
-import com.whizzosoftware.hobson.api.device.DeviceContext;
-import com.whizzosoftware.hobson.api.device.HobsonDevice;
 import com.whizzosoftware.hobson.api.hub.HubContext;
+import com.whizzosoftware.hobson.api.variable.VariableContext;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,68 +21,65 @@ import java.util.Map;
  */
 public interface TelemetryManager {
     /**
-     * Enables/disables telemetry for a specific device.
-     *
-     * @param ctx the context of the target device
-     * @param enabled whether to enable telemetry
-     */
-    void enableDeviceTelemetry(DeviceContext ctx, boolean enabled);
-
-    /**
-     * Returns all hub devices for which telemetry has been enabled.
-     *
-     * @param ctx the context of the hub that published the devices
-     *
-     * @return a Collection of HobsonDevice instances
-     */
-    Collection<HobsonDevice> getAllTelemetryEnabledDevices(HubContext ctx);
-
-    /**
-     * Retrieves telemetry data for a specific device.
-     *
-     * @param ctx the context of the target device
-     * @param endTime the end time for the returned data
-     * @param interval how much data to return (determines the start time of the data)
-     *
-     * @return a Map (keyed by variable name) to Collections of TemporalValue instances
-     */
-    Map<String,Collection<TemporalValue>> getDeviceTelemetry(DeviceContext ctx, long endTime, TelemetryInterval interval);
-
-    /**
-     * Retrieves telemetry data for a device variable.
-     *
-     * @param ctx the context of the target device
-     * @param name the variable name
-     * @param endTime the end time for which data is requested (in epoch time)
-     * @param interval an interval representing the amount of data requested (endTime - interval == startTime)
-     *
-     * @return a Collection of TemporalValue instances
-     */
-    Collection<TemporalValue> getDeviceVariableTelemetry(DeviceContext ctx, String name, long endTime, TelemetryInterval interval);
-
-    /**
-     * Indicates whether a device's telemetry is enabled.
-     *
-     * @param ctx the context of the target device
+     * Indicates if this manager is a stub (NO-OP) implementation.
      *
      * @return a boolean
      */
-    boolean isDeviceTelemetryEnabled(DeviceContext ctx);
+    boolean isStub();
 
     /**
-     * Writes telemetry data for a specific device.
+     * Returns the human-friendly name of this manager.
      *
-     * @param ctx the context of the target device
-     * @param values a Map (keyed by variable name) to a TemporalValue
+     * @return a String
      */
-    void writeDeviceTelemetry(DeviceContext ctx, Map<String,TemporalValue> values);
+    String getName();
 
     /**
-     * Writes telemetry data for a device variable.
+     * Creates a new data stream.
      *
-     * @param ctx the context of the device that produced the data
-     * @param name the variable name
-     * @param value the variable value
+     * @param ctx the hub context
+     * @param name the stream name
+     * @param data the variables that comprise the stream data
      */
-    void writeDeviceVariableTelemetry(DeviceContext ctx, String name, TemporalValue value);
+    void createDataStream(HubContext ctx, String name, Collection<VariableContext> data);
+
+    /**
+     * Returns the list of created data streams.
+     *
+     * @param ctx the hub context
+     *
+     * @return a Collection of DataStream instances
+     */
+    Collection<DataStream> getDataStreams(HubContext ctx);
+
+    /**
+     * Returns a unique list of variables across all data streams.
+     *
+     * @param ctx the hub context
+     *
+     * @return a Collection of VariableContext instances
+     */
+    Collection<VariableContext> getMonitoredVariables(HubContext ctx);
+
+    /**
+     * Add data point(s) to a data stream.
+     *
+     * @param ctx the hub context
+     * @param streamName the stream name
+     * @param now the time the data point occurred
+     * @param data the data values
+     */
+    void addData(HubContext ctx, String streamName, long now, Map<VariableContext,Object> data);
+
+    /**
+     * Returns data from a data stream.
+     *
+     * @param ctx the hub context
+     * @param streamName the stream name
+     * @param endTime the end time desired
+     * @param interval the interval size of the data
+     *
+     * @return a List of TemporalValue instances
+     */
+    List<TemporalValue> getData(HubContext ctx, String streamName, long endTime, TelemetryInterval interval);
 }

@@ -16,6 +16,7 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassType;
 import com.whizzosoftware.hobson.api.task.TaskContext;
+import com.whizzosoftware.hobson.api.variable.VariableContext;
 
 /**
  * An interface for classes that can provide IDs for common Hobson model entities.
@@ -24,6 +25,7 @@ import com.whizzosoftware.hobson.api.task.TaskContext;
  */
 public interface IdProvider {
     String createActivityLogId(HubContext ctx);
+    String createAllHubsId();
     String createDevicesId(HubContext ctx);
     DeviceContext createDeviceContext(String deviceId);
     DeviceContext createDeviceContextWithHub(HubContext ctx, String deviceId);
@@ -32,9 +34,7 @@ public interface IdProvider {
     String createDevicePassportsId(HubContext ctx);
     String createDeviceConfigurationId(DeviceContext ctx);
     String createDeviceConfigurationClassId(DeviceContext ctx);
-    String createDeviceTelemetryId(DeviceContext ctx);
-    String createDeviceTelemetryDatasetId(DeviceContext ctx, String dataSetId);
-    String createDeviceTelemetryDatasetsId(DeviceContext ctx);
+    String createTelemetryDatasetId(HubContext ctx, String dataSetId);
     DeviceContext createDeviceVariableContext(String variableId);
     String createDeviceVariableId(DeviceContext ctx, String name);
     String createDeviceVariableName(String variableId);
@@ -45,7 +45,6 @@ public interface IdProvider {
     String createHubConfigurationClassId(HubContext ctx);
     String createHubConfigurationId(HubContext ctx);
     String createHubLogId(HubContext ctx);
-    String createHubsId(String userId);
     String createHubUploadCredentialsId(HubContext ctx);
     String createLocalPluginConfigurationId(PluginContext ctx);
     String createLocalPluginConfigurationClassId(PluginContext ctx);
@@ -78,5 +77,7 @@ public interface IdProvider {
     String createTaskConditionClassId(PropertyContainerClassContext ctx);
     String createTaskId(TaskContext ctx);
     String createTasksId(HubContext ctx);
+    String createUserHubsId(String userId);
+    VariableContext createVariableContext(String variableId);
     String createVariablesId(HubContext ctx);
 }

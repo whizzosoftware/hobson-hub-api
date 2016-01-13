@@ -254,13 +254,6 @@ public interface HobsonPluginRuntime extends EventListener {
     void setTaskManager(TaskManager taskManager);
 
     /**
-     * Sets the TelemetryManager instance the plugin should use. This will be called before the init() method.
-     *
-     * @param telemetryManager a TelemetryManager
-     */
-    void setTelemetryManager(TelemetryManager telemetryManager);
-
-    /**
      * Sets the VariableManager instance the plugin should use. This will be called before the init() method.
      *
      * @param variableManager a VariableManager
