@@ -10,12 +10,14 @@ package com.whizzosoftware.hobson.api.plugin;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.Serializable;
+
 /**
  * Encapsulates contextual information for a plugin reference.
  *
  * @author Dan Noguerol
  */
-public class PluginContext {
+public class PluginContext implements Serializable {
     private final HubContext hubContext;
     private final String pluginId;
 

@@ -23,7 +23,6 @@ import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
-import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
 import com.whizzosoftware.hobson.api.variable.*;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.local.LocalEventLoopGroup;
@@ -217,15 +216,15 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask) {
+    public void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask, Long lastUpdate) {
         validateVariableManager();
-        variableManager.publishVariable(ctx, value, mask);
+        variableManager.publishVariable(ctx, value, mask, lastUpdate);
     }
 
     @Override
-    public void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType) {
+    public void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask, Long lastUpdate, VariableMediaType mediaType) {
         validateVariableManager();
-        variableManager.publishVariable(ctx, value, mask, mediaType);
+        variableManager.publishVariable(ctx, value, mask, lastUpdate, mediaType);
     }
 
     @Override
@@ -385,9 +384,10 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
      * @param name the variable name
      * @param value the variable value
      * @param mask the variable mask
+     * @param lastUpdate the last time the variable was updated
      */
-    protected void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask) {
-        publishVariable(VariableContext.createGlobal(getContext(), name), value, mask);
+    protected void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask, Long lastUpdate) {
+        publishGlobalVariable(name, value, mask, lastUpdate, null);
     }
 
     /**
@@ -396,10 +396,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
      * @param name the variable name
      * @param value the variable value
      * @param mask the variable mask
+     * @param lastUpdate the last time the variable was updated
      * @param mediaType the variable media type
      */
-    protected void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType) {
-        publishVariable(VariableContext.createGlobal(getContext(), name), value, mask, mediaType);
+    protected void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask, Long lastUpdate, VariableMediaType mediaType) {
+        publishVariable(VariableContext.createGlobal(getContext(), name), value, mask, lastUpdate, mediaType);
     }
 
     /**

@@ -7,7 +7,6 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.persist;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,6 +17,14 @@ import java.util.Set;
  */
 public interface CollectionPersistenceContext {
     /**
+     * Adds a value to a set (creating it if it doesn't already exist).
+     *
+     * @param key the key referencing the set
+     * @param value the value to add
+     */
+    void addSetValue(String key, Object value);
+
+    /**
      * Retrieves a named map.
      *
      * @param key the map key
@@ -27,35 +34,75 @@ public interface CollectionPersistenceContext {
     Map<String,Object> getMap(String key);
 
     /**
-     * Retrieves a list of maps that start with a key prefix.
+     * Retrieves a value from within a named map.
      *
-     * @param keyPrefix the key prefix
+     * @param key the map key
+     * @param name the name of the property to retrieve
      *
-     * @return a List of Map instances
+     * @return an Object (or null if the property doesn't exist)
      */
-    List<Map<String,Object>> getMapsWithPrefix(String keyPrefix);
+    Object getMapValue(String key, String name);
+
+    /**
+     * Retrieves a named set.
+     *
+     * @param key the key referencing the set
+     *
+     * @return a Set instance
+     */
+    Set<Object> getSet(String key);
+
+    /**
+     * Indicates whether a given named map exists.
+     *
+     * @param key the key referencing the map
+     *
+     * @return a boolean
+     */
+    boolean hasMap(String key);
+
+    /**
+     * Indicates whether a given named set exists.
+     *
+     * @param key the key referencing the set
+     *
+     * @return a boolean
+     */
+    boolean hasSet(String key);
 
     /**
      * Sets a named map.
      *
-     * @param key the map key
+     * @param key the key referencing the map
      * @param map the Map instance
      */
     void setMap(String key, Map<String,Object> map);
 
     /**
-     * Removes a named map.
+     * Sets a property within a named map.
      *
-     * @param key the map key
+     * @param key the key referencing the map
+     * @param name the name to set
+     * @param value the value to set for the name
      */
-    void removeMap(String key);
+    void setMapValue(String key, String name, Object value);
+
+    void setSet(String key, Set<Object> set);
 
     /**
-     * Returns the key set for all named maps.
+     * Removes a named map.
      *
-     * @return a set of String keys
+     * @param key the key referencing the map
      */
-    Set<String> getKeySet();
+    void remove(String key);
+
+    /**
+     * Removes a value from a named set.
+     *
+     * @param key the key referencing the set
+     * @param value the value to remove
+     */
+    void removeFromSet(String key, Object value);
 
     /**
      * Commits changes to maps.

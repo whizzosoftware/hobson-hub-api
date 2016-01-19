@@ -216,8 +216,8 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
      * @param value the variable value
      * @param mask the variable mask
      */
-    protected void publishVariable(String name, Object value, HobsonVariable.Mask mask) {
-        getPlugin().getRuntime().publishVariable(VariableContext.create(getContext(), name), value, mask);
+    protected void publishVariable(String name, Object value, HobsonVariable.Mask mask, Long lastUpdate) {
+        getPlugin().getRuntime().publishVariable(VariableContext.create(getContext(), name), value, mask, lastUpdate);
     }
 
     /**
@@ -228,8 +228,8 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
      * @param mask the variable mask
      * @param mediaType the variable media type
      */
-    protected void publishVariable(String name, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType) {
-        getPlugin().getRuntime().publishVariable(VariableContext.create(getContext(), name), value, mask, mediaType);
+    protected void publishVariable(String name, Object value, HobsonVariable.Mask mask, Long lastUpdate, VariableMediaType mediaType) {
+        getPlugin().getRuntime().publishVariable(VariableContext.create(getContext(), name), value, mask, lastUpdate, mediaType);
     }
 
     /**

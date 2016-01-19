@@ -24,6 +24,11 @@ import com.whizzosoftware.hobson.api.variable.VariableContext;
  * @author Dan Noguerol
  */
 public interface IdProvider {
+    String createActionId(HubContext ctx, String actionId);
+    String createActionSetId(HubContext ctx, String actionSetId);
+    String createActionSetActionsId(HubContext ctx, String actionSetId);
+    String createActionSetsId(HubContext ctx);
+    String createActionPropertiesId(HubContext ctx, String actionId);
     String createActivityLogId(HubContext ctx);
     String createAllHubsId();
     String createDevicesId(HubContext ctx);
@@ -34,10 +39,6 @@ public interface IdProvider {
     String createDevicePassportsId(HubContext ctx);
     String createDeviceConfigurationId(DeviceContext ctx);
     String createDeviceConfigurationClassId(DeviceContext ctx);
-    String createTelemetryDatasetId(HubContext ctx, String dataSetId);
-    DeviceContext createDeviceVariableContext(String variableId);
-    String createDeviceVariableId(DeviceContext ctx, String name);
-    String createDeviceVariableName(String variableId);
     String createDeviceVariablesId(DeviceContext ctx);
     String createGlobalVariableId(HubContext ctx, String name);
     String createGlobalVariablesId(HubContext ctx);
@@ -75,9 +76,16 @@ public interface IdProvider {
     String createTaskActionSetsId(HubContext ctx);
     String createTaskConditionClassesId(HubContext ctx);
     String createTaskConditionClassId(PropertyContainerClassContext ctx);
+    String createTaskConditionId(TaskContext ctx, String propertyContainerId);
+    String createTaskConditionPropertiesId(TaskContext ctx, String propertyContainerId);
+    String createTaskConditionsId(TaskContext ctx);
     String createTaskId(TaskContext ctx);
+    String createTaskPropertiesId(TaskContext ctx);
     String createTasksId(HubContext ctx);
+    String createTelemetryDatasetId(HubContext ctx, String dataSetId);
+    String createUserId(String userId);
     String createUserHubsId(String userId);
     VariableContext createVariableContext(String variableId);
+    String createVariableId(VariableContext ctx);
     String createVariablesId(HubContext ctx);
 }

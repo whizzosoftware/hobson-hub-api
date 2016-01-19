@@ -35,5 +35,6 @@ public class PropertyConstants {
     public static final String PREFERRED_VARIABLE_NAME = "preferredVariableName";
     public static final String RADIUS = "radius";
     public static final String SECRET = "secret";
+    public static final String TASK_ID = "taskId";
     public static final String VALUE = "value";
 }

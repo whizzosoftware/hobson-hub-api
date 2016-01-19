@@ -31,7 +31,17 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     public String createActionSetId(HubContext ctx, String actionSetId) {
-        return createHubId(ctx) + HubContext.DELIMITER + "actionSets" + HubContext.DELIMITER + actionSetId;
+        return createActionSetsId(ctx) + HubContext.DELIMITER + actionSetId;
+    }
+
+    @Override
+    public String createActionSetActionsId(HubContext ctx, String actionSetId) {
+        return createActionSetId(ctx, actionSetId) + HubContext.DELIMITER + "actions";
+    }
+
+    @Override
+    public String createActionSetsId(HubContext ctx) {
+        return createHubId(ctx) + HubContext.DELIMITER + "actionSets";
     }
 
     public String createActionPropertiesId(HubContext ctx, String actionId) {
@@ -51,8 +61,8 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public DeviceContext createDeviceContext(String deviceId) {
         String[] s = StringUtils.split(deviceId, ":");
-        if (s.length >= 6) {
-            return DeviceContext.create(PluginContext.create(HubContext.create(s[0], s[2]), s[4]), s[5]);
+        if (s.length >= 7) {
+            return DeviceContext.create(PluginContext.create(HubContext.create(s[1], s[3]), s[5]), s[6]);
         } else {
             return null;
         }
@@ -61,8 +71,8 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public DeviceContext createDeviceContextWithHub(HubContext ctx, String deviceId) {
         String[] s = StringUtils.split(deviceId, ":");
-        if (s.length >= 6) {
-            return DeviceContext.create(PluginContext.create(ctx, s[4]), s[5]);
+        if (s.length >= 7) {
+            return DeviceContext.create(PluginContext.create(ctx, s[5]), s[6]);
         } else {
             return null;
         }
@@ -85,7 +95,7 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createDevicePassportsId(HubContext ctx) {
-        return null;
+        return createHubId(ctx) + HubContext.DELIMITER + "passports";
     }
 
     @Override
@@ -103,38 +113,13 @@ public class ContextPathIdProvider implements IdProvider {
         return null;
     }
 
-    @Override
-    public DeviceContext createDeviceVariableContext(String variableId) {
-        String[] s = StringUtils.split(variableId, ":");
-        if (s.length >= 8) {
-            return DeviceContext.create(HubContext.create(s[0], s[2]), s[5], s[6]);
-        } else {
-            return null;
-        }
-    }
-
     public String createVariablesId(HubContext ctx) {
         return createHubId(ctx) + HubContext.DELIMITER + "variables";
     }
 
     @Override
-    public String createDeviceVariableId(DeviceContext ctx, String variableName) {
-        return createDeviceVariablesId(ctx) + HubContext.DELIMITER + variableName;
-    }
-
-    @Override
-    public String createDeviceVariableName(String variableId) {
-        String[] s = StringUtils.split(variableId, ":");
-        if (s.length >= 8) {
-            return s[7];
-        } else {
-            return null;
-        }
-    }
-
-    @Override
     public String createDeviceVariablesId(DeviceContext ctx) {
-        return createVariablesId(ctx.getHubContext()) + HubContext.DELIMITER + "device" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId();
+        return createVariablesId(ctx.getHubContext()) + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId();
     }
 
     @Override
@@ -154,17 +139,22 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createUserHubsId(String userId) {
-        return userId + HubContext.DELIMITER + "hubs";
+        return "users" + HubContext.DELIMITER + createUserId(userId) + HubContext.DELIMITER + "hubs";
     }
 
     @Override
     public VariableContext createVariableContext(String variableId) {
         String[] s = StringUtils.split(variableId, ":");
         if (s.length >= 8) {
-            return VariableContext.create(DeviceContext.create(PluginContext.create(HubContext.create(s[0], s[2]), s[5]), s[6]), s[7]);
+            return VariableContext.create(DeviceContext.create(PluginContext.create(HubContext.create(s[1], s[3]), s[5]), s[6]), s[7]);
         } else {
             return null;
         }
+    }
+
+    @Override
+    public String createVariableId(VariableContext ctx) {
+        return createHubId(ctx.getHubContext()) + HubContext.DELIMITER + "variables" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId() + HubContext.DELIMITER + ctx.getName();
     }
 
     @Override
@@ -225,8 +215,8 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public PluginContext createPluginContext(String pluginId) {
         String[] s = StringUtils.split(pluginId, ":");
-        if (s.length >= 5) {
-            return PluginContext.create(HubContext.create(s[0], s[2]), s[4]);
+        if (s.length >= 6) {
+            return PluginContext.create(HubContext.create(s[1], s[3]), s[5]);
         } else {
             return null;
         }
@@ -354,7 +344,7 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createTaskId(TaskContext ctx) {
-        return null;
+        return createHubId(ctx.getHubContext()) + HubContext.DELIMITER + "tasks" + HubContext.DELIMITER + ctx.getTaskId();
     }
 
     @Override
@@ -362,39 +352,33 @@ public class ContextPathIdProvider implements IdProvider {
         return createHubId(ctx) + HubContext.DELIMITER + "tasks";
     }
 
-    public String createTaskMetaRootId(HubContext ctx) {
-        return createTasksId(ctx) + HubContext.DELIMITER + "taskMeta";
-    }
-
-    public String createTaskMetaId(TaskContext ctx) {
-        return createTaskMetaRootId(ctx.getHubContext()) + HubContext.DELIMITER + ctx.getTaskId();
+    @Override
+    public String createUserId(String userId) {
+        return userId;
     }
 
     public String createTaskPropertiesId(TaskContext ctx) {
-        return createTasksId(ctx.getHubContext()) + HubContext.DELIMITER + "properties" + HubContext.DELIMITER + ctx.getTaskId();
-    }
-
-    public String createTaskPropertyId(TaskContext ctx, String name) {
-        return createTaskPropertiesId(ctx) + HubContext.DELIMITER + name;
+        return createTaskId(ctx) + HubContext.DELIMITER + "properties";
     }
 
     public  String createTaskConditionsId(TaskContext ctx) {
-        return createTasksId(ctx.getHubContext()) + HubContext.DELIMITER + "conditions" + HubContext.DELIMITER + ctx.getTaskId();
+        return createTaskId(ctx) + HubContext.DELIMITER + "conditions";
     }
 
-    public String createTaskConditionMetasId(TaskContext ctx) {
-        return createTaskConditionsId(ctx) + HubContext.DELIMITER + "conditionMeta";
+    public String createTaskConditionId(TaskContext ctx, String propertyContainerId) {
+        return createTaskConditionsId(ctx) + HubContext.DELIMITER + propertyContainerId;
     }
 
-    public String createTaskConditionMetaId(TaskContext ctx, String propertyContainerId) {
-        return createTaskConditionMetasId(ctx) + HubContext.DELIMITER + propertyContainerId;
+    @Override
+    public String createTaskConditionPropertiesId(TaskContext ctx, String propertyContainerId) {
+        return createTaskConditionId(ctx, propertyContainerId) + HubContext.DELIMITER + "properties";
     }
 
     public String createTaskConditionValuesId(TaskContext ctx, String propertyContainerId) {
         return createTaskConditionsId(ctx) + HubContext.DELIMITER + "conditionValues" + HubContext.DELIMITER + propertyContainerId;
     }
 
-    public String createTaskConditionValueId(TaskContext ctx, String propertyContainerId, String name) {
+    public String createTaskConditionPropertyId(TaskContext ctx, String propertyContainerId, String name) {
         return createTaskConditionValuesId(ctx, propertyContainerId) + HubContext.DELIMITER + name;
     }
 }

@@ -130,7 +130,7 @@ public class AbstractHobsonDeviceTest {
         try {
             HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
             MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
-            d.publishVariable("var1", "val1", HobsonVariable.Mask.READ_WRITE);
+            d.publishVariable("var1", "val1", HobsonVariable.Mask.READ_WRITE, null);
         } catch (HobsonRuntimeException ignored) {}
     }
 
@@ -141,7 +141,7 @@ public class AbstractHobsonDeviceTest {
         p.setDeviceManager(new MockDeviceManager());
         p.getRuntime().setVariableManager(vm);
         MockAbstractHobsonDevice d = new MockAbstractHobsonDevice(p, "did");
-        d.publishVariable("var1", "val1", HobsonVariable.Mask.READ_WRITE);
+        d.publishVariable("var1", "val1", HobsonVariable.Mask.READ_WRITE, null);
         HobsonVariable v = vm.getVariable(VariableContext.create(p.getContext(), "did", "var1"));
         assertNotNull(v);
         assertEquals("var1", v.getName());
@@ -215,7 +215,7 @@ public class AbstractHobsonDeviceTest {
     @Test
     public void testGetVariableWithWithVariableManager() {
         MockVariableManager vm = new MockVariableManager();
-        vm.publishVariable(VariableContext.create(PluginContext.createLocal("pid"), "did", "var1"), "val1", HobsonVariable.Mask.READ_WRITE);
+        vm.publishVariable(VariableContext.create(PluginContext.createLocal("pid"), "did", "var1"), "val1", HobsonVariable.Mask.READ_WRITE, null);
         MockAbstractHobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
         p.setDeviceManager(new MockDeviceManager());
         p.getRuntime().setVariableManager(vm);

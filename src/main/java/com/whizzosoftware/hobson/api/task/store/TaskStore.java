@@ -29,7 +29,7 @@ public interface TaskStore {
      *
      * @return a Collection of HobsonTask instances (may be empty)
      */
-    Collection<HobsonTask> getAllTasks();
+    Collection<HobsonTask> getAllTasks(HubContext hctx);
 
     /**
      * Returns all task in the store associated with a particular plugin.
@@ -94,7 +94,7 @@ public interface TaskStore {
      *
      * @return a PropertyContainerSet instance representing the new action set
      */
-    PropertyContainerSet addActionSet(HubContext ctx, String name, List<PropertyContainer> actions);
+    PropertyContainerSet saveActionSet(HubContext ctx, String name, List<PropertyContainer> actions);
 
     /**
      * Deletes an action set from the store.

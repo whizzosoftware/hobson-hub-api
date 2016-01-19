@@ -9,12 +9,14 @@ package com.whizzosoftware.hobson.api.hub;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.Serializable;
+
 /**
  * A class that encapsulates the fully-qualified context of a hub.
  *
  * @author Dan Noguerol
  */
-public class HubContext {
+public class HubContext implements Serializable {
     public static final String DEFAULT_USER = "local";
     public static final String DEFAULT_HUB = "local";
 

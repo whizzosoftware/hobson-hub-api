@@ -13,8 +13,16 @@ package com.whizzosoftware.hobson.api.variable;
  * @author Dan Noguerol
  */
 public class MutableHobsonVariable extends ImmutableHobsonVariable {
-    public MutableHobsonVariable(VariableContext ctx, Mask mask, Object value, VariableMediaType mediaType) {
-        super(ctx, mask, value, mediaType, null);
+    public MutableHobsonVariable(VariableContext ctx, Mask mask, Object value) {
+        this(ctx, mask, value, null, null);
+    }
+
+    public MutableHobsonVariable(VariableContext ctx, Mask mask, Object value, Long lastUpdate) {
+        this(ctx, mask, value, lastUpdate, null);
+    }
+
+    public MutableHobsonVariable(VariableContext ctx, Mask mask, Object value, Long lastUpdate, VariableMediaType mediaType) {
+        super(ctx, mask, value, lastUpdate, mediaType);
     }
 
     public void setValue(Object value) {

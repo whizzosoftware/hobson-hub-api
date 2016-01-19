@@ -14,6 +14,7 @@ package com.whizzosoftware.hobson.api.variable;
  */
 public class VariableChange {
     private VariableContext ctx;
+    private HobsonVariable.Mask mask;
     private Object oldValue;
     private Object newValue;
     private long timestamp;
@@ -25,8 +26,8 @@ public class VariableChange {
      * @param oldValue the previous variable value
      * @param newValue the new variable value
      */
-    public VariableChange(VariableContext ctx, Object oldValue, Object newValue) {
-        this(ctx, oldValue, newValue, System.currentTimeMillis());
+    public VariableChange(VariableContext ctx, HobsonVariable.Mask mask, Object oldValue, Object newValue) {
+        this(ctx, mask, oldValue, newValue, System.currentTimeMillis());
     }
 
     /**
@@ -37,8 +38,9 @@ public class VariableChange {
      * @param newValue the new variable value
      * @param timestamp the time the variable was updated
      */
-    public VariableChange(VariableContext ctx, Object oldValue, Object newValue, long timestamp) {
+    public VariableChange(VariableContext ctx, HobsonVariable.Mask mask, Object oldValue, Object newValue, long timestamp) {
         this.ctx = ctx;
+        this.mask = mask;
         this.oldValue = oldValue;
         this.newValue = newValue;
         this.timestamp = timestamp;
@@ -78,6 +80,15 @@ public class VariableChange {
      */
     public String getName() {
         return ctx.getName();
+    }
+
+    /**
+     * Returns the variable mask.
+     *
+     * @return a Mask instance
+     */
+    public HobsonVariable.Mask getMask() {
+        return mask;
     }
 
     /**

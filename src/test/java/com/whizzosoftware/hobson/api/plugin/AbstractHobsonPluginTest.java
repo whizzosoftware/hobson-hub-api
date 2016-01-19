@@ -97,7 +97,7 @@ public class AbstractHobsonPluginTest {
     public void testPublishGlobalVariableWithNoVariableManager() {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.publishVariable(VariableContext.createGlobal(plugin.getContext(), "name"), "value", HobsonVariable.Mask.READ_WRITE);
+            plugin.publishVariable(VariableContext.createGlobal(plugin.getContext(), "name"), "value", HobsonVariable.Mask.READ_WRITE, null);
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }
@@ -107,7 +107,7 @@ public class AbstractHobsonPluginTest {
     public void testPublishDeviceVariableWithNoVariableManager() {
         try {
             MockAbstractHobsonPlugin plugin = new MockAbstractHobsonPlugin("id", "name");
-            plugin.publishVariable(VariableContext.create(DeviceContext.create(plugin.getContext(), "id"), "name"), "value", HobsonVariable.Mask.READ_WRITE);
+            plugin.publishVariable(VariableContext.create(DeviceContext.create(plugin.getContext(), "id"), "name"), "value", HobsonVariable.Mask.READ_WRITE, null);
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }

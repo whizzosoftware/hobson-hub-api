@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class DeviceUnavailableEvent extends HobsonEvent {
     public static final String ID = "deviceNotAvailable";
-    public static final String PROP_DEVICE_CONTEXT = "deviceContext";
+    public static final String PROP_DEVICE_CONTEXT = "deviceCtx";
 
     public DeviceUnavailableEvent(long timestamp, DeviceContext deviceContext) {
         super(timestamp, EventTopics.STATE_TOPIC, ID);

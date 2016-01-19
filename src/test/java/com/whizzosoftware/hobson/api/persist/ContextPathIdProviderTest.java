@@ -16,12 +16,36 @@ import static org.junit.Assert.*;
 
 public class ContextPathIdProviderTest {
     @Test
-    public void testPluginContext() {
+    public void testCreateAllHubsId() {
+        ContextPathIdProvider cdipd = new ContextPathIdProvider();
+        assertEquals("hubs", cdipd.createAllHubsId());
+    }
+
+    @Test
+    public void testCreateUserHubsId() {
+        ContextPathIdProvider cdipd = new ContextPathIdProvider();
+        assertEquals("users:foo:hubs", cdipd.createUserHubsId("foo"));
+    }
+
+    @Test
+    public void testCreateHubId() {
+        ContextPathIdProvider cdipd = new ContextPathIdProvider();
+        assertEquals("users:foo:hubs:bar", cdipd.createHubId(HubContext.create("foo", "bar")));
+    }
+
+    @Test
+    public void testCreatePluginId() {
+        ContextPathIdProvider cdipd = new ContextPathIdProvider();
+        assertEquals("users:foo:hubs:bar:plugins:plugin1", cdipd.createPluginId(PluginContext.create(HubContext.create("foo", "bar"), "plugin1")));
+    }
+
+    @Test
+    public void testCreatePluginContext() {
         ContextPathIdProvider cpidp = new ContextPathIdProvider();
         PluginContext ctx = PluginContext.create(HubContext.create("user1", "hub1"), "plugin1");
 
         String pluginId = cpidp.createPluginId(ctx);
-        assertEquals("user1:hubs:hub1:plugins:plugin1", pluginId);
+        assertEquals("users:user1:hubs:hub1:plugins:plugin1", pluginId);
 
         PluginContext ctx2 = cpidp.createPluginContext(pluginId);
         assertEquals("user1", ctx2.getUserId());
@@ -30,14 +54,15 @@ public class ContextPathIdProviderTest {
     }
 
     @Test
-    public void testDeviceContext() {
+    public void testCreateDeviceId() {
+        ContextPathIdProvider cdipd = new ContextPathIdProvider();
+        assertEquals("users:foo:hubs:bar:devices:plugin1:device1", cdipd.createDeviceId(DeviceContext.create(PluginContext.create(HubContext.create("foo", "bar"), "plugin1"), "device1")));
+    }
+
+    @Test
+    public void testCreateDeviceContext() {
         ContextPathIdProvider cpidp = new ContextPathIdProvider();
-        DeviceContext ctx = DeviceContext.create(HubContext.create("user1", "hub1"), "plugin1", "device1");
-
-        String deviceId = cpidp.createDeviceId(ctx);
-        assertEquals("user1:hubs:hub1:devices:plugin1:device1", deviceId);
-
-        DeviceContext ctx2 = cpidp.createDeviceContext(deviceId);
+        DeviceContext ctx2 = cpidp.createDeviceContext("users:user1:hubs:hub1:devices:plugin1:device1");
         assertEquals("user1", ctx2.getUserId());
         assertEquals("hub1", ctx2.getHubId());
         assertEquals("plugin1", ctx2.getPluginId());
@@ -45,10 +70,10 @@ public class ContextPathIdProviderTest {
     }
 
     @Test
-    public void testDeviceContextWithHub() {
+    public void testCreateDeviceContextWithHub() {
         ContextPathIdProvider cpidp = new ContextPathIdProvider();
 
-        DeviceContext ctx2 = cpidp.createDeviceContextWithHub(HubContext.create("user1", "hub1"), "local:hubs:local:devices:plugin1:device1");
+        DeviceContext ctx2 = cpidp.createDeviceContextWithHub(HubContext.create("user1", "hub1"), "users:user1:hubs:hub1:devices:plugin1:device1");
         assertEquals("user1", ctx2.getUserId());
         assertEquals("hub1", ctx2.getHubId());
         assertEquals("plugin1", ctx2.getPluginId());
@@ -56,25 +81,26 @@ public class ContextPathIdProviderTest {
     }
 
     @Test
-    public void testDeviceVariableContext() {
-        ContextPathIdProvider cpidp = new ContextPathIdProvider();
-
-        DeviceContext ctx = cpidp.createDeviceVariableContext("user1:hubs:hub1:variables:device:plugin1:device1:on");
-        assertEquals("user1", ctx.getUserId());
-        assertEquals("hub1", ctx.getHubId());
-        assertEquals("plugin1", ctx.getPluginId());
-        assertEquals("device1", ctx.getDeviceId());
+    public void testCreateVariableId() {
+        ContextPathIdProvider cdipd = new ContextPathIdProvider();
+        assertEquals("users:foo:hubs:bar:variables:plugin1:device1:var1", cdipd.createVariableId(VariableContext.create(DeviceContext.create(PluginContext.create(HubContext.create("foo", "bar"), "plugin1"), "device1"), "var1")));
     }
 
     @Test
-    public void testVariableContext() {
+    public void testCreateVariableContext() {
         ContextPathIdProvider cpidp = new ContextPathIdProvider();
 
-        VariableContext ctx = cpidp.createVariableContext("user1:hubs:hub1:variables:device:plugin1:device1:videoStatusUrl");
+        VariableContext ctx = cpidp.createVariableContext("users:user1:hubs:hub1:variables:plugin1:device1:videoStatusUrl");
         assertEquals("user1", ctx.getUserId());
         assertEquals("hub1", ctx.getHubId());
         assertEquals("plugin1", ctx.getPluginId());
         assertEquals("device1", ctx.getDeviceId());
         assertEquals("videoStatusUrl", ctx.getName());
+    }
+
+    @Test
+    public void testCreateDeviceVariablesId() {
+        ContextPathIdProvider cpidp = new ContextPathIdProvider();
+        assertEquals("users:local:hubs:local:variables:plugin1:device1", cpidp.createDeviceVariablesId(DeviceContext.createLocal("plugin1", "device1")));
     }
 }

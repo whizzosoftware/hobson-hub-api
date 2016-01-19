@@ -93,10 +93,11 @@ public interface VariableManager {
      * @param ctx the context of the variable
      * @param value the value of the new variable (or null if not known)
      * @param mask the access mask of the new variable
+     * @param lastUpdate the last time the variable was updated
      *
      * @since hobson-hub-api 0.1.6
      */
-    void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask);
+    void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask, Long lastUpdate);
 
     /**
      * Publish a new variable.
@@ -104,9 +105,10 @@ public interface VariableManager {
      * @param ctx the context of the variable
      * @param value the value of the new variable (or null if not known)
      * @param mask the access mask of the new variable
+     * @param lastUpdate the last time the variable was updated
      * @param mediaType indicates the type of media this variable references (or null if not applicable)
      */
-    void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType);
+    void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask, Long lastUpdate, VariableMediaType mediaType);
 
     /**
      * Un-publish a variable.

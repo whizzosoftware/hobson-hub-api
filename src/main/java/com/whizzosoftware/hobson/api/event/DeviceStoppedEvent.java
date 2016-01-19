@@ -7,7 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event;
 
-import com.whizzosoftware.hobson.api.device.HobsonDevice;
+import com.whizzosoftware.hobson.api.device.DeviceContext;
 
 import java.util.Map;
 
@@ -18,18 +18,18 @@ import java.util.Map;
  */
 public class DeviceStoppedEvent extends HobsonEvent {
     public static final String ID = "deviceStopped";
-    public static final String PROP_DEVICE = "device";
+    public static final String PROP_DEVICE_CONTEXT = "deviceCtx";
 
-    public DeviceStoppedEvent(long timestamp, HobsonDevice device) {
+    public DeviceStoppedEvent(long timestamp, DeviceContext deviceCtx) {
         super(timestamp, EventTopics.STATE_TOPIC, ID);
-        setProperty(PROP_DEVICE, device);
+        setProperty(PROP_DEVICE_CONTEXT, deviceCtx);
     }
 
     public DeviceStoppedEvent(Map<String,Object> properties) {
         super(EventTopics.STATE_TOPIC, properties);
     }
 
-    public HobsonDevice getDevice() {
-        return (HobsonDevice)getProperty(PROP_DEVICE);
+    public DeviceContext getDeviceContext() {
+        return (DeviceContext)getProperty(PROP_DEVICE_CONTEXT);
     }
 }

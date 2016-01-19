@@ -15,11 +15,11 @@ package com.whizzosoftware.hobson.api.variable;
 public class ImmutableHobsonVariable implements HobsonVariable {
     protected VariableContext ctx;
     protected Mask mask;
-    protected Long lastUpdate;
     protected Object value;
+    protected Long lastUpdate;
     protected VariableMediaType mediaType;
 
-    public ImmutableHobsonVariable(VariableContext ctx, Mask mask, Object value, VariableMediaType mediaType, Long lastUpdate) {
+    public ImmutableHobsonVariable(VariableContext ctx, Mask mask, Object value, Long lastUpdate, VariableMediaType mediaType) {
         this.ctx = ctx;
         this.mask = mask;
         this.lastUpdate = lastUpdate;

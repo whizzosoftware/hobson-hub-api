@@ -19,7 +19,6 @@ import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
-import com.whizzosoftware.hobson.api.telemetry.TelemetryManager;
 import com.whizzosoftware.hobson.api.variable.*;
 import io.netty.util.concurrent.Future;
 
@@ -179,7 +178,7 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param value the value of the new variable (or null if not known)
      * @param mask the access mask of the new variable
      */
-    void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask);
+    void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask, Long lastUpdate);
 
     /**
      * Publish a device variable.
@@ -189,7 +188,7 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param mask the variable mask
      * @param mediaType indicates the type of media this variable references (or null if not applicable)
      */
-    void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask, VariableMediaType mediaType);
+    void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask, Long lastUpdate, VariableMediaType mediaType);
 
     /**
      * Execute a recurring task.

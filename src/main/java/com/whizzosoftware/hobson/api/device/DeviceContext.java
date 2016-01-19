@@ -12,6 +12,7 @@ import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
  *
  * @author Dan Noguerol
  */
-public class DeviceContext {
+public class DeviceContext implements Serializable {
     public static final String GLOBAL = "$GLOBAL$";
 
     private PluginContext ctx;
