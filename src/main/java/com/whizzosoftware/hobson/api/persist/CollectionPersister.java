@@ -22,6 +22,7 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
 import com.whizzosoftware.hobson.api.task.HobsonTask;
 import com.whizzosoftware.hobson.api.task.TaskContext;
 import com.whizzosoftware.hobson.api.task.TaskManager;
+import com.whizzosoftware.hobson.api.telemetry.DataStream;
 import com.whizzosoftware.hobson.api.util.StringConversionUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.ImmutableHobsonVariable;
@@ -130,6 +131,18 @@ public class CollectionPersister {
         } else {
             throw new HobsonNotFoundException("Unable to find action set: " + actionSetId);
         }
+    }
+
+    public DataStream restoreDataStream(CollectionPersistenceContext pctx, HubContext hctx, String dataStreamId) {
+        List<VariableContext> variables = new ArrayList<>();
+
+        for (Object vctxs : pctx.getSet(idProvider.createDataStreamVariablesId(hctx, dataStreamId))) {
+            variables.add(VariableContext.create((String)vctxs));
+        }
+
+        Map<String,Object> map = pctx.getMap(idProvider.createDataStreamId(hctx, dataStreamId));
+
+        return new DataStream(hctx, dataStreamId, (String)map.get(PropertyConstants.NAME), variables);
     }
 
     public HobsonDevice restoreDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
@@ -314,6 +327,24 @@ public class CollectionPersister {
         pctx.addSetValue(idProvider.createActionSetsId(ctx), actionSet.getId());
 
         pctx.commit();
+    }
+
+    public void saveDataStream(CollectionPersistenceContext pctx, DataStream dataStream) {
+        // save data stream meta data
+        Map<String,Object> map = new HashMap<>();
+        map.put(PropertyConstants.ID, dataStream.getId());
+        map.put(PropertyConstants.NAME, dataStream.getName());
+
+        pctx.setMap(idProvider.createDataStreamId(dataStream.getHubContext(), dataStream.getId()), map);
+
+        // save data stream variables
+        String dsVarsId = idProvider.createDataStreamVariablesId(dataStream.getHubContext(), dataStream.getId());
+        for (VariableContext vc : dataStream.getVariables()) {
+            pctx.addSetValue(dsVarsId, vc.toString());
+        }
+
+        // add data stream ID to set of hub data streams
+        pctx.addSetValue(idProvider.createDataStreamsId(dataStream.getHubContext()), dataStream.getId());
     }
 
     public void saveDevice(CollectionPersistenceContext pctx, HobsonDevice device) {

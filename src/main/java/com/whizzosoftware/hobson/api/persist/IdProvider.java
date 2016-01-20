@@ -31,6 +31,9 @@ public interface IdProvider {
     String createActionPropertiesId(HubContext ctx, String actionId);
     String createActivityLogId(HubContext ctx);
     String createAllHubsId();
+    String createDataStreamsId(HubContext ctx);
+    String createDataStreamId(HubContext ctx, String dataStreamId);
+    String createDataStreamVariablesId(HubContext ctx, String dataStreamId);
     String createDevicesId(HubContext ctx);
     DeviceContext createDeviceContext(String deviceId);
     DeviceContext createDeviceContextWithHub(HubContext ctx, String deviceId);

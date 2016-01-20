@@ -13,6 +13,7 @@ import com.whizzosoftware.hobson.api.variable.VariableContext;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * An interface for managing device telemetry.
@@ -28,20 +29,15 @@ public interface TelemetryManager {
     boolean isStub();
 
     /**
-     * Returns the human-friendly name of this manager.
-     *
-     * @return a String
-     */
-    String getName();
-
-    /**
      * Creates a new data stream.
      *
      * @param ctx the hub context
      * @param name the stream name
      * @param data the variables that comprise the stream data
+     *
+     * @return the ID of the newly created data stream
      */
-    void createDataStream(HubContext ctx, String name, Collection<VariableContext> data);
+    String createDataStream(HubContext ctx, String name, Collection<VariableContext> data);
 
     /**
      * Returns the list of created data streams.
@@ -53,13 +49,23 @@ public interface TelemetryManager {
     Collection<DataStream> getDataStreams(HubContext ctx);
 
     /**
+     * Returns a specific data stream.
+     *
+     * @param ctx the hub context
+     * @param dataStreamId the data stream ID
+     *
+     * @return a DataStream instance
+     */
+    DataStream getDataStream(HubContext ctx, String dataStreamId);
+
+    /**
      * Returns a unique list of variables across all data streams.
      *
      * @param ctx the hub context
      *
      * @return a Collection of VariableContext instances
      */
-    Collection<VariableContext> getMonitoredVariables(HubContext ctx);
+    Set<VariableContext> getMonitoredVariables(HubContext ctx);
 
     /**
      * Add data point(s) to a data stream.

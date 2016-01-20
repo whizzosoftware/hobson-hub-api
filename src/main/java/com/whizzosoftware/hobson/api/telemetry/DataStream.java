@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.telemetry;
 
+import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.variable.VariableContext;
 
 import java.util.Collection;
@@ -17,16 +18,32 @@ import java.util.Collection;
  * @author Dan Noguerol
  */
 public class DataStream {
+    private HubContext hctx;
+    private String id;
     private String name;
     private Collection<VariableContext> variables;
 
-    public DataStream(String name, Collection<VariableContext> variables) {
+    public DataStream(HubContext hctx, String id, String name, Collection<VariableContext> variables) {
+        this.hctx = hctx;
+        this.id = id;
         this.name = name;
         this.variables = variables;
     }
 
+    public HubContext getHubContext() {
+        return hctx;
+    }
+
+    public String getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public boolean hasVariables() {
+        return (variables != null && variables.size() > 0);
     }
 
     public Collection<VariableContext> getVariables() {

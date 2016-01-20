@@ -14,6 +14,7 @@ import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
 import com.whizzosoftware.hobson.api.task.action.TaskActionExecutor;
 import com.whizzosoftware.hobson.api.task.condition.ConditionClassType;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
+import com.whizzosoftware.hobson.api.telemetry.DataStream;
 import com.whizzosoftware.hobson.api.variable.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -302,6 +303,25 @@ public class CollectionPersisterTest {
         assertNotNull(set);
         assertEquals(1, set.size());
         assertTrue(set.contains("foo"));
+    }
+
+    @Test
+    public void testSaveAndRestoreDataStream() {
+        IdProvider idProvider = new ContextPathIdProvider();
+        CollectionPersister cp = new CollectionPersister(idProvider);
+        CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
+        HubContext hctx = HubContext.createLocal();
+
+        VariableContext vctx = VariableContext.create(hctx, "plugin1", "device1", "foo");
+        Collection<VariableContext> data = Collections.singletonList(vctx);
+        DataStream ds = new DataStream(hctx, "id", "Test", data);
+        cp.saveDataStream(cpc, ds);
+
+        ds = cp.restoreDataStream(cpc, hctx, "id");
+        assertEquals("id", ds.getId());
+        assertEquals("Test", ds.getName());
+        assertEquals(1, ds.getVariables().size());
+        assertEquals(vctx, ds.getVariables().iterator().next());
     }
 
     public class MockTaskManager implements TaskManager {

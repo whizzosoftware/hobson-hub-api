@@ -10,6 +10,7 @@ package com.whizzosoftware.hobson.api.variable;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
@@ -31,6 +32,11 @@ public class VariableContext {
 
     public static VariableContext create(HubContext ctx, String pluginId, String deviceId, String name) {
         return VariableContext.create(DeviceContext.create(ctx, pluginId, deviceId), name);
+    }
+
+    public static VariableContext create(String variableId) {
+        String[] comps = StringUtils.split(variableId, HubContext.DELIMITER);
+        return VariableContext.create(DeviceContext.create(HubContext.create(comps[0], comps[1]), comps[2], comps[3]), comps[4]);
     }
 
     public static VariableContext createGlobal(HubContext ctx, String pluginId, String name) {

@@ -13,6 +13,7 @@ import com.whizzosoftware.hobson.api.variable.VariableContext;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A stub manager used as a placeholder when no functional telemetry manager is available.
@@ -26,12 +27,8 @@ public class StubTelemetryManager implements TelemetryManager {
     }
 
     @Override
-    public String getName() {
-        return "Stub";
-    }
-
-    @Override
-    public void createDataStream(HubContext ctx, String name, Collection<VariableContext> data) {
+    public String createDataStream(HubContext ctx, String name, Collection<VariableContext> data) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -40,7 +37,12 @@ public class StubTelemetryManager implements TelemetryManager {
     }
 
     @Override
-    public Collection<VariableContext> getMonitoredVariables(HubContext ctx) {
+    public DataStream getDataStream(HubContext ctx, String dataStreamId) {
+        return null;
+    }
+
+    @Override
+    public Set<VariableContext> getMonitoredVariables(HubContext ctx) {
         return null;
     }
 
