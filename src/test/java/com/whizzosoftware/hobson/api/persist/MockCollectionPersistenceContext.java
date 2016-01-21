@@ -65,11 +65,6 @@ public class MockCollectionPersistenceContext implements CollectionPersistenceCo
         getSet(key).remove(value);
     }
 
-//    @Override
-//    public Set<String> getKeySet() {
-//        return maps.keySet();
-//    }
-
     @Override
     public void commit() {
 
@@ -82,5 +77,10 @@ public class MockCollectionPersistenceContext implements CollectionPersistenceCo
     @Override
     public boolean hasSet(String key) {
         return maps.containsKey(key) && maps.get(key) instanceof Set;
+    }
+
+    @Override
+    public boolean hasSetValue(String key, Object value) {
+        return (maps.containsKey(key) && ((Set<String>)maps.get(key)).contains(value));
     }
 }

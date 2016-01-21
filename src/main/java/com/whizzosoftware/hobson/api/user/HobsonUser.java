@@ -58,13 +58,13 @@ public class HobsonUser {
             user = new HobsonUser(id);
         }
 
-        public Builder firstName(String firstName) {
-            user.givenName = firstName;
+        public Builder givenName(String givenName) {
+            user.givenName = givenName;
             return this;
         }
 
-        public Builder lastName(String lastName) {
-            user.familyName = lastName;
+        public Builder familyName(String familyName) {
+            user.familyName = familyName;
             return this;
         }
 

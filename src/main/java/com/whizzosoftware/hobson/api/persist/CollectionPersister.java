@@ -23,6 +23,8 @@ import com.whizzosoftware.hobson.api.task.HobsonTask;
 import com.whizzosoftware.hobson.api.task.TaskContext;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.telemetry.DataStream;
+import com.whizzosoftware.hobson.api.user.HobsonUser;
+import com.whizzosoftware.hobson.api.user.UserAccount;
 import com.whizzosoftware.hobson.api.util.StringConversionUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.ImmutableHobsonVariable;
@@ -278,6 +280,23 @@ public class CollectionPersister {
         return task;
     }
 
+    public HobsonUser restoreUser(CollectionPersistenceContext pctx, String userId) {
+        UserAccount account = null;
+
+        Map<String,Object> userMap = pctx.getMap(idProvider.createUserId(userId));
+        Set<Object> hubSet = pctx.getSet(idProvider.createUserHubsId(userId));
+        if (userMap.containsKey(PropertyConstants.EXPIRE_TIME)) {
+            account = new UserAccount((long)userMap.get(PropertyConstants.EXPIRE_TIME), (hubSet != null && hubSet.size() > 0));
+        }
+
+        return new HobsonUser.Builder(userId).
+            givenName((String)userMap.get(PropertyConstants.GIVEN_NAME)).
+            familyName((String)userMap.get(PropertyConstants.FAMILY_NAME)).
+            email((String)userMap.get(PropertyConstants.EMAIL)).
+            account(account).
+            build();
+    }
+
     public void saveAction(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainer action) {
         String key = idProvider.createActionId(ctx, action.getId());
 
@@ -489,20 +508,20 @@ public class CollectionPersister {
     public void savePresenceEntity(CollectionPersistenceContext pctx, PresenceEntity pe) {
         String key = idProvider.createPresenceEntityId(pe.getContext());
 
-        Map<String,Object> map = pctx.getMap(key);
+        Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.CONTEXT, pe.getContext().toString());
         map.put(PropertyConstants.NAME, pe.getName());
         map.put(PropertyConstants.LAST_UPDATE, pe.getLastUpdate());
 
+        pctx.setMap(key, map);
         pctx.addSetValue(idProvider.createPresenceEntitiesId(pe.getContext().getHubContext()), pe.getContext().getEntityId());
-
         pctx.commit();
     }
 
     public void savePresenceLocation(CollectionPersistenceContext pctx, PresenceLocation pl) {
         String key = idProvider.createPresenceLocationId(pl.getContext());
 
-        Map<String,Object> map = pctx.getMap(key);
+        Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.CONTEXT, pl.getContext().toString());
         map.put(PropertyConstants.NAME, pl.getName());
         map.put(PropertyConstants.LATITUDE, pl.getLatitude());
@@ -511,8 +530,36 @@ public class CollectionPersister {
         map.put(PropertyConstants.BEACON_MAJOR, pl.getBeaconMajor());
         map.put(PropertyConstants.BEACON_MINOR, pl.getBeaconMinor());
 
+        pctx.setMap(key, map);
         pctx.addSetValue(idProvider.createPresenceLocationsId(pl.getContext().getHubContext()), pl.getContext().getLocationId());
 
         pctx.commit();
+    }
+
+    public void saveUser(CollectionPersistenceContext pctx, HobsonUser user, String encPassword) {
+        String key = idProvider.createUserId(user.getId());
+
+        Map<String,Object> map = new HashMap<>();
+        map.put(PropertyConstants.ID, user.getId());
+        map.put(PropertyConstants.PASSWORD, encPassword);
+        map.put(PropertyConstants.GIVEN_NAME, user.getGivenName());
+        map.put(PropertyConstants.FAMILY_NAME, user.getFamilyName());
+        map.put(PropertyConstants.EMAIL, user.getEmail());
+        if (user.getAccount() != null) {
+            map.put(PropertyConstants.EXPIRE_TIME, user.getAccount().getExpiration());
+        }
+
+        pctx.setMap(key, map);
+        pctx.addSetValue(idProvider.createUsersId(), user.getId());
+
+        pctx.commit();
+    }
+
+    public void saveUserHubs(CollectionPersistenceContext pctx, String userId, Set<String> hubIds) {
+        String key = idProvider.createUserHubsId(userId);
+        pctx.remove(key);
+        for (String hubId : hubIds) {
+            pctx.addSetValue(key, hubId);
+        }
     }
 }

@@ -71,6 +71,16 @@ public interface CollectionPersistenceContext {
     boolean hasSet(String key);
 
     /**
+     * Indicates whether a named set contains a value.
+     *
+     * @param key the key referencing the set
+     * @param value the value to check for
+     *
+     * @return a boolean
+     */
+    boolean hasSetValue(String key, Object value);
+
+    /**
      * Sets a named map.
      *
      * @param key the key referencing the map

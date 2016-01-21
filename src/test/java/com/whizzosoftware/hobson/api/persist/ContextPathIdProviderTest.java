@@ -16,12 +16,6 @@ import static org.junit.Assert.*;
 
 public class ContextPathIdProviderTest {
     @Test
-    public void testCreateAllHubsId() {
-        ContextPathIdProvider cdipd = new ContextPathIdProvider();
-        assertEquals("hubs", cdipd.createAllHubsId());
-    }
-
-    @Test
     public void testCreateUserHubsId() {
         ContextPathIdProvider cdipd = new ContextPathIdProvider();
         assertEquals("users:foo:hubs", cdipd.createUserHubsId("foo"));

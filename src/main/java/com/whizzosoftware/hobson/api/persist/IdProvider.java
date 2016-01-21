@@ -30,7 +30,6 @@ public interface IdProvider {
     String createActionSetsId(HubContext ctx);
     String createActionPropertiesId(HubContext ctx, String actionId);
     String createActivityLogId(HubContext ctx);
-    String createAllHubsId();
     String createDataStreamsId(HubContext ctx);
     String createDataStreamId(HubContext ctx, String dataStreamId);
     String createDataStreamVariablesId(HubContext ctx, String dataStreamId);
@@ -88,6 +87,7 @@ public interface IdProvider {
     String createTelemetryDatasetId(HubContext ctx, String dataSetId);
     String createUserId(String userId);
     String createUserHubsId(String userId);
+    String createUsersId();
     VariableContext createVariableContext(String variableId);
     String createVariableId(VariableContext ctx);
     String createVariablesId(HubContext ctx);

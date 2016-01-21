@@ -16,8 +16,8 @@ public class HobsonUserTest {
         long now = System.currentTimeMillis();
         HobsonUser u = new HobsonUser.Builder("uid")
             .email("email")
-            .firstName("name1")
-            .lastName("name2")
+            .givenName("name1")
+            .familyName("name2")
             .account(new UserAccount(now, true))
             .build();
         assertEquals("uid", u.getId());

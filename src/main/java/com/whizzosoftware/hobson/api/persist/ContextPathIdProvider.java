@@ -54,11 +54,6 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public String createAllHubsId() {
-        return "hubs";
-    }
-
-    @Override
     public String createDataStreamsId(HubContext ctx) {
         return createHubId(ctx) + HubContext.DELIMITER + "dataStreams";
     }
@@ -154,7 +149,12 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createUserHubsId(String userId) {
-        return "users" + HubContext.DELIMITER + createUserId(userId) + HubContext.DELIMITER + "hubs";
+        return createUserId(userId) + HubContext.DELIMITER + "hubs";
+    }
+
+    @Override
+    public String createUsersId() {
+        return "users";
     }
 
     @Override
@@ -369,7 +369,7 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createUserId(String userId) {
-        return userId;
+        return createUsersId() + HubContext.DELIMITER + userId;
     }
 
     public String createTaskPropertiesId(TaskContext ctx) {
