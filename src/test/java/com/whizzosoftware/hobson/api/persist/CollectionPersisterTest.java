@@ -272,8 +272,9 @@ public class CollectionPersisterTest {
         IdProvider idProvider = new ContextPathIdProvider();
         CollectionPersister cp = new CollectionPersister(idProvider);
         CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
-        DeviceContext dctx = DeviceContext.createLocal("plugin1", "device1");
-        VariableContext vctx = VariableContext.createLocal("plugin1", "device1", "foo");
+        HubContext hctx = HubContext.create("user1", "hub1");
+        DeviceContext dctx = DeviceContext.create(hctx, "plugin1", "device1");
+        VariableContext vctx = VariableContext.create(dctx, "foo");
 
         ImmutableHobsonVariable mhv = new ImmutableHobsonVariable(vctx, HobsonVariable.Mask.READ_ONLY, "bar", 1000L, VariableMediaType.IMAGE_JPG);
         cp.saveDeviceVariable(cpc, mhv);
@@ -290,6 +291,8 @@ public class CollectionPersisterTest {
         // confirm variable is restorable
         HobsonVariable hv = cp.restoreDeviceVariable(cpc, dctx, "foo");
         assertNotNull(hv);
+        assertEquals("user1", hv.getContext().getUserId());
+        assertEquals("hub1", hv.getContext().getHubId());
         assertEquals("plugin1", hv.getPluginId());
         assertEquals("device1", hv.getDeviceId());
         assertEquals("foo", hv.getName());

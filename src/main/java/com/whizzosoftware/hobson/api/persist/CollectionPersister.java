@@ -193,11 +193,7 @@ public class CollectionPersister {
         if (varMap.size() > 0) {
             String proxyType = (String)varMap.get(PropertyConstants.MEDIA_TYPE);
             return new ImmutableHobsonVariable(
-                    VariableContext.createLocal(
-                            (String)varMap.get(PropertyConstants.PLUGIN_ID),
-                            (String)varMap.get(PropertyConstants.DEVICE_ID),
-                            (String)varMap.get(PropertyConstants.NAME)
-                    ),
+                    VariableContext.create(ctx, name),
                     varMap.containsKey(PropertyConstants.MASK) ? HobsonVariable.Mask.valueOf((String)varMap.get(PropertyConstants.MASK)) : null,
                     varMap.get(PropertyConstants.VALUE), (Long)varMap.get(PropertyConstants.LAST_UPDATE), proxyType != null ? VariableMediaType.valueOf(proxyType) : null
             );
