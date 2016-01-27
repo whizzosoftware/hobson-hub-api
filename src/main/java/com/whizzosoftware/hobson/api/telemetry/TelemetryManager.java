@@ -7,11 +7,9 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.telemetry;
 
-import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.variable.VariableContext;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,61 +29,62 @@ public interface TelemetryManager {
     /**
      * Creates a new data stream.
      *
-     * @param ctx the hub context
+     * @param userId the user ID
      * @param name the stream name
-     * @param data the variables that comprise the stream data
+     * @param variables the variables that comprise the stream data
      *
      * @return the ID of the newly created data stream
      */
-    String createDataStream(HubContext ctx, String name, Collection<VariableContext> data);
+    String createDataStream(String userId, String name, Collection<VariableContext> variables);
 
     /**
      * Returns the list of created data streams.
      *
-     * @param ctx the hub context
+     * @param userId the user ID
      *
      * @return a Collection of DataStream instances
      */
-    Collection<DataStream> getDataStreams(HubContext ctx);
+    Collection<DataStream> getDataStreams(String userId);
 
     /**
      * Returns a specific data stream.
      *
-     * @param ctx the hub context
+     * @param userId the user ID
      * @param dataStreamId the data stream ID
      *
      * @return a DataStream instance
+     * @throws com.whizzosoftware.hobson.api.HobsonNotFoundException if the data stream does not exist
      */
-    DataStream getDataStream(HubContext ctx, String dataStreamId);
+    DataStream getDataStream(String userId, String dataStreamId);
 
     /**
      * Returns a unique list of variables across all data streams.
      *
-     * @param ctx the hub context
+     * @param userId the user ID
      *
      * @return a Collection of VariableContext instances
      */
-    Set<VariableContext> getMonitoredVariables(HubContext ctx);
+    Set<VariableContext> getMonitoredVariables(String userId);
 
     /**
      * Add data point(s) to a data stream.
      *
-     * @param ctx the hub context
-     * @param streamName the stream name
+     * @param userId the user ID
+     * @param dataStreamId the data stream ID
      * @param now the time the data point occurred
      * @param data the data values
      */
-    void addData(HubContext ctx, String streamName, long now, Map<VariableContext,Object> data);
+    void addData(String userId, String dataStreamId, long now, Map<VariableContext,Object> data);
 
     /**
      * Returns data from a data stream.
      *
-     * @param ctx the hub context
-     * @param streamName the stream name
+     * @param userId the user ID
+     * @param dataStreamId the data stream ID
      * @param endTime the end time desired
      * @param interval the interval size of the data
      *
-     * @return a List of TemporalValue instances
+     * @return a Collection of TemporalValue instances
      */
-    List<TemporalValue> getData(HubContext ctx, String streamName, long endTime, TelemetryInterval interval);
+    Collection<TemporalValueSet> getData(String userId, String dataStreamId, long endTime, TelemetryInterval interval);
 }

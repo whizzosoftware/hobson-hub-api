@@ -135,16 +135,16 @@ public class CollectionPersister {
         }
     }
 
-    public DataStream restoreDataStream(CollectionPersistenceContext pctx, HubContext hctx, String dataStreamId) {
+    public DataStream restoreDataStream(CollectionPersistenceContext pctx, String userId, String dataStreamId) {
         List<VariableContext> variables = new ArrayList<>();
 
-        for (Object vctxs : pctx.getSet(idProvider.createDataStreamVariablesId(hctx, dataStreamId))) {
+        for (Object vctxs : pctx.getSet(idProvider.createDataStreamVariablesId(userId, dataStreamId))) {
             variables.add(VariableContext.create((String)vctxs));
         }
 
-        Map<String,Object> map = pctx.getMap(idProvider.createDataStreamId(hctx, dataStreamId));
+        Map<String,Object> map = pctx.getMap(idProvider.createDataStreamId(userId, dataStreamId));
 
-        return new DataStream(hctx, dataStreamId, (String)map.get(PropertyConstants.NAME), variables);
+        return new DataStream(userId, dataStreamId, (String)map.get(PropertyConstants.NAME), variables);
     }
 
     public HobsonDevice restoreDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
@@ -350,16 +350,16 @@ public class CollectionPersister {
         map.put(PropertyConstants.ID, dataStream.getId());
         map.put(PropertyConstants.NAME, dataStream.getName());
 
-        pctx.setMap(idProvider.createDataStreamId(dataStream.getHubContext(), dataStream.getId()), map);
+        pctx.setMap(idProvider.createDataStreamId(dataStream.getUserId(), dataStream.getId()), map);
 
         // save data stream variables
-        String dsVarsId = idProvider.createDataStreamVariablesId(dataStream.getHubContext(), dataStream.getId());
+        String dsVarsId = idProvider.createDataStreamVariablesId(dataStream.getUserId(), dataStream.getId());
         for (VariableContext vc : dataStream.getVariables()) {
             pctx.addSetValue(dsVarsId, vc.toString());
         }
 
         // add data stream ID to set of hub data streams
-        pctx.addSetValue(idProvider.createDataStreamsId(dataStream.getHubContext()), dataStream.getId());
+        pctx.addSetValue(idProvider.createDataStreamsId(dataStream.getUserId()), dataStream.getId());
     }
 
     public void saveDevice(CollectionPersistenceContext pctx, HobsonDevice device) {

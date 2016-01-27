@@ -13,6 +13,7 @@ package com.whizzosoftware.hobson.api.telemetry;
  * @author Dan Noguerol
  */
 public enum TelemetryInterval {
+    HOURS_1,
     HOURS_24,
     DAYS_7,
     DAYS_30

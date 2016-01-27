@@ -18,6 +18,7 @@ public class PropertyConstants {
     public static final String CONTAINER_CLASS_ID = "containerClassId";
     public static final String CONTEXT = "context";
     public static final String CREATION_TIME = "creationTime";
+    public static final String DATA_STREAM_ID = "dataStreamId";
     public static final String DESCRIPTION = "description";
     public static final String DEVICE_ID = "deviceId";
     public static final String EMAIL = "email";

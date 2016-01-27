@@ -317,10 +317,10 @@ public class CollectionPersisterTest {
 
         VariableContext vctx = VariableContext.create(hctx, "plugin1", "device1", "foo");
         Collection<VariableContext> data = Collections.singletonList(vctx);
-        DataStream ds = new DataStream(hctx, "id", "Test", data);
+        DataStream ds = new DataStream("user1", "id", "Test", data);
         cp.saveDataStream(cpc, ds);
 
-        ds = cp.restoreDataStream(cpc, hctx, "id");
+        ds = cp.restoreDataStream(cpc, "user1", "id");
         assertEquals("id", ds.getId());
         assertEquals("Test", ds.getName());
         assertEquals(1, ds.getVariables().size());

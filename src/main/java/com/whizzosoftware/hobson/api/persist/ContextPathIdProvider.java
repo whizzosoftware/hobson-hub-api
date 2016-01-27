@@ -54,18 +54,23 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public String createDataStreamsId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "dataStreams";
+    public String createDataStreamsId(String userId) {
+        return userId + HubContext.DELIMITER + "dataStreams";
     }
 
     @Override
-    public String createDataStreamId(HubContext ctx, String dataStreamId) {
-        return createDataStreamsId(ctx) + HubContext.DELIMITER + dataStreamId;
+    public String createDataStreamId(String userId, String dataStreamId) {
+        return createDataStreamsId(userId) + HubContext.DELIMITER + dataStreamId;
     }
 
     @Override
-    public String createDataStreamVariablesId(HubContext ctx, String dataStreamId) {
-        return createDataStreamId(ctx, dataStreamId) + HubContext.DELIMITER + "variables";
+    public String createDataStreamDataId(String userId, String dataStreamId) {
+        return createDataStreamId(userId, dataStreamId) + HubContext.DELIMITER + "data";
+    }
+
+    @Override
+    public String createDataStreamVariablesId(String userId, String dataStreamId) {
+        return createDataStreamId(userId, dataStreamId) + HubContext.DELIMITER + "variables";
     }
 
     @Override

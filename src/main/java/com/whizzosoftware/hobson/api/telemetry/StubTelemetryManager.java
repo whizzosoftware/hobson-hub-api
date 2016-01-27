@@ -7,7 +7,6 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.telemetry;
 
-import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.variable.VariableContext;
 
 import java.util.Collection;
@@ -27,32 +26,32 @@ public class StubTelemetryManager implements TelemetryManager {
     }
 
     @Override
-    public String createDataStream(HubContext ctx, String name, Collection<VariableContext> data) {
+    public String createDataStream(String userId, String name, Collection<VariableContext> data) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Collection<DataStream> getDataStreams(HubContext ctx) {
+    public Collection<DataStream> getDataStreams(String userId) {
         return null;
     }
 
     @Override
-    public DataStream getDataStream(HubContext ctx, String dataStreamId) {
+    public DataStream getDataStream(String userId, String dataStreamId) {
         return null;
     }
 
     @Override
-    public Set<VariableContext> getMonitoredVariables(HubContext ctx) {
+    public Set<VariableContext> getMonitoredVariables(String userId) {
         return null;
     }
 
     @Override
-    public void addData(HubContext ctx, String streamName, long now, Map<VariableContext, Object> data) {
+    public void addData(String userId, String dataStreamId, long now, Map<VariableContext, Object> data) {
 
     }
 
     @Override
-    public List<TemporalValue> getData(HubContext ctx, String streamName, long endTime, TelemetryInterval interval) {
+    public List<TemporalValueSet> getData(String userId, String dataStreamId, long endTime, TelemetryInterval interval) {
         return null;
     }
 }

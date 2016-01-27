@@ -7,25 +7,36 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.telemetry;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * A value that has a time associated with it.
+ * A set of values that have a time associated with them.
  *
  * @author Dan Noguerol
  */
-public class TemporalValue {
+public class TemporalValueSet {
     private long time;
-    private Object value;
+    private Map<String,Object> values;
 
-    public TemporalValue(long time, Object value) {
+    public TemporalValueSet(long time) {
+        this(time, new HashMap<String,Object>());
+    }
+
+    public TemporalValueSet(long time, Map<String,Object> values) {
         this.time = time;
-        this.value = value;
+        this.values = values;
+    }
+
+    public void addValue(String name, Object value) {
+        values.put(name, value);
     }
 
     public long getTime() {
         return time;
     }
 
-    public Object getValue() {
-        return value;
+    public Map<String, Object> getValues() {
+        return values;
     }
 }

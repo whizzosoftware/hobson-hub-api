@@ -30,9 +30,10 @@ public interface IdProvider {
     String createActionSetsId(HubContext ctx);
     String createActionPropertiesId(HubContext ctx, String actionId);
     String createActivityLogId(HubContext ctx);
-    String createDataStreamsId(HubContext ctx);
-    String createDataStreamId(HubContext ctx, String dataStreamId);
-    String createDataStreamVariablesId(HubContext ctx, String dataStreamId);
+    String createDataStreamsId(String userId);
+    String createDataStreamId(String userId, String dataStreamId);
+    String createDataStreamDataId(String userId, String dataStreamId);
+    String createDataStreamVariablesId(String userId, String dataStreamId);
     String createDevicesId(HubContext ctx);
     DeviceContext createDeviceContext(String deviceId);
     DeviceContext createDeviceContextWithHub(HubContext ctx, String deviceId);
