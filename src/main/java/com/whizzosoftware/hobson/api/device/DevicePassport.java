@@ -7,27 +7,35 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device;
 
+import com.whizzosoftware.hobson.api.hub.HubContext;
+
 /**
  * Represents information an external device needs to communicate with the Hobson Hub.
  *
  * @author Dan Noguerol
  */
 public class DevicePassport {
+    private HubContext hctx;
     private String id;
     private String deviceId;
     private long creationTime;
     private Long activationTime;
     private String secret;
 
-    public DevicePassport(String id, String deviceId, long creationTime) {
-        this(id, deviceId, creationTime, null);
+    public DevicePassport(HubContext hctx, String id, String deviceId, long creationTime) {
+        this(hctx, id, deviceId, creationTime, null);
     }
 
-    public DevicePassport(String id, String deviceId, long creationTime, Long activationTime) {
+    public DevicePassport(HubContext hctx, String id, String deviceId, long creationTime, Long activationTime) {
+        this.hctx = hctx;
         this.id = id;
         this.deviceId = deviceId;
         this.creationTime = creationTime;
         this.activationTime = activationTime;
+    }
+
+    public HubContext getHubContext() {
+        return hctx;
     }
 
     public String getId() {

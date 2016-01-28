@@ -49,6 +49,7 @@ public interface IdProvider {
     String createHubConfigurationClassId(HubContext ctx);
     String createHubConfigurationId(HubContext ctx);
     String createHubLogId(HubContext ctx);
+    String createHubPasswordId(HubContext ctx);
     String createHubUploadCredentialsId(HubContext ctx);
     String createLocalPluginConfigurationId(PluginContext ctx);
     String createLocalPluginConfigurationClassId(PluginContext ctx);
@@ -72,6 +73,7 @@ public interface IdProvider {
     String createRemotePluginsId(HubContext ctx);
     String createRepositoriesId(HubContext ctx);
     String createRepositoryId(HubContext ctx, String uri);
+    String createSendTestEmailId(HubContext ctx);
     String createShutdownId(HubContext ctx);
     String createTaskActionClassesId(HubContext ctx);
     String createTaskActionClassId(PropertyContainerClassContext ctx);

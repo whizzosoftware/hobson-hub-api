@@ -170,12 +170,13 @@ public class CollectionPersister {
         return (Long)pctx.getMapValue(idProvider.createDeviceId(dctx), PropertyConstants.LAST_CHECKIN);
     }
 
-    public DevicePassport restoreDevicePassport(CollectionPersistenceContext pctx, String id) {
+    public DevicePassport restoreDevicePassport(CollectionPersistenceContext pctx, HubContext hctx, String id) {
         Map<String,Object> map = pctx.getMap(id);
         if (map != null) {
             String deviceId = (String) map.get(PropertyConstants.DEVICE_ID);
             if (deviceId != null) {
                 DevicePassport db = new DevicePassport(
+                        hctx,
                         id,
                         deviceId,
                         (Long)map.get(PropertyConstants.CREATION_TIME),

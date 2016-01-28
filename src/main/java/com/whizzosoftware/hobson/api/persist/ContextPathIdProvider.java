@@ -198,6 +198,11 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
+    public String createHubPasswordId(HubContext ctx) {
+        return null;
+    }
+
+    @Override
     public String createLocalPluginConfigurationId(PluginContext ctx) {
         return null;
     }
@@ -324,6 +329,11 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createRepositoryId(HubContext ctx, String uri) {
+        return null;
+    }
+
+    @Override
+    public String createSendTestEmailId(HubContext ctx) {
         return null;
     }
 
