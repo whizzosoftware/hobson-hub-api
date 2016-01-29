@@ -59,8 +59,15 @@ public class CollectionPersister {
         pctx.remove(idProvider.createVariableId(vctx));
     }
 
-    public void deleteTask(CollectionPersistenceContext pctx, TaskContext context) {
-        pctx.remove(idProvider.createTaskId(context));
+    public void deleteTask(CollectionPersistenceContext pctx, TaskContext tctx) {
+        pctx.remove(idProvider.createTaskId(tctx));
+        pctx.removeFromSet(idProvider.createTasksId(tctx.getHubContext()), tctx.getTaskId());
+        pctx.remove(idProvider.createTaskPropertiesId(tctx));
+        for (Object k : pctx.getSet(idProvider.createTaskConditionsId(tctx))) {
+            pctx.remove(idProvider.createTaskConditionId(tctx, k.toString()));
+            pctx.remove(idProvider.createTaskConditionPropertiesId(tctx, k.toString()));
+        }
+        pctx.remove(idProvider.createTaskConditionsId(tctx));
         pctx.commit();
     }
 
@@ -230,50 +237,49 @@ public class CollectionPersister {
     }
 
     public HobsonTask restoreTask(CollectionPersistenceContext pctx, TaskContext tctx) {
+        HobsonTask task = null;
         Map<String,Object> taskMap = pctx.getMap(idProvider.createTaskId(tctx));
+        if (taskMap != null && taskMap.size() > 0) {
+            task = new HobsonTask(
+                    tctx,
+                    (String)taskMap.get(PropertyConstants.NAME),
+                    (String)taskMap.get(PropertyConstants.DESCRIPTION),
+                    null,
+                    null,
+                    new PropertyContainerSet((String)taskMap.get(PropertyConstants.ACTION_SET_ID))
+            );
 
-        HobsonTask task = new HobsonTask(
-                tctx,
-                (String)taskMap.get(PropertyConstants.NAME),
-                (String)taskMap.get(PropertyConstants.DESCRIPTION),
-                null,
-                null,
-                new PropertyContainerSet((String)taskMap.get(PropertyConstants.ACTION_SET_ID))
-        );
-
-        // restore properties
-        Map<String,Object>  map = pctx.getMap(idProvider.createTaskPropertiesId(tctx));
-        if (map != null) {
-            for (String name : map.keySet()) {
-                task.setProperty(name, map.get(name));
+            // restore properties
+            Map<String, Object> map = pctx.getMap(idProvider.createTaskPropertiesId(tctx));
+            if (map != null) {
+                for (String name : map.keySet()) {
+                    task.setProperty(name, map.get(name));
+                }
             }
-        }
 
-        // restore conditions
-        Set<Object> set = pctx.getSet(idProvider.createTaskConditionsId(tctx));
-        if (set != null) {
-            List<PropertyContainer> conditions = new ArrayList<>();
-            for (Object o : set) {
-                String conditionId = (String)o;
-                map = pctx.getMap(idProvider.createTaskConditionId(tctx, conditionId));
-                Map<String, Object> values = pctx.getMap(idProvider.createTaskConditionPropertiesId(tctx, conditionId));
-                conditions.add(
+            // restore conditions
+            Set<Object> set = pctx.getSet(idProvider.createTaskConditionsId(tctx));
+            if (set != null) {
+                List<PropertyContainer> conditions = new ArrayList<>();
+                for (Object o : set) {
+                    String conditionId = (String)o;
+                    map = pctx.getMap(idProvider.createTaskConditionId(tctx, conditionId));
+                    Map<String, Object> values = pctx.getMap(idProvider.createTaskConditionPropertiesId(tctx, conditionId));
+                    conditions.add(
                         new PropertyContainer(
-                                conditionId,
-                                (String)map.get(PropertyConstants.NAME),
-                                PropertyContainerClassContext.create(
-                                        PluginContext.create(tctx.getHubContext(), (String)map.get(PropertyConstants.PLUGIN_ID)),
-                                        (String)map.get(PropertyConstants.CONTAINER_CLASS_ID)
-                                ),
-                                values
+                            conditionId,
+                            (String)map.get(PropertyConstants.NAME),
+                            PropertyContainerClassContext.create(
+                                    PluginContext.create(tctx.getHubContext(), (String)map.get(PropertyConstants.PLUGIN_ID)),
+                                    (String)map.get(PropertyConstants.CONTAINER_CLASS_ID)
+                            ),
+                            values
                         )
-                );
+                    );
+                }
+                task.setConditions(conditions);
             }
-            task.setConditions(conditions);
         }
-
-        pctx.commit();
-
         return task;
     }
 

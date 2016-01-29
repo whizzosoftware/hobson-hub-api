@@ -20,7 +20,8 @@ import java.util.*;
 
 public class CollectionPersisterTest {
     @Test
-    public void testSaveAndRestoreTask() {
+    public void testSaveRestoreDeleteTask() {
+        HubContext hctx = HubContext.createLocal();
         MockCollectionPersistenceContext cpctx = new MockCollectionPersistenceContext();
         IdProvider idProvider = new ContextPathIdProvider();
 
@@ -46,6 +47,11 @@ public class CollectionPersisterTest {
         assertEquals("My Task", m.get("name"));
         assertEquals("My Desc", m.get("description"));
         assertEquals("actionSetId1", m.get("actionSetId"));
+
+        // check the task set
+        Set<Object> s = cpctx.getSet(idProvider.createTasksId(hctx));
+        assertNotNull(s);
+        assertTrue(s.contains("taskId1"));
 
         // check map task properties
         m = cpctx.getMap(idProvider.createTaskPropertiesId(tctx));
@@ -101,6 +107,21 @@ public class CollectionPersisterTest {
 
         // check task action set
         assertEquals("actionSetId1", task.getActionSet().getId());
+
+        // delete the task
+        cp.deleteTask(cpctx, task.getContext());
+
+        // confirm that the task cannot be resotred
+        assertNull(cp.restoreTask(cpctx, task.getContext()));
+
+        // confirm that all map entries have been cleaned up
+        s = cpctx.getSet(idProvider.createTasksId(hctx));
+        assertNotNull(s);
+        assertFalse(s.contains("taskId1"));
+        assertEquals(0, cpctx.getMap(idProvider.createTaskPropertiesId(tctx)).size());
+        assertEquals(0, cpctx.getSet(idProvider.createTaskConditionsId(tctx)).size());
+        assertEquals(0, cpctx.getMap(idProvider.createTaskConditionId(tctx, "condition1")).size());
+        assertEquals(0, cpctx.getMap(idProvider.createTaskConditionPropertiesId(tctx, "condition1")).size());
     }
 
     @Test

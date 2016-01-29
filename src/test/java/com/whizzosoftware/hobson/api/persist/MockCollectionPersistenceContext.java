@@ -36,7 +36,12 @@ public class MockCollectionPersistenceContext implements CollectionPersistenceCo
 
     @Override
     public Set<Object> getSet(String key) {
-        return (Set<Object>)maps.get(key);
+        Set<Object> set = (Set<Object>)maps.get(key);
+        if (set == null) {
+            set = new HashSet<>();
+            maps.put(key, set);
+        }
+        return set;
     }
 
     @Override
