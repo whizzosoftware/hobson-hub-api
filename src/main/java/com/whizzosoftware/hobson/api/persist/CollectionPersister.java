@@ -508,7 +508,9 @@ public class CollectionPersister {
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.CONTEXT, pe.getContext().toString());
         map.put(PropertyConstants.NAME, pe.getName());
-        map.put(PropertyConstants.LAST_UPDATE, pe.getLastUpdate());
+        if (pe.getLastUpdate() != null) {
+            map.put(PropertyConstants.LAST_UPDATE, pe.getLastUpdate());
+        }
 
         pctx.setMap(key, map);
         pctx.addSetValue(idProvider.createPresenceEntitiesId(pe.getContext().getHubContext()), pe.getContext().getEntityId());
@@ -521,11 +523,15 @@ public class CollectionPersister {
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.CONTEXT, pl.getContext().toString());
         map.put(PropertyConstants.NAME, pl.getName());
-        map.put(PropertyConstants.LATITUDE, pl.getLatitude());
-        map.put(PropertyConstants.LONGITUDE, pl.getLongitude());
-        map.put(PropertyConstants.RADIUS, pl.getRadius());
-        map.put(PropertyConstants.BEACON_MAJOR, pl.getBeaconMajor());
-        map.put(PropertyConstants.BEACON_MINOR, pl.getBeaconMinor());
+        if (pl.getLatitude() != null && pl.getLongitude() != null && pl.getRadius() != null) {
+            map.put(PropertyConstants.LATITUDE, pl.getLatitude());
+            map.put(PropertyConstants.LONGITUDE, pl.getLongitude());
+            map.put(PropertyConstants.RADIUS, pl.getRadius());
+        }
+        if (pl.getBeaconMajor() != null && pl.getBeaconMinor() != null) {
+            map.put(PropertyConstants.BEACON_MAJOR, pl.getBeaconMajor());
+            map.put(PropertyConstants.BEACON_MINOR, pl.getBeaconMinor());
+        }
 
         pctx.setMap(key, map);
         pctx.addSetValue(idProvider.createPresenceLocationsId(pl.getContext().getHubContext()), pl.getContext().getLocationId());
