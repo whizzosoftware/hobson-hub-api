@@ -104,8 +104,8 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public String createDevicePassportId(HubContext ctx, String deviceId) {
-        return null;
+    public String createDevicePassportId(HubContext ctx, String passportId) {
+        return createDevicePassportsId(ctx) + HubContext.DELIMITER + passportId;
     }
 
     @Override
@@ -120,11 +120,6 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createDeviceConfigurationClassId(DeviceContext ctx) {
-        return null;
-    }
-
-    @Override
-    public String createTelemetryDatasetId(HubContext ctx, String dataSetId) {
         return null;
     }
 

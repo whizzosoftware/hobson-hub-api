@@ -50,8 +50,8 @@ public class CollectionPersister {
         pctx.remove(idProvider.createDeviceId(ctx));
     }
 
-    public void deleteDevicePassport(CollectionPersistenceContext pctx, String id) {
-        pctx.remove(id);
+    public void deleteDevicePassport(CollectionPersistenceContext pctx, HubContext hctx, String id) {
+        pctx.remove(idProvider.createDevicePassportId(hctx, id));
         pctx.commit();
     }
 
@@ -170,14 +170,14 @@ public class CollectionPersister {
         return (Long)pctx.getMapValue(idProvider.createDeviceId(dctx), PropertyConstants.LAST_CHECKIN);
     }
 
-    public DevicePassport restoreDevicePassport(CollectionPersistenceContext pctx, HubContext hctx, String id) {
-        Map<String,Object> map = pctx.getMap(id);
+    public DevicePassport restoreDevicePassport(CollectionPersistenceContext pctx, HubContext hctx, String passportId) {
+        Map<String,Object> map = pctx.getMap(idProvider.createDevicePassportId(hctx, passportId));
         if (map != null) {
             String deviceId = (String) map.get(PropertyConstants.DEVICE_ID);
             if (deviceId != null) {
                 DevicePassport db = new DevicePassport(
                         hctx,
-                        id,
+                        passportId,
                         deviceId,
                         (Long)map.get(PropertyConstants.CREATION_TIME),
                         (Long)map.get(PropertyConstants.ACTIVATION_TIME)
@@ -406,7 +406,7 @@ public class CollectionPersister {
         if (db.isActivated()) {
             map.put(PropertyConstants.ACTIVATION_TIME, db.getActivationTime());
         }
-        pctx.setMap(db.getId(), map);
+        pctx.setMap(idProvider.createDevicePassportId(hctx, db.getId()), map);
         pctx.addSetValue(idProvider.createDevicePassportsId(hctx), db.getId());
         pctx.commit();
     }

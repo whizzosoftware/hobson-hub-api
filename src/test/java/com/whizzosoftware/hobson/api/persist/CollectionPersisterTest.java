@@ -1,9 +1,6 @@
 package com.whizzosoftware.hobson.api.persist;
 
-import com.whizzosoftware.hobson.api.device.DeviceContext;
-import com.whizzosoftware.hobson.api.device.DeviceType;
-import com.whizzosoftware.hobson.api.device.HobsonDevice;
-import com.whizzosoftware.hobson.api.device.HobsonDeviceStub;
+import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.*;
@@ -306,6 +303,28 @@ public class CollectionPersisterTest {
         assertNotNull(set);
         assertEquals(1, set.size());
         assertTrue(set.contains("foo"));
+    }
+
+    @Test
+    public void testSaveAndRestoreDevicePassport() {
+        IdProvider idProvider = new ContextPathIdProvider();
+        CollectionPersister cp = new CollectionPersister(idProvider);
+        CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
+        HubContext hctx = HubContext.create("user1", "hub1");
+
+        long now = System.currentTimeMillis();
+        DevicePassport dp = new DevicePassport(hctx, "dp1", "foo", now);
+        cp.saveDevicePassport(cpc, hctx, dp);
+
+        // confirm passport is restorable
+        dp = cp.restoreDevicePassport(cpc, hctx, "dp1");
+        assertNotNull(dp);
+
+        // confirm list of device passports is correct
+        Set<Object> set = cpc.getSet(idProvider.createDevicePassportsId(hctx));
+        assertNotNull(set);
+        assertEquals(1, set.size());
+        assertTrue(set.contains("dp1"));
     }
 
     @Test

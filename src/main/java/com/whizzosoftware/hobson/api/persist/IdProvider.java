@@ -38,7 +38,7 @@ public interface IdProvider {
     DeviceContext createDeviceContext(String deviceId);
     DeviceContext createDeviceContextWithHub(HubContext ctx, String deviceId);
     String createDeviceId(DeviceContext ctx);
-    String createDevicePassportId(HubContext ctx, String deviceId);
+    String createDevicePassportId(HubContext ctx, String passportId);
     String createDevicePassportsId(HubContext ctx);
     String createDeviceConfigurationId(DeviceContext ctx);
     String createDeviceConfigurationClassId(DeviceContext ctx);
@@ -87,7 +87,6 @@ public interface IdProvider {
     String createTaskId(TaskContext ctx);
     String createTaskPropertiesId(TaskContext ctx);
     String createTasksId(HubContext ctx);
-    String createTelemetryDatasetId(HubContext ctx, String dataSetId);
     String createUserId(String userId);
     String createUserHubsId(String userId);
     String createUsersId();
