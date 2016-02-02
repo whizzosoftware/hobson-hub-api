@@ -349,12 +349,12 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createTaskActionSetId(HubContext ctx, String id) {
-        return null;
+        return createTaskActionSetsId(ctx) + HubContext.DELIMITER + id;
     }
 
     @Override
     public String createTaskActionSetsId(HubContext ctx) {
-        return null;
+        return createHubId(ctx) + HubContext.DELIMITER + "actionSets";
     }
 
     @Override
