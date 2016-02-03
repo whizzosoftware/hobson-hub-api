@@ -298,8 +298,13 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
+    public String createPropertyContainerClassesId(PluginContext pctx) {
+        return createPluginId(pctx) + HubContext.DELIMITER + "containerClasses";
+    }
+
+    @Override
     public String createPropertyContainerClassId(PropertyContainerClassContext pccc, PropertyContainerClassType type) {
-        return null;
+        return  createPropertyContainerClassesId(pccc.getPluginContext()) + HubContext.DELIMITER + pccc.getContainerClassId();
     }
 
     @Override
@@ -359,12 +364,12 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createTaskConditionClassesId(HubContext ctx) {
-        return null;
+        return createHubId(ctx) + HubContext.DELIMITER + "conditionClasses";
     }
 
     @Override
     public String createTaskConditionClassId(PropertyContainerClassContext ctx) {
-        return null;
+        return createPluginId(ctx.getPluginContext()) + HubContext.DELIMITER + ctx.getContainerClassId();
     }
 
     @Override

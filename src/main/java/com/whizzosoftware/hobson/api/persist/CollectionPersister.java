@@ -8,7 +8,6 @@
 package com.whizzosoftware.hobson.api.persist;
 
 import com.whizzosoftware.hobson.api.HobsonNotFoundException;
-import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
@@ -21,7 +20,6 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
 import com.whizzosoftware.hobson.api.task.HobsonTask;
 import com.whizzosoftware.hobson.api.task.TaskContext;
-import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.telemetry.DataStream;
 import com.whizzosoftware.hobson.api.user.HobsonUser;
 import com.whizzosoftware.hobson.api.user.UserAccount;
@@ -92,20 +90,16 @@ public class CollectionPersister {
         return (deviceMap != null && deviceMap.size() > 0);
     }
 
-    public PropertyContainer restoreAction(CollectionPersistenceContext pctx, TaskManager manager, HubContext ctx, String actionId) {
+    public PropertyContainer restoreAction(CollectionPersistenceContext pctx, HubContext ctx, String actionId) {
         String key = idProvider.createActionId(ctx, actionId);
 
         Map<String,Object> map = pctx.getMap(key);
 
-        if (manager != null) {
-            return new PropertyContainer(
-                    actionId,
-                    PropertyContainerClassContext.create(PluginContext.create(ctx, (String) map.get(PropertyConstants.PLUGIN_ID)), (String)map.get(PropertyConstants.CONTAINER_CLASS_ID)),
-                    restoreActionProperties(ctx, pctx, actionId)
-            );
-        } else {
-            throw new HobsonRuntimeException("No task manager available to create action objects");
-        }
+        return new PropertyContainer(
+                actionId,
+                PropertyContainerClassContext.create(PluginContext.create(ctx, (String) map.get(PropertyConstants.PLUGIN_ID)), (String)map.get(PropertyConstants.CONTAINER_CLASS_ID)),
+                restoreActionProperties(ctx, pctx, actionId)
+        );
     }
 
     public Map<String,Object> restoreActionProperties(HubContext ctx, CollectionPersistenceContext pctx, String actionId) {
@@ -121,7 +115,7 @@ public class CollectionPersister {
         return resultMap;
     }
 
-    public PropertyContainerSet restoreActionSet(HubContext ctx, CollectionPersistenceContext pctx, TaskManager manager, String actionSetId) {
+    public PropertyContainerSet restoreActionSet(HubContext ctx, CollectionPersistenceContext pctx, String actionSetId) {
         String key = idProvider.createActionSetId(ctx, actionSetId);
 
         Map<String,Object> map = pctx.getMap(key);
@@ -133,7 +127,7 @@ public class CollectionPersister {
             }
             List<PropertyContainer> actions = new ArrayList<>();
             for (Object o : pctx.getSet(idProvider.createActionSetActionsId(ctx, actionSetId))) {
-                actions.add(restoreAction(pctx, manager, ctx, (String)o));
+                actions.add(restoreAction(pctx, ctx, (String)o));
             }
             tas.setProperties(actions);
             return tas;
@@ -246,7 +240,7 @@ public class CollectionPersister {
                     (String)taskMap.get(PropertyConstants.DESCRIPTION),
                     null,
                     null,
-                    new PropertyContainerSet((String)taskMap.get(PropertyConstants.ACTION_SET_ID))
+                    restoreActionSet(tctx.getHubContext(), pctx, (String)taskMap.get(PropertyConstants.ACTION_SET_ID))
             );
 
             // restore properties
@@ -325,7 +319,11 @@ public class CollectionPersister {
         pctx.setMap(key, map);
     }
 
-    public void saveActionSet(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainerSet actionSet) {
+    public String saveActionSet(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainerSet actionSet) {
+        if (!actionSet.hasId()) {
+            actionSet.setId(UUID.randomUUID().toString());
+        }
+
         String key = idProvider.createActionSetId(ctx, actionSet.getId());
 
         Map<String,Object> map = new HashMap<>();
@@ -335,13 +333,14 @@ public class CollectionPersister {
         }
 
         List<? extends PropertyContainer> actions = actionSet.getProperties();
-        for (int i=0; i < actions.size(); i++) {
-            PropertyContainer action = actions.get(i);
-            if (!action.hasId()) {
-                action.setId(UUID.randomUUID().toString());
+        if (actions != null) {
+            for (PropertyContainer action : actions) {
+                if (!action.hasId()) {
+                    action.setId(UUID.randomUUID().toString());
+                }
+                saveAction(ctx, pctx, action);
+                pctx.addSetValue(idProvider.createActionSetActionsId(ctx, actionSet.getId()), action.getId());
             }
-            saveAction(ctx, pctx, action);
-            pctx.addSetValue(idProvider.createActionSetActionsId(ctx, actionSet.getId()), action.getId());
         }
 
         pctx.setMap(key, map);
@@ -349,6 +348,8 @@ public class CollectionPersister {
         pctx.addSetValue(idProvider.createActionSetsId(ctx), actionSet.getId());
 
         pctx.commit();
+
+        return actionSet.getId();
     }
 
     public void saveDataStream(CollectionPersistenceContext pctx, DataStream dataStream) {
@@ -497,9 +498,10 @@ public class CollectionPersister {
             }
         }
 
-        // save task action set ID
-        map.put(PropertyConstants.ACTION_SET_ID, task.getActionSet().getId());
+        // save task action set
+        map.put(PropertyConstants.ACTION_SET_ID, saveActionSet(task.getContext().getHubContext(), pctx, task.getActionSet()));
 
+        // set the task map
         pctx.setMap(idProvider.createTaskId(task.getContext()), map);
 
         // add task ID to task id list

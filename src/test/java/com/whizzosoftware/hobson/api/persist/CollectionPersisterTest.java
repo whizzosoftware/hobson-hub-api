@@ -36,10 +36,11 @@ public class CollectionPersisterTest {
         values.put("device", DeviceContext.createLocal("plugin2", "device2"));
         conditions.add(new PropertyContainer("condition1", "My Condition", PropertyContainerClassContext.create(PluginContext.createLocal("plugin1"), "cclass1"), values));
 
-        TaskContext tctx = TaskContext.createLocal("taskId1");
-        HobsonTask task = new HobsonTask(tctx, "My Task", "My Desc", props, conditions, new PropertyContainerSet("actionSetId1"));
+        TaskContext tctx = TaskContext.create(hctx, "taskId1");
+        HobsonTask task = new HobsonTask(tctx, "My Task", "My Desc", props, conditions, new PropertyContainerSet("actionSetId1", "ActionSet1", Collections.singletonList(new PropertyContainer("action1", PropertyContainerClassContext.create(PluginContext.createLocal("plugin2"), "cclass2"), Collections.singletonMap("foo", (Object)"bar")))));
 
         CollectionPersister cp = new CollectionPersister(idProvider);
+
         cp.saveTask(cpctx, task);
 
         Map<String,Object> m = cpctx.getMap(idProvider.createTaskId(tctx));
@@ -65,7 +66,7 @@ public class CollectionPersisterTest {
         assertEquals(1, set.size());
         assertTrue(set.contains("condition1"));
 
-        // check map conditions
+        // check condition map
         m = cpctx.getMap(idProvider.createTaskConditionId(tctx, "condition1"));
         assertNotNull(m);
         assertEquals("My Condition", m.get(PropertyConstants.NAME));
@@ -80,6 +81,19 @@ public class CollectionPersisterTest {
         assertTrue(m.containsKey("devices"));
         assertTrue(m.containsKey("foo"));
         assertEquals("bar", m.get("foo"));
+
+        // check the action set
+        m = cpctx.getMap(idProvider.createActionSetId(hctx, "actionSetId1"));
+        assertNotNull(m);
+        assertEquals(2, m.size());
+        assertEquals("actionSetId1", m.get("id"));
+        assertEquals("ActionSet1", m.get("name"));
+
+        // check the action set actions
+        s = cpctx.getSet(idProvider.createActionSetActionsId(hctx, "actionSetId1"));
+        assertNotNull(s);
+        assertEquals(1, s.size());
+        assertEquals("action1", s.iterator().next());
 
         // restore task
         task = cp.restoreTask(cpctx, task.getContext());
@@ -107,11 +121,12 @@ public class CollectionPersisterTest {
 
         // check task action set
         assertEquals("actionSetId1", task.getActionSet().getId());
+        assertNotNull(task.getActionSet().getProperties());
 
         // delete the task
         cp.deleteTask(cpctx, task.getContext());
 
-        // confirm that the task cannot be resotred
+        // confirm that the task cannot be restored
         assertNull(cp.restoreTask(cpctx, task.getContext()));
 
         // confirm that all map entries have been cleaned up
@@ -156,7 +171,7 @@ public class CollectionPersisterTest {
 
         // test restore
         MockTaskManager taskManager = new MockTaskManager();
-        PropertyContainerSet as2 = cp.restoreActionSet(HubContext.createLocal(), pctx, taskManager, "set1");
+        PropertyContainerSet as2 = cp.restoreActionSet(HubContext.createLocal(), pctx, "set1");
         assertEquals("set1", as2.getId());
         assertEquals("Action Set 1", as2.getName());
 
@@ -209,8 +224,7 @@ public class CollectionPersisterTest {
         assertEquals("Sfoo", map.get("bar"));
 
         // test restore
-        MockTaskManager taskManager = new MockTaskManager();
-        PropertyContainerSet as2 = cp.restoreActionSet(HubContext.createLocal(), pctx, taskManager, "set1");
+        PropertyContainerSet as2 = cp.restoreActionSet(HubContext.createLocal(), pctx, "set1");
         assertEquals("set1", as2.getId());
         assertEquals("Action Set 1", as2.getName());
 
