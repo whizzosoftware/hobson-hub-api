@@ -364,7 +364,7 @@ public class CollectionPersisterTest {
     }
 
     @Test
-    public void testSaveAndRestoreDevice() {
+    public void testSaveRestoreDeleteDevice() {
         IdProvider idProvider = new ContextPathIdProvider();
         CollectionPersister cp = new CollectionPersister(idProvider);
         CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
@@ -396,6 +396,13 @@ public class CollectionPersisterTest {
         assertNotNull(s);
         assertEquals(1, s.size());
         assertTrue(s.contains(idProvider.createDeviceId(dctx)));
+
+        // confirm device deletes properly
+        cp.deleteDevice(cpc, dctx);
+        assertNull(cp.restoreDevice(cpc, dctx));
+        s = cpc.getSet(idProvider.createDevicesId(hctx));
+        assertNotNull(s);
+        assertEquals(0, s.size());
     }
 
     @Test
@@ -414,7 +421,7 @@ public class CollectionPersisterTest {
     }
 
     @Test
-    public void testSaveAndRestoreDeviceVariable() {
+    public void testSaveRestoreDeleteDeviceVariable() {
         IdProvider idProvider = new ContextPathIdProvider();
         CollectionPersister cp = new CollectionPersister(idProvider);
         CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
@@ -452,10 +459,17 @@ public class CollectionPersisterTest {
         assertNotNull(set);
         assertEquals(1, set.size());
         assertTrue(set.contains("foo"));
+
+        // delete variable
+        cp.deleteDeviceVariable(cpc, vctx);
+        assertNull(cp.restoreDeviceVariable(cpc, dctx, vctx.getName()));
+        set = cpc.getSet(idProvider.createDeviceVariablesId(dctx));
+        assertNotNull(set);
+        assertEquals(0, set.size());
     }
 
     @Test
-    public void testSaveAndRestoreDevicePassport() {
+    public void testSaveRestoreDeleteDevicePassport() {
         IdProvider idProvider = new ContextPathIdProvider();
         CollectionPersister cp = new CollectionPersister(idProvider);
         CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
@@ -474,6 +488,13 @@ public class CollectionPersisterTest {
         assertNotNull(set);
         assertEquals(1, set.size());
         assertTrue(set.contains("dp1"));
+
+        // delete passport
+        cp.deleteDevicePassport(cpc, hctx, "dp1");
+        assertNull(cp.restoreDevicePassport(cpc, hctx, "dp1"));
+        set = cpc.getSet(idProvider.createDevicePassportsId(hctx));
+        assertNotNull(set);
+        assertEquals(0, set.size());
     }
 
     @Test

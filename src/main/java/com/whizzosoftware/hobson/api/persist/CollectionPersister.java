@@ -7,7 +7,6 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.persist;
 
-import com.whizzosoftware.hobson.api.HobsonNotFoundException;
 import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
@@ -59,29 +58,20 @@ public class CollectionPersister {
         pctx.removeFromSet(idProvider.createActionSetsId(hctx), id);
     }
 
-    public void deleteCondition(CollectionPersistenceContext pctx, TaskContext tctx, String id) {
-        pctx.remove(idProvider.createTaskConditionId(tctx, id));
-        pctx.remove(idProvider.createTaskConditionPropertiesId(tctx, id));
-        pctx.removeFromSet(idProvider.createTaskConditionsId(tctx), id);
-    }
-
-    public void deleteConditions(CollectionPersistenceContext pctx, TaskContext tctx) {
-        for (Object o : pctx.getSet(idProvider.createTaskConditionsId(tctx))) {
-            deleteCondition(pctx, tctx, o.toString());
-        }
-    }
-
     public void deleteDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
         pctx.remove(idProvider.createDeviceId(ctx));
+        pctx.removeFromSet(idProvider.createDevicesId(ctx.getHubContext()), idProvider.createDeviceId(ctx));
     }
 
     public void deleteDevicePassport(CollectionPersistenceContext pctx, HubContext hctx, String id) {
         pctx.remove(idProvider.createDevicePassportId(hctx, id));
+        pctx.removeFromSet(idProvider.createDevicePassportsId(hctx), id);
         pctx.commit();
     }
 
     public void deleteDeviceVariable(CollectionPersistenceContext pctx, VariableContext vctx) {
         pctx.remove(idProvider.createVariableId(vctx));
+        pctx.removeFromSet(idProvider.createDeviceVariablesId(vctx.getDeviceContext()), vctx.getName());
     }
 
     public void deleteTask(CollectionPersistenceContext pctx, TaskContext tctx) {
@@ -89,7 +79,7 @@ public class CollectionPersister {
         pctx.remove(idProvider.createTaskId(tctx));
         pctx.removeFromSet(idProvider.createTasksId(tctx.getHubContext()), tctx.getTaskId());
         pctx.remove(idProvider.createTaskPropertiesId(tctx));
-        deleteConditions(pctx, tctx);
+        deleteTaskConditions(pctx, tctx);
         deleteActionSet(tctx.getHubContext(), pctx, actionSetId);
         pctx.commit();
     }
@@ -104,6 +94,18 @@ public class CollectionPersister {
         pctx.remove(idProvider.createPresenceLocationId(plctx));
         pctx.removeFromSet(idProvider.createPresenceLocationsId(plctx.getHubContext()), plctx.getLocationId());
         pctx.commit();
+    }
+
+    public void deleteTaskCondition(CollectionPersistenceContext pctx, TaskContext tctx, String id) {
+        pctx.remove(idProvider.createTaskConditionId(tctx, id));
+        pctx.remove(idProvider.createTaskConditionPropertiesId(tctx, id));
+        pctx.removeFromSet(idProvider.createTaskConditionsId(tctx), id);
+    }
+
+    public void deleteTaskConditions(CollectionPersistenceContext pctx, TaskContext tctx) {
+        for (Object o : pctx.getSet(idProvider.createTaskConditionsId(tctx))) {
+            deleteTaskCondition(pctx, tctx, o.toString());
+        }
     }
 
     public String getActionSetIdFromKey(HubContext ctx, String key) {
@@ -121,9 +123,9 @@ public class CollectionPersister {
         Map<String,Object> map = pctx.getMap(key);
 
         return new PropertyContainer(
-                actionId,
-                PropertyContainerClassContext.create(PluginContext.create(ctx, (String) map.get(PropertyConstants.PLUGIN_ID)), (String)map.get(PropertyConstants.CONTAINER_CLASS_ID)),
-                restoreActionProperties(ctx, pctx, actionId)
+            actionId,
+            PropertyContainerClassContext.create(PluginContext.create(ctx, (String) map.get(PropertyConstants.PLUGIN_ID)), (String)map.get(PropertyConstants.CONTAINER_CLASS_ID)),
+            restoreActionProperties(ctx, pctx, actionId)
         );
     }
 
@@ -156,9 +158,9 @@ public class CollectionPersister {
             }
             tas.setProperties(actions);
             return tas;
-        } else {
-            throw new HobsonNotFoundException("Unable to find action set: " + actionSetId);
         }
+
+        return null;
     }
 
     public DataStream restoreDataStream(CollectionPersistenceContext pctx, String userId, String dataStreamId) {
@@ -292,7 +294,7 @@ public class CollectionPersister {
                                     PluginContext.create(tctx.getHubContext(), (String)map.get(PropertyConstants.PLUGIN_ID)),
                                     (String)map.get(PropertyConstants.CONTAINER_CLASS_ID)
                             ),
-                            new HashMap(values)
+                            new HashMap<>(values)
                         )
                     );
                 }
@@ -444,8 +446,8 @@ public class CollectionPersister {
         pctx.setMap(idProvider.createDeviceConfigurationId(dctx), config);
 
         // also set the device name specifically if it has changed
-        if (config.containsKey("name")) {
-            pctx.setMapValue(idProvider.createDeviceId(dctx), "name", config.get("name"));
+        if (config.containsKey(PropertyConstants.NAME)) {
+            pctx.setMapValue(idProvider.createDeviceId(dctx), PropertyConstants.NAME, config.get(PropertyConstants.NAME));
         }
     }
 
@@ -522,7 +524,7 @@ public class CollectionPersister {
         }
 
         // save task conditions
-        deleteConditions(pctx, task.getContext());
+        deleteTaskConditions(pctx, task.getContext());
         if (task.hasConditions()) {
             for (PropertyContainer pc : task.getConditions()) {
                 saveCondition(pctx, task.getContext(), pc);
@@ -576,32 +578,5 @@ public class CollectionPersister {
         pctx.addSetValue(idProvider.createPresenceLocationsId(pl.getContext().getHubContext()), pl.getContext().getLocationId());
 
         pctx.commit();
-    }
-
-    public void saveUser(CollectionPersistenceContext pctx, HobsonUser user, String encPassword) {
-        String key = idProvider.createUserId(user.getId());
-
-        Map<String,Object> map = new HashMap<>();
-        map.put(PropertyConstants.ID, user.getId());
-        map.put(PropertyConstants.PASSWORD, encPassword);
-        map.put(PropertyConstants.GIVEN_NAME, user.getGivenName());
-        map.put(PropertyConstants.FAMILY_NAME, user.getFamilyName());
-        map.put(PropertyConstants.EMAIL, user.getEmail());
-        if (user.getAccount() != null) {
-            map.put(PropertyConstants.EXPIRE_TIME, user.getAccount().getExpiration());
-        }
-
-        pctx.setMap(key, map);
-        pctx.addSetValue(idProvider.createUsersId(), user.getId());
-
-        pctx.commit();
-    }
-
-    public void saveUserHubs(CollectionPersistenceContext pctx, String userId, Set<String> hubIds) {
-        String key = idProvider.createUserHubsId(userId);
-        pctx.remove(key);
-        for (String hubId : hubIds) {
-            pctx.addSetValue(key, hubId);
-        }
     }
 }
