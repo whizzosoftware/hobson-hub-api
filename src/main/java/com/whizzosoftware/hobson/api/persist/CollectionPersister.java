@@ -44,6 +44,33 @@ public class CollectionPersister {
         this.idProvider = idProvider;
     }
 
+    public void deleteAction(HubContext hctx, CollectionPersistenceContext pctx, String id) {
+        pctx.remove(idProvider.createActionPropertiesId(hctx, id));
+        pctx.remove(idProvider.createActionId(hctx, id));
+    }
+
+    public void deleteActionSet(HubContext hctx, CollectionPersistenceContext pctx, String id) {
+        String key = idProvider.createActionSetActionsId(hctx, id);
+        for (Object o : pctx.getSet(key)) {
+            deleteAction(hctx, pctx, o.toString());
+        }
+        pctx.remove(idProvider.createActionSetActionsId(hctx, id));
+        pctx.remove(idProvider.createActionSetId(hctx, id));
+        pctx.removeFromSet(idProvider.createActionSetsId(hctx), id);
+    }
+
+    public void deleteCondition(CollectionPersistenceContext pctx, TaskContext tctx, String id) {
+        pctx.remove(idProvider.createTaskConditionId(tctx, id));
+        pctx.remove(idProvider.createTaskConditionPropertiesId(tctx, id));
+        pctx.removeFromSet(idProvider.createTaskConditionsId(tctx), id);
+    }
+
+    public void deleteConditions(CollectionPersistenceContext pctx, TaskContext tctx) {
+        for (Object o : pctx.getSet(idProvider.createTaskConditionsId(tctx))) {
+            deleteCondition(pctx, tctx, o.toString());
+        }
+    }
+
     public void deleteDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
         pctx.remove(idProvider.createDeviceId(ctx));
     }
@@ -58,14 +85,12 @@ public class CollectionPersister {
     }
 
     public void deleteTask(CollectionPersistenceContext pctx, TaskContext tctx) {
+        String actionSetId = (String)pctx.getMapValue(idProvider.createTaskId(tctx), PropertyConstants.ACTION_SET_ID);
         pctx.remove(idProvider.createTaskId(tctx));
         pctx.removeFromSet(idProvider.createTasksId(tctx.getHubContext()), tctx.getTaskId());
         pctx.remove(idProvider.createTaskPropertiesId(tctx));
-        for (Object k : pctx.getSet(idProvider.createTaskConditionsId(tctx))) {
-            pctx.remove(idProvider.createTaskConditionId(tctx, k.toString()));
-            pctx.remove(idProvider.createTaskConditionPropertiesId(tctx, k.toString()));
-        }
-        pctx.remove(idProvider.createTaskConditionsId(tctx));
+        deleteConditions(pctx, tctx);
+        deleteActionSet(tctx.getHubContext(), pctx, actionSetId);
         pctx.commit();
     }
 
@@ -267,7 +292,7 @@ public class CollectionPersister {
                                     PluginContext.create(tctx.getHubContext(), (String)map.get(PropertyConstants.PLUGIN_ID)),
                                     (String)map.get(PropertyConstants.CONTAINER_CLASS_ID)
                             ),
-                            values
+                            new HashMap(values)
                         )
                     );
                 }
@@ -320,7 +345,9 @@ public class CollectionPersister {
     }
 
     public String saveActionSet(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainerSet actionSet) {
-        if (!actionSet.hasId()) {
+        if (actionSet.hasId()) {
+            deleteActionSet(ctx, pctx, actionSet.getId());
+        } else {
             actionSet.setId(UUID.randomUUID().toString());
         }
 
@@ -350,6 +377,28 @@ public class CollectionPersister {
         pctx.commit();
 
         return actionSet.getId();
+    }
+
+    public void saveCondition(CollectionPersistenceContext pctx, TaskContext tctx, PropertyContainer pc) {
+        Map<String,Object> cmap = new HashMap<>();
+        if (!pc.hasId()) {
+            pc.setId(UUID.randomUUID().toString());
+        }
+        cmap.put(PropertyConstants.CONTAINER_CLASS_ID, pc.getContainerClassContext().getContainerClassId());
+        cmap.put(PropertyConstants.ID, pc.getId());
+        if (pc.getName() != null) {
+            cmap.put(PropertyConstants.NAME, pc.getName());
+        }
+        if (pc.getContainerClassContext().hasPluginContext()) {
+            cmap.put(PropertyConstants.PLUGIN_ID, pc.getContainerClassContext().getPluginId());
+        }
+        pctx.setMap(idProvider.createTaskConditionId(tctx, pc.getId()), cmap);
+        pctx.addSetValue(idProvider.createTaskConditionsId(tctx), pc.getId());
+        Map<String, Object> m = new HashMap<>();
+        for (String pvalName : pc.getPropertyValues().keySet()) {
+            m.put(pvalName, pc.getPropertyValues().get(pvalName));
+        }
+        pctx.setMap(idProvider.createTaskConditionPropertiesId(tctx, pc.getId()), m);
     }
 
     public void saveDataStream(CollectionPersistenceContext pctx, DataStream dataStream) {
@@ -473,28 +522,10 @@ public class CollectionPersister {
         }
 
         // save task conditions
+        deleteConditions(pctx, task.getContext());
         if (task.hasConditions()) {
             for (PropertyContainer pc : task.getConditions()) {
-                Map<String,Object> cmap = new HashMap<>();
-                if (pc.getId() != null) {
-                    cmap.put(PropertyConstants.CONTAINER_CLASS_ID, pc.getContainerClassContext().getContainerClassId());
-                    cmap.put(PropertyConstants.ID, pc.getId());
-                    if (pc.getName() != null) {
-                        cmap.put(PropertyConstants.NAME, pc.getName());
-                    }
-                    if (pc.getContainerClassContext().hasPluginContext()) {
-                        cmap.put(PropertyConstants.PLUGIN_ID, pc.getContainerClassContext().getPluginId());
-                    }
-                    pctx.setMap(idProvider.createTaskConditionId(task.getContext(), pc.getId()), cmap);
-                    pctx.addSetValue(idProvider.createTaskConditionsId(task.getContext()), pc.getId());
-                    Map<String, Object> m = new HashMap<>();
-                    for (String pvalName : pc.getPropertyValues().keySet()) {
-                        m.put(pvalName, pc.getPropertyValues().get(pvalName));
-                    }
-                    pctx.setMap(idProvider.createTaskConditionPropertiesId(task.getContext(), pc.getId()), m);
-                } else {
-                    throw new HobsonNotFoundException("Unable to save condition with null ID: " + pc.getContainerClassContext());
-                }
+                saveCondition(pctx, task.getContext(), pc);
             }
         }
 

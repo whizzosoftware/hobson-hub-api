@@ -140,6 +140,82 @@ public class CollectionPersisterTest {
     }
 
     @Test
+    public void testUpdateTask() {
+        HubContext hctx = HubContext.createLocal();
+        MockCollectionPersistenceContext cpctx = new MockCollectionPersistenceContext();
+        IdProvider idProvider = new ContextPathIdProvider();
+
+        PropertyContainerSet actionSet = new PropertyContainerSet(
+            Collections.singletonList(
+                new PropertyContainer(
+                    PropertyContainerClassContext.create(PluginContext.createLocal("plugin2"),
+                        "cclass2"
+                    ),
+                    Collections.singletonMap("foo", (Object)"bar")
+                )
+            )
+        );
+
+        TaskContext tctx = TaskContext.create(hctx, "taskId1");
+        HobsonTask task = new HobsonTask(
+            tctx,
+            "My Task",
+            "My Desc",
+            null,
+            Collections.singletonList(
+                new PropertyContainer(
+                    PropertyContainerClassContext.create(PluginContext.createLocal("plugin1"), "cclass1"),
+                    Collections.singletonMap("foo", (Object)"bar")
+                )
+            ),
+            actionSet
+        );
+
+        CollectionPersister cp = new CollectionPersister(idProvider);
+        cp.saveTask(cpctx, task);
+
+        task = cp.restoreTask(cpctx, tctx);
+        assertNotNull(task);
+        assertEquals("My Task", task.getName());
+        assertEquals("My Desc", task.getDescription());
+        assertEquals(1, task.getConditions().size());
+        assertEquals("cclass1", task.getConditions().get(0).getContainerClassContext().getContainerClassId());
+        assertEquals(1, task.getActionSet().getProperties().size());
+        assertEquals("cclass2", task.getActionSet().getProperties().iterator().next().getContainerClassContext().getContainerClassId());
+        assertEquals("bar", task.getActionSet().getProperties().iterator().next().getPropertyValue("foo"));
+
+        // update task data
+        task.setName("My Task2");
+        task.setDescription("My Desc2");
+        task.setConditions(Collections.singletonList(
+            new PropertyContainer(
+                PropertyContainerClassContext.create(PluginContext.createLocal("plugin4"), "cclass6"),
+                Collections.singletonMap("foo2", (Object)"bar2")
+            )
+        ));
+        task.getActionSet().setProperties(Collections.singletonList(
+            new PropertyContainer(
+                PropertyContainerClassContext.create(PluginContext.createLocal("plugin3"),
+                    "cclass3"
+                ),
+                Collections.singletonMap("bar", (Object)"foo")
+            )
+        ));
+
+        // re-save task
+        cp.saveTask(cpctx, task);
+
+        task = cp.restoreTask(cpctx, tctx);
+        assertEquals("My Task2", task.getName());
+        assertEquals("My Desc2", task.getDescription());
+        assertEquals(1, task.getConditions().size());
+        assertEquals("cclass6", task.getConditions().get(0).getContainerClassContext().getContainerClassId());
+        assertEquals(1, task.getActionSet().getProperties().size());
+        assertEquals("cclass3", task.getActionSet().getProperties().iterator().next().getContainerClassContext().getContainerClassId());
+        assertEquals("foo", task.getActionSet().getProperties().iterator().next().getPropertyValue("bar"));
+    }
+
+    @Test
     public void testSaveAndRestoreActionSetWithOneItem() {
         IdProvider idProvider = new ContextPathIdProvider();
         HubContext hctx = HubContext.createLocal();
@@ -247,6 +323,44 @@ public class CollectionPersisterTest {
         assertNotNull(ta.getPropertyValues());
         assertEquals(1, ta.getPropertyValues().size());
         assertEquals("foo", ta.getPropertyValues().get("bar"));
+    }
+
+    @Test
+    public void testUpdateActionSet() {
+        HubContext hctx = HubContext.createLocal();
+        IdProvider idProvider = new ContextPathIdProvider();
+
+        // test initial save
+        List<PropertyContainer> actions = new ArrayList<>();
+        PropertyContainerSet as = new PropertyContainerSet("set1", "Action Set 1", null);
+        actions.add(new PropertyContainer("action1", PropertyContainerClassContext.create("local", "local", "plugin", null, "foo"), Collections.singletonMap("foo", (Object)"bar")));
+        actions.add(new PropertyContainer("action2", PropertyContainerClassContext.create("local", "local", "plugin", null, "foo"), Collections.singletonMap("bar", (Object)"foo")));
+        as.setProperties(actions);
+
+        CollectionPersistenceContext pctx = new MockCollectionPersistenceContext();
+        CollectionPersister cp = new CollectionPersister(idProvider);
+        cp.saveActionSet(hctx, pctx, as);
+
+        as = cp.restoreActionSet(hctx, pctx, "set1");
+        assertEquals(2, as.getProperties().size());
+        for (PropertyContainer pc : as.getProperties()) {
+            assertTrue("action1".equals(pc.getId()) || "action2".equals(pc.getId()));
+        }
+
+        // test update
+        actions = new ArrayList<>();
+        as = new PropertyContainerSet("set1", "Action Set 1", null);
+        actions.add(new PropertyContainer("action3", PropertyContainerClassContext.create("local", "local", "plugin", null, "foo"), Collections.singletonMap("foo", (Object)"bar")));
+        actions.add(new PropertyContainer("action4", PropertyContainerClassContext.create("local", "local", "plugin", null, "foo"), Collections.singletonMap("bar", (Object)"foo")));
+        as.setProperties(actions);
+
+        cp.saveActionSet(hctx, pctx, as);
+
+        as = cp.restoreActionSet(hctx, pctx, "set1");
+        assertEquals(2, as.getProperties().size());
+        for (PropertyContainer pc : as.getProperties()) {
+            assertTrue("action3".equals(pc.getId()) || "action4".equals(pc.getId()));
+        }
     }
 
     @Test

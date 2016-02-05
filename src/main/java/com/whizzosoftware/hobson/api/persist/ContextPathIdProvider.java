@@ -179,17 +179,17 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createHubConfigurationId(HubContext ctx) {
-        return null;
+        return createHubId(ctx) + HubContext.DELIMITER + "configuration";
     }
 
     @Override
     public String createHubConfigurationClassId(HubContext ctx) {
-        return null;
+        return createHubId(ctx) + HubContext.DELIMITER + "configurationClass";
     }
 
     @Override
     public String createHubLogId(HubContext ctx) {
-        return null;
+        return createHubId(ctx) + HubContext.DELIMITER + "log";
     }
 
     @Override
@@ -224,7 +224,7 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createLocalPluginsId(HubContext ctx) {
-        return null;
+        return createHubId(ctx) + HubContext.DELIMITER + "localPlugins";
     }
 
     @Override
@@ -293,8 +293,29 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public String createPropertyContainerId(PropertyContainerClass pcc) {
-        return null;
+    public String createPropertyContainerId(String id, PropertyContainerClass pcc) {
+        if (pcc != null) {
+            switch (pcc.getType()) {
+                case CONDITION:
+                case ACTION: {
+                    return id;
+                }
+                case HUB_CONFIG: {
+                    return createHubConfigurationId(pcc.getContext().getHubContext());
+                }
+                case PLUGIN_CONFIG: {
+                    return createLocalPluginConfigurationId(pcc.getContext().getPluginContext());
+                }
+                case DEVICE_CONFIG: {
+                    return createDeviceConfigurationId(DeviceContext.create(pcc.getContext().getHubContext(), pcc.getContext().getPluginId(), pcc.getContext().getDeviceId()));
+                }
+                default: {
+                    return null;
+                }
+            }
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -319,7 +340,7 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createRemotePluginsId(HubContext ctx) {
-        return null;
+        return createHubId(ctx) + HubContext.DELIMITER + "remotePlugins";
     }
 
     @Override
@@ -344,7 +365,7 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createTaskActionClassesId(HubContext ctx) {
-        return null;
+        return createHubId(ctx) + HubContext.DELIMITER + "actionClasses";
     }
 
     @Override

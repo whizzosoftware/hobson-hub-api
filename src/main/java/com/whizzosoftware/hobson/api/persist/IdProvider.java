@@ -66,7 +66,7 @@ public interface IdProvider {
     String createPresenceLocationsId(HubContext ctx);
     PresenceLocationContext createPresenceLocationContext(String presenceLocationId);
     String createPresenceLocationId(PresenceLocationContext ctx);
-    String createPropertyContainerId(PropertyContainerClass pcc);
+    String createPropertyContainerId(String id, PropertyContainerClass pcc);
     String createPropertyContainerClassesId(PluginContext pctx);
     String createPropertyContainerClassId(PropertyContainerClassContext pccc, PropertyContainerClassType type);
     String createRemotePluginId(PluginContext ctx, String version);
