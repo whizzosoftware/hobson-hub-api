@@ -12,21 +12,21 @@ import com.whizzosoftware.hobson.api.task.TaskContext;
 import java.util.Map;
 
 /**
- * An event that occurs when a task is published to the runtime.
+ * An event that occurs when a task is updated.
  *
  * @author Dan Noguerol
  */
-public class TaskPublishedEvent extends HobsonEvent {
-    public static final String ID = "taskPublished";
+public class TaskDeletedEvent extends HobsonEvent {
+    public static final String ID = "taskDeleted";
 
     private static final String PROP_CONTEXT = "context";
 
-    public TaskPublishedEvent(long timestamp, TaskContext context) {
+    public TaskDeletedEvent(long timestamp, TaskContext context) {
         super(timestamp, EventTopics.STATE_TOPIC, ID);
         setProperty(PROP_CONTEXT, context);
     }
 
-    public TaskPublishedEvent(Map<String,Object> properties) {
+    public TaskDeletedEvent(Map<String,Object> properties) {
         super(EventTopics.STATE_TOPIC, properties);
     }
 
