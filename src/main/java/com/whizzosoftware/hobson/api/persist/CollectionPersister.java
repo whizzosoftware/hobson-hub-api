@@ -304,23 +304,6 @@ public class CollectionPersister {
         return task;
     }
 
-    public HobsonUser restoreUser(CollectionPersistenceContext pctx, String userId) {
-        UserAccount account = null;
-
-        Map<String,Object> userMap = pctx.getMap(idProvider.createUserId(userId));
-        Set<Object> hubSet = pctx.getSet(idProvider.createUserHubsId(userId));
-        if (userMap.containsKey(PropertyConstants.EXPIRE_TIME)) {
-            account = new UserAccount((long)userMap.get(PropertyConstants.EXPIRE_TIME), (hubSet != null && hubSet.size() > 0));
-        }
-
-        return new HobsonUser.Builder(userId).
-            givenName((String)userMap.get(PropertyConstants.GIVEN_NAME)).
-            familyName((String)userMap.get(PropertyConstants.FAMILY_NAME)).
-            email((String)userMap.get(PropertyConstants.EMAIL)).
-            account(account).
-            build();
-    }
-
     public void saveAction(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainer action) {
         String key = idProvider.createActionId(ctx, action.getId());
 

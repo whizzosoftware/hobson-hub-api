@@ -3,6 +3,10 @@ package com.whizzosoftware.hobson.api.persist;
 import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
+import com.whizzosoftware.hobson.api.presence.PresenceEntity;
+import com.whizzosoftware.hobson.api.presence.PresenceEntityContext;
+import com.whizzosoftware.hobson.api.presence.PresenceLocation;
+import com.whizzosoftware.hobson.api.presence.PresenceLocationContext;
 import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.task.HobsonTask;
 import com.whizzosoftware.hobson.api.task.TaskContext;
@@ -514,6 +518,42 @@ public class CollectionPersisterTest {
         assertEquals("Test", ds.getName());
         assertEquals(1, ds.getVariables().size());
         assertEquals(vctx, ds.getVariables().iterator().next());
+    }
+
+    @Test
+    public void testSaveRestoreDeletePresenceEntity() {
+        IdProvider idProvider = new ContextPathIdProvider();
+        CollectionPersister cp = new CollectionPersister(idProvider);
+        CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
+        HubContext hctx = HubContext.createLocal();
+        PresenceEntityContext pctx = PresenceEntityContext.create(hctx, "entity1");
+
+        cp.savePresenceEntity(cpc, new PresenceEntity(pctx, "John"));
+
+        PresenceEntity pe = cp.restorePresenceEntity(cpc, pctx);
+        assertEquals("entity1", pe.getContext().getEntityId());
+        assertEquals("John", pe.getName());
+
+        cp.deletePresenceEntity(cpc, pctx);
+        assertNull(cp.restorePresenceEntity(cpc, pctx));
+    }
+
+    @Test
+    public void testSaveRestoreDeletePresenceLocation() {
+        IdProvider idProvider = new ContextPathIdProvider();
+        CollectionPersister cp = new CollectionPersister(idProvider);
+        CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
+        HubContext hctx = HubContext.createLocal();
+        PresenceLocationContext pctx = PresenceLocationContext.create(hctx, "location1");
+
+        cp.savePresenceLocation(cpc, new PresenceLocation(pctx, "Home"));
+
+        PresenceLocation pe = cp.restorePresenceLocation(cpc, pctx);
+        assertEquals("location1", pe.getContext().getLocationId());
+        assertEquals("Home", pe.getName());
+
+        cp.deletePresenceLocation(cpc, pctx);
+        assertNull(cp.restorePresenceLocation(cpc, pctx));
     }
 
     public class MockTaskManager implements TaskManager {
