@@ -91,7 +91,7 @@ public interface PluginManager {
      *
      * @param ctx the context of the plugin
      * @param version the plugin version
-     * @return
+     * @return a PluginDescriptor instance
      */
     PluginDescriptor getRemotePluginDescriptor(PluginContext ctx, String version);
 
