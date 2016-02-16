@@ -27,6 +27,8 @@ import com.whizzosoftware.hobson.api.variable.*;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.local.LocalEventLoopGroup;
 import io.netty.util.concurrent.Future;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.*;
@@ -39,6 +41,8 @@ import java.util.concurrent.TimeUnit;
  * @author Dan Noguerol
  */
 abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPluginRuntime, EventLoopExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractHobsonPlugin.class);
+
     private DeviceManager deviceManager;
     private DiscoManager discoManager;
     private EventManager eventManager;
@@ -274,8 +278,17 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public Future submitInEventLoop(Runnable runnable) {
-        return eventLoop.submit(runnable);
+    public Future submitInEventLoop(final Runnable runnable) {
+        return eventLoop.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    runnable.run();
+                } catch (Throwable t) {
+                    logger.error("An uncaught exception was thrown in the event loop", t);
+                }
+            }
+        });
     }
 
     /*
@@ -283,8 +296,17 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
      */
 
     @Override
-    public void executeInEventLoop(Runnable runnable) {
-        eventLoop.execute(runnable);
+    public void executeInEventLoop(final Runnable runnable) {
+        eventLoop.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    runnable.run();
+                } catch (Throwable t) {
+                    logger.error("An uncaught exception was thrown in the event loop", t);
+                }
+            }
+        });
     }
 
     /*
