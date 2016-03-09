@@ -402,6 +402,9 @@ public class CollectionPersister {
 
         // add data stream ID to set of hub data streams
         pctx.addSetValue(idProvider.createDataStreamsId(dataStream.getUserId()), dataStream.getId());
+
+        // commit
+        pctx.commit();
     }
 
     public void saveDevice(CollectionPersistenceContext pctx, HobsonDevice device) {
