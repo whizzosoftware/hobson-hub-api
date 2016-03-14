@@ -100,6 +100,7 @@ public class TypedProperty {
         PRESENCE_ENTITY,
         LOCATION,
         SECURE_STRING,
+        SERIAL_PORT,
         STRING,
         TIME
     }

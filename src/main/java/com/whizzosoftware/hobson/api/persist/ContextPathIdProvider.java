@@ -198,6 +198,16 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
+    public String createHubSerialPortsId(HubContext ctx) {
+        return createHubId(ctx) + HubContext.DELIMITER + "serialPorts";
+    }
+
+    @Override
+    public String createHubSerialPortId(HubContext ctx, String name) {
+        return createHubSerialPortsId(ctx) + HubContext.DELIMITER + name;
+    }
+
+    @Override
     public String createLocalPluginConfigurationId(PluginContext ctx) {
         return null;
     }

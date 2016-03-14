@@ -125,6 +125,15 @@ public interface HubManager {
     LocalHubManager getLocalManager();
 
     /**
+     * Returns a list of serial ports available on a Hub.
+     *
+     * @param hctx the context of the hub
+     *
+     * @return a collection of serial port Strings (empty collection if none are available)
+     */
+    Collection<String> getSerialPorts(HubContext hctx);
+
+    /**
      * Sends a test e-mail message using the provided e-mail configuration.
      *
      * @param ctx the context of the target hub
