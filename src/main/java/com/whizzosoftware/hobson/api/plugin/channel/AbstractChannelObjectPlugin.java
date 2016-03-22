@@ -17,7 +17,9 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.oio.OioEventLoopGroup;
 import io.netty.channel.rxtx.RxtxChannel;
 import io.netty.channel.rxtx.RxtxDeviceAddress;
+import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.Future;
@@ -92,7 +94,11 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
      * @return a boolean
      */
     protected boolean isNetworkAddress() {
-        return (socketAddress instanceof InetSocketAddress);
+        return (isConnectionless() || socketAddress instanceof InetSocketAddress);
+    }
+
+    protected boolean isConnectionless() {
+        return false;
     }
 
     /**
@@ -218,15 +224,15 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
             }
         }
 
-        if (serialDevice == null) {
+        if (serialDevice == null && !isConnectionless()) {
             setStatus(PluginStatus.notConfigured("Neither serial port nor serial hostname are configured"));
         }
 
-        return didConfigChange;
+        return didConfigChange || isConnectionless();
     }
 
     private void attemptConnect() {
-        if (serialDevice != null) {
+        if (serialDevice != null || isConnectionless()) {
             // disconnect if we're already connected
             if (connectionState == State.CONNECTED) {
                 disconnect();
@@ -250,15 +256,27 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
 
         // configure for either network or serial channel
         if (isNetworkAddress()) {
-            b.channel(NioSocketChannel.class);
-            b.handler(new ChannelInitializer<SocketChannel>() {
-                @Override
-                protected void initChannel(SocketChannel channel) throws Exception {
-                    channel.config().setConnectTimeoutMillis(5000);
-                    configureChannel(channel.config());
-                    configurePipeline(channel.pipeline());
-                }
-            });
+            if (isConnectionless()) {
+                b.channel(NioDatagramChannel.class);
+                b.option(ChannelOption.SO_BROADCAST, true);
+                b.handler(new ChannelInitializer<DatagramChannel>() {
+                    @Override
+                    protected void initChannel(DatagramChannel channel) throws Exception {
+                        configureChannel(channel.config());
+                        configurePipeline(channel.pipeline());
+                    }
+                });
+            } else {
+                b.channel(NioSocketChannel.class);
+                b.handler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    protected void initChannel(SocketChannel channel) throws Exception {
+                        channel.config().setConnectTimeoutMillis(5000);
+                        configureChannel(channel.config());
+                        configurePipeline(channel.pipeline());
+                    }
+                });
+            }
         } else {
             b.channel(RxtxChannel.class);
             b.handler(new ChannelInitializer<RxtxChannel>() {
@@ -334,50 +352,61 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
         if (connectionState == State.NOT_CONNECTED) {
             logger.debug("Attempting to connect");
             connectionState = State.CONNECTING;
-            b.connect(socketAddress).addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                    if (channelFuture.isSuccess()) {
-                        logger.debug("Connection established");
-                        connectionState = State.CONNECTED;
+            if (isConnectionless()) {
+                InetSocketAddress addr = new InetSocketAddress(getDefaultPort());
+                this.channel = b.bind(addr).awaitUninterruptibly().channel();
+                executeInEventLoop(new Runnable() {
+                    @Override
+                    public void run() {
+                        onChannelConnected();
+                    }
+                });
+            } else {
+                b.connect(socketAddress).addListener(new ChannelFutureListener() {
+                    @Override
+                    public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                        if (channelFuture.isSuccess()) {
+                            logger.debug("Connection established");
+                            connectionState = State.CONNECTED;
 
-                        // save the channel
-                        AbstractChannelObjectPlugin.this.channel = channelFuture.channel();
+                            // save the channel
+                            AbstractChannelObjectPlugin.this.channel = channelFuture.channel();
 
-                        // set a close listener to notify the plugin subclass when the channel has closed
-                        channel.closeFuture().addListener(new ChannelFutureListener() {
-                            @Override
-                            public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                                logger.info("Connection was closed");
-                                channel = null;
-                                connectionState = State.NOT_CONNECTED;
-                                executeInEventLoop(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        onChannelDisconnected();
+                            // set a close listener to notify the plugin subclass when the channel has closed
+                            channel.closeFuture().addListener(new ChannelFutureListener() {
+                                @Override
+                                public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                                    logger.info("Connection was closed");
+                                    channel = null;
+                                    connectionState = State.NOT_CONNECTED;
+                                    executeInEventLoop(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            onChannelDisconnected();
+                                        }
+                                    });
+                                    if (isRunning) {
+                                        scheduleReconnect(channelFuture.channel().eventLoop());
                                     }
-                                });
-                                if (isRunning) {
-                                    scheduleReconnect(channelFuture.channel().eventLoop());
                                 }
-                            }
-                        });
+                            });
 
-                        executeInEventLoop(new Runnable() {
-                            @Override
-                            public void run() {
-                                onChannelConnected();
+                            executeInEventLoop(new Runnable() {
+                                @Override
+                                public void run() {
+                                    onChannelConnected();
+                                }
+                            });
+                        } else {
+                            logger.warn("Connection attempt to " + socketAddress.toString() + " failed", channelFuture.cause());
+                            connectionState = State.NOT_CONNECTED;
+                            if (isRunning) {
+                                scheduleReconnect(channelFuture.channel().eventLoop());
                             }
-                        });
-                    } else {
-                        logger.warn("Connection attempt to " + socketAddress.toString() + " failed", channelFuture.cause());
-                        connectionState = State.NOT_CONNECTED;
-                        if (isRunning) {
-                            scheduleReconnect(channelFuture.channel().eventLoop());
                         }
                     }
-                }
-            });
+                });
+            }
         } else {
             logger.debug("Ignoring connect request due to state: " + connectionState);
         }
