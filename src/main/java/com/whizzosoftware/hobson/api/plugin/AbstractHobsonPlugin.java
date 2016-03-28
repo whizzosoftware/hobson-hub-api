@@ -61,7 +61,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         this(pluginId, new LocalEventLoopGroup(1));
     }
 
-    public AbstractHobsonPlugin(String pluginId, EventLoopGroup eventLoop) {
+    AbstractHobsonPlugin(String pluginId, EventLoopGroup eventLoop) {
         this.ctx = PluginContext.createLocal(pluginId);
         this.eventLoop = eventLoop;
         this.configClass = new PropertyContainerClass(PropertyContainerClassContext.create(ctx, "configurationClass"), PropertyContainerClassType.PLUGIN_CONFIG);

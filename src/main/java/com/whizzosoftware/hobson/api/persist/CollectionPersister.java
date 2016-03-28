@@ -20,8 +20,6 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
 import com.whizzosoftware.hobson.api.task.HobsonTask;
 import com.whizzosoftware.hobson.api.task.TaskContext;
 import com.whizzosoftware.hobson.api.telemetry.DataStream;
-import com.whizzosoftware.hobson.api.user.HobsonUser;
-import com.whizzosoftware.hobson.api.user.UserAccount;
 import com.whizzosoftware.hobson.api.util.StringConversionUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.ImmutableHobsonVariable;
@@ -63,6 +61,13 @@ public class CollectionPersister {
         pctx.removeFromSet(idProvider.createDevicesId(ctx.getHubContext()), idProvider.createDeviceId(ctx));
     }
 
+    public void deleteDeviceConfiguration(CollectionPersistenceContext pctx, DeviceContext ctx, boolean commit) {
+        pctx.remove(idProvider.createDeviceConfigurationId(ctx));
+        if (commit) {
+            pctx.commit();
+        }
+    }
+
     public void deleteDevicePassport(CollectionPersistenceContext pctx, HubContext hctx, String id) {
         pctx.remove(idProvider.createDevicePassportId(hctx, id));
         pctx.removeFromSet(idProvider.createDevicePassportsId(hctx), id);
@@ -72,6 +77,13 @@ public class CollectionPersister {
     public void deleteDeviceVariable(CollectionPersistenceContext pctx, VariableContext vctx) {
         pctx.remove(idProvider.createVariableId(vctx));
         pctx.removeFromSet(idProvider.createDeviceVariablesId(vctx.getDeviceContext()), vctx.getName());
+    }
+
+    public void deleteLocalPluginConfiguration(CollectionPersistenceContext cpctx, PluginContext pctx, boolean commit) {
+        cpctx.remove(idProvider.createLocalPluginConfigurationId(pctx));
+        if (commit) {
+            cpctx.commit();
+        }
     }
 
     public void deleteTask(CollectionPersistenceContext pctx, TaskContext tctx) {
@@ -194,6 +206,11 @@ public class CollectionPersister {
         }
     }
 
+    public Map<String,Object> restoreDeviceConfiguration(CollectionPersistenceContext pctx, DeviceContext ctx) {
+        Map<String,Object> map = pctx.getMap(idProvider.createDeviceConfigurationId(ctx));
+        return map != null ? map : new HashMap<String,Object>();
+    }
+
     public Long restoreDeviceLastCheckIn(CollectionPersistenceContext pctx, DeviceContext dctx) {
         return (Long)pctx.getMapValue(idProvider.createDeviceId(dctx), PropertyConstants.LAST_CHECKIN);
     }
@@ -229,6 +246,12 @@ public class CollectionPersister {
         } else {
             return null;
         }
+    }
+
+    public Map<String,Object> restoreLocalPluginConfiguration(CollectionPersistenceContext cpctx, PluginContext pctx) {
+        Map<String,Object> map = cpctx.getMap(idProvider.createLocalPluginConfigurationId(pctx));
+        return map != null ? map : new HashMap<String,Object>();
+
     }
 
     public PresenceEntity restorePresenceEntity(CollectionPersistenceContext pctx, PresenceEntityContext pectx) {
@@ -430,15 +453,16 @@ public class CollectionPersister {
 
     public void saveDeviceConfiguration(CollectionPersistenceContext pctx, DeviceContext dctx, Map<String,Object> config) {
         pctx.setMap(idProvider.createDeviceConfigurationId(dctx), config);
-
         // also set the device name specifically if it has changed
         if (config.containsKey(PropertyConstants.NAME)) {
             pctx.setMapValue(idProvider.createDeviceId(dctx), PropertyConstants.NAME, config.get(PropertyConstants.NAME));
         }
+        pctx.commit();
     }
 
     public void saveDeviceLastCheckIn(CollectionPersistenceContext pctx, DeviceContext dctx, long lastCheckin) {
         pctx.setMapValue(idProvider.createDeviceId(dctx), PropertyConstants.LAST_CHECKIN, lastCheckin);
+        pctx.commit();
     }
 
     public void saveDevicePassport(CollectionPersistenceContext pctx, HubContext hctx, DevicePassport db) {
@@ -488,6 +512,11 @@ public class CollectionPersister {
 
         pctx.setMap(idProvider.createGlobalVariableId(hctx, var.getName()), map);
         pctx.commit();
+    }
+
+    public void saveLocalPluginConfiguration(CollectionPersistenceContext cpctx, PluginContext pctx, Map<String,Object> config) {
+        cpctx.setMap(idProvider.createLocalPluginConfigurationId(pctx), config);
+        cpctx.commit();
     }
 
     public void saveTask(CollectionPersistenceContext pctx, HobsonTask task) {

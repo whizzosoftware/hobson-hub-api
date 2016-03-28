@@ -209,7 +209,7 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createLocalPluginConfigurationId(PluginContext ctx) {
-        return null;
+        return createLocalPluginId(ctx) + HubContext.DELIMITER + "configuration";
     }
 
     @Override
@@ -219,7 +219,7 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createLocalPluginId(PluginContext ctx) {
-        return null;
+        return createLocalPluginsId(ctx.getHubContext()) + HubContext.DELIMITER + ctx.getPluginId();
     }
 
     @Override
