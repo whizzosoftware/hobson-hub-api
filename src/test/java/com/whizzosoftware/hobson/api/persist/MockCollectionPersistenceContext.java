@@ -75,6 +75,11 @@ public class MockCollectionPersistenceContext implements CollectionPersistenceCo
 
     }
 
+    @Override
+    public void close() {
+
+    }
+
     public boolean hasMap(String key) {
         return maps.containsKey(key) && maps.get(key) instanceof Map;
     }

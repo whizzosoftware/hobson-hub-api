@@ -118,4 +118,9 @@ public interface CollectionPersistenceContext {
      * Commits changes to maps.
      */
     void commit();
+
+    /**
+     * Closes the context (and any underlying connections).
+     */
+    void close();
 }
