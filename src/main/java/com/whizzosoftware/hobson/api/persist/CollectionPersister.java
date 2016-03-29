@@ -79,6 +79,13 @@ public class CollectionPersister {
         pctx.removeFromSet(idProvider.createDeviceVariablesId(vctx.getDeviceContext()), vctx.getName());
     }
 
+    public void deleteHubConfiguration(CollectionPersistenceContext pctx, HubContext hctx, boolean commit) {
+        pctx.remove(idProvider.createHubConfigurationId(hctx));
+        if (commit) {
+            pctx.commit();
+        }
+    }
+
     public void deleteLocalPluginConfiguration(CollectionPersistenceContext cpctx, PluginContext pctx, boolean commit) {
         cpctx.remove(idProvider.createLocalPluginConfigurationId(pctx));
         if (commit) {
@@ -246,6 +253,11 @@ public class CollectionPersister {
         } else {
             return null;
         }
+    }
+
+    public Map<String,Object> restoreHubConfiguration(CollectionPersistenceContext cpctx, HubContext hctx, PropertyContainerClassContext pccctx) {
+        Map<String,Object> map = cpctx.getMap(idProvider.createHubConfigurationId(hctx));
+        return map != null ? map : new HashMap<String,Object>();
     }
 
     public Map<String,Object> restoreLocalPluginConfiguration(CollectionPersistenceContext cpctx, PluginContext pctx) {
@@ -512,6 +524,11 @@ public class CollectionPersister {
 
         pctx.setMap(idProvider.createGlobalVariableId(hctx, var.getName()), map);
         pctx.commit();
+    }
+
+    public void saveHubConfiguration(CollectionPersistenceContext cpctx, HubContext hctx, Map<String,Object> config) {
+        cpctx.setMap(idProvider.createHubConfigurationId(hctx), config);
+        cpctx.commit();
     }
 
     public void saveLocalPluginConfiguration(CollectionPersistenceContext cpctx, PluginContext pctx, Map<String,Object> config) {

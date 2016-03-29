@@ -18,6 +18,8 @@ import com.whizzosoftware.hobson.api.property.TypedProperty;
  * @author Dan Noguerol
  */
 public class HubConfigurationClass extends PropertyContainerClass {
+    public static final String ID = "hubConfiguration";
+
     public static final String EMAIL_PASSWORD = "emailPassword";
     public static final String EMAIL_SECURE = "emailSecure";
     public static final String EMAIL_SENDER = "emailSender";
