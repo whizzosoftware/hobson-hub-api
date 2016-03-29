@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Dan Noguerol
  */
 public class TaskUpdatedEvent extends HobsonEvent {
-    public static final String ID = "taskPublished";
+    public static final String ID = "taskUpdated";
 
     private static final String PROP_CONTEXT = "context";
 
