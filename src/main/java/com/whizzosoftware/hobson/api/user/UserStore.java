@@ -9,8 +9,6 @@ package com.whizzosoftware.hobson.api.user;
 
 import com.whizzosoftware.hobson.api.HobsonAuthenticationException;
 
-import java.util.Collection;
-
 /**
  * An interface for a store of user information.
  *
@@ -37,25 +35,9 @@ public interface UserStore {
      * @param username the username
      * @param password the password
      *
-     * @return a HobsonUser instance representing the authenticated user
+     * @return a UserAuthentication instance representing the authenticated user
      *
      * @throws HobsonAuthenticationException on failure
      */
-    HobsonUser authenticate(String username, String password) throws HobsonAuthenticationException;
-
-    /**
-     * Returns a user's information.
-     *
-     * @param username the username
-     *
-     * @return a HobsonUser instance
-     */
-    HobsonUser getUser(String username);
-
-    /**
-     * Returns all known user IDs.
-     *
-     * @return a Collection of Strings
-     */
-    Collection<String> getUserIds();
+    UserAuthentication authenticate(String username, String password) throws HobsonAuthenticationException;
 }
