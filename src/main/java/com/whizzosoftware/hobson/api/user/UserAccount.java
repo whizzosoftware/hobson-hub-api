@@ -7,27 +7,43 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.user;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 /**
  * Encapsulates information about a user's CloudLink account.
  *
  * @author Dan Noguerol
  */
 public class UserAccount {
-    public long expiration;
-    public boolean hasAvailableHubs;
+    public Long expiration;
+    public Collection<String> hubs;
 
-    public UserAccount(long expiration, boolean hasAvailableHubs) {
+    public UserAccount(String expiration, String hubIds) {
+        this(expiration != null ? Long.parseLong(expiration) : null, hubIds != null ? Arrays.asList(hubIds.split(",")) : null);
+    }
+
+    public UserAccount(Long expiration, Collection<String> hubs) {
         this.expiration = expiration;
-        this.hasAvailableHubs = hasAvailableHubs;
+        this.hubs = hubs;
     }
 
     /**
      * Returns the account expiration date.
      *
-     * @return a long
+     * @return a Long (or null if no expiration)
      */
-    public long getExpiration() {
+    public Long getExpiration() {
         return expiration;
+    }
+
+    /**
+     * Returns the hubs associated with the user account.
+     *
+     * @return a Collection of hub ID strings (or null if there are no hub associations)
+     */
+    public Collection<String> getHubs() {
+        return hubs;
     }
 
     /**
@@ -36,6 +52,6 @@ public class UserAccount {
      * @return a boolean
      */
     public boolean hasAvailableHubs() {
-        return hasAvailableHubs;
+        return hubs != null && hubs.size() > 0;
     }
 }

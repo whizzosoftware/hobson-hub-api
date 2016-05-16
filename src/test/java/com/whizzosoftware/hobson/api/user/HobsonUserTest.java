@@ -8,6 +8,9 @@
 package com.whizzosoftware.hobson.api.user;
 
 import org.junit.Test;
+
+import java.util.Collections;
+
 import static org.junit.Assert.*;
 
 public class HobsonUserTest {
@@ -18,14 +21,14 @@ public class HobsonUserTest {
             .email("email")
             .givenName("name1")
             .familyName("name2")
-            .account(new UserAccount(now, true))
+            .account(new UserAccount(now, Collections.singletonList("hub1")))
             .build();
         assertEquals("uid", u.getId());
         assertEquals("email", u.getEmail());
         assertEquals("name1", u.getGivenName());
         assertEquals("name2", u.getFamilyName());
         assertNotNull(u.getAccount());
-        assertEquals(now, u.getAccount().getExpiration());
+        assertEquals(now, (long)u.getAccount().getExpiration());
         assertTrue(u.getAccount().hasAvailableHubs());
     }
 }

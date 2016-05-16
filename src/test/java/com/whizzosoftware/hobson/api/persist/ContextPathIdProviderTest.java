@@ -24,7 +24,7 @@ public class ContextPathIdProviderTest {
     @Test
     public void testCreateHubId() {
         ContextPathIdProvider cdipd = new ContextPathIdProvider();
-        assertEquals("users:foo:hubs:bar", cdipd.createHubId(HubContext.create("foo", "bar")));
+        assertEquals("users:0891df24-3936-4254-a55f-a4b6e7556fa9:hubs:49a37a38-7e05-4991-a178-ea29a4d9da3e", cdipd.createHubId(HubContext.create("0891df24-3936-4254-a55f-a4b6e7556fa9", "49a37a38-7e05-4991-a178-ea29a4d9da3e")));
     }
 
     @Test
