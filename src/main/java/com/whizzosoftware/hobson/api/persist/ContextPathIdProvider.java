@@ -54,30 +54,30 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public String createDataStreamsId(String userId) {
-        return userId + HubContext.DELIMITER + "dataStreams";
+    public String createDataStreamsId() {
+        return "dataStreams";
     }
 
     @Override
-    public String createDataStreamId(String userId, String dataStreamId) {
-        return createDataStreamsId(userId) + HubContext.DELIMITER + dataStreamId;
+    public String createDataStreamId(String dataStreamId) {
+        return createDataStreamsId() + HubContext.DELIMITER + dataStreamId;
     }
 
     @Override
-    public String createDataStreamDataId(String userId, String dataStreamId) {
-        return createDataStreamId(userId, dataStreamId) + HubContext.DELIMITER + "data";
+    public String createDataStreamDataId(String dataStreamId) {
+        return createDataStreamId(dataStreamId) + HubContext.DELIMITER + "data";
     }
 
     @Override
-    public String createDataStreamVariablesId(String userId, String dataStreamId) {
-        return createDataStreamId(userId, dataStreamId) + HubContext.DELIMITER + "variables";
+    public String createDataStreamVariablesId(String dataStreamId) {
+        return createDataStreamId(dataStreamId) + HubContext.DELIMITER + "variables";
     }
 
     @Override
     public DeviceContext createDeviceContext(String deviceId) {
         String[] s = StringUtils.split(deviceId, ":");
-        if (s.length >= 7) {
-            return DeviceContext.create(PluginContext.create(HubContext.create(s[1], s[3]), s[5]), s[6]);
+        if (s.length >= 5) {
+            return DeviceContext.create(PluginContext.create(HubContext.create(s[1]), s[3]), s[4]);
         } else {
             return null;
         }
@@ -86,8 +86,8 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public DeviceContext createDeviceContextWithHub(HubContext ctx, String deviceId) {
         String[] s = StringUtils.split(deviceId, ":");
-        if (s.length >= 7) {
-            return DeviceContext.create(PluginContext.create(ctx, s[5]), s[6]);
+        if (s.length >= 5) {
+            return DeviceContext.create(PluginContext.create(ctx, s[3]), s[4]);
         } else {
             return null;
         }
@@ -144,7 +144,7 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public String createHubId(HubContext ctx) {
-        return createUserHubsId(ctx.getUserId()) + HubContext.DELIMITER + ctx.getHubId();
+        return "hubs" + HubContext.DELIMITER + ctx.getHubId();
     }
 
     @Override
@@ -160,8 +160,8 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public VariableContext createVariableContext(String variableId) {
         String[] s = StringUtils.split(variableId, ":");
-        if (s.length >= 8) {
-            return VariableContext.create(DeviceContext.create(PluginContext.create(HubContext.create(s[1], s[3]), s[5]), s[6]), s[7]);
+        if (s.length >= 6) {
+            return VariableContext.create(DeviceContext.create(PluginContext.create(HubContext.create(s[1]), s[3]), s[4]), s[5]);
         } else {
             return null;
         }
@@ -245,8 +245,8 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public PluginContext createPluginContext(String pluginId) {
         String[] s = StringUtils.split(pluginId, ":");
-        if (s.length >= 6) {
-            return PluginContext.create(HubContext.create(s[1], s[3]), s[5]);
+        if (s.length >= 4) {
+            return PluginContext.create(HubContext.create(s[1]), s[3]);
         } else {
             return null;
         }

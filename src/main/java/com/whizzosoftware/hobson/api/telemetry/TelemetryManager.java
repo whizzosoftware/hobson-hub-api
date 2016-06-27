@@ -49,13 +49,12 @@ public interface TelemetryManager {
     /**
      * Returns a specific data stream.
      *
-     * @param userId the user ID
      * @param dataStreamId the data stream ID
      *
      * @return a DataStream instance
      * @throws com.whizzosoftware.hobson.api.HobsonNotFoundException if the data stream does not exist
      */
-    DataStream getDataStream(String userId, String dataStreamId);
+    DataStream getDataStream(String dataStreamId);
 
     /**
      * Returns a unique list of variables across all data streams.
@@ -68,23 +67,20 @@ public interface TelemetryManager {
 
     /**
      * Add data point(s) to a data stream.
-     *
-     * @param userId the user ID
-     * @param dataStreamId the data stream ID
+     *  @param dataStreamId the data stream ID
      * @param now the time the data point occurred
      * @param data the data values
      */
-    void addData(String userId, String dataStreamId, long now, Map<VariableContext,Object> data);
+    void addData(String dataStreamId, long now, Map<VariableContext, Object> data);
 
     /**
      * Returns data from a data stream.
      *
-     * @param userId the user ID
      * @param dataStreamId the data stream ID
      * @param endTime the end time desired
      * @param interval the interval size of the data
      *
      * @return a Collection of TemporalValue instances
      */
-    Collection<TemporalValueSet> getData(String userId, String dataStreamId, long endTime, TelemetryInterval interval);
+    Collection<TemporalValueSet> getData(String dataStreamId, long endTime, TelemetryInterval interval);
 }

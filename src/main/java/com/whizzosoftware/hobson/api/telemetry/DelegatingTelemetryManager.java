@@ -50,12 +50,12 @@ public class DelegatingTelemetryManager implements TelemetryManager {
     }
 
     @Override
-    public DataStream getDataStream(String userId, String dataStreamId) {
-        DataStream ds = metaStore.getDataStream(userId, dataStreamId);
+    public DataStream getDataStream(String dataStreamId) {
+        DataStream ds = metaStore.getDataStream(dataStreamId);
         if (ds != null) {
             return ds;
         } else {
-            throw new HobsonNotFoundException("Unable to find data stream: " + userId + ":" + dataStreamId);
+            throw new HobsonNotFoundException("Unable to find data stream: " + dataStreamId);
         }
     }
 
@@ -65,12 +65,12 @@ public class DelegatingTelemetryManager implements TelemetryManager {
     }
 
     @Override
-    public void addData(String userId, String dataStreamId, long now, Map<VariableContext, Object> data) {
-        dataStore.addData(userId, dataStreamId, now, data);
+    public void addData(String dataStreamId, long now, Map<VariableContext, Object> data) {
+        dataStore.addData(dataStreamId, now, data);
     }
 
     @Override
-    public Collection<TemporalValueSet> getData(String userId, String dataStreamId, long endTime, TelemetryInterval interval) {
-        return dataStore.getData(userId, dataStreamId, endTime, interval);
+    public Collection<TemporalValueSet> getData(String dataStreamId, long endTime, TelemetryInterval interval) {
+        return dataStore.getData(dataStreamId, endTime, interval);
     }
 }

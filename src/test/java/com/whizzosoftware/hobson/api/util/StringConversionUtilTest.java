@@ -30,12 +30,12 @@ public class StringConversionUtilTest {
         assertEquals("Btrue", StringConversionUtil.createTypedValueString(true));
         assertEquals("Bfalse", StringConversionUtil.createTypedValueString(false));
 
-        assertEquals("Elocal:local:plugin:device", StringConversionUtil.createTypedValueString(DeviceContext.createLocal("plugin", "device")));
+        assertEquals("Elocal:plugin:device", StringConversionUtil.createTypedValueString(DeviceContext.createLocal("plugin", "device")));
 
         List<DeviceContext> list = new ArrayList<>();
         list.add(DeviceContext.create(HubContext.createLocal(), "plugin1", "device1"));
         list.add(DeviceContext.create(HubContext.createLocal(), "plugin2", "device2"));
-        assertEquals("Flocal:local:plugin1:device1,local:local:plugin2:device2", StringConversionUtil.createTypedValueString(list));
+        assertEquals("Flocal:plugin1:device1,local:plugin2:device2", StringConversionUtil.createTypedValueString(list));
     }
 
     @Test
@@ -46,19 +46,16 @@ public class StringConversionUtilTest {
         assertEquals(true, StringConversionUtil.castTypedValueString("Btrue"));
         assertEquals(false, StringConversionUtil.castTypedValueString("Bfalse"));
 
-        DeviceContext ctx = (DeviceContext)StringConversionUtil.castTypedValueString("Elocal:local:plugin:device");
-        assertEquals("local", ctx.getUserId());
+        DeviceContext ctx = (DeviceContext)StringConversionUtil.castTypedValueString("Elocal:plugin:device");
         assertEquals("local", ctx.getHubId());
         assertEquals("plugin", ctx.getPluginId());
         assertEquals("device", ctx.getDeviceId());
 
-        List<DeviceContext> list = (List<DeviceContext>)StringConversionUtil.castTypedValueString("Flocal:local:plugin1:device1,local:local:plugin2:device2");
+        List<DeviceContext> list = (List<DeviceContext>)StringConversionUtil.castTypedValueString("Flocal:plugin1:device1,local:plugin2:device2");
         assertEquals(2, list.size());
-        assertEquals("local", list.get(0).getUserId());
         assertEquals("local", list.get(0).getHubId());
         assertEquals("plugin1", list.get(0).getPluginId());
         assertEquals("device1", list.get(0).getDeviceId());
-        assertEquals("local", list.get(1).getUserId());
         assertEquals("local", list.get(1).getHubId());
         assertEquals("plugin2", list.get(1).getPluginId());
         assertEquals("device2", list.get(1).getDeviceId());

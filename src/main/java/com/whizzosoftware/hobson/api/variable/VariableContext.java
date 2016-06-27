@@ -36,7 +36,7 @@ public class VariableContext {
 
     public static VariableContext create(String variableId) {
         String[] comps = StringUtils.split(variableId, HubContext.DELIMITER);
-        return VariableContext.create(DeviceContext.create(HubContext.create(comps[0], comps[1]), comps[2], comps[3]), comps[4]);
+        return VariableContext.create(DeviceContext.create(HubContext.create(comps[0]), comps[1], comps[2]), comps[3]);
     }
 
     public static VariableContext createGlobal(HubContext ctx, String pluginId, String name) {
@@ -66,10 +66,6 @@ public class VariableContext {
 
     public DeviceContext getDeviceContext() {
         return ctx;
-    }
-
-    public String getUserId() {
-        return ctx.getUserId();
     }
 
     public String getHubId() {

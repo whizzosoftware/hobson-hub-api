@@ -41,12 +41,11 @@ public interface DataStreamMetaStore {
     /**
      * Retrieves a specific data stream for a user.
      *
-     * @param userId the user ID that owns the data stream
      * @param dataStreamId the data stream ID
      *
      * @return a DataStream instance (returns null if the data stream does not exist)
      */
-    DataStream getDataStream(String userId, String dataStreamId);
+    DataStream getDataStream(String dataStreamId);
 
     /**
      * Returns all variables referenced by a user's data streams.

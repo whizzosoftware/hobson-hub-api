@@ -30,7 +30,7 @@ public class TaskContext {
 
     public static TaskContext create(String s) {
         String[] comps = StringUtils.split(s, HubContext.DELIMITER);
-        return TaskContext.create(HubContext.create(comps[0], comps[1]), comps[2]);
+        return TaskContext.create(HubContext.create(comps[0]), comps[1]);
     }
 
     private TaskContext(HubContext hubContext, String taskId) {
@@ -44,10 +44,6 @@ public class TaskContext {
 
     public String getHubId() {
         return hubContext.getHubId();
-    }
-
-    public String getUserId() {
-        return hubContext.getUserId();
     }
 
     public boolean hasTaskId() {

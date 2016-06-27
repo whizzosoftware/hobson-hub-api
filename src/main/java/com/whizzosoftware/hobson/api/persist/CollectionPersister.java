@@ -182,16 +182,16 @@ public class CollectionPersister {
         return null;
     }
 
-    public DataStream restoreDataStream(CollectionPersistenceContext pctx, String userId, String dataStreamId) {
+    public DataStream restoreDataStream(CollectionPersistenceContext pctx, String dataStreamId) {
         List<VariableContext> variables = new ArrayList<>();
 
-        for (Object vctxs : pctx.getSet(idProvider.createDataStreamVariablesId(userId, dataStreamId))) {
+        for (Object vctxs : pctx.getSet(idProvider.createDataStreamVariablesId(dataStreamId))) {
             variables.add(VariableContext.create((String)vctxs));
         }
 
-        Map<String,Object> map = pctx.getMap(idProvider.createDataStreamId(userId, dataStreamId));
+        Map<String,Object> map = pctx.getMap(idProvider.createDataStreamId(dataStreamId));
 
-        return new DataStream(userId, dataStreamId, (String)map.get(PropertyConstants.NAME), variables);
+        return new DataStream(dataStreamId, (String)map.get(PropertyConstants.NAME), variables);
     }
 
     public HobsonDevice restoreDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
@@ -427,16 +427,16 @@ public class CollectionPersister {
         map.put(PropertyConstants.ID, dataStream.getId());
         map.put(PropertyConstants.NAME, dataStream.getName());
 
-        pctx.setMap(idProvider.createDataStreamId(dataStream.getUserId(), dataStream.getId()), map);
+        pctx.setMap(idProvider.createDataStreamId(dataStream.getId()), map);
 
         // save data stream variables
-        String dsVarsId = idProvider.createDataStreamVariablesId(dataStream.getUserId(), dataStream.getId());
+        String dsVarsId = idProvider.createDataStreamVariablesId(dataStream.getId());
         for (VariableContext vc : dataStream.getVariables()) {
             pctx.addSetValue(dsVarsId, vc.toString());
         }
 
         // add data stream ID to set of hub data streams
-        pctx.addSetValue(idProvider.createDataStreamsId(dataStream.getUserId()), dataStream.getId());
+        pctx.addSetValue(idProvider.createDataStreamsId(), dataStream.getId());
 
         // commit
         pctx.commit();

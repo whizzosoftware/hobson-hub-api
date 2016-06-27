@@ -17,20 +17,14 @@ import java.util.Collection;
  * @author Dan Noguerol
  */
 public class DataStream {
-    private String userId;
     private String id;
     private String name;
     private Collection<VariableContext> variables;
 
-    public DataStream(String userId, String id, String name, Collection<VariableContext> variables) {
-        this.userId = userId;
+    public DataStream(String id, String name, Collection<VariableContext> variables) {
         this.id = id;
         this.name = name;
         this.variables = variables;
-    }
-
-    public String getUserId() {
-        return userId;
     }
 
     public String getId() {

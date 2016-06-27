@@ -15,7 +15,6 @@ public class HobsonHubTest {
     public void testBuilder() {
         HobsonHub h = new HobsonHub.Builder(HubContext.createLocal()).name("name").version("version").build();
         assertEquals("local", h.getContext().getHubId());
-        assertEquals("local", h.getContext().getUserId());
         assertEquals("name", h.getName());
         assertEquals("version", h.getVersion());
     }

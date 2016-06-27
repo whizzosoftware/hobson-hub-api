@@ -26,7 +26,7 @@ public class PresenceLocationContext {
 
     public static PresenceLocationContext create(String s) {
         String[] comps = StringUtils.split(s, HubContext.DELIMITER);
-        return PresenceLocationContext.create(HubContext.create(comps[0], comps[1]), comps[2]);
+        return PresenceLocationContext.create(HubContext.create(comps[0]), comps[1]);
     }
 
     public static PresenceLocationContext createLocal(String entityId) {
@@ -44,10 +44,6 @@ public class PresenceLocationContext {
 
     public String getHubId() {
         return hubContext.getHubId();
-    }
-
-    public String getUserId() {
-        return hubContext.getUserId();
     }
 
     public String getLocationId() {

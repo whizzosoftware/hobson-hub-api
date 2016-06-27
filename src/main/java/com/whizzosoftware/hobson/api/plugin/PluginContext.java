@@ -59,10 +59,6 @@ public class PluginContext implements Serializable {
         return hubContext;
     }
 
-    public String getUserId() {
-        return hubContext.getUserId();
-    }
-
     public String getHubId() {
         return hubContext.getHubId();
     }

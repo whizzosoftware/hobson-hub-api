@@ -22,34 +22,20 @@ public class HubContext implements Serializable {
 
     public static final String DELIMITER = ":";
 
-    public String userId;
     public String hubId;
 
-    public static HubContext create(String userId, String hubId) {
-        return new HubContext(userId, hubId);
+    public static HubContext create(String hubId) {
+        return new HubContext(hubId);
     }
 
     public static HubContext createLocal() {
-        return create(DEFAULT_USER, DEFAULT_HUB);
+        return create(DEFAULT_HUB);
     }
 
     public HubContext() {}
 
-    public HubContext(String userId, String hubId) {
-        this.userId = userId;
+    public HubContext(String hubId) {
         this.hubId = hubId;
-    }
-
-    public boolean hasUserId() {
-        return (userId != null);
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public boolean hasHubId() {
@@ -67,16 +53,15 @@ public class HubContext implements Serializable {
     public boolean equals(Object o) {
         return (
             o instanceof HubContext &&
-            ((HubContext)o).userId.equals(userId) &&
             ((HubContext)o).hubId.equals(hubId)
         );
     }
 
     public int hashCode() {
-        return new HashCodeBuilder().append(userId).append(hubId).toHashCode();
+        return new HashCodeBuilder().append(hubId).toHashCode();
     }
 
     public String toString() {
-        return userId + DELIMITER + hubId;
+        return hubId;
     }
 }

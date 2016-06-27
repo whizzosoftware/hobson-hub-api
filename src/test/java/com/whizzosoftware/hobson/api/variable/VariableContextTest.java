@@ -14,12 +14,11 @@ import static org.junit.Assert.*;
 public class VariableContextTest {
     @Test
     public void testIdConstructor() {
-        HubContext hctx = HubContext.create("user1", "hub1");
+        HubContext hctx = HubContext.create("hub1");
         VariableContext vctx = VariableContext.create(hctx, "plugin1", "device1", "foo");
 
         vctx = VariableContext.create(vctx.toString());
 
-        assertEquals("user1", vctx.getUserId());
         assertEquals("hub1", vctx.getHubId());
         assertEquals("plugin1", vctx.getPluginId());
         assertEquals("device1", vctx.getDeviceId());

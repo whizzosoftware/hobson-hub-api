@@ -239,14 +239,14 @@ public class CollectionPersisterTest {
         Set<Object> set = pctx.getSet(idProvider.createActionSetActionsId(hctx, "set1"));
         assertTrue(set.contains("action1"));
 
-        assertTrue(pctx.hasMap("users:local:hubs:local:actions:action1"));
-        map = pctx.getMap("users:local:hubs:local:actions:action1");
+        assertTrue(pctx.hasMap("hubs:local:actions:action1"));
+        map = pctx.getMap("hubs:local:actions:action1");
         assertEquals("plugin1", map.get("pluginId"));
         assertEquals("cc1", map.get("containerClassId"));
         assertEquals("action1", map.get("id"));
 
-        assertTrue(pctx.hasMap("users:local:hubs:local:actions:action1:properties"));
-        map = pctx.getMap("users:local:hubs:local:actions:action1:properties");
+        assertTrue(pctx.hasMap("hubs:local:actions:action1:properties"));
+        map = pctx.getMap("hubs:local:actions:action1:properties");
         assertEquals("Sbar", map.get("foo"));
 
         // test restore
@@ -273,8 +273,8 @@ public class CollectionPersisterTest {
         // test save
         List<PropertyContainer> actions = new ArrayList<>();
         PropertyContainerSet as = new PropertyContainerSet("set1", "Action Set 1", null);
-        actions.add(new PropertyContainer("action1", PropertyContainerClassContext.create("local", "local", "plugin", null, "foo"), Collections.singletonMap("foo", (Object) "bar")));
-        actions.add(new PropertyContainer("action2", PropertyContainerClassContext.create("local", "local", "plugin", null, "foo"), Collections.singletonMap("bar", (Object) "foo")));
+        actions.add(new PropertyContainer("action1", PropertyContainerClassContext.create("local", "plugin", null, "foo"), Collections.singletonMap("foo", (Object) "bar")));
+        actions.add(new PropertyContainer("action2", PropertyContainerClassContext.create("local", "plugin", null, "foo"), Collections.singletonMap("bar", (Object) "foo")));
         as.setProperties(actions);
 
         CollectionPersistenceContext pctx = new MockCollectionPersistenceContext();
@@ -290,17 +290,17 @@ public class CollectionPersisterTest {
         assertTrue(set.contains("action1"));
         assertTrue(set.contains("action2"));
 
-        assertTrue(pctx.hasMap("users:local:hubs:local:actions:action1"));
-        map = pctx.getMap("users:local:hubs:local:actions:action1");
+        assertTrue(pctx.hasMap("hubs:local:actions:action1"));
+        map = pctx.getMap("hubs:local:actions:action1");
         assertEquals("plugin", map.get("pluginId"));
         assertEquals("action1", map.get("id"));
 
-        assertTrue(pctx.hasMap("users:local:hubs:local:actions:action1:properties"));
-        map = pctx.getMap("users:local:hubs:local:actions:action1:properties");
+        assertTrue(pctx.hasMap("hubs:local:actions:action1:properties"));
+        map = pctx.getMap("hubs:local:actions:action1:properties");
         assertEquals("Sbar", map.get("foo"));
 
-        assertTrue(pctx.hasMap("users:local:hubs:local:actions:action2:properties"));
-        map = pctx.getMap("users:local:hubs:local:actions:action2:properties");
+        assertTrue(pctx.hasMap("hubs:local:actions:action2:properties"));
+        map = pctx.getMap("hubs:local:actions:action2:properties");
         assertEquals("Sfoo", map.get("bar"));
 
         // test restore
@@ -311,7 +311,6 @@ public class CollectionPersisterTest {
         assertEquals(2, as2.getProperties().size());
 
         PropertyContainer ta = as2.getProperties().get(0);
-        assertEquals("local", ta.getContainerClassContext().getUserId());
         assertEquals("local", ta.getContainerClassContext().getHubId());
         assertEquals("plugin", ta.getContainerClassContext().getPluginId());
         assertEquals("action1", ta.getId());
@@ -320,7 +319,6 @@ public class CollectionPersisterTest {
         assertEquals("bar", ta.getPropertyValues().get("foo"));
 
         ta = as2.getProperties().get(1);
-        assertEquals("local", ta.getContainerClassContext().getUserId());
         assertEquals("local", ta.getContainerClassContext().getHubId());
         assertEquals("plugin", ta.getContainerClassContext().getPluginId());
         assertEquals("action2", ta.getId());
@@ -337,8 +335,8 @@ public class CollectionPersisterTest {
         // test initial save
         List<PropertyContainer> actions = new ArrayList<>();
         PropertyContainerSet as = new PropertyContainerSet("set1", "Action Set 1", null);
-        actions.add(new PropertyContainer("action1", PropertyContainerClassContext.create("local", "local", "plugin", null, "foo"), Collections.singletonMap("foo", (Object)"bar")));
-        actions.add(new PropertyContainer("action2", PropertyContainerClassContext.create("local", "local", "plugin", null, "foo"), Collections.singletonMap("bar", (Object)"foo")));
+        actions.add(new PropertyContainer("action1", PropertyContainerClassContext.create("local", "plugin", null, "foo"), Collections.singletonMap("foo", (Object)"bar")));
+        actions.add(new PropertyContainer("action2", PropertyContainerClassContext.create("local", "plugin", null, "foo"), Collections.singletonMap("bar", (Object)"foo")));
         as.setProperties(actions);
 
         CollectionPersistenceContext pctx = new MockCollectionPersistenceContext();
@@ -354,8 +352,8 @@ public class CollectionPersisterTest {
         // test update
         actions = new ArrayList<>();
         as = new PropertyContainerSet("set1", "Action Set 1", null);
-        actions.add(new PropertyContainer("action3", PropertyContainerClassContext.create("local", "local", "plugin", null, "foo"), Collections.singletonMap("foo", (Object)"bar")));
-        actions.add(new PropertyContainer("action4", PropertyContainerClassContext.create("local", "local", "plugin", null, "foo"), Collections.singletonMap("bar", (Object)"foo")));
+        actions.add(new PropertyContainer("action3", PropertyContainerClassContext.create("local", "plugin", null, "foo"), Collections.singletonMap("foo", (Object)"bar")));
+        actions.add(new PropertyContainer("action4", PropertyContainerClassContext.create("local", "plugin", null, "foo"), Collections.singletonMap("bar", (Object)"foo")));
         as.setProperties(actions);
 
         cp.saveActionSet(hctx, pctx, as);
@@ -429,7 +427,7 @@ public class CollectionPersisterTest {
         IdProvider idProvider = new ContextPathIdProvider();
         CollectionPersister cp = new CollectionPersister(idProvider);
         CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
-        HubContext hctx = HubContext.create("user1", "hub1");
+        HubContext hctx = HubContext.create("hub1");
         DeviceContext dctx = DeviceContext.create(hctx, "plugin1", "device1");
         VariableContext vctx = VariableContext.create(dctx, "foo");
 
@@ -448,7 +446,6 @@ public class CollectionPersisterTest {
         // confirm variable is restorable
         HobsonVariable hv = cp.restoreDeviceVariable(cpc, dctx, "foo");
         assertNotNull(hv);
-        assertEquals("user1", hv.getContext().getUserId());
         assertEquals("hub1", hv.getContext().getHubId());
         assertEquals("plugin1", hv.getPluginId());
         assertEquals("device1", hv.getDeviceId());
@@ -477,7 +474,7 @@ public class CollectionPersisterTest {
         IdProvider idProvider = new ContextPathIdProvider();
         CollectionPersister cp = new CollectionPersister(idProvider);
         CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
-        HubContext hctx = HubContext.create("user1", "hub1");
+        HubContext hctx = HubContext.create("hub1");
 
         long now = System.currentTimeMillis();
         DevicePassport dp = new DevicePassport(hctx, "dp1", "foo", now);
@@ -510,10 +507,10 @@ public class CollectionPersisterTest {
 
         VariableContext vctx = VariableContext.create(hctx, "plugin1", "device1", "foo");
         Collection<VariableContext> data = Collections.singletonList(vctx);
-        DataStream ds = new DataStream("user1", "id", "Test", data);
+        DataStream ds = new DataStream("id", "Test", data);
         cp.saveDataStream(cpc, ds);
 
-        ds = cp.restoreDataStream(cpc, "user1", "id");
+        ds = cp.restoreDataStream(cpc, "id");
         assertEquals("id", ds.getId());
         assertEquals("Test", ds.getName());
         assertEquals(1, ds.getVariables().size());

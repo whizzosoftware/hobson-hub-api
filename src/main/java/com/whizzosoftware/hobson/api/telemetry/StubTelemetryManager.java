@@ -36,7 +36,7 @@ public class StubTelemetryManager implements TelemetryManager {
     }
 
     @Override
-    public DataStream getDataStream(String userId, String dataStreamId) {
+    public DataStream getDataStream(String dataStreamId) {
         return null;
     }
 
@@ -46,12 +46,12 @@ public class StubTelemetryManager implements TelemetryManager {
     }
 
     @Override
-    public void addData(String userId, String dataStreamId, long now, Map<VariableContext, Object> data) {
+    public void addData(String dataStreamId, long now, Map<VariableContext, Object> data) {
 
     }
 
     @Override
-    public List<TemporalValueSet> getData(String userId, String dataStreamId, long endTime, TelemetryInterval interval) {
+    public List<TemporalValueSet> getData(String dataStreamId, long endTime, TelemetryInterval interval) {
         return null;
     }
 }

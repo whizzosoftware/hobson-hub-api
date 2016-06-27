@@ -64,4 +64,18 @@ public interface LocalHubManager {
      * @param manager the manager
      */
     void addTelemetryManager(TelemetryManager manager);
+
+    /**
+     * Publish a web application to the local hub.
+     *
+     * @param app the hub application to publish
+     */
+    void publishWebApplication(HubWebApplication app);
+
+    /**
+     * Unpublish a previously published web application from the local hub.
+     *
+     * @param path the root URL path of the application
+     */
+    void unpublishWebApplication(String path);
 }

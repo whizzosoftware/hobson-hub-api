@@ -62,7 +62,7 @@ public class DeviceContext implements Serializable {
      */
     public static DeviceContext create(String s) {
         String[] comps = StringUtils.split(s, HubContext.DELIMITER);
-        return DeviceContext.create(HubContext.create(comps[0], comps[1]), comps[2], comps[3]);
+        return DeviceContext.create(HubContext.create(comps[0]), comps[1], comps[2]);
     }
 
     /**
@@ -76,7 +76,7 @@ public class DeviceContext implements Serializable {
         List<DeviceContext> results = new ArrayList<>();
         for (String ctx : StringUtils.split(s, ',')) {
             String[] comps = StringUtils.split(ctx, HubContext.DELIMITER);
-            results.add(DeviceContext.create(HubContext.create(comps[0], comps[1]), comps[2], comps[3]));
+            results.add(DeviceContext.create(HubContext.create(comps[0]), comps[1], comps[2]));
         }
         return results;
     }
@@ -126,10 +126,6 @@ public class DeviceContext implements Serializable {
 
     public PluginContext getPluginContext() {
         return ctx;
-    }
-
-    public String getUserId() {
-        return ctx.getUserId();
     }
 
     public String getHubId() {
