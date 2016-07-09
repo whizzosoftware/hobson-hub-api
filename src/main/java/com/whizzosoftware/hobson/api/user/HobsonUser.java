@@ -44,11 +44,13 @@ public class HobsonUser {
     }
 
     public boolean isLocal() {
-        return (account == null);
+        return !isRemote();
     }
 
     public boolean isRemote() {
-        return (account != null);
+        return (account != null &&
+                account.getHubs() != null &&
+                (account.getHubs().size() > 1 || !account.getHubs().contains("local")));
     }
 
     public static class Builder {

@@ -31,4 +31,18 @@ public class HobsonUserTest {
         assertEquals(now, (long)u.getAccount().getExpiration());
         assertTrue(u.getAccount().hasAvailableHubs());
     }
+
+    @Test
+    public void testIsRemote() {
+        long now = System.currentTimeMillis();
+        assertFalse(new HobsonUser.Builder("uid").account(new UserAccount(now, Collections.singletonList("local"))).build().isRemote());
+        assertTrue(new HobsonUser.Builder("uid").account(new UserAccount(now, Collections.singletonList("hub1"))).build().isRemote());
+    }
+
+    @Test
+    public void testIsLocal() {
+        long now = System.currentTimeMillis();
+        assertTrue(new HobsonUser.Builder("uid").account(new UserAccount(now, Collections.singletonList("local"))).build().isLocal());
+        assertFalse(new HobsonUser.Builder("uid").account(new UserAccount(now, Collections.singletonList("hub1"))).build().isLocal());
+    }
 }
