@@ -22,6 +22,7 @@ public class HobsonHub {
     private String name;
     private String version;
     private String apiKey;
+    private String webSocketUri;
     private HubConfigurationClass configurationClass = new HubConfigurationClass();
     private PropertyContainer configuration;
 
@@ -52,6 +53,10 @@ public class HobsonHub {
 
     public String getApiKey() {
         return apiKey;
+    }
+
+    public String getWebSocketUri() {
+        return webSocketUri;
     }
 
     public PropertyContainerClass getConfigurationClass() {
@@ -90,6 +95,11 @@ public class HobsonHub {
 
         public Builder apiKey(String apiKey) {
             hub.apiKey = apiKey;
+            return this;
+        }
+
+        public Builder webSocketUri(String webSocketUri) {
+            hub.webSocketUri = webSocketUri;
             return this;
         }
 

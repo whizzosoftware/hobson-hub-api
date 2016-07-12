@@ -18,11 +18,18 @@ import java.io.IOException;
  */
 public interface LocalHubManager {
     /**
-     * Returns a viable network interface to be used for communication.
+     * Add a new appender for error logging.
      *
-     * @return a NetworkInterface object
+     * @param aAppender the appender to add
      */
-    NetworkInfo getNetworkInfo() throws IOException;
+    void addErrorLogAppender(Object aAppender);
+
+    /**
+     * Adds a manager to use for telemetry functions.
+     *
+     * @param manager the manager
+     */
+    void addTelemetryManager(TelemetryManager manager);
 
     /**
      * Authenticates the local admin user.
@@ -35,6 +42,20 @@ public interface LocalHubManager {
     boolean authenticateLocal(HubContext ctx, String password);
 
     /**
+     * Returns a viable network interface to be used for communication.
+     *
+     * @return a NetworkInterface object
+     */
+    NetworkInfo getNetworkInfo() throws IOException;
+
+    /**
+     * Publish a web application to the local hub.
+     *
+     * @param app the hub application to publish
+     */
+    void publishWebApplication(HubWebApplication app);
+
+    /**
      * Sets the password for the local admin user.
      *
      * @param ctx the context of the target hub
@@ -45,13 +66,6 @@ public interface LocalHubManager {
     void setLocalPassword(HubContext ctx, PasswordChange change);
 
     /**
-     * Add a new appender for error logging.
-     *
-     * @param aAppender the appender to add
-     */
-    void addErrorLogAppender(Object aAppender);
-
-    /**
      * Remove an appender for error logging.
      *
      * @param aAppender the appender to remove
@@ -59,18 +73,11 @@ public interface LocalHubManager {
     void removeLogAppender(Object aAppender);
 
     /**
-     * Adds a manager to use for telemetry functions.
+     * Sets a URI for a web socket server exposed by the hub.
      *
-     * @param manager the manager
+     * @param uri the URI of the websocket server
      */
-    void addTelemetryManager(TelemetryManager manager);
-
-    /**
-     * Publish a web application to the local hub.
-     *
-     * @param app the hub application to publish
-     */
-    void publishWebApplication(HubWebApplication app);
+    void setWebSocketUri(String uri);
 
     /**
      * Unpublish a previously published web application from the local hub.

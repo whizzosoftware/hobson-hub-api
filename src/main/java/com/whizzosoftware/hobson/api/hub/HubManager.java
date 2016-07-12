@@ -20,7 +20,7 @@ import java.util.Collection;
  */
 public interface HubManager {
     /**
-     * Returns the version of the hub.
+     * Returns the version of a specific hub.
      *
      * @param hubContext the context of the hub
      *
@@ -45,7 +45,7 @@ public interface HubManager {
     Collection<HubContext> getHubs(String userId);
 
     /**
-     * Returns a specific hub associated with a user.
+     * Returns a specific hub.
      *
      * @param ctx the context of the hub to retrieve
      *
