@@ -40,6 +40,11 @@ public class DelegatingTelemetryManager implements TelemetryManager {
     }
 
     @Override
+    public void deleteDataStream(String userId, String dataStreamId) {
+        metaStore.deleteDataStream(dataStreamId);
+    }
+
+    @Override
     public Collection<DataStream> getDataStreams(String userId) {
         Collection<DataStream> results = metaStore.getDataStreams(userId);
         if (results != null) {
@@ -50,7 +55,7 @@ public class DelegatingTelemetryManager implements TelemetryManager {
     }
 
     @Override
-    public DataStream getDataStream(String dataStreamId) {
+    public DataStream getDataStream(String userId, String dataStreamId) {
         DataStream ds = metaStore.getDataStream(dataStreamId);
         if (ds != null) {
             return ds;
@@ -65,12 +70,12 @@ public class DelegatingTelemetryManager implements TelemetryManager {
     }
 
     @Override
-    public void addData(String dataStreamId, long now, Map<String, Object> data) {
+    public void addData(String userId, String dataStreamId, long now, Map<String, Object> data) {
         dataStore.addData(dataStreamId, now, data);
     }
 
     @Override
-    public Collection<TemporalValueSet> getData(String dataStreamId, long endTime, TelemetryInterval interval) {
+    public Collection<TemporalValueSet> getData(String userId, String dataStreamId, long endTime, TelemetryInterval interval) {
         return dataStore.getData(dataStreamId, endTime, interval);
     }
 }

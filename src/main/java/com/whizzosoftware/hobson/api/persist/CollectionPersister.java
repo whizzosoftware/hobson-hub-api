@@ -66,6 +66,7 @@ public class CollectionPersister {
         pctx.remove(idProvider.createDataStreamFieldsId(id));
         pctx.remove(idProvider.createDataStreamTagsId(id));
         pctx.remove(idProvider.createDataStreamId(id));
+        pctx.removeFromSet(idProvider.createDataStreamsId(), id);
     }
 
     public void deleteDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {

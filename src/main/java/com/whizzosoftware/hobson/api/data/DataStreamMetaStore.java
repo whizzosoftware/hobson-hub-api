@@ -31,6 +31,13 @@ public interface DataStreamMetaStore {
     String createDataStream(String userId, String name, Collection<DataStreamField> fields, Collection<String> tags);
 
     /**
+     * Deletes a new data stream.
+     *
+     * @param dataStreamId the ID of the data stream to delete
+     */
+    void deleteDataStream(String dataStreamId);
+
+    /**
      * Retrieves all data streams for a user.
      *
      * @param userId the user ID that owns the data streams

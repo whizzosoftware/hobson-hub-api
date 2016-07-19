@@ -31,12 +31,17 @@ public class StubTelemetryManager implements TelemetryManager {
     }
 
     @Override
+    public void deleteDataStream(String userId, String dataStreamId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Collection<DataStream> getDataStreams(String userId) {
         return null;
     }
 
     @Override
-    public DataStream getDataStream(String dataStreamId) {
+    public DataStream getDataStream(String userId, String dataStreamId) {
         return null;
     }
 
@@ -46,11 +51,11 @@ public class StubTelemetryManager implements TelemetryManager {
     }
 
     @Override
-    public void addData(String dataStreamId, long now, Map<String, Object> data) {
+    public void addData(String userId, String dataStreamId, long now, Map<String, Object> data) {
     }
 
     @Override
-    public List<TemporalValueSet> getData(String dataStreamId, long endTime, TelemetryInterval interval) {
+    public List<TemporalValueSet> getData(String userId, String dataStreamId, long endTime, TelemetryInterval interval) {
         return null;
     }
 }

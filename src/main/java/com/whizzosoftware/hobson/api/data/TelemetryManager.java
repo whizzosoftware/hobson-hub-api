@@ -29,7 +29,7 @@ public interface TelemetryManager {
     /**
      * Creates a new data stream.
      *
-     * @param userId the user ID
+     * @param userId the user ID making the request
      * @param name the stream name
      * @param fields the fields that comprise the data stream
      * @param tags the tags associated with the data stream
@@ -37,6 +37,14 @@ public interface TelemetryManager {
      * @return the ID of the newly created data stream
      */
     String createDataStream(String userId, String name, Collection<DataStreamField> fields, Set<String> tags);
+
+    /**
+     * Deletes an existing data stream.
+     *
+     * @param userId the user ID making the request
+     * @param dataStreamId the ID of the stream to delete
+     */
+    void deleteDataStream(String userId, String dataStreamId);
 
     /**
      * Returns the list of created data streams.
@@ -50,12 +58,13 @@ public interface TelemetryManager {
     /**
      * Returns a specific data stream.
      *
+     * @param userId the user ID making the request
      * @param dataStreamId the data stream ID
      *
      * @return a DataStream instance
      * @throws com.whizzosoftware.hobson.api.HobsonNotFoundException if the data stream does not exist
      */
-    DataStream getDataStream(String dataStreamId);
+    DataStream getDataStream(String userId, String dataStreamId);
 
     /**
      * Returns a unique list of variables across all data streams.
@@ -68,20 +77,23 @@ public interface TelemetryManager {
 
     /**
      * Add data point(s) to a data stream.
-     *  @param dataStreamId the data stream ID
+     *
+     * @param userId the user ID making the request
+     * @param dataStreamId the data stream ID
      * @param now the time the data point occurred
      * @param data the data values (a map of fieldId to value)
      */
-    void addData(String dataStreamId, long now, Map<String, Object> data);
+    void addData(String userId, String dataStreamId, long now, Map<String, Object> data);
 
     /**
      * Returns data from a data stream.
      *
+     * @param userId the user ID making the request
      * @param dataStreamId the data stream ID
      * @param endTime the end time desired
      * @param interval the interval size of the data
      *
      * @return a Collection of TemporalValue instances
      */
-    Collection<TemporalValueSet> getData(String dataStreamId, long endTime, TelemetryInterval interval);
+    Collection<TemporalValueSet> getData(String userId, String dataStreamId, long endTime, TelemetryInterval interval);
 }
