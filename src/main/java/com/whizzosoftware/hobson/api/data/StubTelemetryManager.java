@@ -26,7 +26,7 @@ public class StubTelemetryManager implements TelemetryManager {
     }
 
     @Override
-    public String createDataStream(String userId, String name, Collection<DataStreamField> fields, Collection<String> tags) {
+    public String createDataStream(String userId, String name, Collection<DataStreamField> fields, Set<String> tags) {
         throw new UnsupportedOperationException();
     }
 

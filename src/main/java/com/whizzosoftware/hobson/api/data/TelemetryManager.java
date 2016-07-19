@@ -36,7 +36,7 @@ public interface TelemetryManager {
      *
      * @return the ID of the newly created data stream
      */
-    String createDataStream(String userId, String name, Collection<DataStreamField> fields, Collection<String> tags);
+    String createDataStream(String userId, String name, Collection<DataStreamField> fields, Set<String> tags);
 
     /**
      * Returns the list of created data streams.

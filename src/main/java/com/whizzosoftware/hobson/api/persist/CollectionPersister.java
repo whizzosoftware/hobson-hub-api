@@ -460,7 +460,9 @@ public class CollectionPersister {
             map2.put("variableId", dsf.getVariable().toString());
             pctx.setMap(fid, map2);
 
-            pctx.setSet(idProvider.createDataStreamTagsId(dataStream.getId()), (Set<Object>)(Set<?>)dataStream.getTags());
+            if (dataStream.hasTags()) {
+                pctx.setSet(idProvider.createDataStreamTagsId(dataStream.getId()), (Set<Object>)(Set<?>)dataStream.getTags());
+            }
 
             pctx.addSetValue(idProvider.createDataStreamFieldsId(dataStream.getId()), dsfid);
         }
