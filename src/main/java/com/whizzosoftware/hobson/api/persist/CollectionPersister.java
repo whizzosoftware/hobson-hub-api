@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.persist;
 
+import com.whizzosoftware.hobson.api.HobsonRuntimeException;
+import com.whizzosoftware.hobson.api.data.DataStreamField;
 import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
@@ -19,7 +21,7 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
 import com.whizzosoftware.hobson.api.task.HobsonTask;
 import com.whizzosoftware.hobson.api.task.TaskContext;
-import com.whizzosoftware.hobson.api.telemetry.DataStream;
+import com.whizzosoftware.hobson.api.data.DataStream;
 import com.whizzosoftware.hobson.api.util.StringConversionUtil;
 import com.whizzosoftware.hobson.api.variable.HobsonVariable;
 import com.whizzosoftware.hobson.api.variable.ImmutableHobsonVariable;
@@ -54,6 +56,16 @@ public class CollectionPersister {
         pctx.remove(idProvider.createActionSetActionsId(hctx, id));
         pctx.remove(idProvider.createActionSetId(hctx, id));
         pctx.removeFromSet(idProvider.createActionSetsId(hctx), id);
+    }
+
+    public void deleteDataStream(CollectionPersistenceContext pctx, String id) {
+        Set<Object> fields = pctx.getSet(idProvider.createDataStreamFieldsId(id));
+        for (Object key : fields) {
+            pctx.remove(idProvider.createDataStreamFieldId(id, (String)key));
+        }
+        pctx.remove(idProvider.createDataStreamFieldsId(id));
+        pctx.remove(idProvider.createDataStreamTagsId(id));
+        pctx.remove(idProvider.createDataStreamId(id));
     }
 
     public void deleteDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
@@ -183,15 +195,21 @@ public class CollectionPersister {
     }
 
     public DataStream restoreDataStream(CollectionPersistenceContext pctx, String dataStreamId) {
-        List<VariableContext> variables = new ArrayList<>();
+        List<DataStreamField> fields = new ArrayList<>();
 
-        for (Object vctxs : pctx.getSet(idProvider.createDataStreamVariablesId(dataStreamId))) {
-            variables.add(VariableContext.create((String)vctxs));
+        Set<Object> set = pctx.getSet(idProvider.createDataStreamFieldsId(dataStreamId));
+        for (Object fieldId : set) {
+            Map<String,Object> map2 = pctx.getMap(idProvider.createDataStreamFieldId(dataStreamId, (String)fieldId));
+            fields.add(new DataStreamField((String)fieldId, (String)map2.get("name"), VariableContext.create((String)map2.get("variableId"))));
         }
 
-        Map<String,Object> map = pctx.getMap(idProvider.createDataStreamId(dataStreamId));
+        HashSet<String> tags = new HashSet<>();
+        for (Object o : pctx.getSet(idProvider.createDataStreamTagsId(dataStreamId))) {
+            tags.add(o.toString());
+        }
 
-        return new DataStream(dataStreamId, (String)map.get(PropertyConstants.NAME), variables);
+        Map<String,Object> map2 = pctx.getMap(idProvider.createDataStreamId(dataStreamId));
+        return new DataStream(dataStreamId, (String)map2.get(PropertyConstants.NAME), fields, tags);
     }
 
     public HobsonDevice restoreDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
@@ -430,9 +448,21 @@ public class CollectionPersister {
         pctx.setMap(idProvider.createDataStreamId(dataStream.getId()), map);
 
         // save data stream variables
-        String dsVarsId = idProvider.createDataStreamVariablesId(dataStream.getId());
-        for (VariableContext vc : dataStream.getVariables()) {
-            pctx.addSetValue(dsVarsId, vc.toString());
+        for (DataStreamField dsf : dataStream.getFields()) {
+            Map<String,Object> map2 = new HashMap<>();
+            String dsfid = dsf.getId();
+            if (dsfid == null) {
+                throw new HobsonRuntimeException("Data stream field with no ID found");
+            }
+            String fid = idProvider.createDataStreamFieldId(dataStream.getId(), dsfid);
+            map2.put("id", dsfid);
+            map2.put("name", dsf.getName());
+            map2.put("variableId", dsf.getVariable().toString());
+            pctx.setMap(fid, map2);
+
+            pctx.setSet(idProvider.createDataStreamTagsId(dataStream.getId()), (Set<Object>)(Set<?>)dataStream.getTags());
+
+            pctx.addSetValue(idProvider.createDataStreamFieldsId(dataStream.getId()), dsfid);
         }
 
         // add data stream ID to set of hub data streams

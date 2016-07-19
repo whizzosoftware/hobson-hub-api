@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.telemetry;
+package com.whizzosoftware.hobson.api.data;
 
 import com.whizzosoftware.hobson.api.variable.VariableContext;
 
@@ -31,11 +31,12 @@ public interface TelemetryManager {
      *
      * @param userId the user ID
      * @param name the stream name
-     * @param variables the variables that comprise the stream data
+     * @param fields the fields that comprise the data stream
+     * @param tags the tags associated with the data stream
      *
      * @return the ID of the newly created data stream
      */
-    String createDataStream(String userId, String name, Collection<VariableContext> variables);
+    String createDataStream(String userId, String name, Collection<DataStreamField> fields, Collection<String> tags);
 
     /**
      * Returns the list of created data streams.
@@ -69,9 +70,9 @@ public interface TelemetryManager {
      * Add data point(s) to a data stream.
      *  @param dataStreamId the data stream ID
      * @param now the time the data point occurred
-     * @param data the data values
+     * @param data the data values (a map of fieldId to value)
      */
-    void addData(String dataStreamId, long now, Map<VariableContext, Object> data);
+    void addData(String dataStreamId, long now, Map<String, Object> data);
 
     /**
      * Returns data from a data stream.

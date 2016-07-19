@@ -5,41 +5,39 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.telemetry;
+package com.whizzosoftware.hobson.api.data;
 
 import com.whizzosoftware.hobson.api.variable.VariableContext;
 
-import java.util.Collection;
-
 /**
- * A named collection of variables that define a telemetry data stream.
+ * Represents a field in a data stream. It is essentially a named reference to a variable.
  *
  * @author Dan Noguerol
  */
-public class DataStream {
+public class DataStreamField {
     private String id;
     private String name;
-    private Collection<VariableContext> variables;
+    private VariableContext ctx;
 
-    public DataStream(String id, String name, Collection<VariableContext> variables) {
+    public DataStreamField(String id, String name, VariableContext ctx) {
         this.id = id;
         this.name = name;
-        this.variables = variables;
+        this.ctx = ctx;
     }
 
     public String getId() {
         return id;
     }
 
+    public boolean hasId() {
+        return (id != null);
+    }
+
     public String getName() {
         return name;
     }
 
-    public boolean hasVariables() {
-        return (variables != null && variables.size() > 0);
-    }
-
-    public Collection<VariableContext> getVariables() {
-        return variables;
+    public VariableContext getVariable() {
+        return ctx;
     }
 }

@@ -33,7 +33,9 @@ public interface IdProvider {
     String createDataStreamsId();
     String createDataStreamId(String dataStreamId);
     String createDataStreamDataId(String dataStreamId);
-    String createDataStreamVariablesId(String dataStreamId);
+    String createDataStreamFieldId(String dataStreamId, String fieldId);
+    String createDataStreamFieldsId(String dataStreamId);
+    String createDataStreamTagsId(String dataStreamId);
     String createDevicesId(HubContext ctx);
     DeviceContext createDeviceContext(String deviceId);
     DeviceContext createDeviceContextWithHub(HubContext ctx, String deviceId);

@@ -5,9 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.telemetry;
-
-import com.whizzosoftware.hobson.api.variable.VariableContext;
+package com.whizzosoftware.hobson.api.data;
 
 import java.util.Collection;
 import java.util.Map;
@@ -20,11 +18,11 @@ import java.util.Map;
 public interface DataStreamDataStore {
     /**
      * Add data to a data stream.
-     *  @param dataStreamId the data stream ID
+     * @param dataStreamId the data stream ID
      * @param timestamp the timestamp of the data
-     * @param data the data values
+     * @param data the data values (a map of fieldId to value)
      */
-    void addData(String dataStreamId, long timestamp, Map<VariableContext, Object> data);
+    void addData(String dataStreamId, long timestamp, Map<String, Object> data);
 
     /**
      * Retrieves data values from a data stream.

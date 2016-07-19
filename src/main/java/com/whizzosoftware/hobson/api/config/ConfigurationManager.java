@@ -91,6 +91,8 @@ public interface ConfigurationManager {
      * Retrieves a specific device's configuration.
      *
      * @param ctx the device context
+     * @param metas the class for the configuration
+     * @param name the name
      *
      * @return a PropertyContainer instance containing the configuration
      */
@@ -110,6 +112,8 @@ public interface ConfigurationManager {
      * Sets a specific device's configuration.
      *
      * @param ctx the device context
+     * @param configurationClass the class for the configuration
+     * @param deviceName the name of the device
      * @param values the configuration property values
      * @param overwrite indicates whether an existing configuration property can be overwritten
      */

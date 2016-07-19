@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.telemetry;
+package com.whizzosoftware.hobson.api.data;
 
 import com.whizzosoftware.hobson.api.variable.VariableContext;
 
@@ -26,7 +26,7 @@ public class StubTelemetryManager implements TelemetryManager {
     }
 
     @Override
-    public String createDataStream(String userId, String name, Collection<VariableContext> data) {
+    public String createDataStream(String userId, String name, Collection<DataStreamField> fields, Collection<String> tags) {
         throw new UnsupportedOperationException();
     }
 
@@ -46,8 +46,7 @@ public class StubTelemetryManager implements TelemetryManager {
     }
 
     @Override
-    public void addData(String dataStreamId, long now, Map<VariableContext, Object> data) {
-
+    public void addData(String dataStreamId, long now, Map<String, Object> data) {
     }
 
     @Override

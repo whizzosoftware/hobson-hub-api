@@ -1,5 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2015 Whizzo Software, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package com.whizzosoftware.hobson.api.persist;
 
+import com.whizzosoftware.hobson.api.data.DataStreamField;
 import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
@@ -15,7 +23,7 @@ import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
 import com.whizzosoftware.hobson.api.task.action.TaskActionExecutor;
 import com.whizzosoftware.hobson.api.task.condition.ConditionClassType;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
-import com.whizzosoftware.hobson.api.telemetry.DataStream;
+import com.whizzosoftware.hobson.api.data.DataStream;
 import com.whizzosoftware.hobson.api.variable.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -499,22 +507,62 @@ public class CollectionPersisterTest {
     }
 
     @Test
-    public void testSaveAndRestoreDataStream() {
+    public void testSaveRestoreDeleteDataStream() {
         IdProvider idProvider = new ContextPathIdProvider();
         CollectionPersister cp = new CollectionPersister(idProvider);
         CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
         HubContext hctx = HubContext.createLocal();
 
-        VariableContext vctx = VariableContext.create(hctx, "plugin1", "device1", "foo");
-        Collection<VariableContext> data = Collections.singletonList(vctx);
-        DataStream ds = new DataStream("id", "Test", data);
+        VariableContext vctx1 = VariableContext.create(hctx, "plugin1", "device1", "foo");
+        VariableContext vctx2 = VariableContext.create(hctx, "plugin2", "device2", "foo2");
+        Collection<DataStreamField> fields = new ArrayList<>();
+        fields.add(new DataStreamField("field1", "test", vctx1));
+        fields.add(new DataStreamField("field2", "test2", vctx2));
+        HashSet<String> tags = new HashSet<>();
+        tags.add("tag1");
+        tags.add("tag2");
+        DataStream ds = new DataStream("id", "Test", fields, tags);
         cp.saveDataStream(cpc, ds);
 
         ds = cp.restoreDataStream(cpc, "id");
         assertEquals("id", ds.getId());
         assertEquals("Test", ds.getName());
-        assertEquals(1, ds.getVariables().size());
-        assertEquals(vctx, ds.getVariables().iterator().next());
+        assertEquals(2, ds.getFields().size());
+
+        for (DataStreamField dsf : ds.getFields()) {
+            assertTrue(dsf.getId().equals("test") || dsf.getId() != null);
+            assertTrue(dsf.getName().equals("test") || dsf.getName().equals("test2"));
+            assertTrue(dsf.getVariable().equals(vctx1) || dsf.getVariable().equals(vctx2));
+        }
+
+        assertNotNull(ds.getTags());
+        assertEquals(2, ds.getTags().size());
+        assertTrue(ds.getTags().contains("tag1"));
+        assertTrue(ds.getTags().contains("tag2"));
+
+        cp.deleteDataStream(cpc, "id");
+        assertEquals(0, cpc.getMap(idProvider.createDataStreamId("id")).size());
+        assertEquals(0, cpc.getSet(idProvider.createDataStreamFieldsId("id")).size());
+        assertEquals(0, cpc.getMap(idProvider.createDataStreamFieldId("id", "field1")).size());
+        assertEquals(0, cpc.getSet(idProvider.createDataStreamTagsId("id")).size());
+    }
+
+    @Test
+    public void testSaveDataStreamWithNullTags() {
+        IdProvider idProvider = new ContextPathIdProvider();
+        CollectionPersister cp = new CollectionPersister(idProvider);
+        CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
+        HubContext hctx = HubContext.createLocal();
+        Collection<DataStreamField> fields = new ArrayList<>();
+        fields.add(new DataStreamField("field1", "test", VariableContext.create(hctx, "plugin1", "device1", "foo")));
+        fields.add(new DataStreamField("field2", "test2", VariableContext.create(hctx, "plugin2", "device2", "foo2")));
+
+        DataStream ds = new DataStream("id", "Test", fields, null);
+        cp.saveDataStream(cpc, ds);
+
+        ds = cp.restoreDataStream(cpc, "id");
+
+        assertEquals(0, ds.getTags().size());
     }
 
     @Test

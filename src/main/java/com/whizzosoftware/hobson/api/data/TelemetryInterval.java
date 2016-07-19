@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.telemetry;
+package com.whizzosoftware.hobson.api.data;
 
 /**
  * An interval for telemetry data.

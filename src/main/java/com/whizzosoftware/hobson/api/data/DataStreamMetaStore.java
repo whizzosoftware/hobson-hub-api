@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.telemetry;
+package com.whizzosoftware.hobson.api.data;
 
 import com.whizzosoftware.hobson.api.variable.VariableContext;
 
@@ -23,11 +23,12 @@ public interface DataStreamMetaStore {
      *
      * @param userId the user ID that owns the data stream
      * @param name the name of the data stream
-     * @param variables the variable contexts that comprise the data stream
+     * @param fields the fields that comprise the data stream
+     * @param tags a list of tags associated with the data stream
      *
      * @return the ID of the new data stream
      */
-    String createDataStream(String userId, String name, Collection<VariableContext> variables);
+    String createDataStream(String userId, String name, Collection<DataStreamField> fields, Collection<String> tags);
 
     /**
      * Retrieves all data streams for a user.
