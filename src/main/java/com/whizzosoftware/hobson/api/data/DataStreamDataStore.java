@@ -33,5 +33,5 @@ public interface DataStreamDataStore {
      *
      * @return a Collection of TemporalValueSet objects (returns an empty collection if there's no data)
      */
-    Collection<TemporalValueSet> getData(String dataStreamId, long endTime, TelemetryInterval interval);
+    Collection<DataStreamValueSet> getData(String dataStreamId, long endTime, DataStreamInterval interval);
 }

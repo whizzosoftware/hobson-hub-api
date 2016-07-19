@@ -15,15 +15,15 @@ import java.util.Map;
  *
  * @author Dan Noguerol
  */
-public class TemporalValueSet {
+public class DataStreamValueSet {
     private long time;
     private Map<String,Object> values;
 
-    public TemporalValueSet(long time) {
+    public DataStreamValueSet(long time) {
         this(time, new HashMap<String,Object>());
     }
 
-    public TemporalValueSet(long time, Map<String,Object> values) {
+    public DataStreamValueSet(long time, Map<String,Object> values) {
         this.time = time;
         this.values = values;
     }

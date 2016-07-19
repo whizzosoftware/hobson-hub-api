@@ -7,7 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.hub;
 
-import com.whizzosoftware.hobson.api.data.TelemetryManager;
+import com.whizzosoftware.hobson.api.data.DataStreamManager;
 
 import java.io.IOException;
 
@@ -29,7 +29,7 @@ public interface LocalHubManager {
      *
      * @param manager the manager
      */
-    void addTelemetryManager(TelemetryManager manager);
+    void addDataStreamManager(DataStreamManager manager);
 
     /**
      * Authenticates the local admin user.

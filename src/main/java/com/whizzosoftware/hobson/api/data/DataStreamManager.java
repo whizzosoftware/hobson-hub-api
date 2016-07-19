@@ -14,11 +14,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * An interface for managing device telemetry.
+ * An interface for managing data streams.
  *
  * @author Dan Noguerol
  */
-public interface TelemetryManager {
+public interface DataStreamManager {
     /**
      * Indicates if this manager is a stub (NO-OP) implementation.
      *
@@ -76,7 +76,7 @@ public interface TelemetryManager {
     Set<VariableContext> getMonitoredVariables(String userId);
 
     /**
-     * Add data point(s) to a data stream.
+     * Adds data to a data stream.
      *
      * @param userId the user ID making the request
      * @param dataStreamId the data stream ID
@@ -95,5 +95,5 @@ public interface TelemetryManager {
      *
      * @return a Collection of TemporalValue instances
      */
-    Collection<TemporalValueSet> getData(String userId, String dataStreamId, long endTime, TelemetryInterval interval);
+    Collection<DataStreamValueSet> getData(String userId, String dataStreamId, long endTime, DataStreamInterval interval);
 }

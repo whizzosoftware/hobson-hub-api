@@ -19,7 +19,7 @@ import java.util.Set;
  *
  * @author Dan Noguerol
  */
-public class StubTelemetryManager implements TelemetryManager {
+public class StubDataStreamManager implements DataStreamManager {
     @Override
     public boolean isStub() {
         return true;
@@ -55,7 +55,7 @@ public class StubTelemetryManager implements TelemetryManager {
     }
 
     @Override
-    public List<TemporalValueSet> getData(String userId, String dataStreamId, long endTime, TelemetryInterval interval) {
+    public List<DataStreamValueSet> getData(String userId, String dataStreamId, long endTime, DataStreamInterval interval) {
         return null;
     }
 }

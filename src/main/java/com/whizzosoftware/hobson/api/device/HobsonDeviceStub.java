@@ -90,16 +90,6 @@ public class HobsonDeviceStub implements HobsonDevice {
     }
 
     @Override
-    public boolean isTelemetryCapable() {
-        return false;
-    }
-
-    @Override
-    public String[] getTelemetryVariableNames() {
-        return null;
-    }
-
-    @Override
     public HobsonDeviceRuntime getRuntime() {
         return null;
     }

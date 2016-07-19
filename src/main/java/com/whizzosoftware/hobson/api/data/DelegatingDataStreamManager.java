@@ -15,16 +15,17 @@ import java.util.*;
 
 /**
  * An implementation of TelemetryManager that delegates operations to a DataStreamMetaStore and a
- * DataStreamDataStore.
+ * DataStreamDataStore. This facilitates storage of data stream meta data and data stream data
+ * in different places.
  *
  * @author Dan Noguerol
  */
-public class DelegatingTelemetryManager implements TelemetryManager {
+public class DelegatingDataStreamManager implements DataStreamManager {
     private DataStreamMetaStore metaStore;
     private DataStreamDataStore dataStore;
 
     @Inject
-    public DelegatingTelemetryManager(DataStreamMetaStore metaStore, DataStreamDataStore dataStore) {
+    public DelegatingDataStreamManager(DataStreamMetaStore metaStore, DataStreamDataStore dataStore) {
         this.metaStore = metaStore;
         this.dataStore = dataStore;
     }
@@ -75,7 +76,7 @@ public class DelegatingTelemetryManager implements TelemetryManager {
     }
 
     @Override
-    public Collection<TemporalValueSet> getData(String userId, String dataStreamId, long endTime, TelemetryInterval interval) {
+    public Collection<DataStreamValueSet> getData(String userId, String dataStreamId, long endTime, DataStreamInterval interval) {
         return dataStore.getData(dataStreamId, endTime, interval);
     }
 }

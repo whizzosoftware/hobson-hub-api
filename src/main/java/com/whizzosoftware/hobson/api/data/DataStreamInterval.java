@@ -8,11 +8,11 @@
 package com.whizzosoftware.hobson.api.data;
 
 /**
- * An interval for telemetry data.
+ * An interval indicating effectivity of data stream data.
  *
  * @author Dan Noguerol
  */
-public enum TelemetryInterval {
+public enum DataStreamInterval {
     HOURS_1,
     HOURS_4,
     HOURS_24,

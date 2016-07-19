@@ -132,18 +132,8 @@ abstract public class AbstractHobsonDevice implements HobsonDevice, HobsonDevice
     }
 
     @Override
-    public boolean isTelemetryCapable() {
-        return (getTelemetryVariableNames() != null);
-    }
-
-    @Override
     public HobsonDeviceRuntime getRuntime() {
         return this;
-    }
-
-    @Override
-    public String[] getTelemetryVariableNames() {
-        return null;
     }
 
     @Override

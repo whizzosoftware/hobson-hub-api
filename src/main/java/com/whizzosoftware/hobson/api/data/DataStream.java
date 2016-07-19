@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * A named collection of variables that define a telemetry data stream.
+ * A named collection fields comprising a temporal stream of data.
  *
  * @author Dan Noguerol
  */

@@ -110,6 +110,11 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
+    public Set<String> getDeviceTags(DeviceContext ctx) {
+        return null;
+    }
+
+    @Override
     public void publishDevice(HobsonDevice device) {
         publishDevice(device, false);
     }
@@ -156,6 +161,11 @@ public class MockDeviceManager implements DeviceManager {
         for (String name : values.keySet()) {
             setDeviceConfigurationProperty(ctx, name, values.get(name), overwrite);
         }
+    }
+
+    @Override
+    public void setDeviceTags(DeviceContext ctx, Set<String> tags) {
+
     }
 
     public void addPublishedDevice(HobsonDevice device) {

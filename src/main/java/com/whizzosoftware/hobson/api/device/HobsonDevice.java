@@ -103,20 +103,6 @@ public interface HobsonDevice {
     PropertyContainerClass getConfigurationClass();
 
     /**
-     * Indicates whether this device can provide telemetry data.
-     *
-     * @return a boolean
-     */
-    boolean isTelemetryCapable();
-
-    /**
-     * Returns the name(s) of the variables that should be used if telemetry is enabled for this device.
-     *
-     * @return an array of Strings (or null if telemetry should never be enabled for this device)
-     */
-    String[] getTelemetryVariableNames();
-
-    /**
      * Returns a an object that can be used to invoke methods related to device runtime execution.
      *
      * @return a HobsonPluginExecution instance (or null if this object doesn't support a runtime)

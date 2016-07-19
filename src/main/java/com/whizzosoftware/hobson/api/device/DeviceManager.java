@@ -15,6 +15,7 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * An interface for managing Hobson devices.
@@ -143,6 +144,15 @@ public interface DeviceManager {
     Long getDeviceLastCheckIn(DeviceContext ctx);
 
     /**
+     * Returns the tags for a device.
+     *
+     * @param ctx the device context
+     *
+     * @return a set of String tags (or null if none are defined)
+     */
+    Set<String> getDeviceTags(DeviceContext ctx);
+
+    /**
      * Indicates whether a device has been published.
      *
      * @param ctx the context of the device to check
@@ -216,6 +226,14 @@ public interface DeviceManager {
      * @param overwrite indicates whether an existing configuration value should be overwritten
      */
     void setDeviceConfigurationProperties(DeviceContext ctx, Map<String,Object> values, boolean overwrite);
+
+    /**
+     * Sets the tag(s) for a device.
+     *
+     * @param ctx the device context
+     * @param tags the tags
+     */
+    void setDeviceTags(DeviceContext ctx, Set<String> tags);
 
     /**
      * Stops an unpublishes all devices associated with a specific plugin.
