@@ -22,7 +22,6 @@ public class TypedProperty {
     private String description;
     private Type type;
     private List<TypedPropertyConstraint> constraints;
-    private boolean isPublic = true;
 
     /**
      * Constructor.
@@ -61,10 +60,6 @@ public class TypedProperty {
         return constraints;
     }
 
-    public boolean isPublic() {
-        return isPublic;
-    }
-
     private void addConstraint(PropertyConstraintType type, Object argument) {
         if (constraints == null) {
             constraints = new ArrayList<>();
@@ -97,7 +92,6 @@ public class TypedProperty {
     public enum Type {
         BOOLEAN,
         COLOR,
-        CURRENT_TASK,
         DATE,
         DEVICE,
         DEVICES,
@@ -116,11 +110,6 @@ public class TypedProperty {
 
         public Builder(String id, String name, String description, Type type) {
             prop = new TypedProperty(id, name, description, type, null);
-        }
-
-        public Builder isPublic(boolean isPublic) {
-            prop.isPublic = isPublic;
-            return this;
         }
 
         public Builder constraint(PropertyConstraintType type, Object argument) {
