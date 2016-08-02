@@ -433,11 +433,13 @@ public class CollectionPersister {
         }
         pctx.setMap(idProvider.createTaskConditionId(tctx, pc.getId()), cmap);
         pctx.addSetValue(idProvider.createTaskConditionsId(tctx), pc.getId());
-        Map<String, Object> m = new HashMap<>();
-        for (String pvalName : pc.getPropertyValues().keySet()) {
-            m.put(pvalName, pc.getPropertyValues().get(pvalName));
+        if (pc.hasPropertyValues()) {
+            Map<String, Object> m = new HashMap<>();
+            for (String pvalName : pc.getPropertyValues().keySet()) {
+                m.put(pvalName, pc.getPropertyValues().get(pvalName));
+            }
+            pctx.setMap(idProvider.createTaskConditionPropertiesId(tctx, pc.getId()), m);
         }
-        pctx.setMap(idProvider.createTaskConditionPropertiesId(tctx, pc.getId()), m);
     }
 
     public void saveDataStream(CollectionPersistenceContext pctx, DataStream dataStream) {

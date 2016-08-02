@@ -47,6 +47,13 @@ public interface TaskManager extends TaskConditionClassProvider {
     void deleteTask(TaskContext ctx);
 
     /**
+     * Manually executes a task.
+     *
+     * @param ctx the context of the task to execute
+     */
+    void executeTask(TaskContext ctx);
+
+    /**
      * Executes an action set.
      *
      * @param ctx the context of the action set

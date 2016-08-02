@@ -11,12 +11,14 @@ import com.whizzosoftware.hobson.api.hub.HubContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.Serializable;
+
 /**
  * A class that encapsulates the fully-qualified context of a task.
  *
  * @author Dan Noguerol
  */
-public class TaskContext {
+public class TaskContext implements Serializable {
     private final HubContext hubContext;
     private final String taskId;
 

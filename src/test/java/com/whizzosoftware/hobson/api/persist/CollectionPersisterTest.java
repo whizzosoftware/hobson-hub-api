@@ -374,6 +374,18 @@ public class CollectionPersisterTest {
     }
 
     @Test
+    public void testSaveConditionWithNoProperties() {
+        IdProvider idProvider = new ContextPathIdProvider();
+        HubContext hctx = HubContext.createLocal();
+        CollectionPersistenceContext pctx = new MockCollectionPersistenceContext();
+        CollectionPersister cp = new CollectionPersister(idProvider);
+
+        TaskContext tctx = TaskContext.create(hctx, "task1");
+        PropertyContainer pc = new PropertyContainer(PropertyContainerClassContext.create(hctx, "cc1"), null);
+        cp.saveCondition(pctx, tctx, pc);
+    }
+
+    @Test
     public void testSaveRestoreDeleteDevice() {
         IdProvider idProvider = new ContextPathIdProvider();
         CollectionPersister cp = new CollectionPersister(idProvider);
@@ -609,6 +621,11 @@ public class CollectionPersisterTest {
 
         @Override
         public void deleteTask(TaskContext ctx) {
+
+        }
+
+        @Override
+        public void executeTask(TaskContext ctx) {
 
         }
 

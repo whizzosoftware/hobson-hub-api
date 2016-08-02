@@ -115,9 +115,11 @@ public class PropertyContainerClass {
      * @return a boolean
      */
     public boolean evaluatePropertyConstraints(Collection<String> publishedVariableNames) {
-        for (TypedProperty tp : supportedProperties) {
-            if (!tp.evaluateConstraints(publishedVariableNames)) {
-                return false;
+        if (supportedProperties != null) {
+            for (TypedProperty tp : supportedProperties) {
+                if (!tp.evaluateConstraints(publishedVariableNames)) {
+                    return false;
+                }
             }
         }
         return true;
