@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Whizzo Software, LLC.
+ * Copyright (c) 2016 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,20 +7,16 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin.http;
 
-import com.ning.http.client.AsyncCompletionHandler;
-import com.ning.http.client.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
 /**
- * An AsyncCompletionHandler that calls a HobsonPlugin's onHttpResponse() or onHttpRequestFailure() method
- * when an HTTP response is received.
+ * An HttpChannelCompletionHandler is responsible for calling a HobsonPlugin's onHttpResponse() or
+ * onHttpRequestFailure() method when an HTTP response is received.
  *
  * @author Dan Noguerol
  */
-public class HttpChannelCompletionHandler extends AsyncCompletionHandler<Response> {
+public class HttpChannelCompletionHandler {
     private final static Logger logger = LoggerFactory.getLogger(HttpChannelCompletionHandler.class);
 
     private AbstractHttpClientPlugin plugin;
@@ -31,24 +27,20 @@ public class HttpChannelCompletionHandler extends AsyncCompletionHandler<Respons
         this.context = context;
     }
 
-    @Override
-    public Response onCompleted(final Response response) throws Exception {
+    public void onSuccess(final HttpResponse response) {
         plugin.executeInEventLoop(new Runnable() {
             @Override
             public void run() {
                 try {
-                    plugin.onHttpResponse(response.getStatusCode(), null, response.getResponseBody(), context);
+                    plugin.onHttpResponse(response, context);
                 } catch (Throwable t) {
                     logger.error("Error processing HTTP response", t);
                 }
             }
         });
-
-        return response;
     }
 
-    @Override
-    public void onThrowable(final Throwable t) {
+    public void onFailure(final Throwable t) {
         plugin.executeInEventLoop(new Runnable() {
             @Override
             public void run() {
