@@ -25,6 +25,7 @@ public class PropertyConstants {
     public static final String EXPIRE_TIME = "expireTime";
     public static final String FAMILY_NAME = "familyName";
     public static final String GIVEN_NAME = "givenName";
+    public static final String HUB_ID = "hubId";
     public static final String HUBS = "hubs";
     public static final String ID = "id";
     public static final String NAME = "name";

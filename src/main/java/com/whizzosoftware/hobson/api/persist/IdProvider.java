@@ -16,7 +16,8 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassType;
 import com.whizzosoftware.hobson.api.task.TaskContext;
-import com.whizzosoftware.hobson.api.variable.VariableContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
+import com.whizzosoftware.hobson.api.variable.GlobalVariableContext;
 
 /**
  * An interface for classes that can provide IDs for common Hobson model entities.
@@ -43,9 +44,13 @@ public interface IdProvider {
     String createDevicePassportId(HubContext ctx, String passportId);
     String createDevicePassportsId(HubContext ctx);
     String createDeviceConfigurationId(DeviceContext ctx);
+    String createDeviceVariableDescriptionId(DeviceVariableContext vctx);
+    String createDeviceVariableId(DeviceVariableContext vctx);
     String createDeviceConfigurationClassId(DeviceContext ctx);
+    String createPluginDeviceConfigurationClassesId(PluginContext ctx);
+    String createPluginDeviceConfigurationClassId(PluginContext ctx, String name);
     String createDeviceVariablesId(DeviceContext ctx);
-    String createGlobalVariableId(HubContext ctx, String name);
+    String createGlobalVariableId(GlobalVariableContext gvctx);
     String createGlobalVariablesId(HubContext ctx);
     String createHubId(HubContext ctx);
     String createHubConfigurationClassId(HubContext ctx);
@@ -95,7 +100,5 @@ public interface IdProvider {
     String createUserId(String userId);
     String createUserHubsId(String userId);
     String createUsersId();
-    VariableContext createVariableContext(String variableId);
-    String createVariableId(VariableContext ctx);
-    String createVariablesId(HubContext ctx);
+    DeviceVariableContext createDeviceVariableContext(String variableId);
 }

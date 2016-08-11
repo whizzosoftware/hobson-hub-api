@@ -92,11 +92,10 @@ public interface ConfigurationManager {
      *
      * @param ctx the device context
      * @param metas the class for the configuration
-     * @param name the name
      *
      * @return a PropertyContainer instance containing the configuration
      */
-    PropertyContainer getDeviceConfiguration(DeviceContext ctx, PropertyContainerClass metas, String name);
+    PropertyContainer getDeviceConfiguration(DeviceContext ctx, PropertyContainerClass metas);
 
     /**
      * Retrieves a specific device's configuration property.

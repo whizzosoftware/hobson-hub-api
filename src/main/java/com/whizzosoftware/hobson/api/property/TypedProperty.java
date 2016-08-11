@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.property;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,11 +17,12 @@ import java.util.List;
  *
  * @author Dan Noguerol
  */
-public class TypedProperty {
+public class TypedProperty implements Serializable { // TODO: remove
     private String id;
     private String name;
     private String description;
     private Type type;
+    private Object[] enumeration;
     private List<TypedPropertyConstraint> constraints;
 
     /**
@@ -32,11 +34,12 @@ public class TypedProperty {
      * @param type the property type
      * @param constraints a set of constraints that the property must adhere to
      */
-    private TypedProperty(String id, String name, String description, Type type, List<TypedPropertyConstraint> constraints) {
+    private TypedProperty(String id, String name, String description, Type type, Object[] enumeration, List<TypedPropertyConstraint> constraints) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.type = type;
+        this.enumeration = enumeration;
         this.constraints = constraints;
     }
 
@@ -56,15 +59,20 @@ public class TypedProperty {
         return type;
     }
 
+    public Object[] getEnumeration() {
+        return enumeration;
+    }
+
     public Collection<TypedPropertyConstraint> getConstraints() {
         return constraints;
     }
 
-    private void addConstraint(PropertyConstraintType type, Object argument) {
+    public TypedProperty addConstraint(PropertyConstraintType type, Object argument) {
         if (constraints == null) {
             constraints = new ArrayList<>();
         }
         constraints.add(new TypedPropertyConstraint(type, argument));
+        return this;
     }
 
     /**
@@ -95,21 +103,28 @@ public class TypedProperty {
         DATE,
         DEVICE,
         DEVICES,
-        RECURRENCE,
+        LOCATION,
         NUMBER,
         PRESENCE_ENTITY,
-        LOCATION,
+        RECURRENCE,
         SECURE_STRING,
-        SERIAL_PORT,
         STRING,
         TIME
     }
-
     public static class Builder {
         private TypedProperty prop;
 
         public Builder(String id, String name, String description, Type type) {
-            prop = new TypedProperty(id, name, description, type, null);
+            prop = new TypedProperty(id, name, description, type, null, null);
+        }
+
+        public Builder enumeration(Object[] enumeration) {
+            if ((prop.type == Type.STRING && enumeration instanceof String[]) || (prop.type == Type.NUMBER && enumeration instanceof Integer[])) {
+                prop.enumeration = enumeration;
+                return this;
+            } else {
+                throw new IllegalArgumentException("Only enumerations of strings and integers are currently supported");
+            }
         }
 
         public Builder constraint(PropertyConstraintType type, Object argument) {

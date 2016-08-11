@@ -8,16 +8,19 @@
 package com.whizzosoftware.hobson.api.variable;
 
 /**
- * A class representing a variable change - both the old value and new value.
+ * A class representing a device variable update including both the old and new values.
  *
  * @author Dan Noguerol
  */
-public class VariableChange {
-    private VariableContext ctx;
-    private HobsonVariable.Mask mask;
+public class DeviceVariableUpdate {
+    private DeviceVariableContext ctx;
     private Object oldValue;
     private Object newValue;
     private long timestamp;
+
+    public DeviceVariableUpdate(DeviceVariableContext ctx, Object newValue) {
+        this(ctx, null, newValue);
+    }
 
     /**
      * Constructor.
@@ -26,8 +29,8 @@ public class VariableChange {
      * @param oldValue the previous variable value
      * @param newValue the new variable value
      */
-    public VariableChange(VariableContext ctx, HobsonVariable.Mask mask, Object oldValue, Object newValue) {
-        this(ctx, mask, oldValue, newValue, System.currentTimeMillis());
+    public DeviceVariableUpdate(DeviceVariableContext ctx, Object oldValue, Object newValue) {
+        this(ctx, oldValue, newValue, System.currentTimeMillis());
     }
 
     /**
@@ -38,9 +41,8 @@ public class VariableChange {
      * @param newValue the new variable value
      * @param timestamp the time the variable was updated
      */
-    public VariableChange(VariableContext ctx, HobsonVariable.Mask mask, Object oldValue, Object newValue, long timestamp) {
+    public DeviceVariableUpdate(DeviceVariableContext ctx, Object oldValue, Object newValue, long timestamp) {
         this.ctx = ctx;
-        this.mask = mask;
         this.oldValue = oldValue;
         this.newValue = newValue;
         this.timestamp = timestamp;
@@ -51,7 +53,7 @@ public class VariableChange {
      *
      * @return a DeviceContext instance
      */
-    public VariableContext getContext() {
+    public DeviceVariableContext getContext() {
         return ctx;
     }
 
@@ -80,15 +82,6 @@ public class VariableChange {
      */
     public String getName() {
         return ctx.getName();
-    }
-
-    /**
-     * Returns the variable mask.
-     *
-     * @return a Mask instance
-     */
-    public HobsonVariable.Mask getMask() {
-        return mask;
     }
 
     /**

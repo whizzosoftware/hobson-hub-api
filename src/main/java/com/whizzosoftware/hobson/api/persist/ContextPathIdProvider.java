@@ -16,7 +16,8 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassType;
 import com.whizzosoftware.hobson.api.task.TaskContext;
-import com.whizzosoftware.hobson.api.variable.VariableContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
+import com.whizzosoftware.hobson.api.variable.GlobalVariableContext;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -129,11 +130,31 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
+    public String createDeviceVariableDescriptionId(DeviceVariableContext vctx) {
+        return createDeviceVariableId(vctx) + HubContext.DELIMITER + "description";
+    }
+
+    @Override
+    public String createDeviceVariableId(DeviceVariableContext vctx) {
+        return createHubId(vctx.getHubContext()) + HubContext.DELIMITER + "variables" + HubContext.DELIMITER + vctx.getPluginId() + HubContext.DELIMITER + vctx.getDeviceId() + HubContext.DELIMITER + vctx.getName();
+    }
+
+    @Override
     public String createDeviceConfigurationClassId(DeviceContext ctx) {
         return null;
     }
 
-    public String createVariablesId(HubContext ctx) {
+    @Override
+    public String createPluginDeviceConfigurationClassesId(PluginContext ctx) {
+        return createPluginId(ctx) + HubContext.DELIMITER + "deviceConfigurationClasses";
+    }
+
+    @Override
+    public String createPluginDeviceConfigurationClassId(PluginContext ctx, String name) {
+        return createPluginDeviceConfigurationClassesId(ctx) + HubContext.DELIMITER + name;
+    }
+
+    private String createVariablesId(HubContext ctx) {
         return createHubId(ctx) + HubContext.DELIMITER + "variables";
     }
 
@@ -143,8 +164,8 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public String createGlobalVariableId(HubContext ctx, String variableName) {
-        return createGlobalVariablesId(ctx) + HubContext.DELIMITER + variableName;
+    public String createGlobalVariableId(GlobalVariableContext gvctx) {
+        return createVariablesId(gvctx.getPluginContext().getHubContext()) + HubContext.DELIMITER + gvctx.getPluginId() + HubContext.DELIMITER + gvctx.getName();
     }
 
     @Override
@@ -168,18 +189,13 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public VariableContext createVariableContext(String variableId) {
+    public DeviceVariableContext createDeviceVariableContext(String variableId) {
         String[] s = StringUtils.split(variableId, ":");
         if (s.length >= 6) {
-            return VariableContext.create(DeviceContext.create(PluginContext.create(HubContext.create(s[1]), s[3]), s[4]), s[5]);
+            return DeviceVariableContext.create(DeviceContext.create(PluginContext.create(HubContext.create(s[1]), s[3]), s[4]), s[5]);
         } else {
             return null;
         }
-    }
-
-    @Override
-    public String createVariableId(VariableContext ctx) {
-        return createHubId(ctx.getHubContext()) + HubContext.DELIMITER + "variables" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId() + HubContext.DELIMITER + ctx.getName();
     }
 
     @Override

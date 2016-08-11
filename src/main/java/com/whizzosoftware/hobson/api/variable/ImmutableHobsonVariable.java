@@ -13,13 +13,13 @@ package com.whizzosoftware.hobson.api.variable;
  * @author Dan Noguerol
  */
 public class ImmutableHobsonVariable implements HobsonVariable {
-    protected VariableContext ctx;
+    protected DeviceVariableContext ctx;
     protected Mask mask;
     protected Object value;
     protected Long lastUpdate;
     protected VariableMediaType mediaType;
 
-    public ImmutableHobsonVariable(VariableContext ctx, Mask mask, Object value, Long lastUpdate, VariableMediaType mediaType) {
+    public ImmutableHobsonVariable(DeviceVariableContext ctx, Mask mask, Object value, Long lastUpdate, VariableMediaType mediaType) {
         this.ctx = ctx;
         this.mask = mask;
         this.lastUpdate = lastUpdate;
@@ -28,13 +28,13 @@ public class ImmutableHobsonVariable implements HobsonVariable {
     }
 
     @Override
-    public VariableContext getContext() {
+    public DeviceVariableContext getContext() {
         return ctx;
     }
 
     @Override
     public String getDeviceId() {
-        return ctx.getDeviceId();
+        return ctx.hasDeviceContext() ? ctx.getDeviceContext().getDeviceId() : null;
     }
 
     @Override
@@ -53,11 +53,6 @@ public class ImmutableHobsonVariable implements HobsonVariable {
     }
 
     @Override
-    public String getPluginId() {
-        return ctx.getPluginId();
-    }
-
-    @Override
     public boolean hasMediaType() {
         return (mediaType != null);
     }
@@ -70,10 +65,5 @@ public class ImmutableHobsonVariable implements HobsonVariable {
     @Override
     public Object getValue() {
         return value;
-    }
-
-    @Override
-    public boolean isGlobal() {
-        return ctx.isGlobal();
     }
 }

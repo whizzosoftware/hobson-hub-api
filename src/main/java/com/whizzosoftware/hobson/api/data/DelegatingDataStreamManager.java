@@ -8,7 +8,7 @@
 package com.whizzosoftware.hobson.api.data;
 
 import com.whizzosoftware.hobson.api.HobsonNotFoundException;
-import com.whizzosoftware.hobson.api.variable.VariableContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -66,7 +66,7 @@ public class DelegatingDataStreamManager implements DataStreamManager {
     }
 
     @Override
-    public Set<VariableContext> getMonitoredVariables(String userId) {
+    public Set<DeviceVariableContext> getMonitoredVariables(String userId) {
         return metaStore.getMonitoredVariables(userId);
     }
 

@@ -7,7 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.data;
 
-import com.whizzosoftware.hobson.api.variable.VariableContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 
 import java.util.Collection;
 import java.util.Set;
@@ -62,5 +62,5 @@ public interface DataStreamMetaStore {
      *
      * @return a Set of VariableContext instances (returns an empty set if the user has no streams)
      */
-    Set<VariableContext> getMonitoredVariables(String userId);
+    Set<DeviceVariableContext> getMonitoredVariables(String userId);
 }

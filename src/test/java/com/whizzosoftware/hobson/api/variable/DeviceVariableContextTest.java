@@ -11,13 +11,13 @@ import com.whizzosoftware.hobson.api.hub.HubContext;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class VariableContextTest {
+public class DeviceVariableContextTest {
     @Test
     public void testIdConstructor() {
         HubContext hctx = HubContext.create("hub1");
-        VariableContext vctx = VariableContext.create(hctx, "plugin1", "device1", "foo");
+        DeviceVariableContext vctx = DeviceVariableContext.create(hctx, "plugin1", "device1", "foo");
 
-        vctx = VariableContext.create(vctx.toString());
+        vctx = DeviceVariableContext.create(vctx.toString());
 
         assertEquals("hub1", vctx.getHubId());
         assertEquals("plugin1", vctx.getPluginId());

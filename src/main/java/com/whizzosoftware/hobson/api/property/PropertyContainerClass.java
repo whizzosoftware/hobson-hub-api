@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.property;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,12 +23,14 @@ import java.util.List;
  *
  * @author Dan Noguerol
  */
-public class PropertyContainerClass {
+public class PropertyContainerClass implements Serializable { // TODO: remove
     private PropertyContainerClassContext context;
     private String name;
     private PropertyContainerClassType type;
     private String descriptionTemplate;
     private List<TypedProperty> supportedProperties;
+
+    // TODO: create builder to streamline construction with many supported properties
 
     public PropertyContainerClass(PropertyContainerClassContext context, PropertyContainerClassType type) {
         this(context, null, type, null, null);

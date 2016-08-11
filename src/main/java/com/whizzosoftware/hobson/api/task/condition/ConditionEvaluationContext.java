@@ -7,7 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.task.condition;
 
-import com.whizzosoftware.hobson.api.variable.VariableManager;
+import com.whizzosoftware.hobson.api.variable.DeviceVariable;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 
 /**
  * An interface used by callbacks that evaluate conditions.
@@ -15,5 +16,5 @@ import com.whizzosoftware.hobson.api.variable.VariableManager;
  * @author Dan Noguerol
  */
 public interface ConditionEvaluationContext {
-    VariableManager getVariableManager();
+    DeviceVariable getDeviceVariable(DeviceVariableContext dvctx);
 }

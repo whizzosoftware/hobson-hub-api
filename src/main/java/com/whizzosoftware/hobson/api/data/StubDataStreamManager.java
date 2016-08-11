@@ -7,7 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.data;
 
-import com.whizzosoftware.hobson.api.variable.VariableContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 
 import java.util.Collection;
 import java.util.List;
@@ -46,7 +46,7 @@ public class StubDataStreamManager implements DataStreamManager {
     }
 
     @Override
-    public Set<VariableContext> getMonitoredVariables(String userId) {
+    public Set<DeviceVariableContext> getMonitoredVariables(String userId) {
         return null;
     }
 

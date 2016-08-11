@@ -10,6 +10,8 @@ package com.whizzosoftware.hobson.api.plugin;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.image.ImageInputStream;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.variable.GlobalVariable;
+import com.whizzosoftware.hobson.api.variable.GlobalVariableContext;
 
 import java.io.File;
 import java.util.Collection;
@@ -49,6 +51,10 @@ public interface PluginManager {
      * @return a File instance (or null if not found)
      */
     File getDataFile(PluginContext ctx, String filename);
+
+    GlobalVariable getGlobalVariable(GlobalVariableContext gvctx);
+
+    Collection<GlobalVariable> getGlobalVariables(PluginContext pctx);
 
     /**
      * Retrieves a specific plugin.
@@ -135,7 +141,7 @@ public interface PluginManager {
 
     /**
      * Sets the plugin level configuration.
-     *  @param ctx the context of the target plugin
+     * @param ctx the context of the target plugin
      * @param config the plugin configuration
      */
     void setLocalPluginConfiguration(PluginContext ctx, PropertyContainer config);

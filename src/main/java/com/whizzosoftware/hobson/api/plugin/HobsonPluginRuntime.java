@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
+import com.whizzosoftware.hobson.api.device.DeviceType;
+import com.whizzosoftware.hobson.api.device.proxy.DeviceProxyVariable;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
@@ -15,14 +17,17 @@ import com.whizzosoftware.hobson.api.event.EventListener;
 import com.whizzosoftware.hobson.api.event.EventManager;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.hub.HubManager;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
+import com.whizzosoftware.hobson.api.property.TypedProperty;
 import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
-import com.whizzosoftware.hobson.api.variable.*;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 import io.netty.util.concurrent.Future;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,55 +36,27 @@ import java.util.concurrent.TimeUnit;
  * @author Dan Noguerol
  */
 public interface HobsonPluginRuntime extends EventListener {
-    /**
-     * Fires a HobsonEvent.
-     *
-     * @param event the event to fire
-     */
-    void fireHobsonEvent(HobsonEvent event);
-
-    /**
-     * Fires a notification that a variable has been successfully updated.
-     *
-     * @param variableUpdate a VariableUpdate instance
-     */
-    void fireVariableUpdateNotification(VariableUpdate variableUpdate);
-
-    /**
-     * Fires a notification that variables has been successfully updated.
-     *
-     * @param updates a List of VariableUpdate instances
-     */
-    void fireVariableUpdateNotifications(List<VariableUpdate> updates);
+    PropertyContainerClass getDeviceConfigurationClass(String deviceId);
 
     /**
      * Retrieves a specific device variable.
      *
-     * @param ctx the context of the device that published the variable
-     * @param variableName the variable name
+     * @param deviceId the device ID of the variable
+     * @param name the name of the variable
      *
-     * @return a HobsonVariable instance
+     * @return a DeviceProxyVariable instance
      * @throws com.whizzosoftware.hobson.api.variable.VariableNotFoundException if the variable wasn't found
      */
-    HobsonVariable getDeviceVariable(DeviceContext ctx, String variableName);
+    DeviceProxyVariable getDeviceVariableValue(String deviceId, String name);
 
     /**
-     * Indicates if a device has published a particular variable.
+     * Returns all variables for a device.
      *
-     * @param ctx the context of the device that published the variable
-     * @param variableName the variable name
+     * @param deviceId the device ID
      *
-     * @return a boolean
+     * @return a Collection of DeviceProxyVariable instances
      */
-    boolean hasDeviceVariable(DeviceContext ctx, String variableName);
-
-    /**
-     * Indicates that Hobson has just contacted a device.
-     *  @param ctx the context of the device
-     * @param available whether the device is currently available
-     * @param checkInTime the time the device was contacted (or null to leave the last check-in time unchanged)
-     */
-    void setDeviceAvailability(DeviceContext ctx, boolean available, Long checkInTime);
+    Collection<DeviceProxyVariable> getDeviceVariableValues(String deviceId);
 
     /**
      * Returns the event loop executor for this plugin.
@@ -110,11 +87,32 @@ public interface HobsonPluginRuntime extends EventListener {
     TaskProvider getTaskProvider();
 
     /**
+     * Indicates if a device has published a particular variable.
+     *
+     * @param ctx the context of the device that published the variable
+     * @param variableName the variable name
+     *
+     * @return a boolean
+     */
+    boolean hasDeviceVariableValue(String deviceId, String variableName);
+
+    /**
      * Called when the plugin device's configuration has changed.
      *  @param ctx the context of the device that owns the configuration
      * @param config the new configuration
      */
-    void onDeviceConfigurationUpdate(DeviceContext ctx, PropertyContainer config);
+    void onDeviceConfigurationUpdate(String deviceId, PropertyContainer config);
+
+    /**
+     * Callback method when a device hint is received. This is an indicator to the plugin
+     * that it should attempt to location a device with the provided configuration. This
+     * is primarily used for devices that the plugin is unable to discover itself.
+     *
+     * @param name the device name
+     * @param deviceType the type of device
+     * @param config the configuration for the device
+     */
+    void onDeviceHint(String name, DeviceType deviceType, PropertyContainer config);
 
     /**
      * Called when an action that a plugin has published needs to be executed.
@@ -143,7 +141,7 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param variableName the variable name
      * @param value the variable value
      */
-    void onSetDeviceVariable(DeviceContext ctx, String variableName, Object value);
+    void onSetDeviceVariable(String deviceId, String variableName, Object value);
 
     /**
      * Callback method invoked when the plugin starts up.
@@ -156,6 +154,13 @@ public interface HobsonPluginRuntime extends EventListener {
      * Callback method invoked when the plugin shuts down.
      */
     void onShutdown();
+
+    /**
+     * Fires a HobsonEvent.
+     *
+     * @param event the event to fire
+     */
+    void postEvent(HobsonEvent event);
 
     /**
      * Publish an action class.
@@ -171,24 +176,7 @@ public interface HobsonPluginRuntime extends EventListener {
      */
     void publishConditionClass(TaskConditionClass conditionClass);
 
-    /**
-     * Publish a device variable.
-     *
-     * @param ctx the context of the variable to publish
-     * @param value the value of the new variable (or null if not known)
-     * @param mask the access mask of the new variable
-     */
-    void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask, Long lastUpdate);
-
-    /**
-     * Publish a device variable.
-     *
-     * @param ctx the context of the variable to publish
-     * @param value the value of the new variable (or null if not known)
-     * @param mask the variable mask
-     * @param mediaType indicates the type of media this variable references (or null if not applicable)
-     */
-    void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask, Long lastUpdate, VariableMediaType mediaType);
+    void publishDeviceType(DeviceType type, TypedProperty[] configProperties);
 
     /**
      * Execute a recurring task.
@@ -199,6 +187,15 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param unit the temporal unit for the time argument
      */
     void scheduleAtFixedRateInEventLoop(Runnable runnable, long initialDelay, long time, TimeUnit unit);
+
+    /**
+     * Indicates that Hobson has just contacted a device.
+     *
+     * @param deviceId the device ID
+     * @param available whether the device is currently available
+     * @param checkInTime the time the device was contacted (or null to leave the last check-in time unchanged)
+     */
+    void setDeviceAvailability(String deviceId, boolean available, Long checkInTime);
 
     /**
      * Sets a configuration property for a specific device.
@@ -217,6 +214,10 @@ public interface HobsonPluginRuntime extends EventListener {
      */
     void setDeviceManager(DeviceManager deviceManager);
 
+    Future setDeviceVariable(DeviceVariableContext dvctx, Object value);
+
+    Future setDeviceVariables(Map<DeviceVariableContext,Object> values);
+
     /**
      * Sets the DiscoManager instance the plugin should use. This will be called before the init() method.
      *
@@ -230,6 +231,10 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param eventManager a EventManager
      */
     void setEventManager(EventManager eventManager);
+
+    void setGlobalVariable(String name, Object value, long timestamp);
+
+    void setGlobalVariables(Map<String,Object> values, long timestamp);
 
     /**
      * Sets the HubManager instance the plugin should use. This will be called before the init() method.
@@ -251,13 +256,6 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param taskManager a TaskManager
      */
     void setTaskManager(TaskManager taskManager);
-
-    /**
-     * Sets the VariableManager instance the plugin should use. This will be called before the init() method.
-     *
-     * @param variableManager a VariableManager
-     */
-    void setVariableManager(VariableManager variableManager);
 
     /**
      * Execute a task using the plugin event loop. Note that this will tie up the event loop while the task is being

@@ -10,7 +10,7 @@ package com.whizzosoftware.hobson.api.persist;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
-import com.whizzosoftware.hobson.api.variable.VariableContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -72,16 +72,16 @@ public class ContextPathIdProviderTest {
     }
 
     @Test
-    public void testCreateVariableId() {
+    public void testCreateDeviceVariableId() {
         ContextPathIdProvider cdipd = new ContextPathIdProvider();
-        assertEquals("hubs:bar:variables:plugin1:device1:var1", cdipd.createVariableId(VariableContext.create(DeviceContext.create(PluginContext.create(HubContext.create("bar"), "plugin1"), "device1"), "var1")));
+        assertEquals("hubs:bar:variables:plugin1:device1:var1", cdipd.createDeviceVariableId(DeviceVariableContext.create(DeviceContext.create(PluginContext.create(HubContext.create("bar"), "plugin1"), "device1"), "var1")));
     }
 
     @Test
     public void testCreateVariableContext() {
         ContextPathIdProvider cpidp = new ContextPathIdProvider();
 
-        VariableContext ctx = cpidp.createVariableContext("hubs:hub1:variables:plugin1:device1:videoStatusUrl");
+        DeviceVariableContext ctx = cpidp.createDeviceVariableContext("hubs:hub1:variables:plugin1:device1:videoStatusUrl");
         assertEquals("hub1", ctx.getHubId());
         assertEquals("plugin1", ctx.getPluginId());
         assertEquals("device1", ctx.getDeviceId());

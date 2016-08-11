@@ -13,12 +13,14 @@ import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.Serializable;
+
 /**
  * Provides a fully qualified context for PropertyContainerClass objects.
  *
  * @author Dan Noguerol
  */
-public class PropertyContainerClassContext {
+public class PropertyContainerClassContext implements Serializable { // TODO: remove
     private String hubId;
     private String pluginId;
     private String deviceId;

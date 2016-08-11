@@ -19,7 +19,7 @@ public interface HobsonVariable {
      *
      * @return a VariableContext instance
      */
-    VariableContext getContext();
+    DeviceVariableContext getContext();
 
     /**
      * Returns the ID of the device which published this variable.
@@ -56,13 +56,6 @@ public interface HobsonVariable {
     Long getLastUpdate();
 
     /**
-     * Returns the ID of the plugin which published this variable.
-     *
-     * @return a plugin ID
-     */
-    String getPluginId();
-
-    /**
      * Indicates that this variable's value references a media stream of some sort (e.g. a JPEG image or MP4 video).
      *
      * @return a boolean
@@ -84,13 +77,6 @@ public interface HobsonVariable {
      * @since hobson-hub-api 0.1.6
      */
     Object getValue();
-
-    /**
-     * Indicates whether this is a global variable.
-     *
-     * @return a boolean
-     */
-    boolean isGlobal();
 
     enum Mask {
         READ_ONLY,

@@ -7,7 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.data;
 
-import com.whizzosoftware.hobson.api.variable.VariableContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 
 import java.util.Collection;
 import java.util.Map;
@@ -73,7 +73,7 @@ public interface DataStreamManager {
      *
      * @return a Collection of VariableContext instances
      */
-    Set<VariableContext> getMonitoredVariables(String userId);
+    Set<DeviceVariableContext> getMonitoredVariables(String userId);
 
     /**
      * Adds data to a data stream.

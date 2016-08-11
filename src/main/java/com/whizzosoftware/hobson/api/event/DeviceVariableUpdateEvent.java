@@ -7,7 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event;
 
-import com.whizzosoftware.hobson.api.variable.VariableChange;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableUpdate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,29 +18,29 @@ import java.util.Map;
  *
  * @author Dan Noguerol
  */
-public class VariableUpdateNotificationEvent extends HobsonEvent {
+public class DeviceVariableUpdateEvent extends HobsonEvent {
     public static final String ID = "varUpdateNotify";
     public static final String PROP_UPDATES = "updates";
 
-    public VariableUpdateNotificationEvent(long timestamp, VariableChange update) {
+    public DeviceVariableUpdateEvent(long timestamp, DeviceVariableUpdate update) {
         super(timestamp, EventTopics.STATE_TOPIC, ID);
 
-        List<VariableChange> updates = new ArrayList<>();
+        List<DeviceVariableUpdate> updates = new ArrayList<>();
         updates.add(update);
         setProperty(PROP_UPDATES, updates);
     }
 
-    public VariableUpdateNotificationEvent(long timestamp, List<VariableChange> updates) {
+    public DeviceVariableUpdateEvent(long timestamp, List<DeviceVariableUpdate> updates) {
         super(timestamp, EventTopics.STATE_TOPIC, ID);
 
         setProperty(PROP_UPDATES, updates);
     }
 
-    public VariableUpdateNotificationEvent(Map<String,Object> properties) {
+    public DeviceVariableUpdateEvent(Map<String,Object> properties) {
         super(EventTopics.STATE_TOPIC, properties);
     }
 
-    public List<VariableChange> getUpdates() {
-        return (List<VariableChange>)getProperty(PROP_UPDATES);
+    public List<DeviceVariableUpdate> getUpdates() {
+        return (List<DeviceVariableUpdate>)getProperty(PROP_UPDATES);
     }
 }

@@ -10,10 +10,10 @@ package com.whizzosoftware.hobson.api.plugin;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.TypedProperty;
 
-public class MockAbstractHobsonPlugin extends AbstractHobsonPlugin {
+public class MockHobsonPlugin extends AbstractHobsonPlugin {
     private String name;
 
-    public MockAbstractHobsonPlugin(String pluginId, String name) {
+    public MockHobsonPlugin(String pluginId, String name) {
         super(pluginId, new MockEventLoopGroup());
         this.name = name;
     }
@@ -29,7 +29,7 @@ public class MockAbstractHobsonPlugin extends AbstractHobsonPlugin {
     }
 
     @Override
-    protected TypedProperty[] createSupportedProperties() {
+    protected TypedProperty[] getConfigurationPropertyTypes() {
         return null;
     }
 
