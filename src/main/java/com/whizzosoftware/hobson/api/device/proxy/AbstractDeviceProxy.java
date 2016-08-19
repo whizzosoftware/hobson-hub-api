@@ -18,7 +18,6 @@ abstract public class AbstractDeviceProxy implements DeviceProxy {
     private String defaultName;
     private boolean started;
     private DeviceError deviceError;
-    private Map<DeviceVariableContext,DeviceVariableDescription> variableDescriptions = new HashMap<>();
     private Map<String,DeviceProxyVariable> variableMap = Collections.synchronizedMap(new HashMap<String,DeviceProxyVariable>());
 
     /**
@@ -39,10 +38,10 @@ abstract public class AbstractDeviceProxy implements DeviceProxy {
             }
         }
 
-        DeviceVariableDescription[] vars = createVariableDescriptions();
+        DeviceProxyVariable[] vars = createVariables();
         if (vars != null) {
-            for (DeviceVariableDescription dvd : vars) {
-                variableDescriptions.put(dvd.getContext(), dvd);
+            for (DeviceProxyVariable dvd : vars) {
+                variableMap.put(dvd.getContext().getName(), dvd);
             }
         }
     }
@@ -128,15 +127,27 @@ abstract public class AbstractDeviceProxy implements DeviceProxy {
         return plugin;
     }
 
-    public DeviceVariableDescription getVariableDescription(DeviceVariableContext vctx) {
-        return variableDescriptions.get(vctx);
+    public DeviceVariable getVariable(String name) {
+        DeviceProxyVariable dpv = variableMap.get(name);
+        return new DeviceVariable(dpv.getDescription(), dpv.getValue(), dpv.getLastUpdate());
     }
 
-    public Collection<DeviceVariableDescription> getVariableDescriptions() {
-        return variableDescriptions.values();
+    public Collection<DeviceVariable> getVariables() {
+        List<DeviceVariable> results = new ArrayList<>();
+        if (variableMap != null) {
+            for (DeviceProxyVariable dvd : variableMap.values()) {
+                DeviceProxyVariable dpv = variableMap.get(dvd.getContext().getName());
+                results.add(new DeviceVariable(dvd.getDescription(), dpv != null ? dpv.getValue() : null, dpv != null ? dpv.getLastUpdate() : null));
+            }
+        }
+        return results;
     }
 
-    abstract protected DeviceVariableDescription[] createVariableDescriptions();
+//    public Collection<DeviceVariableDescription> getVariableDescriptions() {
+//        return variableDescriptions.values();
+//    }
+
+    abstract protected DeviceProxyVariable[] createVariables();
 
     /**
      * Retrieves a specific variable.
@@ -153,9 +164,13 @@ abstract public class AbstractDeviceProxy implements DeviceProxy {
         return variableMap.values();
     }
 
-    public boolean hasVariableDescriptions() {
-        return variableDescriptions.size() > 0;
+    public boolean hasVariables() {
+        return variableMap.size() > 0;
     }
+
+//    public boolean hasVariableDescriptions() {
+//        return variableDescriptions.size() > 0;
+//    }
 
     public boolean hasVariableValue(String name) {
         return variableMap.containsKey(name);
@@ -163,9 +178,10 @@ abstract public class AbstractDeviceProxy implements DeviceProxy {
 
     protected void setVariableValue(String name, Object value, Long updateTime) {
         DeviceVariableContext dvctx = DeviceVariableContext.create(getPluginContext(), getDeviceId(), name);
-        DeviceProxyVariable oldVar = getVariableValue(name);
-        variableMap.put(name, new DeviceProxyVariable(dvctx, value, updateTime));
-        postEvent(new DeviceVariableUpdateEvent(System.currentTimeMillis(), new DeviceVariableUpdate(dvctx, oldVar != null ? oldVar.getValue() : null, value)));
+        DeviceProxyVariable var = getVariableValue(name);
+        Object oldVar = var.getValue();
+        var.setValue(value, updateTime);
+        postEvent(new DeviceVariableUpdateEvent(System.currentTimeMillis(), new DeviceVariableUpdate(dvctx, oldVar != null ? oldVar : null, value, updateTime)));
     }
 
     protected void setVariableValues(Map<String,Object> values) {

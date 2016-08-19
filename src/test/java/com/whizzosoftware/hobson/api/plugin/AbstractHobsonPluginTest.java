@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
+import com.whizzosoftware.hobson.api.HobsonNotFoundException;
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.device.proxy.DeviceProxyVariable;
@@ -14,6 +15,7 @@ import com.whizzosoftware.hobson.api.device.proxy.MockDeviceProxy;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.TypedProperty;
+import com.whizzosoftware.hobson.api.variable.DeviceVariable;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -91,8 +93,10 @@ public class AbstractHobsonPluginTest {
         MockDeviceManager dm = new MockDeviceManager();
         MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name");
         plugin.setDeviceManager(dm);
-        DeviceProxyVariable v = plugin.getDeviceVariableValue("id", "name");
-        assertNull(v);
+        try {
+            DeviceVariable v = plugin.getDeviceVariable("id", "name");
+            fail("Should have thrown exception");
+        } catch (HobsonNotFoundException ignored) {}
     }
 
 //    @Test

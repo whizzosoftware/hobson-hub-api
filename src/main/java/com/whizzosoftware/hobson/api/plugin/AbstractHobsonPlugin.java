@@ -57,7 +57,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     private final PropertyContainerClass configClass;
     private EventLoopGroup eventLoop;
     private final Map<PropertyContainerClassContext,TaskActionClass> actionClasses = new HashMap<>();
-    private final Map<GlobalVariableContext,Object> globalVariableMap = new HashMap<>();
     private final Map<String,DeviceProxy> deviceProxyMap = Collections.synchronizedMap(new HashMap<String,DeviceProxy>());
 
     public AbstractHobsonPlugin(String pluginId) {
@@ -87,7 +86,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         return ctx;
     }
 
-    private DeviceProxy getDeviceProxy(String deviceId) {
+    protected DeviceProxy getDeviceProxy(String deviceId) {
         DeviceProxy p = deviceProxyMap.get(deviceId);
         if (p == null) {
             throw new HobsonNotFoundException("Device not found");
@@ -170,24 +169,32 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         }
     }
 
-    @Override
-    public DeviceProxyVariable getDeviceVariableValue(String deviceId, String name) {
-        try {
-            DeviceProxy proxy = getDeviceProxy(deviceId);
-            return proxy.getVariableValue(name);
-        } catch (HobsonNotFoundException e) {
-            return null;
-        }
+//    @Override
+//    public DeviceProxyVariable getDeviceVariableValue(String deviceId, String name) {
+//        try {
+//            DeviceProxy proxy = getDeviceProxy(deviceId);
+//            return proxy.getVariableValue(name);
+//        } catch (HobsonNotFoundException e) {
+//            return null;
+//        }
+//    }
+    public DeviceVariable getDeviceVariable(String deviceId, String name) {
+        DeviceProxy proxy = getDeviceProxy(deviceId);
+        return proxy.getVariable(name);
     }
 
-    @Override
-    public Collection<DeviceProxyVariable> getDeviceVariableValues(String deviceId) {
-        try {
+//    @Override
+//    public Collection<DeviceProxyVariable> getDeviceVariableValues(String deviceId) {
+//        try {
+//            DeviceProxy proxy = getDeviceProxy(deviceId);
+//            return proxy.getVariableValues();
+//        } catch (HobsonNotFoundException e) {
+//            return null;
+//        }
+//    }
+    public Collection<DeviceVariable> getDeviceVariables(String deviceId) {
             DeviceProxy proxy = getDeviceProxy(deviceId);
-            return proxy.getVariableValues();
-        } catch (HobsonNotFoundException e) {
-            return null;
-        }
+            return proxy.getVariables();
     }
 
     @Override
@@ -513,18 +520,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         return deviceManager.setDeviceVariables(values);
     }
 
-    @Override
-    public void setGlobalVariable(String name, Object value, long timestamp) {
-        globalVariableMap.put(GlobalVariableContext.create(getContext(), name), value);
-    }
-
-    @Override
-    public void setGlobalVariables(Map<String,Object> values, long timestamp) {
-        for (String name : values.keySet()) {
-            setGlobalVariable(name, values.get(name), timestamp);
-        }
-    }
-
     private void validateDeviceManager() {
         if (deviceManager == null) {
             throw new HobsonRuntimeException("No device manager has been set");
@@ -553,5 +548,17 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         if (taskManager == null) {
             throw new HobsonRuntimeException("No task manager has been set");
         }
+    }
+
+    protected void setGlobalVariable(String name, Object value, long timestamp) {
+        hubManager.setGlobalVariable(GlobalVariableContext.create(getContext(), name), value, timestamp);
+    }
+
+    protected void setGlobalVariables(Map<String,Object> values, long timestamp) {
+        Map<GlobalVariableContext,Object> vars = new HashMap<>();
+        for (String name : values.keySet()) {
+            vars.put(GlobalVariableContext.create(getContext(), name), values.get(name));
+        }
+        hubManager.setGlobalVariables(vars, timestamp);
     }
 }

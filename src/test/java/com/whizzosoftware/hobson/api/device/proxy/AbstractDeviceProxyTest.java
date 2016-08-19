@@ -16,6 +16,7 @@ import com.whizzosoftware.hobson.api.event.MockEventManager;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.MockHobsonPlugin;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.variable.DeviceVariable;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableDescription;
 import com.whizzosoftware.hobson.api.variable.VariableConstants;
 import org.junit.Test;
@@ -219,11 +220,11 @@ public class AbstractDeviceProxyTest {
     public void testDeviceVariableDescriptions() {
         MockHobsonPlugin plugin = new MockHobsonPlugin("pid", "plugin");
         MockLightbulbDeviceProxy proxy = new MockLightbulbDeviceProxy(plugin, "did");
-        assertTrue(proxy.hasVariableDescriptions());
-        assertEquals(1, proxy.getVariableDescriptions().size());
-        DeviceVariableDescription dvd = proxy.getVariableDescriptions().iterator().next();
-        assertEquals(VariableConstants.ON, dvd.getName());
-        assertEquals(DeviceVariableDescription.Mask.READ_WRITE, dvd.getMask());
+        assertTrue(proxy.hasVariables());
+        assertEquals(1, proxy.getVariables().size());
+        DeviceVariable dvd = proxy.getVariables().iterator().next();
+        assertEquals(VariableConstants.ON, dvd.getDescription().getName());
+        assertEquals(DeviceVariableDescription.Mask.READ_WRITE, dvd.getDescription().getMask());
     }
 
     @Test
@@ -258,9 +259,9 @@ public class AbstractDeviceProxyTest {
         }
 
         @Override
-        public DeviceVariableDescription[] createVariableDescriptions() {
-            return new DeviceVariableDescription[] {
-                createDeviceVariableDescription(VariableConstants.ON, DeviceVariableDescription.Mask.READ_WRITE)
+        public DeviceProxyVariable[] createVariables() {
+            return new DeviceProxyVariable[] {
+                new DeviceProxyVariable(createDeviceVariableDescription(VariableConstants.ON, DeviceVariableDescription.Mask.READ_WRITE))
             };
         }
     }

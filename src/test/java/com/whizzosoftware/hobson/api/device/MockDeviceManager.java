@@ -92,7 +92,7 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public Collection<String> getAllDeviceVariableNames(HubContext hctx) {
+    public Collection<String> getDeviceVariableNames(HubContext hctx) {
         return null;
     }
 

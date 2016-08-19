@@ -10,8 +10,11 @@ package com.whizzosoftware.hobson.api.hub;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
+import com.whizzosoftware.hobson.api.variable.GlobalVariable;
+import com.whizzosoftware.hobson.api.variable.GlobalVariableContext;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * A manager interface for Hub-related functions.
@@ -160,4 +163,12 @@ public interface HubManager {
      * @param configuration the configuration to set
      */
     void setConfiguration(HubContext ctx, PropertyContainer configuration);
+
+    void setGlobalVariable(GlobalVariableContext gctx, Object value, long timestamp);
+
+    void setGlobalVariables(Map<GlobalVariableContext,Object> values, long timestamp);
+
+    GlobalVariable getGlobalVariable(GlobalVariableContext gctx);
+
+    Collection<GlobalVariable> getAllGlobalVariables(HubContext hctx);
 }

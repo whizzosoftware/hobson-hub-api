@@ -85,7 +85,7 @@ public interface DeviceManager {
      *
      * @return a set of Strings
      */
-    Collection<String> getAllDeviceVariableNames(HubContext hctx);
+    Collection<String> getDeviceVariableNames(HubContext hctx);
 
     /**
      * Returns a specific device.

@@ -23,6 +23,7 @@ import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
+import com.whizzosoftware.hobson.api.variable.DeviceVariable;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 import io.netty.util.concurrent.Future;
 
@@ -45,9 +46,10 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param name the name of the variable
      *
      * @return a DeviceProxyVariable instance
-     * @throws com.whizzosoftware.hobson.api.variable.VariableNotFoundException if the variable wasn't found
+     * @throws com.whizzosoftware.hobson.api.HobsonNotFoundException if the variable wasn't found
      */
-    DeviceProxyVariable getDeviceVariableValue(String deviceId, String name);
+//    DeviceProxyVariable getDeviceVariableValue(String deviceId, String name);
+    DeviceVariable getDeviceVariable(String deviceId, String name);
 
     /**
      * Returns all variables for a device.
@@ -56,7 +58,8 @@ public interface HobsonPluginRuntime extends EventListener {
      *
      * @return a Collection of DeviceProxyVariable instances
      */
-    Collection<DeviceProxyVariable> getDeviceVariableValues(String deviceId);
+//    Collection<DeviceProxyVariable> getDeviceVariableValues(String deviceId);
+    Collection<DeviceVariable> getDeviceVariables(String deviceId);
 
     /**
      * Returns the event loop executor for this plugin.
@@ -231,10 +234,6 @@ public interface HobsonPluginRuntime extends EventListener {
      * @param eventManager a EventManager
      */
     void setEventManager(EventManager eventManager);
-
-    void setGlobalVariable(String name, Object value, long timestamp);
-
-    void setGlobalVariables(Map<String,Object> values, long timestamp);
 
     /**
      * Sets the HubManager instance the plugin should use. This will be called before the init() method.

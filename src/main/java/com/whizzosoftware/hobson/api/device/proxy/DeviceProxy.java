@@ -11,8 +11,7 @@ import com.whizzosoftware.hobson.api.device.DeviceError;
 import com.whizzosoftware.hobson.api.device.DeviceType;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
-import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
-import com.whizzosoftware.hobson.api.variable.DeviceVariableDescription;
+import com.whizzosoftware.hobson.api.variable.DeviceVariable;
 
 import java.util.Collection;
 
@@ -73,15 +72,18 @@ public interface DeviceProxy {
      */
     String getPreferredVariableName();
 
-    boolean hasVariableDescriptions();
+    boolean hasVariables();
+//    boolean hasVariableDescriptions();
 
-    DeviceVariableDescription getVariableDescription(DeviceVariableContext vctx);
+    DeviceVariable getVariable(String name);
+//    DeviceVariableDescription getVariableDescription(DeviceVariableContext vctx);
 
-    Collection<DeviceVariableDescription> getVariableDescriptions();
+    Collection<DeviceVariable> getVariables();
+//    Collection<DeviceVariableDescription> getVariableDescriptions();
 
-    DeviceProxyVariable getVariableValue(String name);
+//    DeviceProxyVariable getVariableValue(String name);
 
-    Collection<DeviceProxyVariable> getVariableValues();
+//    Collection<DeviceProxyVariable> getVariableValues();
 
     boolean hasPreferredVariableName();
 
@@ -134,8 +136,7 @@ public interface DeviceProxy {
      * asynchronously and this method must return before the variable change has taken effect. It is the responsibility
      * of the device to fire a VariableUpdateEvent when the variable change has been confirmed.
      *
-     * Note: This method should only be called by the framework and never directly by third-party plugin code. To
-     * update a device variable from a plugin, use the VariableManager.setDeviceVariable() method.
+     * Note: This method should only be called by the framework and never directly by third-party plugin code.
      *
      * @param variableName the name of the variable
      * @param value the value of the variable

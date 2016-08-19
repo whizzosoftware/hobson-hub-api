@@ -1,9 +1,11 @@
 package com.whizzosoftware.hobson.api.device;
 
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariable;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableDescription;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class DeviceDescription {
@@ -125,6 +127,14 @@ public class DeviceDescription {
 
         public DeviceDescription.Builder variableDescriptions(Collection<DeviceVariableDescription> deviceVariableDescriptions) {
             desc.deviceVariableDescriptions = deviceVariableDescriptions;
+            return this;
+        }
+
+        public DeviceDescription.Builder variableDescription(DeviceVariableDescription deviceVariableDescription) {
+            if (desc.deviceVariableDescriptions == null) {
+                desc.deviceVariableDescriptions = new ArrayList<>();
+            }
+            desc.deviceVariableDescriptions.add(deviceVariableDescription);
             return this;
         }
 

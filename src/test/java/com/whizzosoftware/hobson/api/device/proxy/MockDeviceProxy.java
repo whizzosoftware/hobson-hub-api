@@ -11,6 +11,8 @@ import com.whizzosoftware.hobson.api.device.DeviceType;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.TypedProperty;
+import com.whizzosoftware.hobson.api.variable.DeviceVariable;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableDescription;
 
 import java.util.Collection;
@@ -72,23 +74,13 @@ public class MockDeviceProxy extends AbstractDeviceProxy {
     }
 
     @Override
-    protected DeviceVariableDescription[] createVariableDescriptions() {
+    protected DeviceProxyVariable[] createVariables() {
         return null;
     }
 
     @Override
     public String getPreferredVariableName() {
         return null;
-    }
-
-    @Override
-    public Collection<DeviceProxyVariable> getVariableValues() {
-        return null;
-    }
-
-    @Override
-    public boolean hasVariableValue(String name) {
-        return false;
     }
 
     @Override

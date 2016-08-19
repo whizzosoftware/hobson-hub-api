@@ -5,8 +5,10 @@ import com.whizzosoftware.hobson.api.plugin.PluginContext;
 
 public class GlobalVariableDescription {
     private GlobalVariableContext ctx;
-    private String name;
-    private VariableMediaType mediaType;
+
+    public GlobalVariableDescription(GlobalVariableContext ctx) {
+        this.ctx = ctx;
+    }
 
     public GlobalVariableContext getContext() {
         return ctx;
@@ -29,10 +31,6 @@ public class GlobalVariableDescription {
     }
 
     public String getName() {
-        return name;
-    }
-
-    public VariableMediaType getMediaType() {
-        return mediaType;
+        return ctx.getName();
     }
 }

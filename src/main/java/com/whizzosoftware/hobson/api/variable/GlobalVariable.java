@@ -5,6 +5,12 @@ public class GlobalVariable {
     Long lastUpdate;
     Object value;
 
+    public GlobalVariable(GlobalVariableDescription desc, Long lastUpdate, Object value) {
+        this.desc = desc;
+        this.lastUpdate = lastUpdate;
+        this.value = value;
+    }
+
     public GlobalVariableDescription getDescription() {
         return desc;
     }

@@ -1,22 +1,23 @@
 package com.whizzosoftware.hobson.api.variable;
 
+import com.whizzosoftware.hobson.api.HobsonRuntimeException;
+
 public class DeviceVariable {
-    DeviceVariableDescription desc;
-    Long lastUpdate;
-    Object value;
+    protected DeviceVariableDescription desc;
+    protected Long lastUpdate;
+    protected Object value;
 
     public DeviceVariable(DeviceVariableDescription desc, Object value, Long lastUpdate) {
+        if (desc == null) {
+            throw new HobsonRuntimeException("Device variable description cannot be null");
+        }
         this.desc = desc;
         this.lastUpdate = lastUpdate;
         this.value = value;
     }
 
     public DeviceVariableContext getContext() {
-        return desc != null ? desc.getContext() : null;
-    }
-
-    public boolean hasDescription() {
-        return (desc != null);
+        return desc.getContext();
     }
 
     public DeviceVariableDescription getDescription() {
