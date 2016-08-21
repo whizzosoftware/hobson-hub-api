@@ -91,6 +91,29 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
     }
 
     /**
+     * Creates a WebSocket client.
+     *
+     * @param uri the URI to connect to
+     *
+     * @return a WebSocketHandle
+     */
+    public WebSocketHandle createWebSocket(URI uri) {
+        return httpChannel.createWebSocket(uri, null);
+    }
+
+    /**
+     * Creates a WebSocket client.
+     *
+     * @param uri the URI to connect to
+     * @param headers HTTP request headers to include in the connection request
+     *
+     * @return a WebSocketHandle
+     */
+    public WebSocketHandle createWebSocket(URI uri, Map<String,Collection<String>> headers) {
+        return httpChannel.createWebSocket(uri, headers);
+    }
+
+    /**
      * Callback for successful HTTP responses. Note that "successful" here refers to transport level success. For
      * example, a 500 status code response is still considered successful.
      *
@@ -107,5 +130,4 @@ abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
      * @param context the context object passed in the request
      */
     abstract public void onHttpRequestFailure(Throwable cause, Object context);
-
 }
