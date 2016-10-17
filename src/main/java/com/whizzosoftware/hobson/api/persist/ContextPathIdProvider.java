@@ -204,6 +204,21 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
+    public String createJobId(HubContext ctx, String jobId) {
+        return createHubId(ctx) + HubContext.DELIMITER + "jobs" + HubContext.DELIMITER + jobId;
+    }
+
+    @Override
+    public String createLocalPluginActionClassId(PluginContext ctx, String actionClassId) {
+        return createLocalPluginActionClassesId(ctx) + HubContext.DELIMITER + actionClassId;
+    }
+
+    @Override
+    public String createLocalPluginActionClassesId(PluginContext ctx) {
+        return createPluginId(ctx) + HubContext.DELIMITER + "actions";
+    }
+
+    @Override
     public String createHubConfigurationId(HubContext ctx) {
         return createHubId(ctx) + HubContext.DELIMITER + "configuration";
     }
@@ -365,12 +380,12 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public String createRemotePluginId(PluginContext ctx, String version) {
+    public String createRemotePluginId(HubContext ctx, String pluginId, String version) {
         return null;
     }
 
     @Override
-    public String createRemotePluginInstallId(PluginContext ctx, String version) {
+    public String createRemotePluginInstallId(HubContext ctx, String pluginId, String version) {
         return null;
     }
 

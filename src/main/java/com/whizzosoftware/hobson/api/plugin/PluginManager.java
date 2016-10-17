@@ -1,23 +1,31 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2014 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.plugin;
 
+import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
+import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.image.ImageInputStream;
+import com.whizzosoftware.hobson.api.job.AsyncJobHandle;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
 import com.whizzosoftware.hobson.api.variable.GlobalVariable;
 import com.whizzosoftware.hobson.api.variable.GlobalVariableContext;
+import io.netty.util.concurrent.Future;
 
 import java.io.File;
 import java.util.Collection;
 
 /**
- * An interface for managing Hobson plugins.
+ * An interface for managing Hobson plugin functions.
  *
  * Note that this interface differentiates between local plugins (i.e. plugins installed on the hub) and remote
  * plugins (i.e. plugins available from a remote repository).
@@ -32,6 +40,8 @@ public interface PluginManager {
      * @param uri the URI of the repository
      */
     void addRemoteRepository(String uri);
+
+    AsyncJobHandle executeAction(PropertyContainer properties);
 
     /**
      * Returns a File for a plugin's data directory.
@@ -63,7 +73,7 @@ public interface PluginManager {
      *
      * @return a HobsonPlugin instance (or null if not found)
      */
-    HobsonPlugin getLocalPlugin(PluginContext ctx);
+    HobsonLocalPluginDescriptor getLocalPlugin(PluginContext ctx);
 
     /**
      * Returns the plugin level configuration.
@@ -74,6 +84,10 @@ public interface PluginManager {
      */
     PropertyContainer getLocalPluginConfiguration(PluginContext ctx);
 
+    Long getLocalPluginDeviceLastCheckin(PluginContext ctx, String deviceId);
+
+    DeviceVariableState getLocalPluginDeviceVariable(DeviceVariableContext ctx);
+
     /**
      * Returns a plugin's icon.
      *
@@ -83,14 +97,7 @@ public interface PluginManager {
      */
     ImageInputStream getLocalPluginIcon(PluginContext ctx);
 
-    /**
-     * Retrieve descriptors for all locally installed plugins.
-     *
-     * @param ctx the context of the target hub
-     *
-     * @return a PluginList
-     */
-    Collection<PluginDescriptor> getLocalPluginDescriptors(HubContext ctx);
+    Collection<HobsonLocalPluginDescriptor> getLocalPlugins(HubContext ctx);
 
     /**
      * Retrieves descriptor for a remotely available plugin.
@@ -99,7 +106,7 @@ public interface PluginManager {
      * @param version the plugin version
      * @return a PluginDescriptor instance
      */
-    PluginDescriptor getRemotePluginDescriptor(PluginContext ctx, String version);
+    HobsonPluginDescriptor getRemotePlugin(PluginContext ctx, String version);
 
     /**
      * Retrieve descriptors for all remotely available plugins.
@@ -108,7 +115,7 @@ public interface PluginManager {
      *
      * @return a PluginList
      */
-    Collection<PluginDescriptor> getRemotePluginDescriptors(HubContext ctx);
+    Collection<HobsonPluginDescriptor> getRemotePlugins(HubContext ctx);
 
     /**
      * Returns the remote repositories that have been enabled.
@@ -124,6 +131,8 @@ public interface PluginManager {
      * @param pluginVersion the plugin version to install
      */
     void installRemotePlugin(PluginContext ctx, String pluginVersion);
+
+    void postPluginEvent(PluginContext pctx, HobsonEvent event);
 
     /**
      * Reloads the specified plugin.
@@ -154,4 +163,8 @@ public interface PluginManager {
      * @param value the configuration property value
      */
     void setLocalPluginConfigurationProperty(PluginContext ctx, String name, Object value);
+
+    Future setLocalPluginDeviceVariable(DeviceVariableContext ctx, Object value);
+
+    Future startPluginDevice(final HobsonDeviceProxy device, String name, final PropertyContainer config, final Runnable runnable);
 }

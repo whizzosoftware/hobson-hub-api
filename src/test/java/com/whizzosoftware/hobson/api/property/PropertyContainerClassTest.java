@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 public class PropertyContainerClassTest {
     @Test
     public void testEvaluatePropertyConstraintsWithNoProperties() {
-        PropertyContainerClass pcc = new PropertyContainerClass(PropertyContainerClassContext.create(HubContext.createLocal(), "cc1"), "pcc", PropertyContainerClassType.DEVICE_CONFIG, null, null);
+        PropertyContainerClass pcc = new PropertyContainerClass(PropertyContainerClassContext.create(HubContext.createLocal(), "cc1"), PropertyContainerClassType.DEVICE_CONFIG, null);
         assertTrue(pcc.evaluatePropertyConstraints(null));
     }
 }

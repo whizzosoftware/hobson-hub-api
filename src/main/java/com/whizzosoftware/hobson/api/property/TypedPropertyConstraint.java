@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.property;
 
+import java.io.Serializable;
+
 /**
  * This is a constraint that applies to a property to determine whether it is valid and applicable. For example,
  * a constraint of "deviceVariable" means that the property is only applicable for devices that publish a variable
@@ -14,7 +16,7 @@ package com.whizzosoftware.hobson.api.property;
  *
  * @author Dan Noguerol
  */
-public class TypedPropertyConstraint {
+public class TypedPropertyConstraint implements Serializable { // TODO: remove
     private PropertyConstraintType type;
     private Object argument;
 

@@ -7,18 +7,15 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
-import com.whizzosoftware.hobson.api.HobsonNotFoundException;
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.device.*;
-import com.whizzosoftware.hobson.api.device.proxy.DeviceProxyVariable;
 import com.whizzosoftware.hobson.api.device.proxy.MockDeviceProxy;
 import com.whizzosoftware.hobson.api.hub.HubContext;
+import com.whizzosoftware.hobson.api.persist.CollectionPersisterTest;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.TypedProperty;
-import com.whizzosoftware.hobson.api.variable.DeviceVariable;
-import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
+import com.whizzosoftware.hobson.api.task.MockTaskManager;
 import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -29,8 +26,8 @@ public class AbstractHobsonPluginTest {
     @Test
     public void testPublishAndStartDeviceWithNoDeviceManager() {
         try {
-            MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name");
-            plugin.registerDeviceProxy(new MockDeviceProxy(plugin, "pid", DeviceType.LIGHTBULB));
+            MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name", "1.0.0");
+            plugin.publishDeviceProxy(new MockDeviceProxy(plugin, "pid", DeviceType.LIGHTBULB));
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }
@@ -39,13 +36,13 @@ public class AbstractHobsonPluginTest {
     @Test
     public void testPublishAndStartDeviceWithDeviceManager() throws Exception {
         MockDeviceManager dm = new MockDeviceManager();
-        MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name");
+        MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name", "1.0.0");
         plugin.setDeviceManager(dm);
-        assertEquals(0, dm.getAllDeviceDescriptions(HubContext.createLocal()).size());
-        Future future = plugin.registerDeviceProxy(new MockDeviceProxy(plugin, "did", DeviceType.LIGHTBULB));
+        assertEquals(0, dm.getDevices(HubContext.createLocal()).size());
+        Future future = plugin.publishDeviceProxy(new MockDeviceProxy(plugin, "did", DeviceType.LIGHTBULB));
         future.await();
         assertTrue(future.isSuccess());
-        Collection<DeviceDescription> c = dm.getAllDeviceDescriptions(HubContext.createLocal());
+        Collection<HobsonDeviceDescriptor> c = dm.getDevices(HubContext.createLocal());
         assertEquals(1, c.size());
         assertEquals("did", c.iterator().next().getContext().getDeviceId());
     }
@@ -53,36 +50,40 @@ public class AbstractHobsonPluginTest {
     @Test
     public void testPublishAndStartDeviceWithDeviceManagerRegistrationFailure() throws Exception {
         MockDeviceManager dm = new MockRegisterFailureDeviceManager();
-        MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name");
+        MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name", "1.0.0");
         plugin.setDeviceManager(dm);
-        assertEquals(0, dm.getAllDeviceDescriptions(HubContext.createLocal()).size());
-        Future future = plugin.registerDeviceProxy(new MockDeviceProxy(plugin, "did", DeviceType.LIGHTBULB));
+        assertEquals(0, dm.getDevices(HubContext.createLocal()).size());
+        Future future = plugin.publishDeviceProxy(new MockDeviceProxy(plugin, "did", DeviceType.LIGHTBULB));
         future.await();
         assertFalse(future.isSuccess());
     }
 
     @Test
     public void testGetConfigurationMetaData() {
-        MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name");
-        assertNotNull(plugin.getConfigurationClass());
-        assertFalse(plugin.getConfigurationClass().hasSupportedProperties());
-        plugin.getConfigurationClass().addSupportedProperty(new TypedProperty.Builder("id", "name", "desc", TypedProperty.Type.STRING).build());
-        assertEquals(1, plugin.getConfigurationClass().getSupportedProperties().size());
+        MockTaskManager tm = new MockTaskManager();
+        MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name", "1.0.0");
+        plugin.setTaskManager(tm);
+        assertNotNull(plugin.getDescriptor().getConfigurationClass());
+        assertFalse(plugin.getDescriptor().getConfigurationClass().hasSupportedProperties());
+        plugin.getDescriptor().getConfigurationClass().addSupportedProperty(new TypedProperty.Builder("id", "name", "desc", TypedProperty.Type.STRING).build());
+        assertEquals(1, plugin.getDescriptor().getConfigurationClass().getSupportedProperties().size());
     }
 
     @Test
     public void testIsConfigurable() {
-        MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name");
-        assertFalse(plugin.isConfigurable());
-        plugin.getConfigurationClass().addSupportedProperty(new TypedProperty.Builder("id", "name", "desc", TypedProperty.Type.STRING).build());
-        assertTrue(plugin.isConfigurable());
+        MockTaskManager tm = new MockTaskManager();
+        MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name", "1.0.0");
+        plugin.setTaskManager(tm);
+        assertFalse(plugin.getDescriptor().isConfigurable());
+        plugin.getDescriptor().getConfigurationClass().addSupportedProperty(new TypedProperty.Builder("id", "name", "desc", TypedProperty.Type.STRING).build());
+        assertTrue(plugin.getDescriptor().isConfigurable());
     }
 
     @Test
-    public void testSetDeviceConfigurationPropertyWithNoConfigManager() {
+    public void testSetDeviceConfigurationPropertyWithNoDeviceManager() {
         try {
-            MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name");
-            plugin.setDeviceConfigurationProperty(DeviceContext.create(plugin.getContext(), "id"), "name", true, true);
+            MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name", "1.0.0");
+            plugin.setDeviceConfigurationProperty(DeviceContext.createLocal("id", "id"), null, "name", true);
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }
@@ -90,13 +91,13 @@ public class AbstractHobsonPluginTest {
 
     @Test
     public void testGetDeviceVariableWithNoValue() {
-        MockDeviceManager dm = new MockDeviceManager();
-        MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name");
-        plugin.setDeviceManager(dm);
-        try {
-            DeviceVariable v = plugin.getDeviceVariable("id", "name");
-            fail("Should have thrown exception");
-        } catch (HobsonNotFoundException ignored) {}
+//        MockDeviceManager dm = new MockDeviceManager();
+//        MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name", "1.0.0");
+//        plugin.setDeviceManager(dm);
+//        try {
+//            DeviceVariable v = plugin.getDeviceVariable("id", "name");
+//            fail("Should have thrown exception");
+//        } catch (HobsonNotFoundException ignored) {}
     }
 
 //    @Test
@@ -143,7 +144,7 @@ public class AbstractHobsonPluginTest {
     @Test
     public void testOnDeviceConfigurationUpdateWithNoDeviceManager() {
         try {
-            MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name");
+            MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name", "1.0.0");
             plugin.onDeviceConfigurationUpdate("id", new PropertyContainer());
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {

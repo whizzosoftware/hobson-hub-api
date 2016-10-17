@@ -19,18 +19,18 @@ import java.util.Map;
 public class TaskUpdatedEvent extends HobsonEvent {
     public static final String ID = "taskUpdated";
 
-    private static final String PROP_CONTEXT = "context";
+    private static final String PROP_TASK = "task";
 
-    public TaskUpdatedEvent(long timestamp, TaskContext context) {
+    public TaskUpdatedEvent(long timestamp, TaskContext ctx) {
         super(timestamp, EventTopics.STATE_TOPIC, ID);
-        setProperty(PROP_CONTEXT, context);
+        setProperty(PROP_TASK, ctx);
     }
 
     public TaskUpdatedEvent(Map<String,Object> properties) {
         super(EventTopics.STATE_TOPIC, properties);
     }
 
-    public TaskContext getContext() {
-        return (TaskContext)getProperty(PROP_CONTEXT);
+    public TaskContext getTask() {
+        return (TaskContext)getProperty(PROP_TASK);
     }
 }

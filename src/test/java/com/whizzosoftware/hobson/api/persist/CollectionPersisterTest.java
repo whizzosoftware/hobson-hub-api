@@ -17,12 +17,8 @@ import com.whizzosoftware.hobson.api.presence.PresenceLocation;
 import com.whizzosoftware.hobson.api.presence.PresenceLocationContext;
 import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.task.HobsonTask;
+import com.whizzosoftware.hobson.api.task.MockTaskManager;
 import com.whizzosoftware.hobson.api.task.TaskContext;
-import com.whizzosoftware.hobson.api.task.TaskManager;
-import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
-import com.whizzosoftware.hobson.api.task.action.TaskActionExecutor;
-import com.whizzosoftware.hobson.api.task.condition.ConditionClassType;
-import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
 import com.whizzosoftware.hobson.api.data.DataStream;
 import com.whizzosoftware.hobson.api.variable.*;
 import org.junit.Test;
@@ -392,17 +388,18 @@ public class CollectionPersisterTest {
         CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
         HubContext hctx = HubContext.createLocal();
         DeviceContext dctx = DeviceContext.create(hctx, "plugin1", "device1");
-        List<DeviceVariableDescription> descriptions = new ArrayList<>();
-        descriptions.add(new DeviceVariableDescription(DeviceVariableContext.create(dctx, "foo"), DeviceVariableDescription.Mask.READ_ONLY, "name", VariableMediaType.IMAGE_PNG));
+        List<DeviceVariableDescriptor> descriptions = new ArrayList<>();
+        descriptions.add(new DeviceVariableDescriptor(DeviceVariableContext.create(dctx, "foo"), VariableMask.READ_ONLY, VariableMediaType.IMAGE_PNG));
         PropertyContainerClassContext pcctx = PropertyContainerClassContext.create(dctx, "configuration");
         List<TypedProperty> props = new ArrayList<>();
         props.add(new TypedProperty.Builder("foo", "fooName", "fooDesc", TypedProperty.Type.STRING).build());
-        PropertyContainerClass cclass = new PropertyContainerClass(pcctx, "name", PropertyContainerClassType.DEVICE_CONFIG, "desc", props);
+        PropertyContainerClass cclass = new PropertyContainerClass(pcctx, PropertyContainerClassType.DEVICE_CONFIG, props);
 
         // create and save device
-        DeviceDescription device = new DeviceDescription.Builder(dctx).
+        HobsonDeviceDescriptor device = new HobsonDeviceDescriptor.Builder(dctx).
             name("foo").
             type(DeviceType.LIGHTBULB).
+            configurationClass(cclass).
             manufacturerName("Mfg1").
             manufacturerVersion("1.0").
             modelName("model").
@@ -412,15 +409,19 @@ public class CollectionPersisterTest {
         cp.saveDevice(cpc, device);
 
         // confirm device restores properly
-        DeviceDescription d = cp.restoreDevice(cpc, dctx);
+        HobsonDeviceDescriptor d = cp.restoreDevice(cpc, dctx);
         assertEquals("foo", d.getName());
-        assertEquals(DeviceType.LIGHTBULB, d.getDeviceType());
+        assertEquals(DeviceType.LIGHTBULB, d.getType());
         assertEquals("Mfg1", d.getManufacturerName());
         assertEquals("1.0", d.getManufacturerVersion());
         assertEquals("model", d.getModelName());
         assertEquals(VariableConstants.ON, d.getPreferredVariableName());
-        assertNotNull(d.getDeviceVariableDescriptions());
-        assertEquals(1, d.getDeviceVariableDescriptions().size());
+        assertNotNull(d.getVariables());
+        assertEquals(1, d.getVariables().size());
+        assertNotNull(d.getConfigurationClass());
+        assertEquals("fooName", d.getConfigurationClass().getSupportedProperty("foo").getName());
+        assertEquals("fooDesc", d.getConfigurationClass().getSupportedProperty("foo").getDescription());
+        assertEquals(TypedProperty.Type.STRING, d.getConfigurationClass().getSupportedProperty("foo").getType());
 
         // confirm device is added to set of hub devices
         Set<Object> s = cpc.getSet(idProvider.createDevicesId(hctx));
@@ -447,7 +448,7 @@ public class CollectionPersisterTest {
         map.put("lastCheckIn", "L1449186686774");
         cpc.setMap("local:hubs:local:devices:plugin1:device1", map);
 
-        DeviceDescription d = cp.restoreDevice(cpc, dctx);
+        HobsonDeviceDescriptor d = cp.restoreDevice(cpc, dctx);
         assertNull(d);
     }
 
@@ -621,121 +622,4 @@ public class CollectionPersisterTest {
         cp.deletePresenceLocation(cpc, pctx);
         assertNull(cp.restorePresenceLocation(cpc, pctx));
     }
-
-    public class MockTaskManager implements TaskManager {
-        @Override
-        public void createTask(HubContext ctx, String name, String description, List<PropertyContainer> conditions, PropertyContainerSet actionSet) {
-
-        }
-
-        @Override
-        public void deleteTask(TaskContext ctx) {
-
-        }
-
-        @Override
-        public void executeTask(TaskContext ctx) {
-
-        }
-
-        @Override
-        public void executeActionSet(HubContext ctx, String actionSetId) {
-
-        }
-
-        @Override
-        public void fireTaskTrigger(TaskContext ctx) {
-
-        }
-
-        @Override
-        public TaskActionClass getActionClass(PropertyContainerClassContext ctx) {
-            return new TaskActionClass(ctx, "", "") {
-                @Override
-                public List<TypedProperty> createProperties() {
-                    return null;
-                }
-
-                @Override
-                public TaskActionExecutor getExecutor() {
-                    return null;
-                }
-            };
-        }
-
-        @Override
-        public PropertyContainerSet getActionSet(HubContext ctx, String actionSetId) {
-            return null;
-        }
-
-        @Override
-        public Collection<TaskActionClass> getAllActionClasses(HubContext ctx, boolean applyConstraints) {
-            return null;
-        }
-
-        @Override
-        public Collection<PropertyContainerSet> getAllActionSets(HubContext ctx) {
-            return null;
-        }
-
-        @Override
-        public Collection<TaskConditionClass> getAllConditionClasses(HubContext ctx, ConditionClassType type, boolean applyConstraints) {
-            return null;
-        }
-
-        @Override
-        public Collection<HobsonTask> getAllTasks(HubContext ctx) {
-            return null;
-        }
-
-        @Override
-        public TaskConditionClass getConditionClass(PropertyContainerClassContext ctx) {
-            return null;
-        }
-
-        @Override
-        public HobsonTask getTask(TaskContext ctx) {
-            return null;
-        }
-
-        @Override
-        public void publishActionClass(TaskActionClass actionClass) {
-        }
-
-        @Override
-        public PropertyContainerSet publishActionSet(HubContext ctx, String name, List<PropertyContainer> actions) {
-            return null;
-        }
-
-        @Override
-        public void publishConditionClass(TaskConditionClass conditionClass) {
-
-        }
-
-        @Override
-        public void unpublishAllActionClasses(PluginContext ctx) {
-
-        }
-
-        @Override
-        public void unpublishAllActionSets(PluginContext ctx) {
-
-        }
-
-        @Override
-        public void unpublishAllConditionClasses(PluginContext ctx) {
-
-        }
-
-        @Override
-        public void updateTask(TaskContext ctx, String name, String description, List<PropertyContainer> conditions, PropertyContainerSet actionSet) {
-
-        }
-
-        @Override
-        public void updateTaskProperties(TaskContext ctx, Map<String, Object> properties) {
-
-        }
-    }
-
 }

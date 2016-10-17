@@ -7,14 +7,13 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device;
 
-import com.whizzosoftware.hobson.api.device.proxy.DeviceProxy;
+import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
-import com.whizzosoftware.hobson.api.property.TypedProperty;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
-import com.whizzosoftware.hobson.api.variable.DeviceVariable;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.local.LocalEventLoopGroup;
 import io.netty.util.concurrent.Future;
@@ -23,7 +22,7 @@ import java.util.*;
 
 public class MockDeviceManager implements DeviceManager {
     public final Map<String,Object> configuration = new HashMap<>();
-    public final List<DeviceDescription> publishedDevices = new ArrayList<>();
+    public final List<HobsonDeviceProxy> publishedDevices = new ArrayList<>();
     protected EventLoopGroup eventLoop = new LocalEventLoopGroup(1);
 
     @Override
@@ -52,16 +51,6 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public Future sendDeviceHint(DeviceDescription device, PropertyContainer config) {
-        return eventLoop.submit(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
-    }
-
-    @Override
     public void deleteDevicePassport(HubContext hubContext, String id) {
 
     }
@@ -77,17 +66,17 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public void setDeviceAvailability(DeviceContext ctx, boolean available, Long checkInTime) {
+    public void updateDevice(HobsonDeviceDescriptor device) {
 
     }
 
     @Override
-    public Collection<DeviceDescription> getAllDeviceDescriptions(HubContext ctx) {
+    public Collection<HobsonDeviceDescriptor> getDevices(HubContext ctx) {
         return getPublishedDevices();
     }
 
     @Override
-    public Collection<DeviceDescription> getAllDeviceDescriptions(PluginContext ctx) {
+    public Collection<HobsonDeviceDescriptor> getDevices(PluginContext ctx) {
         return null;
     }
 
@@ -97,8 +86,8 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public DeviceDescription getDeviceDescription(DeviceContext ctx) {
-        for (DeviceDescription device : getPublishedDevices()) {
+    public HobsonDeviceDescriptor getDevice(DeviceContext ctx) {
+        for (HobsonDeviceDescriptor device : getPublishedDevices()) {
             if (device.getContext().getPluginId().equals(ctx.getPluginId()) && device.getContext().getDeviceId().equals(ctx.getDeviceId())) {
                 return device;
             }
@@ -124,43 +113,39 @@ public class MockDeviceManager implements DeviceManager {
         });
     }
 
+//    @Override
+//    public Collection<DeviceType> getPluginDeviceTypes(PluginContext pctx) {
+//        return null;
+//    }
+
     @Override
-    public boolean hasDeviceVariableValue(DeviceVariableContext vctx) {
+    public boolean hasDevice(DeviceContext ctx) {
+        return (getDevice(ctx) != null);
+    }
+
+    @Override
+    public boolean isDeviceAvailable(DeviceContext ctx) {
         return false;
     }
 
     @Override
-    public DeviceVariable getDeviceVariable(DeviceVariableContext ctx) {
-        return null;
-    }
-
-    @Override
-    public Collection<DeviceVariable> getDeviceVariables(DeviceContext ctx) {
-        return null;
-    }
-
-    @Override
-    public Collection<DeviceType> getPluginDeviceTypes(PluginContext pctx) {
-        return null;
-    }
-
-    @Override
-    public boolean hasDevice(DeviceContext ctx) {
-        return (getDeviceDescription(ctx) != null);
+    public Future publishDevice(final HobsonDeviceProxy device, final Map<String, Object> config, final Runnable runnable) {
+        return eventLoop.submit(new Runnable() {
+            @Override
+            public void run() {
+                publishedDevices.add(device);
+                if (config != null) {
+                    setDeviceConfiguration(device.getContext(), device.getConfigurationClass(), config);
+                }
+                if (runnable != null) {
+                    runnable.run();
+                }
+            }
+        });
     }
 
     @Override
     public PropertyContainer getDeviceConfiguration(DeviceContext ctx) {
-        return null;
-    }
-
-    @Override
-    public PropertyContainerClass getDeviceTypeConfigurationClass(PluginContext ctx, DeviceType type) {
-        return null;
-    }
-
-    @Override
-    public PropertyContainerClass getDeviceConfigurationClass(DeviceContext dctx) {
         return null;
     }
 
@@ -170,48 +155,25 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public boolean isDeviceAvailable(DeviceContext ctx) {
-        return false;
-    }
-
-    @Override
-    public void publishDeviceType(PluginContext pctx, DeviceType type, TypedProperty[] configProperties) {
-
-    }
-
-    @Override
-    public Future publishDevice(final PluginContext pctx, final DeviceProxy proxy, final Map<String,Object> config) {
-        return eventLoop.submit(new Runnable() {
-            @Override
-            public void run() {
-                publishedDevices.add(createDeviceDescription(pctx, proxy));
-                if (config != null) {
-                    setDeviceConfigurationProperties(DeviceContext.create(pctx, proxy.getDeviceId()), config, true);
-                }
-            }
-        });
-    }
-
-    @Override
-    public Long getDeviceLastCheckIn(DeviceContext ctx) {
+    public Long getDeviceLastCheckin(DeviceContext dctx) {
         return null;
     }
 
     @Override
-    public Set<String> getDeviceTags(DeviceContext ctx) {
+    public DeviceVariableState getDeviceVariable(DeviceVariableContext ctx) {
         return null;
     }
 
     @Override
-    public void setDeviceConfigurationProperty(DeviceContext ctx, String name, Object value, boolean overwrite) {
-        configuration.put(ctx.getPluginId() + "." + ctx.getDeviceId() + "." + name, value);
+    public void setDeviceConfigurationProperty(DeviceContext dctx, PropertyContainerClass configClass, String name, Object value) {
+        configuration.put(configClass.getContext().getPluginId() + "." + configClass.getContext().getDeviceId() + "." + name, value);
     }
 
     @Override
-    public void setDeviceConfigurationProperties(DeviceContext ctx, Map<String, Object> values, boolean overwrite) {
+    public void setDeviceConfiguration(DeviceContext dctx, PropertyContainerClass configClass, Map<String, Object> values) {
         if (values != null) {
             for (String name : values.keySet()) {
-                setDeviceConfigurationProperty(ctx, name, values.get(name), overwrite);
+                setDeviceConfigurationProperty(dctx, configClass, name, values.get(name));
             }
         }
     }
@@ -221,15 +183,11 @@ public class MockDeviceManager implements DeviceManager {
 
     }
 
-    public void addPublishedDevice(DeviceDescription device) {
-        publishedDevices.add(device);
-    }
-
-    public List<DeviceDescription> getPublishedDevices() {
-        return publishedDevices;
-    }
-
-    protected DeviceDescription createDeviceDescription(PluginContext pctx, DeviceProxy proxy) {
-        return new DeviceDescription.Builder(DeviceContext.create(pctx, proxy.getDeviceId())).build();
+    public List<HobsonDeviceDescriptor> getPublishedDevices() {
+        List<HobsonDeviceDescriptor> results = new ArrayList<>();
+        for (HobsonDeviceProxy d : publishedDevices) {
+            results.add(d.getDescriptor());
+        }
+        return results;
     }
 }

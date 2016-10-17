@@ -11,16 +11,12 @@ import com.whizzosoftware.hobson.api.device.DeviceType;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.TypedProperty;
-import com.whizzosoftware.hobson.api.variable.DeviceVariable;
-import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
-import com.whizzosoftware.hobson.api.variable.DeviceVariableDescription;
+import com.whizzosoftware.hobson.api.variable.DeviceProxyVariable;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MockDeviceProxy extends AbstractDeviceProxy {
-    public DeviceType deviceType;
     public final Map<String,Object> setVariableRequests = new HashMap<String,Object>();
     public boolean wasShutdownCalled;
 
@@ -35,28 +31,7 @@ public class MockDeviceProxy extends AbstractDeviceProxy {
      * @param plugin the HobsonPlugin that created this device
      */
     public MockDeviceProxy(HobsonPlugin plugin, String id, DeviceType deviceType, String defaultName) {
-        super(plugin, id, defaultName);
-        this.deviceType = deviceType;
-    }
-
-    @Override
-    public DeviceType getDeviceType() {
-        return deviceType;
-    }
-
-    @Override
-    public String getManufacturerName() {
-        return null;
-    }
-
-    @Override
-    public String getManufacturerVersion() {
-        return null;
-    }
-
-    @Override
-    public String getModelName() {
-        return null;
+        super(plugin, id, defaultName, deviceType);
     }
 
     @Override
@@ -74,7 +49,22 @@ public class MockDeviceProxy extends AbstractDeviceProxy {
     }
 
     @Override
-    protected DeviceProxyVariable[] createVariables() {
+    public void onStartup(String name, PropertyContainer config) {
+
+    }
+
+    @Override
+    public String getManufacturerName() {
+        return null;
+    }
+
+    @Override
+    public String getManufacturerVersion() {
+        return null;
+    }
+
+    @Override
+    public String getModelName() {
         return null;
     }
 

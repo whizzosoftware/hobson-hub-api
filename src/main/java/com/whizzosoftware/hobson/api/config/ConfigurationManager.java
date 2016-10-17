@@ -70,22 +70,22 @@ public interface ConfigurationManager {
 
     /**
      * Sets the configuration for a local plugin.
-     *
-     * @param ctx the plugin context
-     * @param configurationClass the associated class of the configuration
+     *  @param ctx the plugin context
      * @param newConfig the new configuration
      */
-    void setLocalPluginConfiguration(PluginContext ctx, PropertyContainerClass configurationClass, PropertyContainer newConfig);
+    void setLocalPluginConfiguration(PluginContext ctx, PropertyContainer newConfig);
 
     /**
      * Sets a configuration property for a local plugin.
-     *
-     * @param ctx the plugin context
-     * @param configurationClass the associated class of the configuration
+     *  @param ctx the plugin context
      * @param name the configuration property name
      * @param value the configuration property value
      */
-    void setLocalPluginConfigurationProperty(PluginContext ctx, PropertyContainerClass configurationClass, String name, Object value);
+    void setLocalPluginConfigurationProperty(PluginContext ctx, String name, Object value);
+
+    String getDeviceName(DeviceContext ctx);
+
+    void setDeviceName(DeviceContext ctx, String name);
 
     /**
      * Retrieves a specific device's configuration.
@@ -107,14 +107,13 @@ public interface ConfigurationManager {
      */
     Object getDeviceConfigurationProperty(DeviceContext ctx, String name);
 
+    void setDeviceConfigurationProperty(DeviceContext ctx, PropertyContainerClass configClass, String name, Object value);
+
     /**
      * Sets a specific device's configuration.
-     *
      * @param ctx the device context
-     * @param configurationClass the class for the configuration
-     * @param deviceName the name of the device
+     * @param configClass the class for the configuration
      * @param values the configuration property values
-     * @param overwrite indicates whether an existing configuration property can be overwritten
      */
-    void setDeviceConfigurationProperties(DeviceContext ctx, PropertyContainerClass configurationClass, String deviceName, Map<String, Object> values, boolean overwrite);
+    void setDeviceConfigurationProperties(DeviceContext ctx, PropertyContainerClass configClass, Map<String, Object> values);
 }

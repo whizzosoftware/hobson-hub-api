@@ -1,81 +1,122 @@
 package com.whizzosoftware.hobson.api.device.proxy;
 
+import com.whizzosoftware.hobson.api.HobsonNotFoundException;
+import com.whizzosoftware.hobson.api.HobsonRuntimeException;
+import com.whizzosoftware.hobson.api.action.ActionClass;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.DeviceError;
+import com.whizzosoftware.hobson.api.device.DeviceType;
+import com.whizzosoftware.hobson.api.device.HobsonDeviceDescriptor;
 import com.whizzosoftware.hobson.api.event.DeviceVariableUpdateEvent;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
-import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.variable.*;
 
 import java.util.*;
 
-abstract public class AbstractDeviceProxy implements DeviceProxy {
-    private HobsonPlugin plugin;
-    private String id;
-    private PropertyContainerClass configClass;
+abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
+    private Map<String,ActionClass> actionClasses = new HashMap<>();
+    private PropertyContainerClass configurationClass;
+    private DeviceContext context;
     private String defaultName;
-    private boolean started;
     private DeviceError deviceError;
-    private Map<String,DeviceProxyVariable> variableMap = Collections.synchronizedMap(new HashMap<String,DeviceProxyVariable>());
+    private Long lastCheckin;
+    private String name;
+    private HobsonPlugin plugin;
+    private boolean started;
+    private DeviceType type;
+    private Map<String,DeviceProxyVariable> variables = Collections.synchronizedMap(new HashMap<String,DeviceProxyVariable>());
 
     /**
      * Constructor.
      *
      * @param plugin the HobsonPlugin that created this device
      */
-    public AbstractDeviceProxy(HobsonPlugin plugin, String id, String defaultName) {
+    public AbstractDeviceProxy(HobsonPlugin plugin, String id, String defaultName, DeviceType type) {
+        this.context = DeviceContext.create(plugin.getContext(), id);
+        this.type = type;
         this.plugin = plugin;
-        this.id = id;
         this.defaultName = defaultName;
-        this.configClass = new PropertyContainerClass(PropertyContainerClassContext.create(DeviceContext.create(plugin.getContext(), id), "configurationClass"), PropertyContainerClassType.DEVICE_CONFIG);
 
+        // create configuration class
+        this.configurationClass = new PropertyContainerClass(PropertyContainerClassContext.create(DeviceContext.create(plugin.getContext(), id), "configurationClass"), PropertyContainerClassType.DEVICE_CONFIG);
         TypedProperty[] tps = createConfigurationPropertyTypes();
         if (tps != null) {
             for (TypedProperty tp : tps) {
-                configClass.addSupportedProperty(tp);
-            }
-        }
-
-        DeviceProxyVariable[] vars = createVariables();
-        if (vars != null) {
-            for (DeviceProxyVariable dvd : vars) {
-                variableMap.put(dvd.getContext().getName(), dvd);
+                configurationClass.addSupportedProperty(tp);
             }
         }
     }
 
+    //=================================================================================
+    // HobsonDeviceProxy methods
+    //=================================================================================
+
+    @Override
+    public ActionClass getActionClass(String actionClassId) {
+        return actionClasses.get(actionClassId);
+    }
+
+    @Override
     public PropertyContainerClass getConfigurationClass() {
-        return configClass;
-    }
-
-
-    protected DeviceVariableDescription createDeviceVariableDescription(String name, DeviceVariableDescription.Mask mask) {
-        return new DeviceVariableDescription(DeviceVariableContext.create(plugin.getContext(), getDeviceId(), name), mask, name, null);
-    }
-
-    protected DeviceVariableDescription createDeviceVariableDescription(String name, DeviceVariableDescription.Mask mask, VariableMediaType mediaType) {
-        return new DeviceVariableDescription(DeviceVariableContext.create(plugin.getContext(), getDeviceId(), name), mask, name, mediaType);
-    }
-
-    protected PluginContext getPluginContext() {
-        return getPlugin().getContext();
+        return configurationClass;
     }
 
     @Override
-    public String getDeviceId() {
-        return this.id;
+    public DeviceContext getContext() {
+        return context;
     }
 
     @Override
-    public boolean isStarted() {
-        return started;
+    public String getDefaultName() {
+        return this.defaultName;
     }
 
     @Override
-    public void onStartup(PropertyContainer config) {
-        started = true;
+    public HobsonDeviceDescriptor getDescriptor() {
+        HobsonDeviceDescriptor.Builder b = new HobsonDeviceDescriptor.Builder(getContext());
+        b.type(getType());
+        b.name(getName());
+        b.manufacturerName(getManufacturerName());
+        b.manufacturerVersion(getManufacturerVersion());
+        b.modelName(getModelName());
+        b.preferredVariableName(getPreferredVariableName());
+        b.configurationClass(configurationClass);
+        for (DeviceProxyVariable dv : variables.values()) {
+            b.variableDescription(dv.getDescriptor());
+        }
+        return b.build();
+    }
+
+    @Override
+    public DeviceError getError() {
+        return deviceError;
+    }
+
+    @Override
+    public Long getLastCheckin() {
+        return lastCheckin;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public DeviceType getType() {
+        return type;
+    }
+
+    @Override
+    public DeviceVariableState getVariableState(String name) {
+        DeviceProxyVariable v = variables.get(name);
+        if (v != null) {
+            return new DeviceVariableState(v.getContext(), v.getValue(), v.getLastUpdate());
+        } else {
+            throw new HobsonNotFoundException("Unable to find variable with name: " + name);
+        }
     }
 
     @Override
@@ -84,13 +125,23 @@ abstract public class AbstractDeviceProxy implements DeviceProxy {
     }
 
     @Override
-    public DeviceError getError() {
-        return deviceError;
+    public boolean isStarted() {
+        return started;
     }
 
-    public boolean hasPreferredVariableName() {
-        return (getPreferredVariableName() != null);
+    public void setLastCheckin(Long lastCheckin) {
+        this.lastCheckin = lastCheckin;
     }
+
+    public void start(final String name, final PropertyContainer config) {
+        this.name = name;
+        onStartup(name, config);
+        started = true;
+    }
+
+    //=================================================================================
+    // Protected methods
+    //=================================================================================
 
     /**
      * Returns an array of configuration properties the device supports. These will automatically
@@ -100,13 +151,43 @@ abstract public class AbstractDeviceProxy implements DeviceProxy {
      */
     abstract protected TypedProperty[] createConfigurationPropertyTypes();
 
+    protected Object getConfigurationProperty(String name) {
+        return plugin.getDeviceConfigurationProperty(getContext().getDeviceId(), name);
+    }
+
     /**
-     * Returns the default name for the device.
+     * Returns this device's plugin.
      *
-     * @return the default name that was set (or the device ID if not set)
+     * @return a HobsonPlugin instance
      */
-    public String getDefaultName() {
-        return this.defaultName;
+    protected HobsonPlugin getPlugin() {
+        return plugin;
+    }
+
+    protected void postEvent(HobsonEvent event) {
+        getPlugin().postHubEvent(event);
+    }
+
+    protected void publishActionClass(ActionClass ac) {
+        actionClasses.put(ac.getContext().getContainerClassId(), ac);
+    }
+
+    protected void publishVariables(DeviceProxyVariable... vars) {
+        for (DeviceProxyVariable v : vars) {
+            variables.put(v.getContext().getName(), v);
+        }
+        plugin.onDeviceUpdate(this);
+    }
+
+    protected void publishVariables(Collection<DeviceProxyVariable> vars) {
+        for (DeviceProxyVariable v : vars) {
+            variables.put(v.getContext().getName(), v);
+        }
+        plugin.onDeviceUpdate(this);
+    }
+
+    protected void setConfigurationProperty(String name, Object value) {
+        plugin.setDeviceConfigurationProperty(getContext(), configurationClass, name, value);
     }
 
     /**
@@ -118,88 +199,52 @@ abstract public class AbstractDeviceProxy implements DeviceProxy {
         this.deviceError = deviceError;
     }
 
-    /**
-     * Returns this device's plugin.
-     *
-     * @return a HobsonPlugin instance
-     */
-    private HobsonPlugin getPlugin() {
-        return plugin;
-    }
-
-    public DeviceVariable getVariable(String name) {
-        DeviceProxyVariable dpv = variableMap.get(name);
-        return new DeviceVariable(dpv.getDescription(), dpv.getValue(), dpv.getLastUpdate());
-    }
-
-    public Collection<DeviceVariable> getVariables() {
-        List<DeviceVariable> results = new ArrayList<>();
-        if (variableMap != null) {
-            for (DeviceProxyVariable dvd : variableMap.values()) {
-                DeviceProxyVariable dpv = variableMap.get(dvd.getContext().getName());
-                results.add(new DeviceVariable(dvd.getDescription(), dpv != null ? dpv.getValue() : null, dpv != null ? dpv.getLastUpdate() : null));
-            }
-        }
-        return results;
-    }
-
-//    public Collection<DeviceVariableDescription> getVariableDescriptions() {
-//        return variableDescriptions.values();
-//    }
-
-    abstract protected DeviceProxyVariable[] createVariables();
-
-    /**
-     * Retrieves a specific variable.
-     *
-     * @param variableName the variable name
-     *
-     * @return a HobsonVariable instance
-     */
-    public DeviceProxyVariable getVariableValue(String variableName) {
-        return variableMap.get(variableName);
-    }
-
-    public Collection<DeviceProxyVariable> getVariableValues() {
-        return variableMap.values();
-    }
-
-    public boolean hasVariables() {
-        return variableMap.size() > 0;
-    }
-
-//    public boolean hasVariableDescriptions() {
-//        return variableDescriptions.size() > 0;
-//    }
-
-    public boolean hasVariableValue(String name) {
-        return variableMap.containsKey(name);
-    }
-
     protected void setVariableValue(String name, Object value, Long updateTime) {
-        DeviceVariableContext dvctx = DeviceVariableContext.create(getPluginContext(), getDeviceId(), name);
-        DeviceProxyVariable var = getVariableValue(name);
-        Object oldVar = var.getValue();
-        var.setValue(value, updateTime);
-        postEvent(new DeviceVariableUpdateEvent(System.currentTimeMillis(), new DeviceVariableUpdate(dvctx, oldVar != null ? oldVar : null, value, updateTime)));
+        if (name != null && value != null) {
+            DeviceVariableContext dvctx = DeviceVariableContext.create(getContext(), name);
+            DeviceProxyVariable var = variables.get(name);
+            Object oldVar = var.getValue();
+            var.setValue(value, updateTime);
+            postEvent(new DeviceVariableUpdateEvent(System.currentTimeMillis(), new DeviceVariableUpdate(dvctx, oldVar != null ? oldVar : null, value, updateTime)));
+        } else {
+            throw new HobsonRuntimeException("Unable to set variable value for " + name + "=" + value);
+        }
     }
 
     protected void setVariableValues(Map<String,Object> values) {
-        long now = System.currentTimeMillis();
-        for (String name : values.keySet()) {
-            setVariableValue(name, values.get(name), now);
+        if (values != null && values.size() > 0) {
+            long now = System.currentTimeMillis();
+            List<DeviceVariableUpdate> updates = new ArrayList<>();
+            for (String name : values.keySet()) {
+                DeviceProxyVariable var = variables.get(name);
+                Object value = values.get(name);
+                Object oldVar = var.getValue();
+                var.setValue(value, now);
+                updates.add(new DeviceVariableUpdate(DeviceVariableContext.create(getContext(), name), oldVar, value, now));
+            }
+            postEvent(new DeviceVariableUpdateEvent(System.currentTimeMillis(), updates));
+        } else {
+            throw new HobsonRuntimeException("Unable to process empty variables values");
         }
     }
 
-    protected void setDeviceAvailability(boolean available, Long checkInTime) {
-        getPlugin().getRuntime().setDeviceAvailability(getDeviceId(), available, checkInTime);
+    protected DeviceProxyVariable createDeviceVariable(String name, VariableMask mask) {
+        return new DeviceProxyVariable(DeviceVariableContext.create(getContext(), name), mask);
     }
 
-    protected void postEvent(HobsonEvent event) {
-        getPlugin().getRuntime().postEvent(event);
+    protected DeviceProxyVariable createDeviceVariable(String name, VariableMask mask, VariableMediaType mediaType) {
+        return new DeviceProxyVariable(DeviceVariableContext.create(getContext(), name), mask, mediaType);
+    }
+
+    protected DeviceProxyVariable createDeviceVariable(String name, VariableMask mask, VariableMediaType mediaType, Object value, Long lastUpdate) {
+        return new DeviceProxyVariable(DeviceVariableContext.create(getContext(), name), mask, mediaType, value, lastUpdate);
+    }
+
+    protected DeviceProxyVariable createDeviceVariable(String name, VariableMask mask, Object value, Long lastUpdate) {
+        return new DeviceProxyVariable(DeviceVariableContext.create(getContext(), name), mask, value, lastUpdate);
     }
 
     public String toString() {
-        return DeviceContext.create(getPlugin().getContext(), getDeviceId()).toString();
+        return DeviceContext.create(getPlugin().getContext(), getContext().getDeviceId()).toString();
     }
 }

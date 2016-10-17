@@ -7,10 +7,10 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.task;
 
+import com.whizzosoftware.hobson.api.action.ActionClassProvider;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
-import com.whizzosoftware.hobson.api.task.action.TaskActionClassProvider;
 
 import java.util.*;
 
@@ -185,7 +185,7 @@ public class HobsonTask {
      *
      * @return a Collection of PropertyContainerClassContext instances
      */
-    public Collection<PropertyContainerClassContext> getDependencies(TaskActionClassProvider actionClassProvider) {
+    public Collection<PropertyContainerClassContext> getDependencies(ActionClassProvider actionClassProvider) {
         List<PropertyContainerClassContext> deps = new ArrayList<>();
         if (conditions != null) {
             for (PropertyContainer pcc : conditions) {

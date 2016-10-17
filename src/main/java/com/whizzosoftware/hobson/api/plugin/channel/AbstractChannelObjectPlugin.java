@@ -47,8 +47,8 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
     private EventLoopGroup connectionEventLoopGroup;
     private boolean isRunning = true;
 
-    public AbstractChannelObjectPlugin(String pluginId) {
-        super(pluginId);
+    public AbstractChannelObjectPlugin(String pluginId, String version) {
+        super(pluginId, version);
     }
 
     @Override

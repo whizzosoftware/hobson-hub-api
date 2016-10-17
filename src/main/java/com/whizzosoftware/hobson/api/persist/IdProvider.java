@@ -60,6 +60,9 @@ public interface IdProvider {
     String createHubSerialPortsId(HubContext ctx);
     String createHubSerialPortId(HubContext ctx, String name);
     String createHubUploadCredentialsId(HubContext ctx);
+    String createJobId(HubContext ctx, String jobId);
+    String createLocalPluginActionClassId(PluginContext ctx, String actionClassId);
+    String createLocalPluginActionClassesId(PluginContext ctx);
     String createLocalPluginConfigurationId(PluginContext ctx);
     String createLocalPluginConfigurationClassId(PluginContext ctx);
     String createLocalPluginId(PluginContext ctx);
@@ -78,8 +81,8 @@ public interface IdProvider {
     String createPropertyContainerId(String id, PropertyContainerClass pcc);
     String createPropertyContainerClassesId(PluginContext pctx);
     String createPropertyContainerClassId(PropertyContainerClassContext pccc, PropertyContainerClassType type);
-    String createRemotePluginId(PluginContext ctx, String version);
-    String createRemotePluginInstallId(PluginContext ctx, String version);
+    String createRemotePluginId(HubContext ctx, String pluginId, String version);
+    String createRemotePluginInstallId(HubContext ctx, String pluginId, String version);
     String createRemotePluginsId(HubContext ctx);
     String createRepositoriesId(HubContext ctx);
     String createRepositoryId(HubContext ctx, String uri);

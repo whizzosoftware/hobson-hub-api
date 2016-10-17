@@ -18,13 +18,16 @@ import java.util.List;
  * @author Dan Noguerol
  */
 abstract public class TaskConditionClass extends PropertyContainerClass {
+    private String name;
+    private String descriptionTemplate;
+
     /**
      * Constructor.
      *
      * @param context the context of the plugin associated with the class
      * @param id the ID of the condition class
      * @param name the name of the condition class
-     * @param descriptionTemplate a description template for the condition class. See {@link PropertyContainerClass#getDescriptionTemplate() getDescriptionTemplate} for more information.
+     * @param descriptionTemplate a description template for the condition class. See {@link TaskConditionClass#getDescriptionTemplate() getDescriptionTemplate} for more information.
      */
     public TaskConditionClass(PluginContext context, String id, String name, String descriptionTemplate) {
         this(PropertyContainerClassContext.create(context, id), name, descriptionTemplate);
@@ -35,13 +38,28 @@ abstract public class TaskConditionClass extends PropertyContainerClass {
      *
      * @param context the context of the plugin associated with the class
      * @param name the name of the condition class
-     * @param descriptionTemplate a description template for the condition class. See {@link PropertyContainerClass#getDescriptionTemplate() getDescriptionTemplate} for more information.
+     * @param descriptionTemplate a description template for the condition class. See {@link TaskConditionClass#getDescriptionTemplate() getDescriptionTemplate} for more information.
      */
     public TaskConditionClass(PropertyContainerClassContext context, String name, String descriptionTemplate) {
         super(context, PropertyContainerClassType.CONDITION);
-        setName(name);
-        setDescriptionTemplate(descriptionTemplate);
+        this.name = name;
+        this.descriptionTemplate = descriptionTemplate;
         setSupportedProperties(createProperties());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Returns the description template is a String that can be used by a user interface to generate a human-readable
+     * description of the condition class. The String can contain keys wrapped in curly braces (e.g. {message}) that
+     * will be replaced by the property container's value at runtime.
+     *
+     * @return a String
+     */
+    public String getDescriptionTemplate() {
+        return descriptionTemplate;
     }
 
     /**

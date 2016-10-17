@@ -1,17 +1,17 @@
 package com.whizzosoftware.hobson.api.variable;
 
 public class GlobalVariable {
-    GlobalVariableDescription desc;
+    GlobalVariableDescriptor desc;
     Long lastUpdate;
     Object value;
 
-    public GlobalVariable(GlobalVariableDescription desc, Long lastUpdate, Object value) {
+    public GlobalVariable(GlobalVariableDescriptor desc, Long lastUpdate, Object value) {
         this.desc = desc;
         this.lastUpdate = lastUpdate;
         this.value = value;
     }
 
-    public GlobalVariableDescription getDescription() {
+    public GlobalVariableDescriptor getDescription() {
         return desc;
     }
 

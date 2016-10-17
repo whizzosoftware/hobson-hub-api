@@ -17,6 +17,7 @@ import com.whizzosoftware.hobson.api.presence.PresenceEntityContext;
 import com.whizzosoftware.hobson.api.presence.PresenceLocation;
 import com.whizzosoftware.hobson.api.presence.PresenceLocationContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
 import com.whizzosoftware.hobson.api.task.HobsonTask;
@@ -210,29 +211,33 @@ public class CollectionPersister {
         return new DataStream(dataStreamId, (String)map2.get(PropertyConstants.NAME), fields, tags);
     }
 
-    public DeviceDescription restoreDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
+    public HobsonDeviceDescriptor restoreDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
         Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(ctx));
         String name = (String)deviceMap.get(PropertyConstants.NAME);
         String type = (String)deviceMap.get(PropertyConstants.TYPE);
 
         if (name != null && type != null) {
+            // restore configuration class
+            PropertyContainerClass pcc = (PropertyContainerClass)deviceMap.get("cclass");
+
             // restore variable descriptions
-            List<DeviceVariableDescription> descriptions = new ArrayList<>();
+            List<DeviceVariableDescriptor> descriptions = new ArrayList<>();
             Set<Object> vdSet = pctx.getSet(idProvider.createDeviceVariablesId(ctx));
             for (Object o : vdSet) {
                 String vname = o.toString();
                 descriptions.add(restoreDeviceVariableDescription(pctx, ctx, vname));
             }
 
-            return new DeviceDescription.Builder(ctx).
-                    name(name).
-                    type(DeviceType.valueOf(type)).
-                    manufacturerName((String)deviceMap.get(PropertyConstants.MANUFACTURER_NAME)).
-                    manufacturerVersion((String)deviceMap.get(PropertyConstants.MANUFACTURER_VERSION)).
-                    modelName((String)deviceMap.get(PropertyConstants.MODEL_NAME)).
-                    preferredVariableName((String)deviceMap.get(PropertyConstants.PREFERRED_VARIABLE_NAME)).
-                    variableDescriptions(descriptions).
-                    build();
+            return new HobsonDeviceDescriptor.Builder(ctx).
+                name(name).
+                type(DeviceType.valueOf(type)).
+                configurationClass(pcc).
+                manufacturerName((String)deviceMap.get(PropertyConstants.MANUFACTURER_NAME)).
+                manufacturerVersion((String)deviceMap.get(PropertyConstants.MANUFACTURER_VERSION)).
+                modelName((String)deviceMap.get(PropertyConstants.MODEL_NAME)).
+                preferredVariableName((String)deviceMap.get(PropertyConstants.PREFERRED_VARIABLE_NAME)).
+                variableDescriptions(descriptions).
+                build();
         } else {
             return null;
         }
@@ -266,12 +271,11 @@ public class CollectionPersister {
         return null;
     }
 
-    public DeviceVariableDescription restoreDeviceVariableDescription(CollectionPersistenceContext pctx, DeviceContext ctx, String name) {
+    public DeviceVariableDescriptor restoreDeviceVariableDescription(CollectionPersistenceContext pctx, DeviceContext ctx, String name) {
         Map<String,Object> map = pctx.getMap(idProvider.createDeviceVariableDescriptionId(DeviceVariableContext.create(ctx, name)));
-        return new DeviceVariableDescription(
+        return new DeviceVariableDescriptor(
             DeviceVariableContext.create((String)map.get(PropertyConstants.CONTEXT)),
-            DeviceVariableDescription.Mask.valueOf((String)map.get(PropertyConstants.MASK)),
-            (String)map.get(PropertyConstants.NAME),
+            VariableMask.valueOf((String)map.get(PropertyConstants.MASK)),
             map.containsKey(PropertyConstants.MEDIA_TYPE) ? VariableMediaType.valueOf((String)map.get(PropertyConstants.MEDIA_TYPE)) : null
         );
     }
@@ -479,11 +483,12 @@ public class CollectionPersister {
         pctx.commit();
     }
 
-    public void saveDevice(CollectionPersistenceContext pctx, DeviceDescription device) {
+    public void saveDevice(CollectionPersistenceContext pctx, HobsonDeviceDescriptor device) {
         // create device map
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.NAME, device.getName());
-        map.put(PropertyConstants.TYPE, device.getDeviceType() != null ? device.getDeviceType().toString() : null);
+        map.put(PropertyConstants.TYPE, device.getType() != null ? device.getType().toString() : null);
+        map.put("cclass", device.getConfigurationClass());
         map.put(PropertyConstants.MANUFACTURER_NAME, device.getManufacturerName());
         map.put(PropertyConstants.MANUFACTURER_VERSION, device.getManufacturerVersion());
         map.put(PropertyConstants.MODEL_NAME, device.getModelName());
@@ -495,7 +500,7 @@ public class CollectionPersister {
 
         // save the device variables
         if (device.hasVariableDescriptions()) {
-            for (DeviceVariableDescription vd : device.getDeviceVariableDescriptions()) {
+            for (DeviceVariableDescriptor vd : device.getVariables()) {
                 saveDeviceVariableDescription(pctx, vd);
             }
         }
@@ -538,7 +543,7 @@ public class CollectionPersister {
         pctx.commit();
     }
 
-    public void saveGlobalVariable(CollectionPersistenceContext pctx, GlobalVariableDescription desc, GlobalVariable val) {
+    public void saveGlobalVariable(CollectionPersistenceContext pctx, GlobalVariableDescriptor desc, GlobalVariable val) {
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.HUB_ID, desc.getHubId());
         map.put(PropertyConstants.PLUGIN_ID, desc.getPluginId());
@@ -636,7 +641,7 @@ public class CollectionPersister {
         pctx.commit();
     }
 
-    public void saveDeviceVariableDescription(CollectionPersistenceContext pctx, DeviceVariableDescription vd) {
+    public void saveDeviceVariableDescription(CollectionPersistenceContext pctx, DeviceVariableDescriptor vd) {
         String key = idProvider.createDeviceVariableDescriptionId(vd.getContext());
 
         Map<String,Object> map = new HashMap<>();

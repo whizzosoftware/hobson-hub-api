@@ -7,10 +7,10 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.task;
 
+import com.whizzosoftware.hobson.api.action.ActionClass;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.*;
-import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
 import com.whizzosoftware.hobson.api.task.condition.ConditionClassType;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClassProvider;
@@ -80,7 +80,9 @@ public interface TaskManager extends TaskConditionClassProvider {
      *
      * @return a TaskActionClass instance (or null if not found)
      */
-    TaskActionClass getActionClass(PropertyContainerClassContext ctx);
+    ActionClass getActionClass(PropertyContainerClassContext ctx);
+
+    Collection<ActionClass> getActionClasses(PluginContext ctx);
 
     /**
      * Returns a published action set.
@@ -106,7 +108,7 @@ public interface TaskManager extends TaskConditionClassProvider {
      *
      * @since hobson-hub-api 0.5.0
      */
-    Collection<TaskActionClass> getAllActionClasses(HubContext ctx, boolean applyConstraints);
+    Collection<ActionClass> getAllActionClasses(HubContext ctx, boolean applyConstraints);
 
     /**
      * Returns all published action sets.
@@ -157,7 +159,7 @@ public interface TaskManager extends TaskConditionClassProvider {
      *
      * @param actionClass the action class to publish
      */
-    void publishActionClass(TaskActionClass actionClass);
+    void publishActionClass(ActionClass actionClass);
 
     /**
      * Creates and publishes a new action set.

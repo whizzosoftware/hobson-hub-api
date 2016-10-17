@@ -3,10 +3,10 @@ package com.whizzosoftware.hobson.api.variable;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 
-public class GlobalVariableDescription {
+public class GlobalVariableDescriptor {
     private GlobalVariableContext ctx;
 
-    public GlobalVariableDescription(GlobalVariableContext ctx) {
+    public GlobalVariableDescriptor(GlobalVariableContext ctx) {
         this.ctx = ctx;
     }
 

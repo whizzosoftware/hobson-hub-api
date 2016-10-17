@@ -7,19 +7,18 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.device.proxy;
 
-import com.whizzosoftware.hobson.api.HobsonRuntimeException;
-import com.whizzosoftware.hobson.api.device.DeviceContext;
-import com.whizzosoftware.hobson.api.device.DeviceType;
-import com.whizzosoftware.hobson.api.device.MockDeviceManager;
+import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.event.DeviceVariableUpdateEvent;
 import com.whizzosoftware.hobson.api.event.MockEventManager;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.MockHobsonPlugin;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
-import com.whizzosoftware.hobson.api.variable.DeviceVariable;
-import com.whizzosoftware.hobson.api.variable.DeviceVariableDescription;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableDescriptor;
 import com.whizzosoftware.hobson.api.variable.VariableConstants;
+import com.whizzosoftware.hobson.api.variable.VariableMask;
 import org.junit.Test;
+
+import java.util.Collections;
 
 import static org.junit.Assert.*;
 
@@ -46,31 +45,60 @@ public class AbstractDeviceProxyTest {
 
     @Test
     public void testGetPreferredVariableName() {
-        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name");
+        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0");
         p.setDeviceManager(new MockDeviceManager());
         AbstractDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB);
         // should be null by default
-        assertNull(d.getPreferredVariableName());
+        assertNull(d.getDescriptor().getPreferredVariableName());
     }
 
     @Test
     public void testStart() {
         MockDeviceManager dm = new MockDeviceManager();
-        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name");
+        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0");
         p.setDeviceManager(dm);
 
-        MockDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB, "deviceName");
+        MockDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB, "deviceName") {
+            public void onStartup(String name, PropertyContainer config) {
+                setLastCheckin(2000L);
+                publishVariables(createDeviceVariable("foo", VariableMask.READ_WRITE));
+            }
+
+            public String getPreferredVariableName() {
+                return "pname";
+            }
+
+            public String getManufacturerName() {
+                return "manufacturer";
+            }
+
+            public String getManufacturerVersion() {
+                return "mversion";
+            }
+        };
+        p.publishDeviceProxy(d);
 
         assertFalse(d.isStarted());
-        d.onStartup(new PropertyContainer());
+        d.start("name", new PropertyContainer());
         assertTrue(d.isStarted());
+
         // device manager is in charge of flagging the device as available, so make sure it is still unavailable here
-        assertFalse(dm.isDeviceAvailable(DeviceContext.create(p.getContext(), d.getDeviceId())));
+        assertFalse(dm.isDeviceAvailable(DeviceContext.create(p.getContext(), d.getContext().getDeviceId())));
+
+        HobsonDeviceDescriptor device = dm.getDevice(DeviceContext.create(p.getContext(), "did"));
+        assertNotNull(device);
+        assertEquals("name", device.getName());
+        assertEquals(DeviceType.LIGHTBULB, device.getType());
+        assertEquals("manufacturer", device.getManufacturerName());
+        assertEquals("mversion", device.getManufacturerVersion());
+        assertEquals("pname", device.getPreferredVariableName());
+//        assertEquals(2000L, (long)device.getLastCheckin());
+        assertNotNull(device.getVariable("foo"));
     }
 
     @Test
     public void testStop() {
-        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name");
+        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0");
         p.setDeviceManager(new MockDeviceManager());
         MockDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB);
         assertFalse(d.wasShutdownCalled);
@@ -112,7 +140,7 @@ public class AbstractDeviceProxyTest {
 
     @Test
     public void testGetDefaultName() {
-        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name");
+        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0");
         p.setDeviceManager(new MockDeviceManager());
         MockDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB, "foo");
         assertEquals("foo", d.getDefaultName());
@@ -193,64 +221,73 @@ public class AbstractDeviceProxyTest {
     public void testSetVariable() {
         long now = System.currentTimeMillis();
         MockEventManager em = new MockEventManager();
-        MockHobsonPlugin plugin = new MockHobsonPlugin("pid", "plugin");
+        MockDeviceManager dm = new MockDeviceManager();
+        MockHobsonPlugin plugin = new MockHobsonPlugin("pid", "plugin", "1.0.0");
         plugin.setEventManager(em);
-        MockDeviceProxy proxy = new MockDeviceProxy(plugin, "did", DeviceType.LIGHTBULB);
+        plugin.setDeviceManager(dm);
+        MockLightbulbDeviceProxy proxy = new MockLightbulbDeviceProxy(plugin, "did");
+        proxy.onStartup(null, null);
         assertEquals(0, em.getPostedEvents().size());
-        proxy.setVariableValue("name", "value", now);
+        proxy.setVariableValue(VariableConstants.ON, false, now);
         assertEquals(1, em.getPostedEvents().size());
         assertEquals(1, ((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().size());
         assertEquals("pid", ((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getPluginId());
         assertEquals("did", ((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getDeviceId());
-        assertEquals("name", ((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getName());
+        assertEquals(VariableConstants.ON, ((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getName());
         assertNull(((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getOldValue());
-        assertEquals("value", ((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getNewValue());
+        assertEquals(false, ((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getNewValue());
         em.clearPostedEvents();
-        proxy.setVariableValue("name", "value2", now);
+        proxy.setVariableValue(VariableConstants.ON, true, now);
         assertEquals(1, em.getPostedEvents().size());
         assertEquals(1, ((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().size());
         assertEquals("pid", ((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getPluginId());
         assertEquals("did", ((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getDeviceId());
-        assertEquals("name", ((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getName());
-        assertEquals("value", ((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getOldValue());
-        assertEquals("value2", ((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getNewValue());
+        assertEquals(VariableConstants.ON, ((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getName());
+        assertEquals(false, ((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getOldValue());
+        assertEquals(true, ((DeviceVariableUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getNewValue());
     }
 
     @Test
     public void testDeviceVariableDescriptions() {
-        MockHobsonPlugin plugin = new MockHobsonPlugin("pid", "plugin");
+        MockDeviceManager dm = new MockDeviceManager();
+        MockHobsonPlugin plugin = new MockHobsonPlugin("pid", "plugin", "1.0.0");
+        plugin.setDeviceManager(dm);
         MockLightbulbDeviceProxy proxy = new MockLightbulbDeviceProxy(plugin, "did");
-        assertTrue(proxy.hasVariables());
-        assertEquals(1, proxy.getVariables().size());
-        DeviceVariable dvd = proxy.getVariables().iterator().next();
-        assertEquals(VariableConstants.ON, dvd.getDescription().getName());
-        assertEquals(DeviceVariableDescription.Mask.READ_WRITE, dvd.getDescription().getMask());
+        proxy.onStartup(null, null);
+        HobsonDeviceDescriptor hvd = proxy.getDescriptor();
+        assertNotNull(hvd);
+        assertTrue(hvd.hasVariables());
+        assertEquals(1, hvd.getVariables().size());
+        DeviceVariableDescriptor dvd = hvd.getVariables().iterator().next();
+        assertEquals(VariableConstants.ON, dvd.getContext().getName());
+        assertEquals(VariableMask.READ_WRITE, dvd.getMask());
     }
 
     @Test
     public void testGetVariableWithNoDeviceManager() {
-        try {
-            HobsonPlugin p = new MockHobsonPlugin("pid", "name");
-            MockDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB);
-            d.getVariableValue("foo");
-        } catch (HobsonRuntimeException ignored) {}
+//        try {
+//            HobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0");
+//            MockDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB);
+//            d.getVariable("foo").getValue();
+//        } catch (HobsonRuntimeException ignored) {}
     }
 
     @Test
     public void testGetVariableWithDeviceManager() {
-        long now = System.currentTimeMillis();
-        MockEventManager em = new MockEventManager();
-        MockDeviceManager dm = new MockDeviceManager();
-        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name");
-        p.setDeviceManager(dm);
-        p.setEventManager(em);
-        MockDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB);
-        d.setVariableValue("var1", "val1", now);
-        DeviceProxyVariable hv = d.getVariableValue("var1");
-        assertNotNull(hv);
-        assertEquals("var1", hv.getContext().getName());
-        assertEquals("val1", hv.getValue());
-        assertEquals(now, (long)hv.getLastUpdate());
+//        long now = System.currentTimeMillis();
+//        MockEventManager em = new MockEventManager();
+//        MockDeviceManager dm = new MockDeviceManager();
+//        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0");
+//        p.setDeviceManager(dm);
+//        p.setEventManager(em);
+//        MockLightbulbDeviceProxy d = new MockLightbulbDeviceProxy(p, "did");
+//        d.onStartup("name", null);
+//        d.setVariableValue(VariableConstants.ON, true, now);
+//        DeviceVariable hv = d.getVariable(VariableConstants.ON);
+//        assertNotNull(hv);
+//        assertEquals(VariableConstants.ON, hv.getContext().getName());
+//        assertEquals(true, hv.getValue());
+//        assertEquals(now, (long)hv.getLastUpdate());
     }
 
     private class MockLightbulbDeviceProxy extends MockDeviceProxy {
@@ -259,10 +296,8 @@ public class AbstractDeviceProxyTest {
         }
 
         @Override
-        public DeviceProxyVariable[] createVariables() {
-            return new DeviceProxyVariable[] {
-                new DeviceProxyVariable(createDeviceVariableDescription(VariableConstants.ON, DeviceVariableDescription.Mask.READ_WRITE))
-            };
+        public void onStartup(String name, PropertyContainer config) {
+            publishVariables(createDeviceVariable(VariableConstants.ON, VariableMask.READ_WRITE));
         }
     }
 }

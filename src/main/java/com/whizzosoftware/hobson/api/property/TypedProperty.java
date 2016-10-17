@@ -1,16 +1,17 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.property;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * A property that specifies a type (such as STRING, NUMBER, etc).
@@ -22,7 +23,7 @@ public class TypedProperty implements Serializable { // TODO: remove
     private String name;
     private String description;
     private Type type;
-    private Object[] enumeration;
+    private Map<String,String> enumeration;
     private List<TypedPropertyConstraint> constraints;
 
     /**
@@ -34,7 +35,7 @@ public class TypedProperty implements Serializable { // TODO: remove
      * @param type the property type
      * @param constraints a set of constraints that the property must adhere to
      */
-    private TypedProperty(String id, String name, String description, Type type, Object[] enumeration, List<TypedPropertyConstraint> constraints) {
+    private TypedProperty(String id, String name, String description, Type type, Map<String,String> enumeration, List<TypedPropertyConstraint> constraints) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -59,7 +60,7 @@ public class TypedProperty implements Serializable { // TODO: remove
         return type;
     }
 
-    public Object[] getEnumeration() {
+    public Map<String,String> getEnumeration() {
         return enumeration;
     }
 
@@ -108,6 +109,7 @@ public class TypedProperty implements Serializable { // TODO: remove
         PRESENCE_ENTITY,
         RECURRENCE,
         SECURE_STRING,
+        SERIAL_PORT,
         STRING,
         TIME
     }
@@ -118,13 +120,25 @@ public class TypedProperty implements Serializable { // TODO: remove
             prop = new TypedProperty(id, name, description, type, null, null);
         }
 
-        public Builder enumeration(Object[] enumeration) {
-            if ((prop.type == Type.STRING && enumeration instanceof String[]) || (prop.type == Type.NUMBER && enumeration instanceof Integer[])) {
-                prop.enumeration = enumeration;
-                return this;
-            } else {
-                throw new IllegalArgumentException("Only enumerations of strings and integers are currently supported");
+        public Builder enumeration(Map<String,String> enumeration) {
+            for (String val : enumeration.keySet()) {
+                enumerate(val, enumeration.get(val));
             }
+            return this;
+        }
+
+        public Builder enumerate(String value, String description) {
+            if (prop.type != Type.STRING && prop.type != Type.NUMBER) {
+                throw new IllegalArgumentException("Only string and numeric enumerated values are currently supported");
+            }
+            if (prop.type == Type.NUMBER && !NumberUtils.isNumber(value)) {
+                throw new IllegalArgumentException("Enumerated value must be of type number");
+            }
+            if (prop.enumeration == null) {
+                prop.enumeration = new HashMap<>();
+            }
+            prop.enumeration.put(value, description);
+            return this;
         }
 
         public Builder constraint(PropertyConstraintType type, Object argument) {
