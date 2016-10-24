@@ -11,17 +11,20 @@ package com.whizzosoftware.hobson.api.action;
 
 import java.util.Map;
 
-/**
- * An ActionExecutionContext implementation is passed to instantiated Action objects in order for them to perform
- * work. These are generally action-specific implementations.
- *
- * @author Dan Noguerol
- */
-public interface ActionExecutionContext {
+public interface ActionProvider {
     /**
-     * Returns the set of properties associated with the action execution.
+     * Creates a new action.
      *
-     * @return a map of properties
+     * @param properties the property values for this action execution
+     *
+     * @return a new Action instance
      */
-    Map<String,Object> getProperties();
+    Action createAction(Map<String,Object> properties);
+
+    /**
+     * Returns the action class this provider can instantiate actions for.
+     *
+     * @return an ActionClass instance
+     */
+    ActionClass getActionClass();
 }

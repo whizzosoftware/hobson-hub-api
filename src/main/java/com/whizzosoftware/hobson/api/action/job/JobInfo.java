@@ -7,10 +7,22 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************
 */
-package com.whizzosoftware.hobson.api.job;
+package com.whizzosoftware.hobson.api.action.job;
 
-public interface JobContext {
-    void update(String msg);
-    void complete(String msg);
-    void fail(String msg);
+import java.util.List;
+
+public interface JobInfo {
+    /**
+     * Returns the current status of the job.
+     *
+     * @return a JobStatus instance
+     */
+    JobStatus getStatus();
+
+    /**
+     * Returns status messages associated with the job.
+     *
+     * @return An ordered (oldest first) list of status messages
+     */
+    List<String> getStatusMessages();
 }

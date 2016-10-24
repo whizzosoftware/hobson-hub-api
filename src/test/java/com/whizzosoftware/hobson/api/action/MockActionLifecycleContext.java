@@ -7,24 +7,26 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************
 */
-package com.whizzosoftware.hobson.api.job;
+package com.whizzosoftware.hobson.api.action;
 
-import io.netty.util.concurrent.Future;
+public class MockActionLifecycleContext implements ActionLifecycleContext {
+    @Override
+    public void complete() {
 
-public class AsyncJobHandle {
-    private String jobId;
-    private Future startFuture;
-
-    public AsyncJobHandle(String jobId, Future startFuture) {
-        this.jobId = jobId;
-        this.startFuture = startFuture;
     }
 
-    public String getJobId() {
-        return jobId;
+    @Override
+    public void complete(String msg) {
+
     }
 
-    public Future getStartFuture() {
-        return startFuture;
+    @Override
+    public void fail(String msg) {
+
+    }
+
+    @Override
+    public void update(String msg) {
+
     }
 }

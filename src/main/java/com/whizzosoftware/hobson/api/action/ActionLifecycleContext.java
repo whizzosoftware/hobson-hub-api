@@ -7,11 +7,17 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************
 */
-package com.whizzosoftware.hobson.api.job;
+package com.whizzosoftware.hobson.api.action;
 
-import java.util.List;
-
-public interface JobInfo {
-    JobStatus getStatus();
-    List<String> getMessages();
+/**
+ * Interface that is passed to action lifecycle methods to give them the opportunity to alter the action
+ * lifecycle.
+ *
+ * @author Dan Noguerol
+ */
+public interface ActionLifecycleContext {
+    void complete();
+    void complete(String msg);
+    void fail(String msg);
+    void update(String msg);
 }

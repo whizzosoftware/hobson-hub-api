@@ -13,7 +13,27 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 
 import java.util.Collection;
 
+/**
+ * An interface that provides action clases.
+ *
+ * @author Dan Noguerol
+ */
 public interface ActionClassProvider {
+    /**
+     * Returns an action class.
+     *
+     * @param ctx the context
+     *
+     * @return an ActionClass instance
+     */
     ActionClass getActionClass(PropertyContainerClassContext ctx);
+
+    /**
+     * Returns the contexts that comprise an action set.
+     *
+     * @param actionSetId the action set ID
+     *
+     * @return a Collection of PropertyContainerClassContext instances
+     */
     Collection<PropertyContainerClassContext> getActionSetClassContexts(String actionSetId);
 }

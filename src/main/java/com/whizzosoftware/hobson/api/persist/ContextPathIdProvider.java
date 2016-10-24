@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.persist;
 
 import com.whizzosoftware.hobson.api.device.DeviceContext;
@@ -112,16 +114,6 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public String createDevicesId(HubContext ctx) {
         return createHubId(ctx) + HubContext.DELIMITER + "devices";
-    }
-
-    @Override
-    public String createDevicePassportId(HubContext ctx, String passportId) {
-        return createDevicePassportsId(ctx) + HubContext.DELIMITER + passportId;
-    }
-
-    @Override
-    public String createDevicePassportsId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "passports";
     }
 
     @Override

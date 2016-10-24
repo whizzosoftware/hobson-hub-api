@@ -61,6 +61,13 @@ public interface DeviceManager {
      */
     Object getDeviceConfigurationProperty(DeviceContext dctx, String name);
 
+    /**
+     * Returns the last time a device checked in.
+     *
+     * @param dctx the device context
+     *
+     * @return the last check in time (or null if it has never checked in)
+     */
     Long getDeviceLastCheckin(DeviceContext dctx);
 
     /**
@@ -85,6 +92,13 @@ public interface DeviceManager {
      */
     Collection<HobsonDeviceDescriptor> getDevices(HubContext hctx);
 
+    /**
+     * Returns the state of a device variable.
+     *
+     * @param ctx the variable context
+     *
+     * @return a DeviceVariableState instance
+     */
     DeviceVariableState getDeviceVariable(DeviceVariableContext ctx);
 
     /**
@@ -107,6 +121,13 @@ public interface DeviceManager {
      */
     boolean hasDevice(DeviceContext dctx);
 
+    /**
+     * Indicates whether a device is currently available.
+     *
+     * @param ctx the device context
+     *
+     * @return a boolean
+     */
     boolean isDeviceAvailable(DeviceContext ctx);
 
     /**
@@ -168,76 +189,10 @@ public interface DeviceManager {
      */
     Future setDeviceVariables(Map<DeviceVariableContext,Object> values);
 
+    /**
+     * Updates information about a previously published device.
+     *
+     * @param device the device descriptor information
+     */
     void updateDevice(HobsonDeviceDescriptor device);
-
-    /**
-     *  Deprecated methods
-     */
-
-    /**
-     * Activates a device passport.
-     *
-     * @param hctx the hub context
-     * @param deviceId the device ID
-     *
-     * @return a DevicePassport
-     */
-    DevicePassport activateDevicePassport(HubContext hctx, String deviceId);
-
-    /**
-     * Creates a new device passport with a globally unique ID.
-     *
-     * @param hctx the hub context
-     * @param deviceId the globally unique device ID
-     *
-     * @return the device secret
-     */
-    DevicePassport createDevicePassport(HubContext hctx, String deviceId);
-
-    /**
-     * Deletes a device passport.
-     *
-     * @param hctx the hub context
-     * @param id the passport ID
-     */
-    void deleteDevicePassport(HubContext hctx, String id);
-
-    /**
-     * Verifies a device passport.
-     *
-     * @param hctx the hub context
-     * @param id the globally unique device ID
-     * @param secret the secret to verify
-     *
-     * @return a boolean indicating whether the device ID and secret are valid
-     */
-    boolean verifyDevicePassport(HubContext hctx, String id, String secret);
-
-    /**
-     * Returns a collection of all created device passports.
-     *
-     * @param hctx the hub context
-     *
-     * @return a Collection of DevicePassport instances
-     */
-    Collection<DevicePassport> getDevicePassports(HubContext hctx);
-
-    /**
-     * Retrieves a device passport.
-     *
-     * @param hctx the hub context
-     * @param id the passport ID
-     *
-     * @return a DevicePassport instance
-     */
-    DevicePassport getDevicePassport(HubContext hctx, String id);
-
-    /**
-     * Resets a device passport to its initially created state. This will allow a device to successfully
-     * re-activate the passport.
-     *
-     * @param hctx the hub context
-     * @param id the globally unique device ID
-     */
-    void resetDevicePassport(HubContext hctx, String id);
 }

@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************
 */
-package com.whizzosoftware.hobson.api.job;
+package com.whizzosoftware.hobson.api.action.job;
 
 public enum JobStatus {
     Initialized,

@@ -108,6 +108,8 @@ public interface HubManager {
      */
     PropertyContainerClass getContainerClass(PropertyContainerClassContext ctx);
 
+    boolean hasPropertyContainerClass(PropertyContainerClassContext ctx);
+
     /**
      * Returns content from the Hub log.
      *
@@ -164,11 +166,38 @@ public interface HubManager {
      */
     void setConfiguration(HubContext ctx, PropertyContainer configuration);
 
+    /**
+     * Sets a global variable.
+     *
+     * @param gctx the variable context
+     * @param value the new value
+     * @param timestamp the timestamp associated with the new value
+     */
     void setGlobalVariable(GlobalVariableContext gctx, Object value, long timestamp);
 
+    /**
+     * Sets multiple global variables.
+     *
+     * @param values the variable values
+     * @param timestamp the timestamp associated with the new values
+     */
     void setGlobalVariables(Map<GlobalVariableContext,Object> values, long timestamp);
 
+    /**
+     * Returns a global variable.
+     *
+     * @param gctx the variable context
+     *
+     * @return a GlobalVariable instance
+     */
     GlobalVariable getGlobalVariable(GlobalVariableContext gctx);
 
-    Collection<GlobalVariable> getAllGlobalVariables(HubContext hctx);
+    /**
+     * Returns all global variables associated with a hub.
+     *
+     * @param hctx the hub context
+     *
+     * @return a Collection of GlobalVariable instances
+     */
+    Collection<GlobalVariable> getGlobalVariables(HubContext hctx);
 }

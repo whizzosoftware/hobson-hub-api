@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.persist;
 
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
@@ -77,12 +79,6 @@ public class CollectionPersister {
         if (commit) {
             pctx.commit();
         }
-    }
-
-    public void deleteDevicePassport(CollectionPersistenceContext pctx, HubContext hctx, String id) {
-        pctx.remove(idProvider.createDevicePassportId(hctx, id));
-        pctx.removeFromSet(idProvider.createDevicePassportsId(hctx), id);
-        pctx.commit();
     }
 
     public void deleteDeviceVariable(CollectionPersistenceContext pctx, DeviceVariableContext vctx) {
@@ -250,25 +246,6 @@ public class CollectionPersister {
 
     public Long restoreDeviceLastCheckIn(CollectionPersistenceContext pctx, DeviceContext dctx) {
         return (Long)pctx.getMapValue(idProvider.createDeviceId(dctx), PropertyConstants.LAST_CHECKIN);
-    }
-
-    public DevicePassport restoreDevicePassport(CollectionPersistenceContext pctx, HubContext hctx, String passportId) {
-        Map<String,Object> map = pctx.getMap(idProvider.createDevicePassportId(hctx, passportId));
-        if (map != null) {
-            String deviceId = (String) map.get(PropertyConstants.DEVICE_ID);
-            if (deviceId != null) {
-                DevicePassport db = new DevicePassport(
-                        hctx,
-                        passportId,
-                        deviceId,
-                        (Long)map.get(PropertyConstants.CREATION_TIME),
-                        (Long)map.get(PropertyConstants.ACTIVATION_TIME)
-                );
-                db.setSecret((String)map.get(PropertyConstants.SECRET));
-                return db;
-            }
-        }
-        return null;
     }
 
     public DeviceVariableDescriptor restoreDeviceVariableDescription(CollectionPersistenceContext pctx, DeviceContext ctx, String name) {
@@ -526,20 +503,6 @@ public class CollectionPersister {
 
     public void saveDeviceLastCheckIn(CollectionPersistenceContext pctx, DeviceContext dctx, long lastCheckin) {
         pctx.setMapValue(idProvider.createDeviceId(dctx), PropertyConstants.LAST_CHECKIN, lastCheckin);
-        pctx.commit();
-    }
-
-    public void saveDevicePassport(CollectionPersistenceContext pctx, HubContext hctx, DevicePassport db) {
-        Map<String,Object> map = new HashMap<>();
-        map.put(PropertyConstants.ID, db.getId());
-        map.put(PropertyConstants.DEVICE_ID, db.getDeviceId());
-        map.put(PropertyConstants.SECRET, db.getSecret());
-        map.put(PropertyConstants.CREATION_TIME, db.getCreationTime());
-        if (db.isActivated()) {
-            map.put(PropertyConstants.ACTIVATION_TIME, db.getActivationTime());
-        }
-        pctx.setMap(idProvider.createDevicePassportId(hctx, db.getId()), map);
-        pctx.addSetValue(idProvider.createDevicePassportsId(hctx), db.getId());
         pctx.commit();
     }
 

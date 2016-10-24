@@ -26,42 +26,7 @@ public class MockDeviceManager implements DeviceManager {
     protected EventLoopGroup eventLoop = new LocalEventLoopGroup(1);
 
     @Override
-    public DevicePassport createDevicePassport(HubContext hubContext, String deviceId) {
-        return null;
-    }
-
-    @Override
-    public Collection<DevicePassport> getDevicePassports(HubContext hubContext) {
-        return null;
-    }
-
-    @Override
-    public DevicePassport getDevicePassport(HubContext hubContext, String id) {
-        return null;
-    }
-
-    @Override
-    public DevicePassport activateDevicePassport(HubContext hubContext, String deviceId) {
-        return null;
-    }
-
-    @Override
     public void setDeviceName(DeviceContext dctx, String name) {
-
-    }
-
-    @Override
-    public void deleteDevicePassport(HubContext hubContext, String id) {
-
-    }
-
-    @Override
-    public boolean verifyDevicePassport(HubContext hubContext, String id, String secret) {
-        return false;
-    }
-
-    @Override
-    public void resetDevicePassport(HubContext hubContext, String id) {
 
     }
 

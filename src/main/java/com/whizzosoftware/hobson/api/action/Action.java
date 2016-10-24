@@ -9,69 +9,51 @@
 */
 package com.whizzosoftware.hobson.api.action;
 
-import com.whizzosoftware.hobson.api.job.JobContext;
-import com.whizzosoftware.hobson.api.plugin.EventLoopExecutor;
+import com.whizzosoftware.hobson.api.plugin.PluginContext;
+import io.netty.util.concurrent.Future;
 
 /**
- * Represents an action instance created from an ActionClass. Actions run within the context of Job objects
- * managed by the JobManager.
+ * Represents an action created by an ActionProvider. Actions run within the context of Job objects
+ * managed by the ActionManager.
  *
- * @param <T> an implementation of ActionExecutionContext that used by the action to perform its tasks
  * @author Dan Noguerol
  */
-abstract public class Action<T extends ActionExecutionContext> {
-    private T context;
-    private EventLoopExecutor executor;
+public interface Action {
+    /**
+     * Indicates whether this action is associated with a particular plugin.
+     *
+     * @param ctx the plugin context
+     *
+     * @return a boolean
+     */
+    boolean isAssociatedWithPlugin(PluginContext ctx);
 
     /**
-     * Constructor.
+     * Sends a message to the action.
      *
-     * @param ctx an ActionExecutionContext implementation
-     * @param executor the EventLoopExecutor to be used for all action execution
+     * @param ctx the lifecycle context
+     * @param msgName the name of the message
+     * @param prop a property object
+     *
+     * @return a Future
      */
-    public Action(T ctx, EventLoopExecutor executor) {
-        this.context = ctx;
-        this.executor = executor;
-    }
+    Future sendMessage(final ActionLifecycleContext ctx, final String msgName, final Object prop);
 
     /**
-     * Returns the EventLoopExecutor associated with this action and which should be used for all action execution.
+     * Starts the action.
      *
-     * @return an EventLoopExecutor
+     * @param ctx the lifecycle context
+     *
+     * @return a Future
      */
-    public EventLoopExecutor getEventLoopExecutor() {
-        return executor;
-    }
+    Future start(final ActionLifecycleContext ctx);
 
     /**
-     * Returns an action-specific context.
+     * Stops the action.
      *
-     * @return the ActionExecutionContext implementation
-     */
-    protected T getContext() {
-        return context;
-    }
-
-    /**
-     * Callback received when the action is started.
+     * @param ctx the lifecycle context
      *
-     * @param ctx the context of the job the task is running within
+     * @return a Future
      */
-    abstract public void onStart(JobContext ctx);
-
-    /**
-     * Callback received when the action is sent an event.
-     *
-     * @param ctx the context of the job the task is running within
-     * @param name the name of the event
-     * @param prop a property object (specific to the event)
-     */
-    abstract public void onEvent(JobContext ctx, String name, Object prop);
-
-    /**
-     * Callback received when the action is manually stopped.
-     *
-     * @param ctx the context of the job the task is running within
-     */
-    abstract public void onStop(JobContext ctx);
+    Future stop(final ActionLifecycleContext ctx);
 }

@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2014 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.disco;
 
 import com.whizzosoftware.hobson.api.hub.HubContext;
@@ -27,20 +29,10 @@ public interface DiscoManager {
     /**
      * Allows a plugin to request all known external device advertisements. This is an asynchronous call that will be
      * serviced as multiple DeviceAdvertisementEvent events to the plugin's onHobsonEvent() callback.
-     *
-     * @param ctx the context of the plugin requesting the snapshot
+     *  @param ctx the context of the plugin requesting the snapshot
      * @param protocolId the protocol ID for the advertisements requested
      */
-    void requestExternalDeviceAdvertisementSnapshot(PluginContext ctx, String protocolId);
-
-    /**
-     * Returns all published internal device advertisements.
-     * @param ctx the hub context
-     * @param protocolId the protocol associated with the advertisement
-     *
-     * @return a Collection of DeviceAdvertisement objects (or null if none are found)
-     */
-    Collection<DeviceAdvertisement> getInternalDeviceAdvertisements(HubContext ctx, String protocolId);
+    Collection<DeviceAdvertisement> getExternalDeviceAdvertisements(PluginContext ctx, String protocolId);
 
     /**
      * Returns a specific published internal device advertisement.
@@ -52,6 +44,15 @@ public interface DiscoManager {
      * @return a DeviceAdvertisement instance (or null if the protocol/ID combination was not found)
      */
     DeviceAdvertisement getInternalDeviceAdvertisement(HubContext ctx, String protocolId, String advId);
+
+    /**
+     * Returns all published internal device advertisements.
+     * @param ctx the hub context
+     * @param protocolId the protocol associated with the advertisement
+     *
+     * @return a Collection of DeviceAdvertisement objects (or null if none are found)
+     */
+    Collection<DeviceAdvertisement> getInternalDeviceAdvertisements(HubContext ctx, String protocolId);
 
     /**
      * Publishes an internal DeviceAdvertisement. This will insure that the advertisement is included in any discovery

@@ -14,7 +14,6 @@ import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
 import com.whizzosoftware.hobson.api.event.EventManager;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.event.PluginConfigurationUpdateEvent;
-import com.whizzosoftware.hobson.api.job.AsyncJobHandle;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
@@ -27,6 +26,11 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.Collection;
 
+/**
+ * An abstract implementation of PluginManager.
+ *
+ * @author Dan Noguerol
+ */
 abstract public class AbstractPluginManager implements PluginManager {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -42,11 +46,6 @@ abstract public class AbstractPluginManager implements PluginManager {
     @Override
     public PropertyContainer getLocalPluginConfiguration(PluginContext ctx) {
         return getConfigurationManager().getLocalPluginConfiguration(ctx, getLocalPlugin(ctx).getConfigurationClass());
-    }
-
-    @Override
-    public void postPluginEvent(PluginContext pctx, HobsonEvent event) {
-        getLocalPluginInternal(pctx).postPluginEvent(null, event);
     }
 
     @Override
@@ -87,12 +86,6 @@ abstract public class AbstractPluginManager implements PluginManager {
                 }
             }
         });
-    }
-
-    @Override
-    public AsyncJobHandle executeAction(final PropertyContainer properties) {
-        final HobsonPlugin plugin = getLocalPluginInternal(properties.getContainerClassContext().getPluginContext());
-        return plugin.executePluginAction(properties);
     }
 
     @Override

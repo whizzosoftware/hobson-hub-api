@@ -9,16 +9,14 @@
 */
 package com.whizzosoftware.hobson.api.action;
 
-import com.whizzosoftware.hobson.api.plugin.EventLoopExecutor;
 import com.whizzosoftware.hobson.api.property.*;
 
 /**
  * Represents the definition of an action that can be published by plugins/devices and invoked by clients.
  *
- * @param <T> a implementation of ActionExecutionContext that the instantiated action will use to perform its work
  * @author Dan Noguerol
  */
-public abstract class ActionClass<T extends ActionExecutionContext> extends PropertyContainerClass {
+public class ActionClass extends PropertyContainerClass {
     private String description;
     private String name;
     private boolean taskAction;
@@ -41,16 +39,22 @@ public abstract class ActionClass<T extends ActionExecutionContext> extends Prop
         this.timeoutInterval = timeoutInterval;
     }
 
-    public String getName() {
-        return name;
-    }
-
+    /**
+     * Returns the action class description.
+     *
+     * @return a String
+     */
     public String getDescription() {
         return description;
     }
 
-    public boolean isTaskAction() {
-        return taskAction;
+    /**
+     * Returns the action class name.
+     *
+     * @return a String
+     */
+    public String getName() {
+        return name;
     }
 
     /**
@@ -63,13 +67,11 @@ public abstract class ActionClass<T extends ActionExecutionContext> extends Prop
     }
 
     /**
-     * Creates a new instance of this action.
+     * Indicates whether this action class can be included in tasks.
      *
-     * @param ctx the ActionExecutionContext to use
-     * @param properties the property values for this action execution
-     * @param executor the EventLoopExecutor to use for action execution
-     *
-     * @return an Action instance
+     * @return a boolean
      */
-    abstract public Action newInstance(T ctx, PropertyContainer properties, EventLoopExecutor executor);
+    public boolean isTaskAction() {
+        return taskAction;
+    }
 }

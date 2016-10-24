@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.persist;
 
 import com.whizzosoftware.hobson.api.data.DataStreamField;
@@ -17,7 +19,6 @@ import com.whizzosoftware.hobson.api.presence.PresenceLocation;
 import com.whizzosoftware.hobson.api.presence.PresenceLocationContext;
 import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.task.HobsonTask;
-import com.whizzosoftware.hobson.api.task.MockTaskManager;
 import com.whizzosoftware.hobson.api.task.TaskContext;
 import com.whizzosoftware.hobson.api.data.DataStream;
 import com.whizzosoftware.hobson.api.variable.*;
@@ -254,7 +255,6 @@ public class CollectionPersisterTest {
         assertEquals("Sbar", map.get("foo"));
 
         // test restore
-        MockTaskManager taskManager = new MockTaskManager();
         PropertyContainerSet as2 = cp.restoreActionSet(HubContext.createLocal(), pctx, "set1");
         assertEquals("set1", as2.getId());
         assertEquals("Action Set 1", as2.getName());
@@ -450,82 +450,6 @@ public class CollectionPersisterTest {
 
         HobsonDeviceDescriptor d = cp.restoreDevice(cpc, dctx);
         assertNull(d);
-    }
-
-    @Test
-    public void testSaveRestoreDeleteDeviceVariable() {
-//        IdProvider idProvider = new ContextPathIdProvider();
-//        CollectionPersister cp = new CollectionPersister(idProvider);
-//        CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
-//        HubContext hctx = HubContext.create("hub1");
-//        DeviceContext dctx = DeviceContext.create(hctx, "plugin1", "device1");
-//        DeviceVariableContext vctx = DeviceVariableContext.create(dctx, "foo");
-//
-//        ImmutableHobsonVariable mhv = new ImmutableHobsonVariable(vctx, HobsonVariable.Mask.READ_ONLY, "bar", 1000L, VariableMediaType.IMAGE_JPG);
-//        cp.saveDeviceVariable(cpc, mhv);
-//
-//        Map<String,Object> map = cpc.getMap(idProvider.createVariableId(vctx));
-//        assertEquals("plugin1", map.get(PropertyConstants.PLUGIN_ID));
-//        assertEquals("device1", map.get(PropertyConstants.DEVICE_ID));
-//        assertEquals("foo", map.get(PropertyConstants.NAME));
-//        assertEquals("bar", map.get(PropertyConstants.VALUE));
-//        assertEquals("READ_ONLY", map.get(PropertyConstants.MASK));
-//        assertEquals(VariableMediaType.IMAGE_JPG.toString(), map.get(PropertyConstants.MEDIA_TYPE));
-//        assertEquals(1000L, map.get(PropertyConstants.LAST_UPDATE));
-//
-//        // confirm variable is restorable
-//        DeviceVariableValue hv = cp.restoreDeviceVariable(cpc, dctx, "foo");
-//        assertNotNull(hv);
-//        assertEquals("hub1", hv.getContext().getHubId());
-//        assertEquals("plugin1", hv.getPluginId());
-//        assertEquals("device1", hv.getDeviceId());
-//        assertEquals("foo", hv.getName());
-//        assertEquals("bar", hv.getValue());
-//        assertEquals(HobsonVariable.Mask.READ_ONLY, hv.getMask());
-//        assertEquals(VariableMediaType.IMAGE_JPG, hv.getMediaType());
-//        assertEquals(1000L, (long)hv.getLastUpdate());
-//
-//        // confirm list of device variables is correct
-//        Set<Object> set = cpc.getSet(idProvider.createDeviceVariablesId(dctx));
-//        assertNotNull(set);
-//        assertEquals(1, set.size());
-//        assertTrue(set.contains("foo"));
-//
-//        // delete variable
-//        cp.deleteDeviceVariable(cpc, vctx);
-//        assertNull(cp.restoreDeviceVariable(cpc, dctx, vctx.getName()));
-//        set = cpc.getSet(idProvider.createDeviceVariablesId(dctx));
-//        assertNotNull(set);
-//        assertEquals(0, set.size());
-    }
-
-    @Test
-    public void testSaveRestoreDeleteDevicePassport() {
-        IdProvider idProvider = new ContextPathIdProvider();
-        CollectionPersister cp = new CollectionPersister(idProvider);
-        CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
-        HubContext hctx = HubContext.create("hub1");
-
-        long now = System.currentTimeMillis();
-        DevicePassport dp = new DevicePassport(hctx, "dp1", "foo", now);
-        cp.saveDevicePassport(cpc, hctx, dp);
-
-        // confirm passport is restorable
-        dp = cp.restoreDevicePassport(cpc, hctx, "dp1");
-        assertNotNull(dp);
-
-        // confirm list of device passports is correct
-        Set<Object> set = cpc.getSet(idProvider.createDevicePassportsId(hctx));
-        assertNotNull(set);
-        assertEquals(1, set.size());
-        assertTrue(set.contains("dp1"));
-
-        // delete passport
-        cp.deleteDevicePassport(cpc, hctx, "dp1");
-        assertNull(cp.restoreDevicePassport(cpc, hctx, "dp1"));
-        set = cpc.getSet(idProvider.createDevicePassportsId(hctx));
-        assertNotNull(set);
-        assertEquals(0, set.size());
     }
 
     @Test

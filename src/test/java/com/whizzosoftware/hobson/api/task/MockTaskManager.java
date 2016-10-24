@@ -1,10 +1,6 @@
 package com.whizzosoftware.hobson.api.task;
 
-import com.whizzosoftware.hobson.api.action.Action;
-import com.whizzosoftware.hobson.api.action.ActionClass;
-import com.whizzosoftware.hobson.api.action.ActionExecutionContext;
 import com.whizzosoftware.hobson.api.hub.HubContext;
-import com.whizzosoftware.hobson.api.plugin.EventLoopExecutor;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
@@ -43,42 +39,22 @@ public class MockTaskManager implements TaskManager {
     }
 
     @Override
-    public ActionClass getActionClass(PropertyContainerClassContext ctx) {
-        return new ActionClass(ctx, "", "", false, 2000) {
-            @Override
-            public Action newInstance(ActionExecutionContext ctx, PropertyContainer properties, EventLoopExecutor executor) {
-                return null;
-            }
-        };
-    }
-
-    @Override
-    public Collection<ActionClass> getActionClasses(PluginContext ctx) {
-        return null;
-    }
-
-    @Override
     public PropertyContainerSet getActionSet(HubContext ctx, String actionSetId) {
         return null;
     }
 
     @Override
-    public Collection<ActionClass> getAllActionClasses(HubContext ctx, boolean applyConstraints) {
+    public Collection<PropertyContainerSet> getActionSets(HubContext ctx) {
         return null;
     }
 
     @Override
-    public Collection<PropertyContainerSet> getAllActionSets(HubContext ctx) {
+    public Collection<TaskConditionClass> getConditionClasses(HubContext ctx, ConditionClassType type, boolean applyConstraints) {
         return null;
     }
 
     @Override
-    public Collection<TaskConditionClass> getAllConditionClasses(HubContext ctx, ConditionClassType type, boolean applyConstraints) {
-        return null;
-    }
-
-    @Override
-    public Collection<HobsonTask> getAllTasks(HubContext ctx) {
+    public Collection<HobsonTask> getTasks(HubContext ctx) {
         return null;
     }
 
@@ -93,10 +69,6 @@ public class MockTaskManager implements TaskManager {
     }
 
     @Override
-    public void publishActionClass(ActionClass actionClass) {
-    }
-
-    @Override
     public PropertyContainerSet publishActionSet(HubContext ctx, String name, List<PropertyContainer> actions) {
         return null;
     }
@@ -107,17 +79,12 @@ public class MockTaskManager implements TaskManager {
     }
 
     @Override
-    public void unpublishAllActionClasses(PluginContext ctx) {
+    public void unpublishActionSets(PluginContext ctx) {
 
     }
 
     @Override
-    public void unpublishAllActionSets(PluginContext ctx) {
-
-    }
-
-    @Override
-    public void unpublishAllConditionClasses(PluginContext ctx) {
+    public void unpublishConditionClasses(PluginContext ctx) {
 
     }
 

@@ -7,22 +7,23 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
+import com.whizzosoftware.hobson.api.action.Action;
+import com.whizzosoftware.hobson.api.action.SingleAction;
+import com.whizzosoftware.hobson.api.action.ActionManager;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
-import com.whizzosoftware.hobson.api.device.HobsonDeviceDescriptor;
 import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
 import com.whizzosoftware.hobson.api.disco.DiscoManager;
 import com.whizzosoftware.hobson.api.event.EventManager;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.hub.HubManager;
-import com.whizzosoftware.hobson.api.job.AsyncJobHandle;
-import com.whizzosoftware.hobson.api.job.JobManager;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,8 +32,7 @@ import java.util.concurrent.TimeUnit;
  * @author Dan Noguerol
  */
 public interface HobsonPlugin {
-    AsyncJobHandle executeDeviceAction(String deviceId, String actionId, PropertyContainer properties);
-    AsyncJobHandle executePluginAction(PropertyContainer properties);
+    Action createAction(String actionClassId, Map<String,Object> properties);
     HobsonLocalPluginDescriptor getDescriptor();
     PluginContext getContext();
     Object getDeviceConfigurationProperty(String deviceId, String name);
@@ -52,14 +52,13 @@ public interface HobsonPlugin {
     void onShutdown();
     void onStartup(PropertyContainer config);
     void postHubEvent(HobsonEvent event);
-    void postPluginEvent(String name, Object o);
     void scheduleAtFixedRateInEventLoop(Runnable runnable, long initialDelay, long time, TimeUnit unit);
+    void setActionManager(ActionManager actionManager);
     void setDeviceConfigurationProperty(DeviceContext dctx, PropertyContainerClass configClass, String name, Object value);
     void setDeviceManager(DeviceManager deviceManager);
     void setDiscoManager(DiscoManager discoManager);
     void setEventManager(EventManager eventManager);
     void setHubManager(HubManager hubManager);
-    void setJobManager(JobManager jobManager);
     void setPluginManager(PluginManager pluginManager);
     void setTaskManager(TaskManager taskManager);
 }

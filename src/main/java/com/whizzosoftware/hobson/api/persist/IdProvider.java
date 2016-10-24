@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.persist;
 
 import com.whizzosoftware.hobson.api.device.DeviceContext;
@@ -41,8 +43,6 @@ public interface IdProvider {
     DeviceContext createDeviceContext(String deviceId);
     DeviceContext createDeviceContextWithHub(HubContext ctx, String deviceId);
     String createDeviceId(DeviceContext ctx);
-    String createDevicePassportId(HubContext ctx, String passportId);
-    String createDevicePassportsId(HubContext ctx);
     String createDeviceConfigurationId(DeviceContext ctx);
     String createDeviceVariableDescriptionId(DeviceVariableContext vctx);
     String createDeviceVariableId(DeviceVariableContext vctx);
