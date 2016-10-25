@@ -7,14 +7,20 @@ public class HobsonPluginDescriptor implements Comparable<HobsonPluginDescriptor
     private PluginStatus status;
     private PluginType type;
     private String version;
+    private String imageUrl;
 
     public HobsonPluginDescriptor(String id, PluginType type, String name, String description, String version, PluginStatus status) {
+        this(id, type, name, description, version, status, null);
+    }
+
+    public HobsonPluginDescriptor(String id, PluginType type, String name, String description, String version, PluginStatus status, String imageUrl) {
         this.id = id;
         this.type = type;
         this.name = name;
         this.description = description;
         this.version = version;
         this.status = status;
+        this.imageUrl = imageUrl;
     }
 
     @Override
@@ -61,6 +67,10 @@ public class HobsonPluginDescriptor implements Comparable<HobsonPluginDescriptor
 
     public boolean hasVersion() {
         return (version != null);
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public boolean isConfigurable() {
