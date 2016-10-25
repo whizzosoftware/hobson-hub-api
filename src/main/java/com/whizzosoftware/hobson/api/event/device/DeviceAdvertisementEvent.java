@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.event;
+package com.whizzosoftware.hobson.api.event.device;
 
 import com.whizzosoftware.hobson.api.disco.DeviceAdvertisement;
 
@@ -16,17 +16,17 @@ import java.util.Map;
  *
  * @author Dan Noguerol
  */
-public class DeviceAdvertisementEvent extends HobsonEvent {
+public class DeviceAdvertisementEvent extends DeviceEvent {
     public static final String ID = "deviceAdvertisement";
     public static final String PROP_ADVERTISEMENT = "advertisement";
 
     public DeviceAdvertisementEvent(long timestamp, DeviceAdvertisement advertisement) {
-        super(timestamp, EventTopics.createDiscoTopic(advertisement.getProtocolId()), ID);
+        super(timestamp, ID);
         setProperty(PROP_ADVERTISEMENT, advertisement);
     }
 
     public DeviceAdvertisementEvent(Map<String,Object> props) {
-        super(EventTopics.createDiscoTopic(((DeviceAdvertisement)props.get(PROP_ADVERTISEMENT)).getProtocolId()), props);
+        super(props);
     }
 
     public DeviceAdvertisement getAdvertisement() {

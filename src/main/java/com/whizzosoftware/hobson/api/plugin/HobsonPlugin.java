@@ -39,13 +39,11 @@ public interface HobsonPlugin {
     Long getDeviceLastCheckin(String deviceId);
     DeviceVariableState getDeviceVariableState(String deviceId, String name);
     EventLoopExecutor getEventLoopExecutor();
-    String[] getEventTopics();
     long getRefreshInterval();
     TaskProvider getTaskProvider();
     boolean hasTaskProvider();
     void onDeviceConfigurationUpdate(String deviceId, PropertyContainer config);
     void onDeviceUpdate(HobsonDeviceProxy device);
-    void onHobsonEvent(HobsonEvent event);
     void onPluginConfigurationUpdate(PropertyContainer config);
     void onRefresh();
     void onSetDeviceVariable(String deviceId, String name, Object value);

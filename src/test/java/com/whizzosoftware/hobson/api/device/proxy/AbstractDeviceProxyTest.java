@@ -8,7 +8,7 @@
 package com.whizzosoftware.hobson.api.device.proxy;
 
 import com.whizzosoftware.hobson.api.device.*;
-import com.whizzosoftware.hobson.api.event.DeviceVariableUpdateEvent;
+import com.whizzosoftware.hobson.api.event.device.DeviceVariableUpdateEvent;
 import com.whizzosoftware.hobson.api.event.MockEventManager;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.MockHobsonPlugin;
@@ -17,8 +17,6 @@ import com.whizzosoftware.hobson.api.variable.DeviceVariableDescriptor;
 import com.whizzosoftware.hobson.api.variable.VariableConstants;
 import com.whizzosoftware.hobson.api.variable.VariableMask;
 import org.junit.Test;
-
-import java.util.Collections;
 
 import static org.junit.Assert.*;
 

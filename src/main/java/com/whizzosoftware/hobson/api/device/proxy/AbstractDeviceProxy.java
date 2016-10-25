@@ -7,7 +7,7 @@ import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.DeviceError;
 import com.whizzosoftware.hobson.api.device.DeviceType;
 import com.whizzosoftware.hobson.api.device.HobsonDeviceDescriptor;
-import com.whizzosoftware.hobson.api.event.DeviceVariableUpdateEvent;
+import com.whizzosoftware.hobson.api.event.device.DeviceVariableUpdateEvent;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.property.*;

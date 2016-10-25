@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.event;
+package com.whizzosoftware.hobson.api.event.device;
 
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 
@@ -16,7 +16,7 @@ import java.util.Map;
  *
  * @author Dan Noguerol
  */
-public class DeviceCheckInEvent extends HobsonEvent {
+public class DeviceCheckInEvent extends DeviceEvent {
     public static final String ID = "deviceCheckIn";
 
     private static final String PROP_PLUGIN_ID = "pluginId";
@@ -24,14 +24,14 @@ public class DeviceCheckInEvent extends HobsonEvent {
     private static final String PROP_CHECKIN_TIME = "checkInTime";
 
     public DeviceCheckInEvent(DeviceContext ctx, Long timestamp) {
-        super(timestamp, EventTopics.STATE_TOPIC, ID);
+        super(timestamp, ID);
         setProperty(PROP_PLUGIN_ID, ctx.getPluginId());
         setProperty(PROP_DEVICE_ID, ctx.getDeviceId());
         setProperty(PROP_CHECKIN_TIME, timestamp);
     }
 
     public DeviceCheckInEvent(Map<String, Object> props) {
-        super(EventTopics.STATE_TOPIC, props);
+        super(props);
     }
 
     public String getPluginId() {

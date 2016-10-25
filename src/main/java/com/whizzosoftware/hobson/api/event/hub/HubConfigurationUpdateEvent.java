@@ -5,18 +5,23 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.event;
+package com.whizzosoftware.hobson.api.event.hub;
+
+import java.util.Map;
 
 /**
- * An interface for classes that want to receive Hobson events.
+ * Event that occurs when the hub's configuration is updated.
  *
  * @author Dan Noguerol
  */
-public interface EventListener {
-    /**
-     * Callback when a HobsonEvent is received.
-     *
-     * @param event the received event
-     */
-    public void onHobsonEvent(HobsonEvent event);
+public class HubConfigurationUpdateEvent extends HubEvent {
+    public static final String ID = "hubConfigurationUpdate";
+
+    public HubConfigurationUpdateEvent(long timestamp) {
+        super(timestamp, ID);
+    }
+
+    public HubConfigurationUpdateEvent(Map<String,Object> props) {
+        super(props);
+    }
 }

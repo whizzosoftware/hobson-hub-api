@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.event;
+package com.whizzosoftware.hobson.api.event.plugin;
 
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
@@ -17,20 +17,20 @@ import java.util.Map;
  *
  * @author Dan Noguerol
  */
-public class PluginConfigurationUpdateEvent extends HobsonEvent {
+public class PluginConfigurationUpdateEvent extends PluginEvent {
     public static final String ID = "pluginConfigurationUpdate";
 
     private static final String PROP_PLUGIN_ID = "pluginId";
     private static final String PROP_CONFIGURATION = "configuration";
 
     public PluginConfigurationUpdateEvent(long timestamp, PluginContext ctx, PropertyContainer configuration) {
-        super(timestamp, EventTopics.STATE_TOPIC, ID);
+        super(timestamp, ID);
         setProperty(PROP_PLUGIN_ID, ctx.getPluginId());
         setProperty(PROP_CONFIGURATION, configuration);
     }
 
     public PluginConfigurationUpdateEvent(Map<String,Object> props) {
-        super(EventTopics.STATE_TOPIC, props);
+        super(props);
     }
 
     public String getPluginId() {

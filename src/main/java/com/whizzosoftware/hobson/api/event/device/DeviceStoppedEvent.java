@@ -5,28 +5,28 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.event;
+package com.whizzosoftware.hobson.api.event.device;
 
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 
 import java.util.Map;
 
 /**
- * Event that occurs when a the Hub determines a device is no longer available.
+ * Event that occurs when a device is stopped.
  *
  * @author Dan Noguerol
  */
-public class DeviceUnavailableEvent extends HobsonEvent {
-    public static final String ID = "deviceNotAvailable";
+public class DeviceStoppedEvent extends DeviceEvent {
+    public static final String ID = "deviceStopped";
     public static final String PROP_DEVICE_CONTEXT = "deviceCtx";
 
-    public DeviceUnavailableEvent(long timestamp, DeviceContext deviceContext) {
-        super(timestamp, EventTopics.STATE_TOPIC, ID);
-        setProperty(PROP_DEVICE_CONTEXT, deviceContext);
+    public DeviceStoppedEvent(long timestamp, DeviceContext deviceCtx) {
+        super(timestamp, ID);
+        setProperty(PROP_DEVICE_CONTEXT, deviceCtx);
     }
 
-    public DeviceUnavailableEvent(Map<String, Object> properties) {
-        super(EventTopics.STATE_TOPIC, properties);
+    public DeviceStoppedEvent(Map<String,Object> properties) {
+        super(properties);
     }
 
     public DeviceContext getDeviceContext() {

@@ -14,6 +14,7 @@ import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.action.*;
 import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
+import com.whizzosoftware.hobson.api.event.task.*;
 import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.disco.DeviceAdvertisement;
 import com.whizzosoftware.hobson.api.disco.DiscoManager;
@@ -170,11 +171,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     }
 
     @Override
-    public String[] getEventTopics() {
-        return null;
-    }
-
-    @Override
     public long getRefreshInterval() {
         return 0;
     }
@@ -219,8 +215,8 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
         deviceManager.updateDevice(device.getDescriptor());
     }
 
-    @Override
-    public void onHobsonEvent(final HobsonEvent event) {
+    @EventHandler
+    public void onHandleTaskEvents(final TaskEvent event) {
         if (hasTaskProvider()) {
             if (event instanceof TaskRegistrationEvent) {
                 getTaskProvider().onRegisterTasks(((TaskRegistrationEvent)event).getTasks());

@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.event;
+package com.whizzosoftware.hobson.api.event.device;
 
 import com.whizzosoftware.hobson.api.variable.DeviceVariableUpdate;
 
@@ -18,12 +18,12 @@ import java.util.Map;
  *
  * @author Dan Noguerol
  */
-public class DeviceVariableUpdateEvent extends HobsonEvent {
+public class DeviceVariableUpdateEvent extends DeviceEvent {
     public static final String ID = "varUpdateNotify";
     public static final String PROP_UPDATES = "updates";
 
     public DeviceVariableUpdateEvent(long timestamp, DeviceVariableUpdate update) {
-        super(timestamp, EventTopics.STATE_TOPIC, ID);
+        super(timestamp, ID);
 
         List<DeviceVariableUpdate> updates = new ArrayList<>();
         updates.add(update);
@@ -31,13 +31,13 @@ public class DeviceVariableUpdateEvent extends HobsonEvent {
     }
 
     public DeviceVariableUpdateEvent(long timestamp, List<DeviceVariableUpdate> updates) {
-        super(timestamp, EventTopics.STATE_TOPIC, ID);
+        super(timestamp, ID);
 
         setProperty(PROP_UPDATES, updates);
     }
 
     public DeviceVariableUpdateEvent(Map<String,Object> properties) {
-        super(EventTopics.STATE_TOPIC, properties);
+        super(properties);
     }
 
     public List<DeviceVariableUpdate> getUpdates() {

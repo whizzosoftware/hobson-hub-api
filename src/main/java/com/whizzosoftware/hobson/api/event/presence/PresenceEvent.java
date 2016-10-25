@@ -5,23 +5,23 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.event;
+package com.whizzosoftware.hobson.api.event.presence;
+
+import com.whizzosoftware.hobson.api.event.HobsonEvent;
 
 import java.util.Map;
 
 /**
- * Event that occurs when the hub's configuration is updated.
+ * Base class for all presence related events.
  *
  * @author Dan Noguerol
  */
-public class HubConfigurationUpdateEvent extends HobsonEvent {
-    public static final String ID = "hubConfigurationUpdate";
-
-    public HubConfigurationUpdateEvent(long timestamp) {
-        super(timestamp, EventTopics.STATE_TOPIC, ID);
+abstract public class PresenceEvent extends HobsonEvent {
+    public PresenceEvent(Long timestamp, String eventId) {
+        super(timestamp, eventId);
     }
 
-    public HubConfigurationUpdateEvent(Map<String,Object> props) {
-        super(EventTopics.STATE_TOPIC, props);
+    public PresenceEvent(Map<String, Object> properties) {
+        super(properties);
     }
 }

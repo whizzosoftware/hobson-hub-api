@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package com.whizzosoftware.hobson.api.event;
+package com.whizzosoftware.hobson.api.event.presence;
 
 import com.whizzosoftware.hobson.api.presence.PresenceEntityContext;
 import com.whizzosoftware.hobson.api.presence.PresenceLocationContext;
@@ -17,7 +17,7 @@ import java.util.Map;
  *
  * @author Dan Noguerol
  */
-public class PresenceUpdateNotificationEvent extends HobsonEvent {
+public class PresenceUpdateNotificationEvent extends PresenceEvent {
     public static final String ID = "presenceUpdateNotify";
 
     private static final String PROP_ENTITY = "entity";
@@ -25,7 +25,7 @@ public class PresenceUpdateNotificationEvent extends HobsonEvent {
     private static final String PROP_NEW_LOCATION = "newLocation";
 
     public PresenceUpdateNotificationEvent(long timestamp, PresenceEntityContext entity, PresenceLocationContext oldLocation, PresenceLocationContext newLocation) {
-        super(timestamp, EventTopics.PRESENCE_TOPIC, ID);
+        super(timestamp, ID);
 
         setProperty(PROP_ENTITY, entity);
         setProperty(PROP_OLD_LOCATION, oldLocation);
@@ -33,7 +33,7 @@ public class PresenceUpdateNotificationEvent extends HobsonEvent {
     }
 
     public PresenceUpdateNotificationEvent(Map<String, Object> properties) {
-        super(EventTopics.PRESENCE_TOPIC, properties);
+        super(properties);
     }
 
     public PresenceEntityContext getEntityContext() {
