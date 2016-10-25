@@ -17,8 +17,8 @@ import io.netty.util.concurrent.Future;
 public class MockHobsonPlugin extends AbstractHobsonPlugin {
     private String name;
 
-    public MockHobsonPlugin(String pluginId, String name, String version) {
-        super(pluginId, version, new MockEventLoopGroup());
+    public MockHobsonPlugin(String pluginId, String name, String version, String description) {
+        super(pluginId, version, description, new MockEventLoopGroup());
         this.name = name;
     }
 

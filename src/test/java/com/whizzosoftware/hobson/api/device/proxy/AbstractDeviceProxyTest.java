@@ -43,7 +43,7 @@ public class AbstractDeviceProxyTest {
 
     @Test
     public void testGetPreferredVariableName() {
-        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0");
+        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0", "");
         p.setDeviceManager(new MockDeviceManager());
         AbstractDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB);
         // should be null by default
@@ -53,7 +53,7 @@ public class AbstractDeviceProxyTest {
     @Test
     public void testStart() {
         MockDeviceManager dm = new MockDeviceManager();
-        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0");
+        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0", "");
         p.setDeviceManager(dm);
 
         MockDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB, "deviceName") {
@@ -96,7 +96,7 @@ public class AbstractDeviceProxyTest {
 
     @Test
     public void testStop() {
-        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0");
+        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0", "");
         p.setDeviceManager(new MockDeviceManager());
         MockDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB);
         assertFalse(d.wasShutdownCalled);
@@ -138,7 +138,7 @@ public class AbstractDeviceProxyTest {
 
     @Test
     public void testGetDefaultName() {
-        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0");
+        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0", "");
         p.setDeviceManager(new MockDeviceManager());
         MockDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB, "foo");
         assertEquals("foo", d.getDefaultName());
@@ -220,7 +220,7 @@ public class AbstractDeviceProxyTest {
         long now = System.currentTimeMillis();
         MockEventManager em = new MockEventManager();
         MockDeviceManager dm = new MockDeviceManager();
-        MockHobsonPlugin plugin = new MockHobsonPlugin("pid", "plugin", "1.0.0");
+        MockHobsonPlugin plugin = new MockHobsonPlugin("pid", "plugin", "1.0.0", "");
         plugin.setEventManager(em);
         plugin.setDeviceManager(dm);
         MockLightbulbDeviceProxy proxy = new MockLightbulbDeviceProxy(plugin, "did");
@@ -248,7 +248,7 @@ public class AbstractDeviceProxyTest {
     @Test
     public void testDeviceVariableDescriptions() {
         MockDeviceManager dm = new MockDeviceManager();
-        MockHobsonPlugin plugin = new MockHobsonPlugin("pid", "plugin", "1.0.0");
+        MockHobsonPlugin plugin = new MockHobsonPlugin("pid", "plugin", "1.0.0", "");
         plugin.setDeviceManager(dm);
         MockLightbulbDeviceProxy proxy = new MockLightbulbDeviceProxy(plugin, "did");
         proxy.onStartup(null, null);

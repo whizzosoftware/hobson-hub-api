@@ -47,6 +47,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     private static final Logger logger = LoggerFactory.getLogger(AbstractHobsonPlugin.class);
 
     private PluginContext context;
+    private String description;
     private String version;
     private PropertyContainerClass configurationClass;
     private PluginStatus status;
@@ -62,13 +63,14 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     private final Map<String,HobsonDeviceProxy> devices = Collections.synchronizedMap(new HashMap<String,HobsonDeviceProxy>());
     private final Map<PropertyContainerClassContext,ActionProvider> actionProviders = Collections.synchronizedMap(new HashMap<PropertyContainerClassContext,ActionProvider>());
 
-    public AbstractHobsonPlugin(String pluginId, String version) {
-        this(pluginId, version, new LocalEventLoopGroup(1));
+    public AbstractHobsonPlugin(String pluginId, String version, String description) {
+        this(pluginId, version, description, new LocalEventLoopGroup(1));
     }
 
-    AbstractHobsonPlugin(String pluginId, String version, EventLoopGroup eventLoop) {
+    AbstractHobsonPlugin(String pluginId, String version, String description, EventLoopGroup eventLoop) {
         this.context = PluginContext.create(HubContext.createLocal(), pluginId);
         this.version = version;
+        this.description = description;
         this.eventLoop = eventLoop;
         this.configurationClass = new PropertyContainerClass(PropertyContainerClassContext.create(getContext(), "configurationClass"), PropertyContainerClassType.PLUGIN_CONFIG);
 
@@ -111,7 +113,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     abstract protected String getName();
 
     protected String getDescription() {
-        return null;
+        return description;
     }
 
     protected PluginType getType() {

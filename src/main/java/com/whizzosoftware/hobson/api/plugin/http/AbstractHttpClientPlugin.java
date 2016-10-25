@@ -23,15 +23,15 @@ import java.util.Map;
 abstract public class AbstractHttpClientPlugin extends AbstractHobsonPlugin {
     private HttpClientChannel httpChannel;
 
-    public AbstractHttpClientPlugin(String pluginId, String version) {
-        super(pluginId, version);
+    public AbstractHttpClientPlugin(String pluginId, String version, String description) {
+        super(pluginId, version, description);
         // use Ning implementation by default
         this.httpChannel = new NingHttpClientChannel((int)(Math.max(getRefreshInterval() * 1000 / 2, 5000)));
         this.httpChannel.setPlugin(this);
     }
 
-    public AbstractHttpClientPlugin(String pluginId, String version, HttpClientChannel httpChannel) {
-        super(pluginId, version);
+    public AbstractHttpClientPlugin(String pluginId, String version, String description, HttpClientChannel httpChannel) {
+        super(pluginId, version, description);
         this.httpChannel = httpChannel;
         this.httpChannel.setPlugin(this);
     }
