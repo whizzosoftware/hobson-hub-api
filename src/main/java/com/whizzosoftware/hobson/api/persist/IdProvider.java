@@ -27,6 +27,8 @@ import com.whizzosoftware.hobson.api.variable.GlobalVariableContext;
  * @author Dan Noguerol
  */
 public interface IdProvider {
+    String createActionClassesId(HubContext ctx);
+    String createActionClassId(PropertyContainerClassContext ctx);
     String createActionId(HubContext ctx, String actionId);
     String createActionSetId(HubContext ctx, String actionSetId);
     String createActionSetActionsId(HubContext ctx, String actionSetId);
@@ -61,8 +63,6 @@ public interface IdProvider {
     String createHubSerialPortId(HubContext ctx, String name);
     String createHubUploadCredentialsId(HubContext ctx);
     String createJobId(HubContext ctx, String jobId);
-    String createLocalPluginActionClassId(PluginContext ctx, String actionClassId);
-    String createLocalPluginActionClassesId(PluginContext ctx);
     String createLocalPluginConfigurationId(PluginContext ctx);
     String createLocalPluginConfigurationClassId(PluginContext ctx);
     String createLocalPluginId(PluginContext ctx);
@@ -88,8 +88,6 @@ public interface IdProvider {
     String createRepositoryId(HubContext ctx, String uri);
     String createSendTestEmailId(HubContext ctx);
     String createShutdownId(HubContext ctx);
-    String createTaskActionClassesId(HubContext ctx);
-    String createTaskActionClassId(PropertyContainerClassContext ctx);
     String createTaskActionSetId(HubContext ctx, String id);
     String createTaskActionSetsId(HubContext ctx);
     String createTaskConditionClassesId(HubContext ctx);

@@ -7,6 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.hub;
 
+import com.whizzosoftware.hobson.api.action.ActionClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
@@ -36,7 +37,7 @@ public interface HubManager {
      *
      * @return a Collection of HobsonHub instances
      */
-    Collection<HubContext> getAllHubs();
+    Collection<HubContext> getHubs();
 
     /**
      * Returns the hubs associated with a user.
