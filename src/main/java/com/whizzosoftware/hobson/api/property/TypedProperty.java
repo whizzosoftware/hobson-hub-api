@@ -76,6 +76,17 @@ public class TypedProperty implements Serializable { // TODO: remove
         return this;
     }
 
+    public boolean hasConstraintValue(PropertyConstraintType type, Object value) {
+        if (constraints != null) {
+            for (TypedPropertyConstraint tpc : constraints) {
+                if (tpc.getType().equals(type) && tpc.getArgument().equals(value)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * Evaluates whether all defined constraints are met.
      *

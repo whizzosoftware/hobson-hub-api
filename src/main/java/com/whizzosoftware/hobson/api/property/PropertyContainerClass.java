@@ -9,6 +9,8 @@
 */
 package com.whizzosoftware.hobson.api.property;
 
+import com.whizzosoftware.hobson.api.HobsonInvalidRequestException;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -82,6 +84,23 @@ public class PropertyContainerClass implements Serializable { // TODO: remove
             supportedProperties = new ArrayList<>();
         }
         supportedProperties.add(property);
+    }
+
+    public void validate(PropertyContainer properties) {
+        for (TypedProperty tp : getSupportedProperties()) {
+            Object value = properties.getPropertyValue(tp.getName());
+            if (value == null && tp.hasConstraintValue(PropertyConstraintType.required, true)) {
+                throw new HobsonInvalidRequestException("Missing required property \"" + tp.getName() + "\"");
+            } else if (value != null) {
+                if (tp.getType().equals(TypedProperty.Type.NUMBER) && !(value instanceof Number)) {
+                    throw new HobsonInvalidRequestException("Property \"" + tp.getName() + "\" must be a numeric value");
+                } else if (tp.getType().equals(TypedProperty.Type.BOOLEAN) && !(value instanceof Boolean)) {
+                    throw new HobsonInvalidRequestException("Property \"" + tp.getName() + "\" must be a boolean value");
+                } else if (tp.getType().equals(TypedProperty.Type.STRING) && !(value instanceof String)) {
+                    throw new HobsonInvalidRequestException("Property \"" + tp.getName() + "\" must be a string value");
+                }
+            }
+        }
     }
 
     /**
