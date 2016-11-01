@@ -91,19 +91,6 @@ public class CollectionPersisterTest {
         assertTrue(m.containsKey("foo"));
         assertEquals("bar", m.get("foo"));
 
-        // check the action set
-        m = cpctx.getMap(idProvider.createActionSetId(hctx, "actionSetId1"));
-        assertNotNull(m);
-        assertEquals(2, m.size());
-        assertEquals("actionSetId1", m.get("id"));
-        assertEquals("ActionSet1", m.get("name"));
-
-        // check the action set actions
-        s = cpctx.getSet(idProvider.createActionSetActionsId(hctx, "actionSetId1"));
-        assertNotNull(s);
-        assertEquals(1, s.size());
-        assertEquals("action1", s.iterator().next());
-
         // restore task
         task = cp.restoreTask(cpctx, task.getContext());
         assertEquals("My Task", task.getName());
@@ -130,7 +117,7 @@ public class CollectionPersisterTest {
 
         // check task action set
         assertEquals("actionSetId1", task.getActionSet().getId());
-        assertNotNull(task.getActionSet().getProperties());
+        assertNull(task.getActionSet().getProperties());
 
         // delete the task
         cp.deleteTask(cpctx, task.getContext());
@@ -154,16 +141,7 @@ public class CollectionPersisterTest {
         MockCollectionPersistenceContext cpctx = new MockCollectionPersistenceContext();
         IdProvider idProvider = new ContextPathIdProvider();
 
-        PropertyContainerSet actionSet = new PropertyContainerSet(
-            Collections.singletonList(
-                new PropertyContainer(
-                    PropertyContainerClassContext.create(PluginContext.createLocal("plugin2"),
-                        "cclass2"
-                    ),
-                    Collections.singletonMap("foo", (Object)"bar")
-                )
-            )
-        );
+        PropertyContainerSet actionSet = new PropertyContainerSet("as1");
 
         TaskContext tctx = TaskContext.create(hctx, "taskId1");
         HobsonTask task = new HobsonTask(
@@ -189,9 +167,7 @@ public class CollectionPersisterTest {
         assertEquals("My Desc", task.getDescription());
         assertEquals(1, task.getConditions().size());
         assertEquals("cclass1", task.getConditions().get(0).getContainerClassContext().getContainerClassId());
-        assertEquals(1, task.getActionSet().getProperties().size());
-        assertEquals("cclass2", task.getActionSet().getProperties().iterator().next().getContainerClassContext().getContainerClassId());
-        assertEquals("bar", task.getActionSet().getProperties().iterator().next().getPropertyValue("foo"));
+        assertEquals("as1", task.getActionSet().getId());
 
         // update task data
         task.setName("My Task2");
@@ -202,14 +178,7 @@ public class CollectionPersisterTest {
                 Collections.singletonMap("foo2", (Object)"bar2")
             )
         ));
-        task.getActionSet().setProperties(Collections.singletonList(
-            new PropertyContainer(
-                PropertyContainerClassContext.create(PluginContext.createLocal("plugin3"),
-                    "cclass3"
-                ),
-                Collections.singletonMap("bar", (Object)"foo")
-            )
-        ));
+        task.setActionSet(new PropertyContainerSet("as2"));
 
         // re-save task
         cp.saveTask(cpctx, task);
@@ -219,9 +188,7 @@ public class CollectionPersisterTest {
         assertEquals("My Desc2", task.getDescription());
         assertEquals(1, task.getConditions().size());
         assertEquals("cclass6", task.getConditions().get(0).getContainerClassContext().getContainerClassId());
-        assertEquals(1, task.getActionSet().getProperties().size());
-        assertEquals("cclass3", task.getActionSet().getProperties().iterator().next().getContainerClassContext().getContainerClassId());
-        assertEquals("foo", task.getActionSet().getProperties().iterator().next().getPropertyValue("bar"));
+        assertEquals("as2", task.getActionSet().getId());
     }
 
     @Test

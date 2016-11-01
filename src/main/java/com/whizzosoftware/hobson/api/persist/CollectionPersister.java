@@ -294,21 +294,21 @@ public class CollectionPersister {
         return null;
     }
 
-    public HobsonTask restoreTask(CollectionPersistenceContext pctx, TaskContext tctx) {
+    public HobsonTask restoreTask(CollectionPersistenceContext taskCtx, TaskContext tctx) {
         HobsonTask task = null;
-        Map<String,Object> taskMap = pctx.getMap(idProvider.createTaskId(tctx));
+        Map<String,Object> taskMap = taskCtx.getMap(idProvider.createTaskId(tctx));
         if (taskMap != null && taskMap.size() > 0) {
             task = new HobsonTask(
-                    tctx,
-                    (String)taskMap.get(PropertyConstants.NAME),
-                    (String)taskMap.get(PropertyConstants.DESCRIPTION),
-                    null,
-                    null,
-                    restoreActionSet(tctx.getHubContext(), pctx, (String)taskMap.get(PropertyConstants.ACTION_SET_ID))
+                tctx,
+                (String)taskMap.get(PropertyConstants.NAME),
+                (String)taskMap.get(PropertyConstants.DESCRIPTION),
+                null,
+                null,
+                new PropertyContainerSet((String)taskMap.get(PropertyConstants.ACTION_SET_ID))
             );
 
             // restore properties
-            Map<String, Object> map = pctx.getMap(idProvider.createTaskPropertiesId(tctx));
+            Map<String, Object> map = taskCtx.getMap(idProvider.createTaskPropertiesId(tctx));
             if (map != null) {
                 for (String name : map.keySet()) {
                     task.setProperty(name, map.get(name));
@@ -316,13 +316,13 @@ public class CollectionPersister {
             }
 
             // restore conditions
-            Set<Object> set = pctx.getSet(idProvider.createTaskConditionsId(tctx));
+            Set<Object> set = taskCtx.getSet(idProvider.createTaskConditionsId(tctx));
             if (set != null) {
                 List<PropertyContainer> conditions = new ArrayList<>();
                 for (Object o : set) {
                     String conditionId = (String)o;
-                    map = pctx.getMap(idProvider.createTaskConditionId(tctx, conditionId));
-                    Map<String, Object> values = pctx.getMap(idProvider.createTaskConditionPropertiesId(tctx, conditionId));
+                    map = taskCtx.getMap(idProvider.createTaskConditionId(tctx, conditionId));
+                    Map<String, Object> values = taskCtx.getMap(idProvider.createTaskConditionPropertiesId(tctx, conditionId));
                     conditions.add(
                         new PropertyContainer(
                             conditionId,
@@ -556,7 +556,11 @@ public class CollectionPersister {
         }
 
         // save task action set
-        map.put(PropertyConstants.ACTION_SET_ID, saveActionSet(task.getContext().getHubContext(), pctx, task.getActionSet()));
+        if (task.getActionSet().hasId()) {
+            map.put(PropertyConstants.ACTION_SET_ID, task.getActionSet().getId());
+        } else {
+            throw new HobsonRuntimeException("Attempt to save task without action set ID");
+        }
 
         // set the task map
         pctx.setMap(idProvider.createTaskId(task.getContext()), map);
