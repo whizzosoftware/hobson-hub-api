@@ -57,5 +57,8 @@ public interface ActionStore {
      */
     void deleteActionSet(String actionSetId);
 
+    /**
+     * Closes the store and performs cleanup.
+     */
     void close();
 }
