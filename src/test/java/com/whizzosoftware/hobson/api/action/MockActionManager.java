@@ -63,22 +63,12 @@ public class MockActionManager implements ActionManager {
     }
 
     @Override
-    public void publishActionClass(ActionClass actionClass) {
+    public void publishActionClass(HubContext context, ActionClass actionClass) {
 
     }
 
     @Override
     public PropertyContainerSet publishActionSet(HubContext ctx, String name, List<PropertyContainer> actions) {
         return null;
-    }
-
-    @Override
-    public void unpublishActionClasses(PluginContext ctx) {
-
-    }
-
-    @Override
-    public void unpublishActionSets(PluginContext ctx) {
-
     }
 }

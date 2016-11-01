@@ -107,13 +107,6 @@ public interface TaskManager extends TaskConditionClassProvider {
     void publishConditionClass(TaskConditionClass conditionClass);
 
     /**
-     * Unpublish all condition classes published by a plugin.
-     *
-     * @param ctx the plugin context
-     */
-    void unpublishConditionClasses(PluginContext ctx);
-
-    /**
      * Updates an existing task.
      * @param ctx the context of the task to update
      * @param name the new task name

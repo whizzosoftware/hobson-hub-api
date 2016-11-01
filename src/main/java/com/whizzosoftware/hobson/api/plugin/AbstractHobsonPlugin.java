@@ -244,7 +244,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     protected void publishActionProvider(ActionProvider provider) {
         ActionClass ac = provider.getActionClass();
         actionProviders.put(ac.getContext(), provider);
-        actionManager.publishActionClass(ac);
+        actionManager.publishActionClass(getContext().getHubContext(), ac);
     }
 
     protected void publishTaskConditionClass(TaskConditionClass conditionClass) {

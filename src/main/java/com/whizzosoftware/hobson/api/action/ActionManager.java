@@ -126,9 +126,10 @@ public interface ActionManager {
     /**
      * Publishes an action class.
      *
+     * @param context the context of the hub publishing the action class
      * @param actionClass the action class to publish
      */
-    void publishActionClass(ActionClass actionClass);
+    void publishActionClass(HubContext context, ActionClass actionClass);
 
     /**
      * Creates and publishes a new action set.
@@ -142,18 +143,4 @@ public interface ActionManager {
      * @since hobson-hub-api 0.5.0
      */
     PropertyContainerSet publishActionSet(HubContext ctx, String name, List<PropertyContainer> actions);
-
-    /**
-     * Unpublish all action providers published by a plugin.
-     *
-     * @param ctx the plugin context
-     */
-    void unpublishActionClasses(PluginContext ctx);
-
-    /**
-     * Unpublishes all action sets previously published by a plugin.
-     *
-     * @param ctx the context of the plugin that published the action sets
-     */
-    void unpublishActionSets(PluginContext ctx);
 }

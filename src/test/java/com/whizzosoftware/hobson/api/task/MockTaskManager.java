@@ -59,11 +59,6 @@ public class MockTaskManager implements TaskManager {
     }
 
     @Override
-    public void unpublishConditionClasses(PluginContext ctx) {
-
-    }
-
-    @Override
     public void updateTask(TaskContext ctx, String name, String description, List<PropertyContainer> conditions, PropertyContainerSet actionSet) {
 
     }
