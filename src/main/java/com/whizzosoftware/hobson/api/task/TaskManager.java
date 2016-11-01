@@ -48,16 +48,6 @@ public interface TaskManager extends TaskConditionClassProvider {
     void deleteTask(TaskContext ctx);
 
     /**
-     * Executes an action set.
-     *
-     * @param ctx the context of the action set
-     * @param actionSetId the action set ID
-     *
-     * @since hobson-hub-api 0.5.0
-     */
-    void executeActionSet(HubContext ctx, String actionSetId);
-
-    /**
      * Manually executes a task.
      *
      * @param ctx the context of the task to execute
@@ -73,27 +63,6 @@ public interface TaskManager extends TaskConditionClassProvider {
      * @param ctx the context of the target hub
      */
     void fireTaskTrigger(TaskContext ctx);
-
-    /**
-     * Returns a published action set.
-     *
-     * @param ctx the context of the action set
-     * @param actionSetId the action set ID
-     *
-     * @return a HobsonActionSet instance (or null if not found)
-     *
-     * @since hobson-hub-api 0.5.0
-     */
-    PropertyContainerSet getActionSet(HubContext ctx, String actionSetId);
-
-    /**
-     * Returns all published action sets.
-     *
-     * @param ctx the context of the hub that published the action sets
-     *
-     * @return a Collection of TaskActionSet instances
-     */
-    Collection<PropertyContainerSet> getActionSets(HubContext ctx);
 
     /**
      * Returns all published condition classes.
@@ -131,31 +100,11 @@ public interface TaskManager extends TaskConditionClassProvider {
     Collection<HobsonTask> getTasks(HubContext ctx);
 
     /**
-     * Creates and publishes a new action set.
-     *
-     * @param ctx the context of the hub publishing the action set
-     * @param name the name of the action set
-     * @param actions the actions to include in the set
-     *
-     * @return a TaskActionSet instance
-     *
-     * @since hobson-hub-api 0.5.0
-     */
-    PropertyContainerSet publishActionSet(HubContext ctx, String name, List<PropertyContainer> actions);
-
-    /**
      * Publishes a condition class.
      *
      * @param conditionClass the condition class to publish
      */
     void publishConditionClass(TaskConditionClass conditionClass);
-
-    /**
-     * Unpublishes all action sets previously published by a plugin.
-     *
-     * @param ctx the context of the plugin that published the action sets
-     */
-    void unpublishActionSets(PluginContext ctx);
 
     /**
      * Unpublish all condition classes published by a plugin.

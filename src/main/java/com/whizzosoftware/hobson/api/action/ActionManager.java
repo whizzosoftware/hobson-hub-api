@@ -18,6 +18,7 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * An interface for managing Hobson actions.
@@ -83,6 +84,27 @@ public interface ActionManager {
     Collection<ActionClass> getActionClasses(HubContext ctx, boolean applyConstraints);
 
     /**
+     * Returns a published action set.
+     *
+     * @param ctx the context of the action set
+     * @param actionSetId the action set ID
+     *
+     * @return a HobsonActionSet instance (or null if not found)
+     *
+     * @since hobson-hub-api 0.5.0
+     */
+    PropertyContainerSet getActionSet(HubContext ctx, String actionSetId);
+
+    /**
+     * Returns all published action sets.
+     *
+     * @param ctx the context of the hub that published the action sets
+     *
+     * @return a Collection of TaskActionSet instances
+     */
+    Collection<PropertyContainerSet> getActionSets(HubContext ctx);
+
+    /**
      * Returns information about a running job.
      *
      * @param ctx the hub context
@@ -109,9 +131,29 @@ public interface ActionManager {
     void publishActionClass(ActionClass actionClass);
 
     /**
+     * Creates and publishes a new action set.
+     *
+     * @param ctx the context of the hub publishing the action set
+     * @param name the name of the action set
+     * @param actions the actions to include in the set
+     *
+     * @return a TaskActionSet instance
+     *
+     * @since hobson-hub-api 0.5.0
+     */
+    PropertyContainerSet publishActionSet(HubContext ctx, String name, List<PropertyContainer> actions);
+
+    /**
      * Unpublish all action providers published by a plugin.
      *
      * @param ctx the plugin context
      */
     void unpublishActionClasses(PluginContext ctx);
+
+    /**
+     * Unpublishes all action sets previously published by a plugin.
+     *
+     * @param ctx the context of the plugin that published the action sets
+     */
+    void unpublishActionSets(PluginContext ctx);
 }

@@ -29,23 +29,8 @@ public class MockTaskManager implements TaskManager {
     }
 
     @Override
-    public void executeActionSet(HubContext ctx, String actionSetId) {
-
-    }
-
-    @Override
     public void fireTaskTrigger(TaskContext ctx) {
 
-    }
-
-    @Override
-    public PropertyContainerSet getActionSet(HubContext ctx, String actionSetId) {
-        return null;
-    }
-
-    @Override
-    public Collection<PropertyContainerSet> getActionSets(HubContext ctx) {
-        return null;
     }
 
     @Override
@@ -69,17 +54,7 @@ public class MockTaskManager implements TaskManager {
     }
 
     @Override
-    public PropertyContainerSet publishActionSet(HubContext ctx, String name, List<PropertyContainer> actions) {
-        return null;
-    }
-
-    @Override
     public void publishConditionClass(TaskConditionClass conditionClass) {
-
-    }
-
-    @Override
-    public void unpublishActionSets(PluginContext ctx) {
 
     }
 

@@ -9,6 +9,7 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
 
 import java.util.Collection;
+import java.util.List;
 
 public class MockActionManager implements ActionManager {
     @Override
@@ -42,6 +43,16 @@ public class MockActionManager implements ActionManager {
     }
 
     @Override
+    public PropertyContainerSet getActionSet(HubContext ctx, String actionSetId) {
+        return null;
+    }
+
+    @Override
+    public Collection<PropertyContainerSet> getActionSets(HubContext ctx) {
+        return null;
+    }
+
+    @Override
     public JobInfo getJobInfo(HubContext ctx, String jobId) {
         return null;
     }
@@ -57,7 +68,17 @@ public class MockActionManager implements ActionManager {
     }
 
     @Override
+    public PropertyContainerSet publishActionSet(HubContext ctx, String name, List<PropertyContainer> actions) {
+        return null;
+    }
+
+    @Override
     public void unpublishActionClasses(PluginContext ctx) {
+
+    }
+
+    @Override
+    public void unpublishActionSets(PluginContext ctx) {
 
     }
 }
