@@ -248,6 +248,11 @@ public class CollectionPersister {
         return (Long)pctx.getMapValue(idProvider.createDeviceId(dctx), PropertyConstants.LAST_CHECKIN);
     }
 
+    public String restoreDeviceName(CollectionPersistenceContext pctx, DeviceContext dctx) {
+        Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(dctx));
+        return (String)deviceMap.get(PropertyConstants.NAME);
+    }
+
     public DeviceVariableDescriptor restoreDeviceVariableDescription(CollectionPersistenceContext pctx, DeviceContext ctx, String name) {
         Map<String,Object> map = pctx.getMap(idProvider.createDeviceVariableDescriptionId(DeviceVariableContext.create(ctx, name)));
         return new DeviceVariableDescriptor(
@@ -504,6 +509,16 @@ public class CollectionPersister {
     public void saveDeviceLastCheckIn(CollectionPersistenceContext pctx, DeviceContext dctx, long lastCheckin) {
         pctx.setMapValue(idProvider.createDeviceId(dctx), PropertyConstants.LAST_CHECKIN, lastCheckin);
         pctx.commit();
+    }
+
+    public void saveDeviceName(CollectionPersistenceContext pctx, DeviceContext dctx, String name) {
+        String deviceId = idProvider.createDeviceId(dctx);
+        Map<String,Object> deviceMap = pctx.getMap(deviceId);
+        Map<String,Object> map = new HashMap<>(deviceMap);
+        map.put(PropertyConstants.NAME, name);
+        pctx.setMap(deviceId, map);
+        pctx.commit();
+
     }
 
     public void saveGlobalVariable(CollectionPersistenceContext pctx, GlobalVariableDescriptor desc, GlobalVariable val) {

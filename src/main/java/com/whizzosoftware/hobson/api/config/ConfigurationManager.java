@@ -53,15 +53,6 @@ public interface ConfigurationManager {
     Object getDeviceConfigurationProperty(DeviceContext ctx, String name);
 
     /**
-     * Returns a device name.
-     *
-     * @param ctx the device context
-     *
-     * @return the device name
-     */
-    String getDeviceName(DeviceContext ctx);
-
-    /**
      * Returns the configuration associated with a Hub.
      *
      * @param ctx the context of the hub
@@ -108,14 +99,6 @@ public interface ConfigurationManager {
      * @param value the configuration property value
      */
     void setDeviceConfigurationProperty(DeviceContext ctx, PropertyContainerClass configClass, String name, Object value);
-
-    /**
-     * Sets a device's name.
-     *
-     * @param ctx the device context
-     * @param name the new device name
-     */
-    void setDeviceName(DeviceContext ctx, String name);
 
     /**
      * Sets the configuration associated with a Hub.

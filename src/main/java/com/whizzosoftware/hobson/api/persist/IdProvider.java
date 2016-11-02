@@ -46,6 +46,7 @@ public interface IdProvider {
     DeviceContext createDeviceContextWithHub(HubContext ctx, String deviceId);
     String createDeviceId(DeviceContext ctx);
     String createDeviceConfigurationId(DeviceContext ctx);
+    String createDeviceNameId(DeviceContext ctx);
     String createDeviceVariableDescriptionId(DeviceVariableContext vctx);
     String createDeviceVariableId(DeviceVariableContext vctx);
     String createDeviceConfigurationClassId(DeviceContext ctx);

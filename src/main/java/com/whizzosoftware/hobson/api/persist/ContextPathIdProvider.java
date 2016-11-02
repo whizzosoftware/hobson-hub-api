@@ -122,6 +122,11 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
+    public String createDeviceNameId(DeviceContext ctx) {
+        return createDeviceId(ctx) + HubContext.DELIMITER + "name";
+    }
+
+    @Override
     public String createDeviceVariableDescriptionId(DeviceVariableContext vctx) {
         return createDeviceVariableId(vctx) + HubContext.DELIMITER + "description";
     }
