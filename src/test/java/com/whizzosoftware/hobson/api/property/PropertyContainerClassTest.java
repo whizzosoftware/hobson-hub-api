@@ -26,7 +26,7 @@ public class PropertyContainerClassTest {
     }
 
     @Test
-    public void testValidate() {
+    public void testValidateWithSupportedProperties() {
         PropertyContainerClassContext ctx = PropertyContainerClassContext.create(PluginContext.createLocal("plugin1"), "cc1");
 
         PropertyContainerClass ac = new PropertyContainerClass(ctx, PropertyContainerClassType.ACTION);
@@ -86,5 +86,13 @@ public class PropertyContainerClassTest {
         } catch (HobsonInvalidRequestException ignored) {
             ignored.printStackTrace();
         }
+    }
+
+    @Test
+    public void testValidateWithoutSupportedProperties() {
+        PropertyContainerClassContext ctx = PropertyContainerClassContext.create(PluginContext.createLocal("plugin1"), "cc1");
+        PropertyContainerClass ac = new PropertyContainerClass(ctx, PropertyContainerClassType.ACTION);
+        PropertyContainer props = new PropertyContainer(ctx, new HashMap<String,Object>());
+        ac.validate(props);
     }
 }

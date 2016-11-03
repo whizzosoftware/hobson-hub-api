@@ -97,10 +97,7 @@ public class AbstractHobsonPluginTest {
         MockDeviceManager dm = new MockDeviceManager();
         MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name", "1.0.0", "");
         plugin.setDeviceManager(dm);
-        try {
-            DeviceVariableState v = plugin.getDeviceVariableState("id", "name");
-            fail("Should have thrown exception");
-        } catch (HobsonNotFoundException ignored) {}
+        assertNull(plugin.getDeviceVariableState("id", "name"));
     }
 
     @Test
@@ -111,5 +108,17 @@ public class AbstractHobsonPluginTest {
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }
+    }
+
+    @Test
+    public void testGetDeviceLastCheckin() {
+        MockDeviceManager dm = new MockDeviceManager();
+        MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name", "1.0.0", "");
+        plugin.setDeviceManager(dm);
+        MockDeviceProxy proxy = new MockDeviceProxy(plugin, "device1", DeviceType.CAMERA);
+        proxy.setLastCheckin(4000L);
+        plugin.publishDeviceProxy(proxy).syncUninterruptibly();
+        assertEquals(4000L, (long)plugin.getDeviceLastCheckin("device1"));
+        assertNull(plugin.getDeviceLastCheckin("device2"));
     }
 }

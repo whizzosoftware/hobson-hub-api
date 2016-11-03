@@ -133,6 +133,10 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
         }
     }
 
+    protected Collection<HobsonDeviceProxy> getDeviceProxies() {
+        return devices.values();
+    }
+
     protected ActionClass getActionClass(String actionId) {
         validateActionManager();
         return actionManager.getActionClass(PropertyContainerClassContext.create(getContext(), actionId));
@@ -159,7 +163,12 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
 
     @Override
     public Long getDeviceLastCheckin(String deviceId) {
-        return devices.get(deviceId).getLastCheckin();
+        Long result = null;
+        HobsonDeviceProxy d = devices.get(deviceId);
+        if (d != null) {
+            result = d.getLastCheckin();
+        }
+        return result;
     }
 
     @Override
@@ -168,7 +177,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
         if (proxy != null) {
             return proxy.getVariableState(name);
         } else {
-            throw new HobsonNotFoundException("No device found with ID: " + deviceId);
+            return null;
         }
     }
 
@@ -375,6 +384,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
                 devices.put(deviceId, proxy);
             }
         });
+    }
+
+    protected void addJobStatusMessage(String msg, Object props) {
+        validateActionManager();
+        actionManager.addJobStatusMessage(getContext(), msg, props);
     }
 
     /**
