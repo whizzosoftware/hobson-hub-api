@@ -64,6 +64,8 @@ public interface IdProvider {
     String createHubSerialPortId(HubContext ctx, String name);
     String createHubUploadCredentialsId(HubContext ctx);
     String createJobId(HubContext ctx, String jobId);
+    String createLocalPluginActionClassId(PluginContext ctx, String actionClassId);
+    String createLocalPluginActionClassesId(PluginContext ctx);
     String createLocalPluginConfigurationId(PluginContext ctx);
     String createLocalPluginConfigurationClassId(PluginContext ctx);
     String createLocalPluginId(PluginContext ctx);

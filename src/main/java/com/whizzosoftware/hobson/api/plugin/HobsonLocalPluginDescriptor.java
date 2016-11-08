@@ -17,6 +17,10 @@ public class HobsonLocalPluginDescriptor extends HobsonPluginDescriptor {
         this.context = context;
     }
 
+    public boolean hasActionClasses() {
+        return (actionClasses != null && actionClasses.size() > 0);
+    }
+
     public ActionClass getActionClass(String id) {
         return actionClasses.get(id);
     }

@@ -25,7 +25,9 @@ import java.util.*;
 public class Job implements JobInfo, ActionLifecycleContext {
     private Action action;
     private String id;
+    private long createTime;
     private long startTime;
+    private long completionTime;
     private List<String> statusMessages = Collections.synchronizedList(new ArrayList<String>());
     private JobStatus status;
     private long timeoutInterval;
@@ -36,9 +38,10 @@ public class Job implements JobInfo, ActionLifecycleContext {
      * @param action the action associated with this job
      * @param timeoutInterval the maximum interval the job is allowed to run before being considered timed out
      */
-    public Job(Action action, long timeoutInterval) {
+    public Job(Action action, long timeoutInterval, long createTime) {
         this.action = action;
         this.timeoutInterval = timeoutInterval;
+        this.createTime = createTime;
 
         id = UUID.randomUUID().toString();
         status = JobStatus.Initialized;
@@ -56,6 +59,10 @@ public class Job implements JobInfo, ActionLifecycleContext {
         return (status.equals(JobStatus.TimedOut) || (status.equals(JobStatus.InProgress) && now - startTime > timeoutInterval));
     }
 
+    public long getCompletionTime() {
+        return completionTime;
+    }
+
     public boolean isAssociatedWithPlugin(PluginContext ctx) {
         return action.isAssociatedWithPlugin(ctx);
     }
@@ -66,6 +73,10 @@ public class Job implements JobInfo, ActionLifecycleContext {
 
     public boolean isInProgress() {
         return (status.equals(JobStatus.InProgress));
+    }
+
+    public boolean isOlderThanAnHour(long currentTime) {
+        return (currentTime - createTime >=  3600000);
     }
 
     /**
@@ -132,6 +143,7 @@ public class Job implements JobInfo, ActionLifecycleContext {
             statusMessages.add(statusMsg);
         }
         status = JobStatus.Complete;
+        completionTime = System.currentTimeMillis();
     }
 
     @Override
