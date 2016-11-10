@@ -10,6 +10,7 @@
 package com.whizzosoftware.hobson.api.persist;
 
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
+import com.whizzosoftware.hobson.api.action.ActionClass;
 import com.whizzosoftware.hobson.api.data.DataStreamField;
 import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.hub.HubContext;
@@ -18,10 +19,7 @@ import com.whizzosoftware.hobson.api.presence.PresenceEntity;
 import com.whizzosoftware.hobson.api.presence.PresenceEntityContext;
 import com.whizzosoftware.hobson.api.presence.PresenceLocation;
 import com.whizzosoftware.hobson.api.presence.PresenceLocationContext;
-import com.whizzosoftware.hobson.api.property.PropertyContainer;
-import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
-import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
-import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
+import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.task.HobsonTask;
 import com.whizzosoftware.hobson.api.task.TaskContext;
 import com.whizzosoftware.hobson.api.data.DataStream;
@@ -224,6 +222,17 @@ public class CollectionPersister {
                 descriptions.add(restoreDeviceVariableDescription(pctx, ctx, vname));
             }
 
+            // restore action classes
+            List<ActionClass> actionClasses = null;
+            Set<Object> acSet = pctx.getSet(idProvider.createDeviceActionClassesId(ctx));
+            if (acSet != null && acSet.size() > 0) {
+                actionClasses = new ArrayList<>();
+                for (Object o : acSet) {
+                    String actionClassId = o.toString();
+                    actionClasses.add(restoreDeviceActionClass(pctx, ctx, actionClassId));
+                }
+            }
+
             return new HobsonDeviceDescriptor.Builder(ctx).
                 name(name).
                 type(DeviceType.valueOf(type)).
@@ -233,6 +242,7 @@ public class CollectionPersister {
                 modelName((String)deviceMap.get(PropertyConstants.MODEL_NAME)).
                 preferredVariableName((String)deviceMap.get(PropertyConstants.PREFERRED_VARIABLE_NAME)).
                 variableDescriptions(descriptions).
+                actionClasses(actionClasses).
                 build();
         } else {
             return null;
@@ -260,6 +270,19 @@ public class CollectionPersister {
             VariableMask.valueOf((String)map.get(PropertyConstants.MASK)),
             map.containsKey(PropertyConstants.MEDIA_TYPE) ? VariableMediaType.valueOf((String)map.get(PropertyConstants.MEDIA_TYPE)) : null
         );
+    }
+
+    public ActionClass restoreDeviceActionClass(CollectionPersistenceContext pctx, DeviceContext ctx, String actionClassId) {
+        Map<String,Object> map = pctx.getMap(idProvider.createDeviceActionClassId(ctx, actionClassId));
+        ActionClass ac = new ActionClass(
+            PropertyContainerClassContext.create(ctx, actionClassId),
+            (String)map.get(PropertyConstants.NAME),
+            (String)map.get(PropertyConstants.DESCRIPTION),
+            (Boolean)map.get(PropertyConstants.TASK_ACTION),
+            (Long)map.get(PropertyConstants.TIMEOUT_INTERVAL)
+        );
+        ac.setSupportedProperties((List<TypedProperty>)map.get(PropertyConstants.SUPPORTED_PROPERTIES)); // TODO
+        return ac;
     }
 
     public Map<String,Object> restoreHubConfiguration(CollectionPersistenceContext cpctx, HubContext hctx, PropertyContainerClassContext pccctx) {
@@ -487,6 +510,13 @@ public class CollectionPersister {
             }
         }
 
+        // save the action classes
+        if (device.hasActionClasses()) {
+            for (ActionClass ac : device.getActionClasses()) {
+                saveDeviceActionClass(pctx, ac);
+            }
+        }
+
         // save device to list of hub devices
         pctx.addSetValue(idProvider.createDevicesId(device.getContext().getHubContext()), deviceId);
 
@@ -635,6 +665,22 @@ public class CollectionPersister {
         }
         pctx.setMap(key, map);
         pctx.addSetValue(idProvider.createDeviceVariablesId(vd.getContext().getDeviceContext()), vd.getContext().getName());
+
+        pctx.commit();
+    }
+
+    public void saveDeviceActionClass(CollectionPersistenceContext pctx, ActionClass ac) {
+        DeviceContext dctx = DeviceContext.create(ac.getContext().getPluginContext(), ac.getContext().getDeviceId());
+        String key = idProvider.createDeviceActionClassId(dctx, ac.getContext().getContainerClassId());
+
+        Map<String,Object> map = new HashMap<>();
+        map.put(PropertyConstants.NAME, ac.getName());
+        map.put(PropertyConstants.DESCRIPTION, ac.getDescription());
+        map.put(PropertyConstants.TASK_ACTION, ac.isTaskAction());
+        map.put(PropertyConstants.TIMEOUT_INTERVAL, ac.getTimeoutInterval());
+        map.put(PropertyConstants.SUPPORTED_PROPERTIES, ac.getSupportedProperties()); // TODO
+        pctx.setMap(key, map);
+        pctx.addSetValue(idProvider.createDeviceActionClassesId(dctx), ac.getContext().getContainerClassId());
 
         pctx.commit();
     }

@@ -114,6 +114,10 @@ public class HobsonDeviceDescriptor {
         return (variables != null && variables.size() > 0);
     }
 
+    public boolean hasActionClasses() {
+        return (actionClasses != null && actionClasses.size() > 0);
+    }
+
     protected void addVariableDescription(DeviceVariableDescriptor dvd) {
         if (variables == null) {
             variables = new HashMap<>();
@@ -192,6 +196,11 @@ public class HobsonDeviceDescriptor {
             for (DeviceVariableDescriptor dvd : deviceVariableDescriptors) {
                 desc.variables.put(dvd.getContext().getName(), dvd);
             }
+            return this;
+        }
+
+        public HobsonDeviceDescriptor.Builder actionClasses(Collection<ActionClass> actionClasses) {
+            desc.actionClasses = actionClasses;
             return this;
         }
 

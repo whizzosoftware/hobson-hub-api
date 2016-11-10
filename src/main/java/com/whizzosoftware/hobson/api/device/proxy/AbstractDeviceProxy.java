@@ -2,6 +2,7 @@ package com.whizzosoftware.hobson.api.device.proxy;
 
 import com.whizzosoftware.hobson.api.HobsonNotFoundException;
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
+import com.whizzosoftware.hobson.api.action.ActionClass;
 import com.whizzosoftware.hobson.api.action.ActionProvider;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.DeviceError;
@@ -26,6 +27,7 @@ abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
     private boolean started;
     private DeviceType type;
     private Map<String,DeviceProxyVariable> variables = Collections.synchronizedMap(new HashMap<String,DeviceProxyVariable>());
+    private List<ActionClass> actionClasses = new ArrayList<>();
 
     /**
      * Constructor.
@@ -77,6 +79,7 @@ abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
         b.modelName(getModelName());
         b.preferredVariableName(getPreferredVariableName());
         b.configurationClass(configurationClass);
+        b.actionClasses(actionClasses);
         for (DeviceProxyVariable dv : variables.values()) {
             b.variableDescription(dv.getDescriptor());
         }
@@ -163,6 +166,7 @@ abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
     }
 
     protected void publishActionProvider(ActionProvider actionProvider) {
+        actionClasses.add(actionProvider.getActionClass());
         plugin.publishActionProvider(actionProvider);
     }
 

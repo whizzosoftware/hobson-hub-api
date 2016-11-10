@@ -1,6 +1,5 @@
 package com.whizzosoftware.hobson.api.device.proxy;
 
-import com.whizzosoftware.hobson.api.action.ActionClass;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.DeviceError;
 import com.whizzosoftware.hobson.api.device.DeviceType;

@@ -44,6 +44,9 @@ public class PropertyConstants {
     public static final String PREFERRED_VARIABLE_NAME = "preferredVariableName";
     public static final String RADIUS = "radius";
     public static final String SECRET = "secret";
+    public static final String SUPPORTED_PROPERTIES = "supportedProperties";
+    public static final String TASK_ACTION = "taskAction";
     public static final String TASK_ID = "taskId";
+    public static final String TIMEOUT_INTERVAL = "timeoutInterval";
     public static final String VALUE = "value";
 }
