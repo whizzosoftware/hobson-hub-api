@@ -51,7 +51,6 @@ public interface PluginManager {
      */
     File getDataDirectory(PluginContext ctx);
 
-
     /**
      * Returns a File for a named file located in a plugin's data directory.
      *

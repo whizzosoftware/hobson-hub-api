@@ -250,7 +250,8 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
         getDeviceProxy(deviceId).onSetVariable(variableName, value);
     }
 
-    protected void publishActionProvider(ActionProvider provider) {
+    @Override
+    public void publishActionProvider(ActionProvider provider) {
         ActionClass ac = provider.getActionClass();
         actionProviders.put(ac.getContext(), provider);
         actionManager.publishActionClass(getContext().getHubContext(), ac);

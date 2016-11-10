@@ -2,7 +2,7 @@ package com.whizzosoftware.hobson.api.device.proxy;
 
 import com.whizzosoftware.hobson.api.HobsonNotFoundException;
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
-import com.whizzosoftware.hobson.api.action.ActionClass;
+import com.whizzosoftware.hobson.api.action.ActionProvider;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.DeviceError;
 import com.whizzosoftware.hobson.api.device.DeviceType;
@@ -16,7 +16,6 @@ import com.whizzosoftware.hobson.api.variable.*;
 import java.util.*;
 
 abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
-    private Map<String,ActionClass> actionClasses = new HashMap<>();
     private PropertyContainerClass configurationClass;
     private DeviceContext context;
     private String defaultName;
@@ -52,11 +51,6 @@ abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
     //=================================================================================
     // HobsonDeviceProxy methods
     //=================================================================================
-
-    @Override
-    public ActionClass getActionClass(String actionClassId) {
-        return actionClasses.get(actionClassId);
-    }
 
     @Override
     public PropertyContainerClass getConfigurationClass() {
@@ -168,8 +162,8 @@ abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
         getPlugin().postHubEvent(event);
     }
 
-    protected void publishActionClass(ActionClass ac) {
-        actionClasses.put(ac.getContext().getContainerClassId(), ac);
+    protected void publishActionProvider(ActionProvider actionProvider) {
+        plugin.publishActionProvider(actionProvider);
     }
 
     protected void publishVariables(DeviceProxyVariable... vars) {

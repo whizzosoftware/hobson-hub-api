@@ -2,6 +2,7 @@ package com.whizzosoftware.hobson.api.action;
 
 import com.whizzosoftware.hobson.api.action.job.AsyncJobHandle;
 import com.whizzosoftware.hobson.api.action.job.JobInfo;
+import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
@@ -39,6 +40,11 @@ public class MockActionManager implements ActionManager {
 
     @Override
     public Collection<ActionClass> getActionClasses(HubContext ctx, boolean applyConstraints) {
+        return null;
+    }
+
+    @Override
+    public Collection<ActionClass> getActionClasses(DeviceContext ctx, boolean applyConstraints) {
         return null;
     }
 

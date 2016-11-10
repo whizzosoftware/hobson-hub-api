@@ -10,7 +10,6 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
 
 public interface HobsonDeviceProxy {
-    ActionClass getActionClass(String actionClassId);
     PropertyContainerClass getConfigurationClass();
     DeviceContext getContext();
     String getDefaultName();

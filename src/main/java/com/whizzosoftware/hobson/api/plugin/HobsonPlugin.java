@@ -8,6 +8,7 @@
 package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.action.Action;
+import com.whizzosoftware.hobson.api.action.ActionProvider;
 import com.whizzosoftware.hobson.api.action.SingleAction;
 import com.whizzosoftware.hobson.api.action.ActionManager;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
@@ -50,6 +51,7 @@ public interface HobsonPlugin {
     void onShutdown();
     void onStartup(PropertyContainer config);
     void postHubEvent(HobsonEvent event);
+    void publishActionProvider(ActionProvider actionProvider);
     void scheduleAtFixedRateInEventLoop(Runnable runnable, long initialDelay, long time, TimeUnit unit);
     void setActionManager(ActionManager actionManager);
     void setDeviceConfigurationProperty(DeviceContext dctx, PropertyContainerClass configClass, String name, Object value);

@@ -9,6 +9,7 @@
 */
 package com.whizzosoftware.hobson.api.action;
 
+import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.action.job.AsyncJobHandle;
 import com.whizzosoftware.hobson.api.action.job.JobInfo;
@@ -72,16 +73,28 @@ public interface ActionManager {
     Collection<ActionClass> getActionClasses(PluginContext ctx);
 
     /**
-     * Returns all published action classes.
+     * Returns all action classes published to the hub.
      *
      * @param ctx the context of the hub that published the action classes
      * @param applyConstraints only return condition classes for which the constraints of their typed properties can be
      *                         met by the currently available system services (i.e. don't show the user things they
      *                         can't do)
      *
-     * @return a Collection of TaskActionClass instances
+     * @return a Collection of ActionClass instances
      */
     Collection<ActionClass> getActionClasses(HubContext ctx, boolean applyConstraints);
+
+    /**
+     * Returns all the action classes published by a device.
+     *
+     * @param ctx the context of the device that published the action classes
+     * @param applyConstraints only return condition classes for which the constraints of their typed properties can be
+     *                         met by the currently available system services (i.e. don't show the user things they
+     *                         can't do)
+     *
+     * @return a Collection of ActionClass instances
+     */
+    Collection<ActionClass> getActionClasses(DeviceContext ctx, boolean applyConstraints);
 
     /**
      * Returns a published action set.

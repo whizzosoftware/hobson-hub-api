@@ -19,25 +19,21 @@ import com.whizzosoftware.hobson.api.property.*;
 public class ActionClass extends PropertyContainerClass {
     private String description;
     private String name;
-    private boolean statusProvider;
     private boolean taskAction;
     private long timeoutInterval;
 
     /**
      * Constructor.
-     *
-     * @param context
+     * @param context the container class context
      * @param name the name of the action
      * @param description a description of the action
-     * @param statusProvider indicates whether the actions provided by this class will report status
      * @param taskAction should this action be used for tasks?
      * @param timeoutInterval the maximum interval (in ms) the action is allowed to run before it is timed out
      */
-    public ActionClass(PropertyContainerClassContext context, String name, String description, boolean statusProvider, boolean taskAction, long timeoutInterval) {
+    public ActionClass(PropertyContainerClassContext context, String name, String description, boolean taskAction, long timeoutInterval) {
         super(context, PropertyContainerClassType.ACTION);
         this.name = name;
         this.description = description;
-        this.statusProvider = statusProvider;
         this.taskAction = taskAction;
         this.timeoutInterval = timeoutInterval;
     }
@@ -76,14 +72,5 @@ public class ActionClass extends PropertyContainerClass {
      */
     public boolean isTaskAction() {
         return taskAction;
-    }
-
-    /**
-     * Indicates whether actions created by this class will report status.
-     *
-     * @return a boolean
-     */
-    public boolean isStatusProvider() {
-        return statusProvider;
     }
 }
