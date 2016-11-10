@@ -89,7 +89,7 @@ public class PropertyContainerClass implements Serializable { // TODO: remove
     public void validate(PropertyContainer properties) {
         if (hasSupportedProperties()) {
             for (TypedProperty tp : getSupportedProperties()) {
-                Object value = properties.getPropertyValue(tp.getName());
+                Object value = properties.getPropertyValue(tp.getId());
                 if (value == null && tp.hasConstraintValue(PropertyConstraintType.required, true)) {
                     throw new HobsonInvalidRequestException("Missing required property \"" + tp.getName() + "\"");
                 } else if (value != null) {
