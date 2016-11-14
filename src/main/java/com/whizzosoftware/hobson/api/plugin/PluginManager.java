@@ -9,7 +9,6 @@
 */
 package com.whizzosoftware.hobson.api.plugin;
 
-import com.whizzosoftware.hobson.api.action.Action;
 import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.image.ImageInputStream;
@@ -39,8 +38,6 @@ public interface PluginManager {
      * @param uri the URI of the repository
      */
     void addRemoteRepository(String uri);
-
-    Action createAction(PropertyContainer pc);
 
     /**
      * Returns a File for a plugin's data directory.

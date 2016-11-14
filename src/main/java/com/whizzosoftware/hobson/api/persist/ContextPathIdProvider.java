@@ -211,18 +211,8 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public String createHubUploadCredentialsId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "uploadCredentials";
-    }
-
-    @Override
     public String createJobId(HubContext ctx, String jobId) {
         return createHubId(ctx) + HubContext.DELIMITER + "jobs" + HubContext.DELIMITER + jobId;
-    }
-
-    @Override
-    public String createLocalPluginActionClassId(PluginContext ctx, String actionClassId) {
-        return createLocalPluginActionClassesId(ctx) + HubContext.DELIMITER + actionClassId;
     }
 
     @Override

@@ -61,7 +61,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     private TaskProvider taskProvider;
     private EventLoopGroup eventLoop;
     private final Map<String,HobsonDeviceProxy> devices = Collections.synchronizedMap(new HashMap<String,HobsonDeviceProxy>());
-    private final Map<PropertyContainerClassContext,ActionProvider> actionProviders = Collections.synchronizedMap(new HashMap<PropertyContainerClassContext,ActionProvider>());
 
     public AbstractHobsonPlugin(String pluginId, String version, String description) {
         this(pluginId, version, description, new LocalEventLoopGroup(1));
@@ -80,16 +79,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
             for (TypedProperty p : props) {
                 this.configurationClass.addSupportedProperty(p);
             }
-        }
-    }
-
-    @Override
-    public Action createAction(String actionClassId, Map<String,Object> properties) {
-        ActionProvider provider = actionProviders.get(PropertyContainerClassContext.create(getContext(), actionClassId));
-        if (provider != null) {
-            return provider.createAction(properties);
-        } else {
-            throw new HobsonNotFoundException("Unable to find an action provider for: " + actionClassId);
         }
     }
 
@@ -252,9 +241,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
 
     @Override
     public void publishActionProvider(ActionProvider provider) {
-        ActionClass ac = provider.getActionClass();
-        actionProviders.put(ac.getContext(), provider);
-        actionManager.publishActionClass(getContext().getHubContext(), ac);
+        actionManager.publishActionProvider(provider);
     }
 
     protected void publishTaskConditionClass(TaskConditionClass conditionClass) {

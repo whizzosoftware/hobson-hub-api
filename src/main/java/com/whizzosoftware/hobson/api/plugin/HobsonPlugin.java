@@ -1,15 +1,15 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2014 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.plugin;
 
-import com.whizzosoftware.hobson.api.action.Action;
 import com.whizzosoftware.hobson.api.action.ActionProvider;
-import com.whizzosoftware.hobson.api.action.SingleAction;
 import com.whizzosoftware.hobson.api.action.ActionManager;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.DeviceManager;
@@ -24,7 +24,6 @@ import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -33,7 +32,6 @@ import java.util.concurrent.TimeUnit;
  * @author Dan Noguerol
  */
 public interface HobsonPlugin {
-    Action createAction(String actionClassId, Map<String,Object> properties);
     HobsonLocalPluginDescriptor getDescriptor();
     PluginContext getContext();
     Object getDeviceConfigurationProperty(String deviceId, String name);

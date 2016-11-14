@@ -9,9 +9,24 @@
 */
 package com.whizzosoftware.hobson.api.action;
 
+import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
+
 import java.util.Map;
 
-public interface ActionProvider {
+abstract public class ActionProvider extends ActionClass {
+    /**
+     * Constructor.
+     *
+     * @param context the container class context
+     * @param name the name of the action
+     * @param description a description of the action
+     * @param taskAction should this action be used for tasks?
+     * @param timeoutInterval the maximum interval (in ms) the action is allowed to run before it is timed out
+     */
+    public ActionProvider(PropertyContainerClassContext context, String name, String description, boolean taskAction, long timeoutInterval) {
+        super(context, name, description, taskAction, timeoutInterval);
+    }
+
     /**
      * Creates a new action.
      *
@@ -19,12 +34,5 @@ public interface ActionProvider {
      *
      * @return a new Action instance
      */
-    Action createAction(Map<String,Object> properties);
-
-    /**
-     * Returns the action class this provider can instantiate actions for.
-     *
-     * @return an ActionClass instance
-     */
-    ActionClass getActionClass();
+    abstract public Action createAction(Map<String,Object> properties);
 }

@@ -137,12 +137,11 @@ public interface ActionManager {
     boolean hasActionClass(PropertyContainerClassContext ctx);
 
     /**
-     * Publishes an action class.
+     * Publishes an action provider.
      *
-     * @param context the context of the hub publishing the action class
-     * @param actionClass the action class to publish
+     * @param actionProvider the action provider to publish
      */
-    void publishActionClass(HubContext context, ActionClass actionClass);
+    void publishActionProvider(ActionProvider actionProvider);
 
     /**
      * Creates and publishes a new action set.

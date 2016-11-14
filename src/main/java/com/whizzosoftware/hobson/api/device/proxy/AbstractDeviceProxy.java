@@ -166,7 +166,7 @@ abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
     }
 
     protected void publishActionProvider(ActionProvider actionProvider) {
-        actionClasses.add(actionProvider.getActionClass());
+        actionClasses.add(actionProvider);
         plugin.publishActionProvider(actionProvider);
     }
 

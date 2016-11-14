@@ -24,6 +24,7 @@ public class ActionClass extends PropertyContainerClass {
 
     /**
      * Constructor.
+     *
      * @param context the container class context
      * @param name the name of the action
      * @param description a description of the action
