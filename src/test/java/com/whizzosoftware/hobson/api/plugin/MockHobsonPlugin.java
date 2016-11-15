@@ -56,9 +56,4 @@ public class MockHobsonPlugin extends AbstractHobsonPlugin {
     public void onRefresh() {
 
     }
-
-    @Override
-    public void onPluginConfigurationUpdate(PropertyContainer config) {
-
-    }
 }

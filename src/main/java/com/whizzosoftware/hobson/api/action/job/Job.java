@@ -13,6 +13,7 @@ import com.whizzosoftware.hobson.api.action.Action;
 import com.whizzosoftware.hobson.api.action.ActionLifecycleContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.SucceededFuture;
 
 import java.util.*;
 
@@ -26,8 +27,8 @@ public class Job implements JobInfo, ActionLifecycleContext {
     private Action action;
     private String id;
     private long createTime;
-    private long startTime;
-    private long completionTime;
+    private Long startTime;
+    private Long completionTime;
     private List<String> statusMessages = Collections.synchronizedList(new ArrayList<String>());
     private JobStatus status;
     private long timeoutInterval;
@@ -51,7 +52,7 @@ public class Job implements JobInfo, ActionLifecycleContext {
         return id;
     }
 
-    public long getStartTime() {
+    public Long getStartTime() {
         return startTime;
     }
 
@@ -59,7 +60,7 @@ public class Job implements JobInfo, ActionLifecycleContext {
         return (status.equals(JobStatus.TimedOut) || (status.equals(JobStatus.InProgress) && now - startTime > timeoutInterval));
     }
 
-    public long getCompletionTime() {
+    public Long getCompletionTime() {
         return completionTime;
     }
 
@@ -102,9 +103,15 @@ public class Job implements JobInfo, ActionLifecycleContext {
 
     /**
      * Stops this job.
+     *
+     * @return a Future representing the success of the job being stopped.
      */
-    public void stop() {
-        action.stop(this);
+    public Future stop() {
+        if (isInProgress()) {
+            return action.stop(this);
+        } else {
+            return new SucceededFuture<Object>(null, null);
+        }
     }
 
     /**

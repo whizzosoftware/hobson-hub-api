@@ -8,6 +8,7 @@ import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
+import io.netty.util.concurrent.Future;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,6 +17,11 @@ public class MockActionManager implements ActionManager {
     @Override
     public void addJobStatusMessage(PluginContext ctx, String msgName, Object o) {
 
+    }
+
+    @Override
+    public Future stopJob(HubContext ctx, String jobId) {
+        return null;
     }
 
     @Override

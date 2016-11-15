@@ -17,6 +17,7 @@ import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
+import io.netty.util.concurrent.Future;
 
 import java.util.Collection;
 import java.util.List;
@@ -155,4 +156,13 @@ public interface ActionManager {
      * @since hobson-hub-api 0.5.0
      */
     PropertyContainerSet publishActionSet(HubContext ctx, String name, List<PropertyContainer> actions);
+
+    /**
+     * Stops a currently active job.
+     * @param ctx the hub context
+     * @param jobId the job ID
+     *
+     * @return a Future representing the success of the job being stopped
+     */
+    Future stopJob(HubContext ctx, String jobId);
 }

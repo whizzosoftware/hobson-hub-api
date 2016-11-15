@@ -41,9 +41,7 @@ public interface HobsonPlugin {
     long getRefreshInterval();
     TaskProvider getTaskProvider();
     boolean hasTaskProvider();
-    void onDeviceConfigurationUpdate(String deviceId, PropertyContainer config);
     void onDeviceUpdate(HobsonDeviceProxy device);
-    void onPluginConfigurationUpdate(PropertyContainer config);
     void onRefresh();
     void onSetDeviceVariable(String deviceId, String name, Object value);
     void onShutdown();

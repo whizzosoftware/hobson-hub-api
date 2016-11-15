@@ -8,6 +8,8 @@
 package com.whizzosoftware.hobson.api.plugin.channel;
 
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
+import com.whizzosoftware.hobson.api.event.EventHandler;
+import com.whizzosoftware.hobson.api.event.plugin.PluginConfigurationUpdateEvent;
 import com.whizzosoftware.hobson.api.plugin.AbstractHobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.PluginStatus;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
@@ -59,9 +61,9 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
         }
     }
 
-    @Override
-    public void onPluginConfigurationUpdate(PropertyContainer config) {
-        if (processConfig(config)) {
+    @EventHandler
+    public void onPluginConfigurationUpdate(PluginConfigurationUpdateEvent event) {
+        if (event.getPluginId().equals(getContext().getPluginId()) && processConfig(event.getConfiguration())) {
             connectionEventLoopGroup = createEventLoopGroup();
             attemptConnect();
         }

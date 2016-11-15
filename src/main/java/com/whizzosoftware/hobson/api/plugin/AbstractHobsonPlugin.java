@@ -14,6 +14,7 @@ import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.action.*;
 import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
+import com.whizzosoftware.hobson.api.event.device.DeviceConfigurationUpdateEvent;
 import com.whizzosoftware.hobson.api.event.task.*;
 import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.disco.DeviceAdvertisement;
@@ -204,9 +205,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
         eventManager.postEvent(HubContext.createLocal(), event);
     }
 
-    @Override
-    public void onDeviceConfigurationUpdate(String deviceId, PropertyContainer config) {
-        getDeviceProxy(deviceId).onDeviceConfigurationUpdate(config);
+    @EventHandler
+    public void onDeviceConfigurationUpdate(DeviceConfigurationUpdateEvent event) {
+        if (event.getPluginId().equals(getContext().getPluginId())) {
+            getDeviceProxy(event.getDeviceId()).onDeviceConfigurationUpdate(event.getConfiguration());
+        }
     }
 
     @Override
