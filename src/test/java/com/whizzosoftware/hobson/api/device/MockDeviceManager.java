@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2014 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.device;
 
 import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
@@ -51,6 +53,11 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
+    public void deleteDevice(DeviceContext dctx) {
+
+    }
+
+    @Override
     public HobsonDeviceDescriptor getDevice(DeviceContext ctx) {
         for (HobsonDeviceDescriptor device : getPublishedDevices()) {
             if (device.getContext().getPluginId().equals(ctx.getPluginId()) && device.getContext().getDeviceId().equals(ctx.getDeviceId())) {
@@ -77,11 +84,6 @@ public class MockDeviceManager implements DeviceManager {
             }
         });
     }
-
-//    @Override
-//    public Collection<DeviceType> getPluginDeviceTypes(PluginContext pctx) {
-//        return null;
-//    }
 
     @Override
     public boolean hasDevice(DeviceContext ctx) {

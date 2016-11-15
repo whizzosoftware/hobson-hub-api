@@ -15,6 +15,7 @@ import com.whizzosoftware.hobson.api.action.*;
 import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
 import com.whizzosoftware.hobson.api.event.device.DeviceConfigurationUpdateEvent;
+import com.whizzosoftware.hobson.api.event.device.DeviceDeletedEvent;
 import com.whizzosoftware.hobson.api.event.task.*;
 import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.disco.DeviceAdvertisement;
@@ -98,6 +99,31 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
         d.setConfigurationClass(configurationClass);
         d.setActionClasses(getActionClasses());
         return d;
+    }
+
+    @EventHandler
+    public void onHandleTaskEvents(final TaskEvent event) {
+        if (hasTaskProvider()) {
+            if (event instanceof TaskRegistrationEvent) {
+                getTaskProvider().onRegisterTasks(((TaskRegistrationEvent)event).getTasks());
+            } else if (event instanceof TaskCreatedEvent) {
+                getTaskProvider().onCreateTask(((TaskCreatedEvent)event).getTask());
+            } else if (event instanceof TaskUpdatedEvent) {
+                getTaskProvider().onUpdateTask(((TaskUpdatedEvent)event).getTask());
+            } else if (event instanceof TaskDeletedEvent) {
+                getTaskProvider().onDeleteTask(((TaskDeletedEvent)event).getContext());
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDeviceDeleted(final DeviceDeletedEvent event) {
+        if (event.getDeviceContext().getPluginId().equals(getContext().getPluginId())) {
+            String deviceId = event.getDeviceContext().getDeviceId();
+            HobsonDeviceProxy device = devices.get(deviceId);
+            device.onShutdown();
+            devices.remove(deviceId);
+        }
     }
 
     abstract protected String getName();
@@ -216,21 +242,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     public void onDeviceUpdate(HobsonDeviceProxy device) {
         validateDeviceManager();
         deviceManager.updateDevice(device.getDescriptor());
-    }
-
-    @EventHandler
-    public void onHandleTaskEvents(final TaskEvent event) {
-        if (hasTaskProvider()) {
-            if (event instanceof TaskRegistrationEvent) {
-                getTaskProvider().onRegisterTasks(((TaskRegistrationEvent)event).getTasks());
-            } else if (event instanceof TaskCreatedEvent) {
-                getTaskProvider().onCreateTask(((TaskCreatedEvent)event).getTask());
-            } else if (event instanceof TaskUpdatedEvent) {
-                getTaskProvider().onUpdateTask(((TaskUpdatedEvent)event).getTask());
-            } else if (event instanceof TaskDeletedEvent) {
-                getTaskProvider().onDeleteTask(((TaskDeletedEvent)event).getContext());
-            }
-        }
     }
 
     @Override

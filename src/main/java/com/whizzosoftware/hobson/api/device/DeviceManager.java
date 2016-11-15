@@ -30,6 +30,13 @@ import java.util.Set;
  */
 public interface DeviceManager {
     /**
+     * Deletes a specific device.
+     *
+     * @param dctx the context of the device to delete
+     */
+    void deleteDevice(DeviceContext dctx);
+
+    /**
      * Returns a specific device.
      *
      * @param dctx the context of the device to retrieve
