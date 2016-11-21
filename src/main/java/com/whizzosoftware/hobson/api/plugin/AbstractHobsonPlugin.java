@@ -275,6 +275,12 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     }
 
     @Override
+    public void setDeviceConfigurationProperties(DeviceContext dctx, PropertyContainerClass configClass, Map<String,Object> values) {
+        validateDeviceManager();
+        deviceManager.setDeviceConfiguration(dctx, configClass, values);
+    }
+
+    @Override
     public void setDeviceManager(DeviceManager deviceManager) {
         this.deviceManager = deviceManager;
     }

@@ -188,6 +188,10 @@ abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
         plugin.setDeviceConfigurationProperty(getContext(), configurationClass, name, value);
     }
 
+    protected void setConfigurationProperties(Map<String,Object> props) {
+        plugin.setDeviceConfigurationProperties(getContext(), configurationClass, props);
+    }
+
     /**
      * Sets the error information for this device and puts the device into an error state.
      *
