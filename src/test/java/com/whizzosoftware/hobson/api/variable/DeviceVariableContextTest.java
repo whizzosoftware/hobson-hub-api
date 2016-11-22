@@ -24,4 +24,10 @@ public class DeviceVariableContextTest {
         assertEquals("device1", vctx.getDeviceId());
         assertEquals("foo", vctx.getName());
     }
+
+    @Test
+    public void testCreateWithVariableId() {
+        DeviceVariableContext vctx = DeviceVariableContext.create(null);
+        assertNull(vctx);
+    }
 }

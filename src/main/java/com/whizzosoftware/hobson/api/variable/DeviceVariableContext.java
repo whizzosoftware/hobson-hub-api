@@ -36,7 +36,11 @@ public class DeviceVariableContext {
 
     public static DeviceVariableContext create(String variableId) {
         String[] comps = StringUtils.split(variableId, HubContext.DELIMITER);
-        return DeviceVariableContext.create(DeviceContext.create(HubContext.create(comps[0]), comps[1], comps[2]), comps[3]);
+        if (comps != null && comps.length > 3) {
+            return DeviceVariableContext.create(DeviceContext.create(HubContext.create(comps[0]), comps[1], comps[2]), comps[3]);
+        } else {
+            return null;
+        }
     }
 
     public static DeviceVariableContext createGlobal(HubContext ctx, String pluginId, String name) {
