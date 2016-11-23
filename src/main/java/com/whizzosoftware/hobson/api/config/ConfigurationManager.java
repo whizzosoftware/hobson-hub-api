@@ -88,7 +88,7 @@ public interface ConfigurationManager {
      * @param configClass the class for the configuration
      * @param values the configuration property values
      */
-    void setDeviceConfigurationProperties(DeviceContext ctx, PropertyContainerClass configClass, Map<String, Object> values);
+    void setDeviceConfigurationProperties(DeviceContext ctx, Map<String, Object> values);
 
     /**
      * Sets a single property of a device's configuration.
@@ -98,7 +98,7 @@ public interface ConfigurationManager {
      * @param name the configuration property name
      * @param value the configuration property value
      */
-    void setDeviceConfigurationProperty(DeviceContext ctx, PropertyContainerClass configClass, String name, Object value);
+    void setDeviceConfigurationProperty(DeviceContext ctx, String name, Object value);
 
     /**
      * Sets the configuration associated with a Hub.

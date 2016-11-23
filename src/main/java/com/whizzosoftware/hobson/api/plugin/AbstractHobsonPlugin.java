@@ -197,6 +197,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
         }
     }
 
+    protected DeviceVariableState getDeviceVariableState(DeviceVariableContext dvctx) {
+        validateDeviceManager();
+        return deviceManager.getDeviceVariable(dvctx);
+    }
+
     @Override
     public long getRefreshInterval() {
         return 0;
