@@ -30,7 +30,9 @@ abstract public class SingleAction implements Action {
     /**
      * Constructor.
      *
+     * @param pluginContext the plugin that provides this action
      * @param executionContext an ActionExecutionContext implementation
+     * @param executor the event loop executor to use when executing this action
      */
     public SingleAction(PluginContext pluginContext, ActionExecutionContext executionContext, EventLoopExecutor executor) {
         this.pluginContext = pluginContext;
@@ -45,12 +47,15 @@ abstract public class SingleAction implements Action {
 
     /**
      * Callback received when the action is started.
+     *
+     * @param ctx the lifecycle context
      */
     abstract public void onStart(ActionLifecycleContext ctx);
 
     /**
      * Callback received when the action is sent a message.
      *
+     * @param ctx the lifecycle context
      * @param msgName the name of the event
      * @param prop a property object (specific to the event)
      */
@@ -58,6 +63,8 @@ abstract public class SingleAction implements Action {
 
     /**
      * Callback received when the action is manually stopped.
+     *
+     * @param ctx the lifecycle context
      */
     abstract public void onStop(ActionLifecycleContext ctx);
 

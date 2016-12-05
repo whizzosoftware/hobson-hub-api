@@ -45,6 +45,8 @@ public interface LocalHubManager {
      * Returns a viable network interface to be used for communication.
      *
      * @return a NetworkInterface object
+     *
+     * @throws IOException on failure
      */
     NetworkInfo getNetworkInfo() throws IOException;
 

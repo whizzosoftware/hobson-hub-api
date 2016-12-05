@@ -33,6 +33,8 @@ public class CompositeAction implements Action {
 
     /**
      * Constructor.
+     *
+     * @param actions a list of actions that comprise the composite action
      */
     public CompositeAction(List<Action> actions) {
         actionQueue.addAll(actions);

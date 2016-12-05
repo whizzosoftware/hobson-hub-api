@@ -44,7 +44,7 @@ public class MockDeviceProxy extends AbstractDeviceProxy {
     }
 
     @Override
-    public TypedProperty[] createConfigurationPropertyTypes() {
+    public TypedProperty[] getConfigurationPropertyTypes() {
         return null;
     }
 
@@ -74,7 +74,7 @@ public class MockDeviceProxy extends AbstractDeviceProxy {
     }
 
     @Override
-    public void onSetVariable(String variableName, Object value) {
-        setVariableRequests.put(variableName, value);
+    public void onSetVariables(Map<String,Object> values) {
+        setVariableRequests.putAll(values);
     }
 }

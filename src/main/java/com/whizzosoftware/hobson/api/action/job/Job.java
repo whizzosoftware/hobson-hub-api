@@ -38,6 +38,7 @@ public class Job implements JobInfo, ActionLifecycleContext {
      *
      * @param action the action associated with this job
      * @param timeoutInterval the maximum interval the job is allowed to run before being considered timed out
+     * @param createTime the time the job was created
      */
     public Job(Action action, long timeoutInterval, long createTime) {
         this.action = action;
@@ -85,6 +86,8 @@ public class Job implements JobInfo, ActionLifecycleContext {
      *
      * @param name the message name
      * @param prop a property object associated with the message
+     *
+     * @return a Future representing the success of the message being added.
      */
     public Future message(final String name, final Object prop) {
         return action.sendMessage(this, name, prop);

@@ -16,6 +16,7 @@ import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
 import com.whizzosoftware.hobson.api.event.device.DeviceConfigurationUpdateEvent;
 import com.whizzosoftware.hobson.api.event.device.DeviceDeletedEvent;
+import com.whizzosoftware.hobson.api.event.device.DeviceVariablesUpdateRequestEvent;
 import com.whizzosoftware.hobson.api.event.task.*;
 import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.disco.DeviceAdvertisement;
@@ -140,6 +141,10 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
      * HobsonPlugin methods
      */
 
+    protected boolean hasDeviceProxy(String deviceId) {
+        return devices.containsKey(deviceId);
+    }
+
     protected HobsonDeviceProxy getDeviceProxy(String deviceId) {
         HobsonDeviceProxy p = devices.get(deviceId);
         if (p == null) {
@@ -161,14 +166,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     protected Collection<ActionClass> getActionClasses() {
         validateActionManager();
         return actionManager.getActionClasses(getContext());
-    }
-
-    protected HobsonDeviceProxy getProxyDevice(String deviceId) {
-        if (devices.containsKey(deviceId)) {
-            return devices.get(deviceId);
-        } else {
-            throw new HobsonNotFoundException("No device found with ID: " + deviceId);
-        }
     }
 
     @Override
@@ -231,7 +228,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     }
 
     @Override
-    public void postHubEvent(HobsonEvent event) {
+    public void postEvent(HobsonEvent event) {
         validateEventManager();
         eventManager.postEvent(HubContext.createLocal(), event);
     }
@@ -253,9 +250,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     public void onRefresh() {
     }
 
-    @Override
-    public void onSetDeviceVariable(String deviceId, String variableName, Object value) {
-        getDeviceProxy(deviceId).onSetVariable(variableName, value);
+    @EventHandler
+    public void onSetDeviceVariables(DeviceVariablesUpdateRequestEvent event) {
+        if (event.getDeviceContext().getPluginContext().equals(getContext())) {
+            getDeviceProxy(event.getDeviceContext().getDeviceId()).onSetVariables(event.getValues());
+        }
     }
 
     @Override
@@ -370,6 +369,14 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
         return pluginManager.getDataFile(getContext(), filename);
     }
 
+    protected boolean hasDeviceVariable(String deviceId, String name) {
+        HobsonDeviceProxy device = getDeviceProxy(deviceId);
+        if (device != null) {
+            return device.hasVariable(name);
+        }
+        return false;
+    }
+
     /**
      * Sets a plugin configuration property.
      *
@@ -399,6 +406,14 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
         });
     }
 
+    protected void deleteDeviceProxy(String deviceId) {
+        validateDeviceManager();
+        if (devices.containsKey(deviceId)) {
+            logger.trace("Deleting device: {}", deviceId);
+            deviceManager.deleteDevice(DeviceContext.create(getContext(), deviceId));
+        }
+    }
+
     protected void addJobStatusMessage(String msg, Object props) {
         validateActionManager();
         actionManager.addJobStatusMessage(getContext(), msg, props);
@@ -409,6 +424,8 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
      * as multiple DeviceAdvertisementEvent events to the plugin's onHobsonEvent() callback.
      *
      * @param protocolId the protocol ID for the advertisements requested
+     *
+     * @return a Collection of DeviceAdvertisement instances
      */
     protected Collection<DeviceAdvertisement> getDeviceAdvertisementSnapshot(final String protocolId) {
         validateDiscoManager();
@@ -419,6 +436,9 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
      * Publishes a new DeviceAdvertisement.
      *
      * @param advertisement the advertisement to publish
+     * @param internal indicates if this is an internal advertisement. A value of true will insure that the
+     *                 advertisement is included in any discovery requests that external clients make for a
+     *                 particular protocol.
      */
     public void publishDeviceAdvertisement(DeviceAdvertisement advertisement, boolean internal) {
         validateDiscoManager();
@@ -450,14 +470,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
 
     protected TaskManager getTaskManager() {
         return taskManager;
-    }
-
-    protected Future setDeviceVariable(DeviceVariableContext dvctx, Object value) {
-        return deviceManager.setDeviceVariable(dvctx, value);
-    }
-
-    protected Future setDeviceVariables(Map<DeviceVariableContext,Object> values) {
-        return deviceManager.setDeviceVariables(values);
     }
 
     private void validateDeviceManager() {

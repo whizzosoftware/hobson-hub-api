@@ -26,6 +26,8 @@ public interface TaskStore {
     /**
      * Returns all tasks in the store.
      *
+     * @param hctx the hub context
+     *
      * @return a Collection of HobsonTask instances (may be empty)
      */
     Collection<TaskContext> getAllTasks(HubContext hctx);

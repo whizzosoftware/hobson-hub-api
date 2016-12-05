@@ -68,24 +68,6 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public Future setDeviceVariable(DeviceVariableContext ctx, Object value) {
-        return eventLoop.submit(new Runnable() {
-            @Override
-            public void run() {
-            }
-        });
-    }
-
-    @Override
-    public Future setDeviceVariables(Map<DeviceVariableContext, Object> values) {
-        return eventLoop.submit(new Runnable() {
-            @Override
-            public void run() {
-            }
-        });
-    }
-
-    @Override
     public boolean hasDevice(DeviceContext ctx) {
         return (getDevice(ctx) != null);
     }

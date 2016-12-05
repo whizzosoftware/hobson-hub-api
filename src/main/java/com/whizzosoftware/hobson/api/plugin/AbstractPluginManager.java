@@ -60,17 +60,6 @@ abstract public class AbstractPluginManager implements PluginManager {
     }
 
     @Override
-    public Future setLocalPluginDeviceVariable(final DeviceVariableContext ctx, final Object value) {
-        final HobsonPlugin plugin = getLocalPluginInternal(ctx.getPluginContext());
-        return plugin.getEventLoopExecutor().executeInEventLoop(new Runnable() {
-            @Override
-            public void run() {
-                plugin.onSetDeviceVariable(ctx.getDeviceId(), ctx.getName(), value);
-            }
-        });
-    }
-
-    @Override
     public Future startPluginDevice(final HobsonDeviceProxy device, final String name, final PropertyContainer config, final Runnable runnable) {
         HobsonPlugin plugin = getLocalPluginInternal(device.getContext().getPluginContext());
         return plugin.getEventLoopExecutor().executeInEventLoop(new Runnable() {

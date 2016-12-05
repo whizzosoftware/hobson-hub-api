@@ -20,6 +20,8 @@ public interface EventLoopExecutor {
      * executed so this should not be used for long running tasks.
      *
      * @param runnable a task to execute
+     *
+     * @return a Future representing the result of the execution
      */
     Future executeInEventLoop(Runnable runnable);
 }

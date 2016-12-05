@@ -141,6 +141,10 @@ public interface DeviceManager {
      * Called by plugins to publish device proxies to the device registry and start them.
      *
      * @param device the DeviceProxy to publish
+     * @param config the device configuration (or null if it is not known)
+     * @param runnable a Runnable to execute after the device has been successfully published
+     *
+     * @return a Future representing the result of publishing the device
      *
      * @since hobson-hub-api 0.1.6
      */
@@ -180,21 +184,6 @@ public interface DeviceManager {
      * @param tags the tags
      */
     void setDeviceTags(DeviceContext dctx, Set<String> tags);
-
-    /**
-     * Sets the value of a device variable.
-     *
-     * @param vctx the variable context
-     * @param value the value to set
-     */
-    Future setDeviceVariable(DeviceVariableContext vctx, Object value);
-
-    /**
-     * Sets the values of device variables.
-     *
-     * @param values a Map of variable name to value
-     */
-    Future setDeviceVariables(Map<DeviceVariableContext,Object> values);
 
     /**
      * Updates information about a previously published device.

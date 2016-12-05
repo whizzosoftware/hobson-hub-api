@@ -194,8 +194,6 @@ public interface PluginManager {
      */
     void setLocalPluginConfigurationProperty(PluginContext ctx, String name, Object value);
 
-    Future setLocalPluginDeviceVariable(DeviceVariableContext ctx, Object value);
-
     /**
      * Starts a plugin device.
      *

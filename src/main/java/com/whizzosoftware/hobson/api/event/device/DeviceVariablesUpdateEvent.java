@@ -1,15 +1,17 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2014 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.event.device;
 
 import com.whizzosoftware.hobson.api.variable.DeviceVariableUpdate;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -18,25 +20,20 @@ import java.util.Map;
  *
  * @author Dan Noguerol
  */
-public class DeviceVariableUpdateEvent extends DeviceEvent {
-    public static final String ID = "varUpdateNotify";
+public class DeviceVariablesUpdateEvent extends DeviceEvent {
+    public static final String ID = "devVarsUpdate";
     public static final String PROP_UPDATES = "updates";
 
-    public DeviceVariableUpdateEvent(long timestamp, DeviceVariableUpdate update) {
-        super(timestamp, ID);
+    public DeviceVariablesUpdateEvent(long timestamp, DeviceVariableUpdate update) {
+        this(timestamp, Collections.singletonList(update));
+    }
 
-        List<DeviceVariableUpdate> updates = new ArrayList<>();
-        updates.add(update);
+    public DeviceVariablesUpdateEvent(long timestamp, List<DeviceVariableUpdate> updates) {
+        super(timestamp, ID);
         setProperty(PROP_UPDATES, updates);
     }
 
-    public DeviceVariableUpdateEvent(long timestamp, List<DeviceVariableUpdate> updates) {
-        super(timestamp, ID);
-
-        setProperty(PROP_UPDATES, updates);
-    }
-
-    public DeviceVariableUpdateEvent(Map<String,Object> properties) {
+    public DeviceVariablesUpdateEvent(Map<String,Object> properties) {
         super(properties);
     }
 

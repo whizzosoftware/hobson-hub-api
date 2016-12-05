@@ -29,8 +29,11 @@ public interface DiscoManager {
     /**
      * Allows a plugin to request all known external device advertisements. This is an asynchronous call that will be
      * serviced as multiple DeviceAdvertisementEvent events to the plugin's onHobsonEvent() callback.
-     *  @param ctx the context of the plugin requesting the snapshot
+     *
+     * @param ctx the context of the plugin requesting the snapshot
      * @param protocolId the protocol ID for the advertisements requested
+     *
+     * @return a Collection of DeviceAdvertisement instances
      */
     Collection<DeviceAdvertisement> getExternalDeviceAdvertisements(PluginContext ctx, String protocolId);
 
@@ -55,11 +58,13 @@ public interface DiscoManager {
     Collection<DeviceAdvertisement> getInternalDeviceAdvertisements(HubContext ctx, String protocolId);
 
     /**
-     * Publishes an internal DeviceAdvertisement. This will insure that the advertisement is included in any discovery
-     * requests that external clients make for a particular protocol.
+     * Publishes a device advertisement.
      *
      * @param ctx the context of the hub publishing the advertisement
      * @param advertisement the advertisement to publish
+     * @param internal indicates if this is an internal advertisement. A value of true will insure that the
+     *                 advertisement is included in any discovery requests that external clients make for a
+     *                 particular protocol.
      */
     void publishDeviceAdvertisement(HubContext ctx, DeviceAdvertisement advertisement, boolean internal);
 }

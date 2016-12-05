@@ -85,7 +85,6 @@ public interface ConfigurationManager {
      * Sets a device's configuration.
      *
      * @param ctx the device context
-     * @param configClass the class for the configuration
      * @param values the configuration property values
      */
     void setDeviceConfigurationProperties(DeviceContext ctx, Map<String, Object> values);
@@ -94,7 +93,6 @@ public interface ConfigurationManager {
      * Sets a single property of a device's configuration.
      *
      * @param ctx the device context
-     * @param configClass the class for the configuration
      * @param name the configuration property name
      * @param value the configuration property value
      */

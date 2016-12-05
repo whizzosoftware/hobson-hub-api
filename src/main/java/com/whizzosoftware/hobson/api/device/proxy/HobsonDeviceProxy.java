@@ -8,6 +8,8 @@ import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
 
+import java.util.Map;
+
 public interface HobsonDeviceProxy {
     PropertyContainerClass getConfigurationClass();
     DeviceContext getContext();
@@ -22,10 +24,11 @@ public interface HobsonDeviceProxy {
     DeviceType getType();
     DeviceVariableState getVariableState(String name);
     boolean hasError();
+    boolean hasVariable(String name);
     boolean isStarted();
     String getPreferredVariableName();
     void onDeviceConfigurationUpdate(PropertyContainer config);
-    void onSetVariable(String name, Object value);
+    void onSetVariables(Map<String,Object> values);
     void onShutdown();
     void onStartup(String name, PropertyContainer config);
     void setLastCheckin(Long lastCheckin);

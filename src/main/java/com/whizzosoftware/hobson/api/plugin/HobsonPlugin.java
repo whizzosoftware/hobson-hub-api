@@ -44,10 +44,9 @@ public interface HobsonPlugin {
     boolean hasTaskProvider();
     void onDeviceUpdate(HobsonDeviceProxy device);
     void onRefresh();
-    void onSetDeviceVariable(String deviceId, String name, Object value);
     void onShutdown();
     void onStartup(PropertyContainer config);
-    void postHubEvent(HobsonEvent event);
+    void postEvent(HobsonEvent event);
     void publishActionProvider(ActionProvider actionProvider);
     void scheduleAtFixedRateInEventLoop(Runnable runnable, long initialDelay, long time, TimeUnit unit);
     void setActionManager(ActionManager actionManager);

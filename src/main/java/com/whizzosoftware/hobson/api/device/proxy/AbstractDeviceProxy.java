@@ -8,7 +8,7 @@ import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.DeviceError;
 import com.whizzosoftware.hobson.api.device.DeviceType;
 import com.whizzosoftware.hobson.api.device.HobsonDeviceDescriptor;
-import com.whizzosoftware.hobson.api.event.device.DeviceVariableUpdateEvent;
+import com.whizzosoftware.hobson.api.event.device.DeviceVariablesUpdateEvent;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.property.*;
@@ -33,6 +33,9 @@ abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
      * Constructor.
      *
      * @param plugin the HobsonPlugin that created this device
+     * @param id the device ID
+     * @param defaultName the default name of the device (used when a user-defined name does not exist)
+     * @param type the type of device
      */
     public AbstractDeviceProxy(HobsonPlugin plugin, String id, String defaultName, DeviceType type) {
         this.context = DeviceContext.create(plugin.getContext(), id);
@@ -42,7 +45,7 @@ abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
 
         // create configuration class
         this.configurationClass = new PropertyContainerClass(PropertyContainerClassContext.create(DeviceContext.create(plugin.getContext(), id), "configurationClass"), PropertyContainerClassType.DEVICE_CONFIG);
-        TypedProperty[] tps = createConfigurationPropertyTypes();
+        TypedProperty[] tps = getConfigurationPropertyTypes();
         if (tps != null) {
             for (TypedProperty tp : tps) {
                 configurationClass.addSupportedProperty(tp);
@@ -122,6 +125,11 @@ abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
     }
 
     @Override
+    public boolean hasVariable(String name) {
+        return variables.containsKey(name);
+    }
+
+    @Override
     public boolean isStarted() {
         return started;
     }
@@ -146,7 +154,7 @@ abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
      *
      * @return an array of TypedProperty objects (or null if there are none)
      */
-    abstract protected TypedProperty[] createConfigurationPropertyTypes();
+    abstract protected TypedProperty[] getConfigurationPropertyTypes();
 
     protected Object getConfigurationProperty(String name) {
         return plugin.getDeviceConfigurationProperty(getContext().getDeviceId(), name);
@@ -162,7 +170,7 @@ abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
     }
 
     protected void postEvent(HobsonEvent event) {
-        getPlugin().postHubEvent(event);
+        getPlugin().postEvent(event);
     }
 
     protected void publishActionProvider(ActionProvider actionProvider) {
@@ -207,7 +215,7 @@ abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
             DeviceProxyVariable var = variables.get(name);
             Object oldVar = var.getValue();
             var.setValue(value, updateTime);
-            postEvent(new DeviceVariableUpdateEvent(System.currentTimeMillis(), new DeviceVariableUpdate(dvctx, oldVar != null ? oldVar : null, value, updateTime)));
+            postEvent(new DeviceVariablesUpdateEvent(System.currentTimeMillis(), new DeviceVariableUpdate(dvctx, oldVar != null ? oldVar : null, value, updateTime)));
         } else {
             throw new HobsonRuntimeException("Unable to set variable value for " + name + "=" + value);
         }
@@ -224,7 +232,7 @@ abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
                 var.setValue(value, now);
                 updates.add(new DeviceVariableUpdate(DeviceVariableContext.create(getContext(), name), oldVar, value, now));
             }
-            postEvent(new DeviceVariableUpdateEvent(System.currentTimeMillis(), updates));
+            postEvent(new DeviceVariablesUpdateEvent(System.currentTimeMillis(), updates));
         } else {
             throw new HobsonRuntimeException("Unable to process empty variables values");
         }
