@@ -21,6 +21,7 @@ import io.netty.util.concurrent.Future;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * An interface for managing Hobson plugin functions.
@@ -148,6 +149,15 @@ public interface PluginManager {
      * @return a PluginList
      */
     Collection<HobsonPluginDescriptor> getRemotePlugins(HubContext ctx);
+
+    /**
+     * Retrieve the latest version of available remote plugins.
+     *
+     * @param ctx the hub context
+     *
+     * @return a Map of plugin ID to version string
+     */
+    Map<String,String> getRemotePluginVersions(HubContext ctx);
 
     /**
      * Returns the remote repositories that have been enabled.
