@@ -21,28 +21,10 @@ public class HobsonUserTest {
             .email("email")
             .givenName("name1")
             .familyName("name2")
-            .account(new UserAccount(now, Collections.singletonList("hub1")))
             .build();
         assertEquals("uid", u.getId());
         assertEquals("email", u.getEmail());
         assertEquals("name1", u.getGivenName());
         assertEquals("name2", u.getFamilyName());
-        assertNotNull(u.getAccount());
-        assertEquals(now, (long)u.getAccount().getExpiration());
-        assertTrue(u.getAccount().hasAvailableHubs());
-    }
-
-    @Test
-    public void testIsRemote() {
-        long now = System.currentTimeMillis();
-        assertFalse(new HobsonUser.Builder("uid").account(new UserAccount(now, Collections.singletonList("local"))).build().isRemote());
-        assertTrue(new HobsonUser.Builder("uid").account(new UserAccount(now, Collections.singletonList("hub1"))).build().isRemote());
-    }
-
-    @Test
-    public void testIsLocal() {
-        long now = System.currentTimeMillis();
-        assertTrue(new HobsonUser.Builder("uid").account(new UserAccount(now, Collections.singletonList("local"))).build().isLocal());
-        assertFalse(new HobsonUser.Builder("uid").account(new UserAccount(now, Collections.singletonList("hub1"))).build().isLocal());
     }
 }

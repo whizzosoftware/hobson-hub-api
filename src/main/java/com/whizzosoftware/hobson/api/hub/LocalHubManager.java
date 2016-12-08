@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ ******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.hub;
 
 import com.whizzosoftware.hobson.api.data.DataStreamManager;
@@ -30,16 +32,6 @@ public interface LocalHubManager {
      * @param manager the manager
      */
     void addDataStreamManager(DataStreamManager manager);
-
-    /**
-     * Authenticates the local admin user.
-     *
-     * @param ctx the hub context
-     * @param password the password to check (plain text)
-     *
-     * @return true if the password is valid
-     */
-    boolean authenticateLocal(HubContext ctx, String password);
 
     /**
      * Returns a viable network interface to be used for communication.
