@@ -10,6 +10,7 @@
 package com.whizzosoftware.hobson.api.user;
 
 import com.whizzosoftware.hobson.api.HobsonAuthenticationException;
+import com.whizzosoftware.hobson.api.hub.PasswordChange;
 
 import java.util.Collection;
 
@@ -41,6 +42,14 @@ public interface UserStore {
      * @throws HobsonAuthenticationException on failure
      */
     UserAuthentication authenticate(String username, String password) throws HobsonAuthenticationException;
+
+    /**
+     * Changes a user's password.
+     *
+     * @param username the username
+     * @param change the change object
+     */
+    void changeUserPassword(String username, PasswordChange change);
 
     /**
      * Returns the default user for this store.

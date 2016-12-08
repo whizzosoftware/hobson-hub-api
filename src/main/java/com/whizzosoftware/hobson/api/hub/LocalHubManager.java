@@ -50,16 +50,6 @@ public interface LocalHubManager {
     void publishWebApplication(HubWebApplication app);
 
     /**
-     * Sets the password for the local admin user.
-     *
-     * @param ctx the context of the target hub
-     * @param change a PasswordChange instance
-     *
-     * @throws com.whizzosoftware.hobson.api.HobsonInvalidRequestException if password does not meet complexity requirements
-     */
-    void setLocalPassword(HubContext ctx, PasswordChange change);
-
-    /**
      * Remove an appender for error logging.
      *
      * @param aAppender the appender to remove
