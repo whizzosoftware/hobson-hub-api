@@ -1,16 +1,18 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2014 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.hub;
 
-import com.whizzosoftware.hobson.api.action.ActionClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
+import com.whizzosoftware.hobson.api.user.HobsonUser;
 import com.whizzosoftware.hobson.api.variable.GlobalVariable;
 import com.whizzosoftware.hobson.api.variable.GlobalVariableContext;
 
@@ -109,6 +111,29 @@ public interface HubManager {
      */
     PropertyContainerClass getContainerClass(PropertyContainerClassContext ctx);
 
+    /**
+     * Returns the local OIDC configuration.
+     *
+     * @return an OIDCConfig instance
+     */
+    OIDCConfig getOIDCConfiguration();
+
+    /**
+     * Converts a JWT token into a HobsonUser.
+     *
+     * @param token the toke string
+     *
+     * @return a HobsonUser instance
+     */
+    HobsonUser convertTokenToUser(String token);
+
+    /**
+     * Indicates whether a property container class exists.
+     *
+     * @param ctx the context of the container class
+     *
+     * @return a boolean
+     */
     boolean hasPropertyContainerClass(PropertyContainerClassContext ctx);
 
     /**

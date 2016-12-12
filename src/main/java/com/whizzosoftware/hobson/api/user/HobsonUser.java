@@ -24,6 +24,7 @@ public class HobsonUser {
     private String familyName;
     private String email;
     private List<HobsonRole> roles;
+    private Collection<String> hubs;
 
     public HobsonUser(String id) {
         this.id = id;
@@ -46,7 +47,14 @@ public class HobsonUser {
     }
 
     public boolean hasRole(String roleName) {
-        return roles == null || roles.contains(roleName);
+        if (roles != null) {
+            for (HobsonRole r : roles) {
+                if (r.name().equals(roleName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean hasRoles() {
@@ -55,6 +63,14 @@ public class HobsonUser {
 
     public Collection<HobsonRole> getRoles() {
         return roles;
+    }
+
+    public boolean hasHubs() {
+        return (hubs != null && hubs.size() > 0);
+    }
+
+    public Collection<String> getHubs() {
+        return hubs;
     }
 
     public static class Builder {
@@ -94,6 +110,11 @@ public class HobsonUser {
                 user.roles = new ArrayList<>();
             }
             user.roles.add(role);
+            return this;
+        }
+
+        public Builder hubs(List<String> hubs) {
+            user.hubs = hubs;
             return this;
         }
 
