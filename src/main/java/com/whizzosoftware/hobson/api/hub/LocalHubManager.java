@@ -57,11 +57,13 @@ public interface LocalHubManager {
     void removeLogAppender(Object aAppender);
 
     /**
-     * Sets a URI for a web socket server exposed by the hub.
+     * Sets connection information for a web socket server exposed by the hub.
      *
-     * @param uri the URI of the websocket server
+     * @param protocol the protocol of the web socket server (ws or wss)
+     * @param port the port number of the server
+     * @param path the URL path component
      */
-    void setWebSocketUri(String uri);
+    void setWebSocketInfo(String protocol, int port, String path);
 
     /**
      * Unpublish a previously published web application from the local hub.
