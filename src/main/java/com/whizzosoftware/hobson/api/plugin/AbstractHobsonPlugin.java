@@ -9,7 +9,6 @@
 */
 package com.whizzosoftware.hobson.api.plugin;
 
-import com.whizzosoftware.hobson.api.HobsonNotFoundException;
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.action.*;
 import com.whizzosoftware.hobson.api.device.*;
@@ -148,7 +147,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     protected HobsonDeviceProxy getDeviceProxy(String deviceId) {
         HobsonDeviceProxy p = devices.get(deviceId);
         if (p == null) {
-            throw new HobsonNotFoundException("Device not found");
+            throw new DeviceNotFoundException(DeviceContext.create(getContext(), deviceId));
         } else {
             return p;
         }

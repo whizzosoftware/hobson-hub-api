@@ -16,7 +16,7 @@ import com.whizzosoftware.hobson.api.variable.*;
 
 import java.util.*;
 
-abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
+abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
     private PropertyContainerClass configurationClass;
     private DeviceContext context;
     private String defaultName;
@@ -37,7 +37,7 @@ abstract public class AbstractDeviceProxy implements HobsonDeviceProxy {
      * @param defaultName the default name of the device (used when a user-defined name does not exist)
      * @param type the type of device
      */
-    public AbstractDeviceProxy(HobsonPlugin plugin, String id, String defaultName, DeviceType type) {
+    public AbstractHobsonDeviceProxy(HobsonPlugin plugin, String id, String defaultName, DeviceType type) {
         this.context = DeviceContext.create(plugin.getContext(), id);
         this.type = type;
         this.plugin = plugin;

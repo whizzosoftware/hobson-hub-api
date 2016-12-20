@@ -11,12 +11,11 @@ import com.whizzosoftware.hobson.api.device.DeviceType;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.TypedProperty;
-import com.whizzosoftware.hobson.api.variable.DeviceProxyVariable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MockDeviceProxy extends AbstractDeviceProxy {
+public class MockDeviceProxy extends AbstractHobsonDeviceProxy {
     public final Map<String,Object> setVariableRequests = new HashMap<String,Object>();
     public boolean wasShutdownCalled;
 

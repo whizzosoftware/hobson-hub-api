@@ -20,7 +20,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class AbstractDeviceProxyTest {
+public class AbstractHobsonDeviceProxyTest {
 //    @Test
 //    public void testGetPluginId() {
 //        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name");
@@ -45,7 +45,7 @@ public class AbstractDeviceProxyTest {
     public void testGetPreferredVariableName() {
         MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0", "");
         p.setDeviceManager(new MockDeviceManager());
-        AbstractDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB);
+        AbstractHobsonDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB);
         // should be null by default
         assertNull(d.getDescriptor().getPreferredVariableName());
     }

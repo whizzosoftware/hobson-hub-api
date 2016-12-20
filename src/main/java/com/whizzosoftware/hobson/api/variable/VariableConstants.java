@@ -22,6 +22,10 @@ public class VariableConstants {
      */
     public static final String BAROMETRIC_PRESSURE_INHG = "baromInHg";
     /**
+     * Indicates carbon dioxide in parts per million.
+     */
+    public static final String CO2_PPM = "co2ppm";
+    /**
      * Indicates a color (e.g. a color LED bulb).
      */
     public static final String COLOR = "color";
@@ -34,9 +38,17 @@ public class VariableConstants {
      */
     public static final String DEW_PT_F = "dewPtF";
     /**
+     * Indicates differential pressure in pounds per square inch.
+     */
+    public static final String DIFFERENTIAL_PRESSURE_PSI = "dpPsi";
+    /**
      * Indicates energy consumption in watts.
      */
     public static final String ENERGY_CONSUMPTION_WATTS = "ecw";
+    /**
+     * Indicates energy consumption in watts.
+     */
+    public static final String ENERGY_CONSUMPTION_KWH = "eckwh";
     /**
      * Indicates the firmware version of a device.
      */

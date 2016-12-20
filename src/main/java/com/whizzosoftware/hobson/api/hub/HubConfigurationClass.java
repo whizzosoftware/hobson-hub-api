@@ -30,6 +30,7 @@ public class HubConfigurationClass extends PropertyContainerClass {
     public static final String LONGITUDE = "longitude";
     public static final String NAME = "name";
     public static final String SETUP_COMPLETE = "setupComplete";
+    public static final String SSL_MODE = "sslMode";
 
     public HubConfigurationClass() {
         super(PropertyContainerClassContext.create(HubContext.createLocal(), "configuration"), PropertyContainerClassType.HUB_CONFIG);
@@ -42,6 +43,7 @@ public class HubConfigurationClass extends PropertyContainerClass {
         addSupportedProperty(new TypedProperty.Builder(LOG_LEVEL, "Log level", "The granularity of Hub logging", TypedProperty.Type.STRING).build());
         addSupportedProperty(new TypedProperty.Builder(LONGITUDE, "Longitude", "The Hub location's longitude", TypedProperty.Type.NUMBER).build());
         addSupportedProperty(new TypedProperty.Builder(NAME, "Hub name", "A descriptive name for the Hub (e.g. Home)", TypedProperty.Type.STRING).build());
+        addSupportedProperty(new TypedProperty.Builder(SSL_MODE, "Secure mode", "When enabled, runs the hub in secure mode", TypedProperty.Type.BOOLEAN).build());
         addSupportedProperty(new TypedProperty.Builder(SETUP_COMPLETE, "Setup completed", "Indicates whether the Hub setup process has been completed", TypedProperty.Type.BOOLEAN).build());
     }
 }
