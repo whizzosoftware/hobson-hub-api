@@ -118,6 +118,10 @@ public class HobsonDeviceDescriptor {
         return (actionClasses != null && actionClasses.size() > 0);
     }
 
+    public boolean hasTags() {
+        return (tags != null && tags.size() > 0);
+    }
+
     protected void addVariableDescription(DeviceVariableDescriptor dvd) {
         if (variables == null) {
             variables = new HashMap<>();

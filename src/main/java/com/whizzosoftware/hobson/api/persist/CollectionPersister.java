@@ -233,6 +233,16 @@ public class CollectionPersister {
                 }
             }
 
+            // restore tags
+            Set<String> tags = null;
+            Set<Object> tagSet = pctx.getSet(idProvider.createDeviceTagsId(ctx));
+            if (tagSet != null && tagSet.size() > 0) {
+                tags = new HashSet<>();
+                for (Object o : tagSet) {
+                    tags.add(o.toString());
+                }
+            }
+
             return new HobsonDeviceDescriptor.Builder(ctx).
                 name(name).
                 type(DeviceType.valueOf(type)).
@@ -243,6 +253,7 @@ public class CollectionPersister {
                 preferredVariableName((String)deviceMap.get(PropertyConstants.PREFERRED_VARIABLE_NAME)).
                 variableDescriptions(descriptions).
                 actionClasses(actionClasses).
+                tags(tags).
                 build();
         } else {
             return null;
@@ -261,6 +272,15 @@ public class CollectionPersister {
     public String restoreDeviceName(CollectionPersistenceContext pctx, DeviceContext dctx) {
         Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(dctx));
         return (String)deviceMap.get(PropertyConstants.NAME);
+    }
+
+    public Set<String> restoreDeviceTags(CollectionPersistenceContext pctx, DeviceContext dctx) {
+        Set<String> results = new HashSet<>();
+        Set<Object> tags = pctx.getSet(idProvider.createDeviceTagsId(dctx));
+        for (Object o : tags) {
+            results.add(o.toString());
+        }
+        return results;
     }
 
     public DeviceVariableDescriptor restoreDeviceVariableDescription(CollectionPersistenceContext pctx, DeviceContext ctx, String name) {
@@ -517,6 +537,11 @@ public class CollectionPersister {
             }
         }
 
+        // save the tags
+        if (device.hasTags()) {
+            saveDeviceTags(pctx, device.getContext(), device.getTags());
+        }
+
         // save device to list of hub devices
         pctx.addSetValue(idProvider.createDevicesId(device.getContext().getHubContext()), deviceId);
 
@@ -549,6 +574,12 @@ public class CollectionPersister {
         pctx.setMap(deviceId, map);
         pctx.commit();
 
+    }
+
+    public void saveDeviceTags(CollectionPersistenceContext pctx, DeviceContext dctx, Set<String> tags) {
+        String deviceTagId = idProvider.createDeviceTagsId(dctx);
+        pctx.setSet(deviceTagId, new HashSet<Object>(tags));
+        pctx.commit();
     }
 
     public void saveGlobalVariable(CollectionPersistenceContext pctx, GlobalVariableDescriptor desc, GlobalVariable val) {

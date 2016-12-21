@@ -52,6 +52,7 @@ public interface IdProvider {
     String createDeviceVariableDescriptionId(DeviceVariableContext vctx);
     String createDeviceVariableId(DeviceVariableContext vctx);
     String createDeviceConfigurationClassId(DeviceContext ctx);
+    String createDeviceTagsId(DeviceContext ctx);
     String createPluginDeviceConfigurationClassesId(PluginContext ctx);
     String createPluginDeviceConfigurationClassId(PluginContext ctx, String name);
     String createDeviceVariablesId(DeviceContext ctx);

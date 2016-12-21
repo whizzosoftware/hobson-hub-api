@@ -152,6 +152,11 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
+    public String createDeviceTagsId(DeviceContext ctx) {
+        return createDeviceId(ctx) + HubContext.DELIMITER + "tags";
+    }
+
+    @Override
     public String createLocalPluginActionClassesId(PluginContext ctx) {
         return createPluginId(ctx) + HubContext.DELIMITER + "actionClasses";
     }
