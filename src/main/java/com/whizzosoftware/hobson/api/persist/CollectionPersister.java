@@ -46,7 +46,7 @@ public class CollectionPersister {
         pctx.remove(idProvider.createActionId(hctx, id));
     }
 
-    public void deleteActionSet(HubContext hctx, CollectionPersistenceContext pctx, String id) {
+    public void deleteActionSet(CollectionPersistenceContext pctx, HubContext hctx, String id) {
         String key = idProvider.createActionSetActionsId(hctx, id);
         for (Object o : pctx.getSet(key)) {
             deleteAction(hctx, pctx, o.toString());
@@ -56,20 +56,20 @@ public class CollectionPersister {
         pctx.removeFromSet(idProvider.createActionSetsId(hctx), id);
     }
 
-    public void deleteDataStream(CollectionPersistenceContext pctx, String id) {
-        Set<Object> fields = pctx.getSet(idProvider.createDataStreamFieldsId(id));
+    public void deleteDataStream(CollectionPersistenceContext pctx, HubContext hctx, String id) {
+        Set<Object> fields = pctx.getSet(idProvider.createDataStreamFieldsId(hctx, id));
         for (Object key : fields) {
-            pctx.remove(idProvider.createDataStreamFieldId(id, (String)key));
+            pctx.remove(idProvider.createDataStreamFieldId(hctx, id, (String)key));
         }
-        pctx.remove(idProvider.createDataStreamFieldsId(id));
-        pctx.remove(idProvider.createDataStreamTagsId(id));
-        pctx.remove(idProvider.createDataStreamId(id));
-        pctx.removeFromSet(idProvider.createDataStreamsId(), id);
+        pctx.remove(idProvider.createDataStreamFieldsId(hctx, id));
+        pctx.remove(idProvider.createDataStreamTagsId(hctx, id));
+        pctx.remove(idProvider.createDataStreamId(hctx, id));
+        pctx.removeFromSet(idProvider.createDataStreamsId(hctx), id);
     }
 
     public void deleteDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
-        pctx.remove(idProvider.createDeviceId(ctx));
-        pctx.removeFromSet(idProvider.createDevicesId(ctx.getHubContext()), idProvider.createDeviceId(ctx));
+        pctx.remove(idProvider.createDeviceId(ctx).getId());
+        pctx.removeFromSet(idProvider.createDevicesId(ctx.getHubContext()).getId(), idProvider.createDeviceId(ctx).getId());
     }
 
     public void deleteDeviceConfiguration(CollectionPersistenceContext pctx, DeviceContext ctx, boolean commit) {
@@ -80,8 +80,8 @@ public class CollectionPersister {
     }
 
     public void deleteDeviceVariable(CollectionPersistenceContext pctx, DeviceVariableContext vctx) {
-        pctx.remove(idProvider.createDeviceVariableId(vctx));
-        pctx.removeFromSet(idProvider.createDeviceVariablesId(vctx.getDeviceContext()), vctx.getName());
+        pctx.remove(idProvider.createDeviceVariableId(vctx).getId());
+        pctx.removeFromSet(idProvider.createDeviceVariablesId(vctx.getDeviceContext()).getId(), vctx.getName());
     }
 
     public void deleteHubConfiguration(CollectionPersistenceContext pctx, HubContext hctx, boolean commit) {
@@ -101,22 +101,22 @@ public class CollectionPersister {
     public void deleteTask(CollectionPersistenceContext pctx, TaskContext tctx) {
         String actionSetId = (String)pctx.getMapValue(idProvider.createTaskId(tctx), PropertyConstants.ACTION_SET_ID);
         pctx.remove(idProvider.createTaskId(tctx));
-        pctx.removeFromSet(idProvider.createTasksId(tctx.getHubContext()), tctx.getTaskId());
+        pctx.removeFromSet(idProvider.createTasksId(tctx.getHubContext()).getId(), tctx.getTaskId());
         pctx.remove(idProvider.createTaskPropertiesId(tctx));
         deleteTaskConditions(pctx, tctx);
-        deleteActionSet(tctx.getHubContext(), pctx, actionSetId);
+        deleteActionSet(pctx, tctx.getHubContext(), actionSetId);
         pctx.commit();
     }
 
     public void deletePresenceEntity(CollectionPersistenceContext pctx, PresenceEntityContext pectx) {
         pctx.remove(idProvider.createPresenceEntityId(pectx));
-        pctx.removeFromSet(idProvider.createPresenceEntitiesId(pectx.getHubContext()), pectx.getEntityId());
+        pctx.removeFromSet(idProvider.createPresenceEntitiesId(pectx.getHubContext()).getId(), pectx.getEntityId());
         pctx.commit();
     }
 
     public void deletePresenceLocation(CollectionPersistenceContext pctx, PresenceLocationContext plctx) {
         pctx.remove(idProvider.createPresenceLocationId(plctx));
-        pctx.removeFromSet(idProvider.createPresenceLocationsId(plctx.getHubContext()), plctx.getLocationId());
+        pctx.removeFromSet(idProvider.createPresenceLocationsId(plctx.getHubContext()).getId(), plctx.getLocationId());
         pctx.commit();
     }
 
@@ -137,7 +137,7 @@ public class CollectionPersister {
     }
 
     public boolean hasDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
-        Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(ctx));
+        Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(ctx).getId());
         return (deviceMap != null && deviceMap.size() > 0);
     }
 
@@ -187,26 +187,26 @@ public class CollectionPersister {
         return null;
     }
 
-    public DataStream restoreDataStream(CollectionPersistenceContext pctx, String dataStreamId) {
+    public DataStream restoreDataStream(CollectionPersistenceContext pctx, HubContext hctx, String dataStreamId) {
         List<DataStreamField> fields = new ArrayList<>();
 
-        Set<Object> set = pctx.getSet(idProvider.createDataStreamFieldsId(dataStreamId));
+        Set<Object> set = pctx.getSet(idProvider.createDataStreamFieldsId(hctx, dataStreamId));
         for (Object fieldId : set) {
-            Map<String,Object> map2 = pctx.getMap(idProvider.createDataStreamFieldId(dataStreamId, (String)fieldId));
+            Map<String,Object> map2 = pctx.getMap(idProvider.createDataStreamFieldId(hctx, dataStreamId, (String)fieldId));
             fields.add(new DataStreamField((String)fieldId, (String)map2.get("name"), DeviceVariableContext.create((String)map2.get("variableId"))));
         }
 
         HashSet<String> tags = new HashSet<>();
-        for (Object o : pctx.getSet(idProvider.createDataStreamTagsId(dataStreamId))) {
+        for (Object o : pctx.getSet(idProvider.createDataStreamTagsId(hctx, dataStreamId))) {
             tags.add(o.toString());
         }
 
-        Map<String,Object> map2 = pctx.getMap(idProvider.createDataStreamId(dataStreamId));
+        Map<String,Object> map2 = pctx.getMap(idProvider.createDataStreamId(hctx, dataStreamId));
         return new DataStream(dataStreamId, (String)map2.get(PropertyConstants.NAME), fields, tags);
     }
 
     public HobsonDeviceDescriptor restoreDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
-        Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(ctx));
+        Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(ctx).getId());
         String name = (String)deviceMap.get(PropertyConstants.NAME);
         String type = (String)deviceMap.get(PropertyConstants.TYPE);
 
@@ -216,7 +216,7 @@ public class CollectionPersister {
 
             // restore variable descriptions
             List<DeviceVariableDescriptor> descriptions = new ArrayList<>();
-            Set<Object> vdSet = pctx.getSet(idProvider.createDeviceVariablesId(ctx));
+            Set<Object> vdSet = pctx.getSet(idProvider.createDeviceVariablesId(ctx).getId());
             for (Object o : vdSet) {
                 String vname = o.toString();
                 descriptions.add(restoreDeviceVariableDescription(pctx, ctx, vname));
@@ -266,11 +266,11 @@ public class CollectionPersister {
     }
 
     public Long restoreDeviceLastCheckIn(CollectionPersistenceContext pctx, DeviceContext dctx) {
-        return (Long)pctx.getMapValue(idProvider.createDeviceId(dctx), PropertyConstants.LAST_CHECKIN);
+        return (Long)pctx.getMapValue(idProvider.createDeviceId(dctx).getId(), PropertyConstants.LAST_CHECKIN);
     }
 
     public String restoreDeviceName(CollectionPersistenceContext pctx, DeviceContext dctx) {
-        Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(dctx));
+        Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(dctx).getId());
         return (String)deviceMap.get(PropertyConstants.NAME);
     }
 
@@ -416,7 +416,7 @@ public class CollectionPersister {
 
     public String saveActionSet(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainerSet actionSet) {
         if (actionSet.hasId()) {
-            deleteActionSet(ctx, pctx, actionSet.getId());
+            deleteActionSet(pctx, ctx, actionSet.getId());
         } else {
             actionSet.setId(UUID.randomUUID().toString());
         }
@@ -473,13 +473,13 @@ public class CollectionPersister {
         }
     }
 
-    public void saveDataStream(CollectionPersistenceContext pctx, DataStream dataStream) {
+    public void saveDataStream(CollectionPersistenceContext pctx, HubContext hctx, DataStream dataStream) {
         // save data stream meta data
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.ID, dataStream.getId());
         map.put(PropertyConstants.NAME, dataStream.getName());
 
-        pctx.setMap(idProvider.createDataStreamId(dataStream.getId()), map);
+        pctx.setMap(idProvider.createDataStreamId(hctx, dataStream.getId()), map);
 
         // save data stream variables
         for (DataStreamField dsf : dataStream.getFields()) {
@@ -488,21 +488,21 @@ public class CollectionPersister {
             if (dsfid == null) {
                 throw new HobsonRuntimeException("Data stream field with no ID found");
             }
-            String fid = idProvider.createDataStreamFieldId(dataStream.getId(), dsfid);
+            String fid = idProvider.createDataStreamFieldId(hctx, dataStream.getId(), dsfid);
             map2.put("id", dsfid);
             map2.put("name", dsf.getName());
             map2.put("variableId", dsf.getVariable().toString());
             pctx.setMap(fid, map2);
 
             if (dataStream.hasTags()) {
-                pctx.setSet(idProvider.createDataStreamTagsId(dataStream.getId()), (Set<Object>)(Set<?>)dataStream.getTags());
+                pctx.setSet(idProvider.createDataStreamTagsId(hctx, dataStream.getId()), (Set<Object>)(Set<?>)dataStream.getTags());
             }
 
-            pctx.addSetValue(idProvider.createDataStreamFieldsId(dataStream.getId()), dsfid);
+            pctx.addSetValue(idProvider.createDataStreamFieldsId(hctx, dataStream.getId()), dsfid);
         }
 
         // add data stream ID to set of hub data streams
-        pctx.addSetValue(idProvider.createDataStreamsId(), dataStream.getId());
+        pctx.addSetValue(idProvider.createDataStreamsId(hctx), dataStream.getId());
 
         // commit
         pctx.commit();
@@ -520,7 +520,7 @@ public class CollectionPersister {
         map.put(PropertyConstants.PREFERRED_VARIABLE_NAME, device.getPreferredVariableName());
 
         // save the map
-        String deviceId = idProvider.createDeviceId(device.getContext());
+        String deviceId = idProvider.createDeviceId(device.getContext()).getId();
         pctx.setMap(deviceId, map);
 
         // save the device variables
@@ -543,7 +543,7 @@ public class CollectionPersister {
         }
 
         // save device to list of hub devices
-        pctx.addSetValue(idProvider.createDevicesId(device.getContext().getHubContext()), deviceId);
+        pctx.addSetValue(idProvider.createDevicesId(device.getContext().getHubContext()).getId(), deviceId);
 
         // save device to list of plugin devices
         pctx.addSetValue(idProvider.createPluginDevicesId(device.getContext().getPluginContext()), deviceId);
@@ -556,18 +556,18 @@ public class CollectionPersister {
         pctx.setMap(idProvider.createDeviceConfigurationId(dctx), config);
         // also set the device name specifically if it has changed
         if (config.containsKey(PropertyConstants.NAME)) {
-            pctx.setMapValue(idProvider.createDeviceId(dctx), PropertyConstants.NAME, config.get(PropertyConstants.NAME));
+            pctx.setMapValue(idProvider.createDeviceId(dctx).getId(), PropertyConstants.NAME, config.get(PropertyConstants.NAME));
         }
         pctx.commit();
     }
 
     public void saveDeviceLastCheckIn(CollectionPersistenceContext pctx, DeviceContext dctx, long lastCheckin) {
-        pctx.setMapValue(idProvider.createDeviceId(dctx), PropertyConstants.LAST_CHECKIN, lastCheckin);
+        pctx.setMapValue(idProvider.createDeviceId(dctx).getId(), PropertyConstants.LAST_CHECKIN, lastCheckin);
         pctx.commit();
     }
 
     public void saveDeviceName(CollectionPersistenceContext pctx, DeviceContext dctx, String name) {
-        String deviceId = idProvider.createDeviceId(dctx);
+        String deviceId = idProvider.createDeviceId(dctx).getId();
         Map<String,Object> deviceMap = pctx.getMap(deviceId);
         Map<String,Object> map = new HashMap<>(deviceMap);
         map.put(PropertyConstants.NAME, name);
@@ -642,7 +642,7 @@ public class CollectionPersister {
         pctx.setMap(idProvider.createTaskId(task.getContext()), map);
 
         // add task ID to task id list
-        pctx.addSetValue(idProvider.createTasksId(task.getContext().getHubContext()), task.getContext().getTaskId());
+        pctx.addSetValue(idProvider.createTasksId(task.getContext().getHubContext()).getId(), task.getContext().getTaskId());
 
         pctx.commit();
     }
@@ -658,7 +658,7 @@ public class CollectionPersister {
         }
 
         pctx.setMap(key, map);
-        pctx.addSetValue(idProvider.createPresenceEntitiesId(pe.getContext().getHubContext()), pe.getContext().getEntityId());
+        pctx.addSetValue(idProvider.createPresenceEntitiesId(pe.getContext().getHubContext()).getId(), pe.getContext().getEntityId());
         pctx.commit();
     }
 
@@ -679,7 +679,7 @@ public class CollectionPersister {
         }
 
         pctx.setMap(key, map);
-        pctx.addSetValue(idProvider.createPresenceLocationsId(pl.getContext().getHubContext()), pl.getContext().getLocationId());
+        pctx.addSetValue(idProvider.createPresenceLocationsId(pl.getContext().getHubContext()).getId(), pl.getContext().getLocationId());
 
         pctx.commit();
     }
@@ -695,7 +695,7 @@ public class CollectionPersister {
             map.put(PropertyConstants.MEDIA_TYPE, vd.getMediaType().toString());
         }
         pctx.setMap(key, map);
-        pctx.addSetValue(idProvider.createDeviceVariablesId(vd.getContext().getDeviceContext()), vd.getContext().getName());
+        pctx.addSetValue(idProvider.createDeviceVariablesId(vd.getContext().getDeviceContext()).getId(), vd.getContext().getName());
 
         pctx.commit();
     }

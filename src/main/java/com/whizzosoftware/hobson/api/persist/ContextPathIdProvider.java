@@ -57,33 +57,33 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public String createDataStreamsId() {
-        return "dataStreams";
+    public String createDataStreamsId(HubContext ctx) {
+        return createHubId(ctx) + HubContext.DELIMITER + "dataStreams";
     }
 
     @Override
-    public String createDataStreamId(String dataStreamId) {
-        return createDataStreamsId() + HubContext.DELIMITER + dataStreamId;
+    public String createDataStreamId(HubContext ctx, String dataStreamId) {
+        return createDataStreamsId(ctx) + HubContext.DELIMITER + dataStreamId;
     }
 
     @Override
-    public String createDataStreamDataId(String dataStreamId) {
-        return createDataStreamId(dataStreamId) + HubContext.DELIMITER + "data";
+    public String createDataStreamDataId(HubContext ctx, String dataStreamId) {
+        return createDataStreamId(ctx, dataStreamId) + HubContext.DELIMITER + "data";
     }
 
     @Override
-    public String createDataStreamFieldsId(String dataStreamId) {
-        return createDataStreamId(dataStreamId) + HubContext.DELIMITER + "fields";
+    public String createDataStreamFieldsId(HubContext ctx, String dataStreamId) {
+        return createDataStreamId(ctx, dataStreamId) + HubContext.DELIMITER + "fields";
     }
 
     @Override
-    public String createDataStreamFieldId(String dataStreamId, String fieldId) {
-        return createDataStreamFieldsId(dataStreamId) + HubContext.DELIMITER + fieldId;
+    public String createDataStreamFieldId(HubContext ctx, String dataStreamId, String fieldId) {
+        return createDataStreamFieldsId(ctx, dataStreamId) + HubContext.DELIMITER + fieldId;
     }
 
     @Override
-    public String createDataStreamTagsId(String dataStreamId) {
-        return createDataStreamId(dataStreamId) + HubContext.DELIMITER + "tags";
+    public String createDataStreamTagsId(HubContext ctx, String dataStreamId) {
+        return createDataStreamId(ctx, dataStreamId) + HubContext.DELIMITER + "tags";
     }
 
     @Override

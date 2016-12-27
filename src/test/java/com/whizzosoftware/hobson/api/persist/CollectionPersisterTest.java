@@ -377,6 +377,7 @@ public class CollectionPersisterTest {
 
         // confirm device restores properly
         HobsonDeviceDescriptor d = cp.restoreDevice(cpc, dctx);
+        assertNotNull(d);
         assertEquals("foo", d.getName());
         assertEquals(DeviceType.LIGHTBULB, d.getType());
         assertEquals("Mfg1", d.getManufacturerName());
@@ -435,9 +436,9 @@ public class CollectionPersisterTest {
         tags.add("tag1");
         tags.add("tag2");
         DataStream ds = new DataStream("id", "Test", fields, tags);
-        cp.saveDataStream(cpc, ds);
+        cp.saveDataStream(cpc, hctx, ds);
 
-        ds = cp.restoreDataStream(cpc, "id");
+        ds = cp.restoreDataStream(cpc, hctx,"id");
         assertEquals("id", ds.getId());
         assertEquals("Test", ds.getName());
         assertEquals(2, ds.getFields().size());
@@ -453,11 +454,11 @@ public class CollectionPersisterTest {
         assertTrue(ds.getTags().contains("tag1"));
         assertTrue(ds.getTags().contains("tag2"));
 
-        cp.deleteDataStream(cpc, "id");
-        assertEquals(0, cpc.getMap(idProvider.createDataStreamId("id")).size());
-        assertEquals(0, cpc.getSet(idProvider.createDataStreamFieldsId("id")).size());
-        assertEquals(0, cpc.getMap(idProvider.createDataStreamFieldId("id", "field1")).size());
-        assertEquals(0, cpc.getSet(idProvider.createDataStreamTagsId("id")).size());
+        cp.deleteDataStream(cpc, hctx, "id");
+        assertEquals(0, cpc.getMap(idProvider.createDataStreamId(hctx, "id")).size());
+        assertEquals(0, cpc.getSet(idProvider.createDataStreamFieldsId(hctx, "id")).size());
+        assertEquals(0, cpc.getMap(idProvider.createDataStreamFieldId(hctx, "id", "field1")).size());
+        assertEquals(0, cpc.getSet(idProvider.createDataStreamTagsId(hctx, "id")).size());
     }
 
     @Test

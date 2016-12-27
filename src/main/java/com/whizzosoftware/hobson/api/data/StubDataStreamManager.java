@@ -1,13 +1,15 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2016 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.data;
 
-import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
+import com.whizzosoftware.hobson.api.hub.HubContext;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,36 +28,31 @@ public class StubDataStreamManager implements DataStreamManager {
     }
 
     @Override
-    public String createDataStream(String userId, String name, Collection<DataStreamField> fields, Set<String> tags) {
+    public String createDataStream(HubContext ctx, String name, Collection<DataStreamField> fields, Set<String> tags) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void deleteDataStream(String userId, String dataStreamId) {
+    public void deleteDataStream(HubContext ctx, String dataStreamId) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Collection<DataStream> getDataStreams(String userId) {
+    public Collection<DataStream> getDataStreams(HubContext ctx) {
         return null;
     }
 
     @Override
-    public DataStream getDataStream(String userId, String dataStreamId) {
+    public DataStream getDataStream(HubContext ctx, String dataStreamId) {
         return null;
     }
 
     @Override
-    public Set<DeviceVariableContext> getMonitoredVariables(String userId) {
-        return null;
+    public void addData(HubContext ctx, String dataStreamId, long now, Map<String, Object> data) {
     }
 
     @Override
-    public void addData(String userId, String dataStreamId, long now, Map<String, Object> data) {
-    }
-
-    @Override
-    public List<DataStreamValueSet> getData(String userId, String dataStreamId, long endTime, DataStreamInterval interval) {
+    public List<DataStreamValueSet> getData(HubContext ctx, String dataStreamId, long endTime, DataStreamInterval interval) {
         return null;
     }
 }
