@@ -52,38 +52,38 @@ public class CollectionPersisterTest {
 
         cp.saveTask(cpctx, task);
 
-        Map<String,Object> m = cpctx.getMap(idProvider.createTaskId(tctx));
+        Map<String,Object> m = cpctx.getMap(idProvider.createTaskId(tctx).getId());
         assertNotNull(m);
         assertEquals("My Task", m.get("name"));
         assertEquals("My Desc", m.get("description"));
         assertEquals("actionSetId1", m.get("actionSetId"));
 
         // check the task set
-        Set<Object> s = cpctx.getSet(idProvider.createTasksId(hctx));
+        Set<Object> s = cpctx.getSet(idProvider.createTasksId(hctx).getId());
         assertNotNull(s);
         assertTrue(s.contains("taskId1"));
 
         // check map task properties
-        m = cpctx.getMap(idProvider.createTaskPropertiesId(tctx));
+        m = cpctx.getMap(idProvider.createTaskPropertiesId(tctx).getId());
         assertNotNull(m);
         assertEquals("bar", m.get("foo"));
         assertEquals("foo", m.get("bar"));
 
         // check task conditions set
-        Set<Object> set = cpctx.getSet(idProvider.createTaskConditionsId(tctx));
+        Set<Object> set = cpctx.getSet(idProvider.createTaskConditionsId(tctx).getId());
         assertNotNull(set);
         assertEquals(1, set.size());
         assertTrue(set.contains("condition1"));
 
         // check condition map
-        m = cpctx.getMap(idProvider.createTaskConditionId(tctx, "condition1"));
+        m = cpctx.getMap(idProvider.createTaskConditionId(tctx, "condition1").getId());
         assertNotNull(m);
         assertEquals("My Condition", m.get(PropertyConstants.NAME));
         assertEquals("cclass1", m.get(PropertyConstants.CONTAINER_CLASS_ID));
         assertEquals("plugin1", m.get(PropertyConstants.PLUGIN_ID));
 
         // check task condition properties
-        m = cpctx.getMap(idProvider.createTaskConditionPropertiesId(tctx, "condition1"));
+        m = cpctx.getMap(idProvider.createTaskConditionPropertiesId(tctx, "condition1").getId());
         assertNotNull(m);
         assertEquals(3, m.size());
         assertTrue(m.containsKey("device"));
@@ -126,13 +126,13 @@ public class CollectionPersisterTest {
         assertNull(cp.restoreTask(cpctx, task.getContext()));
 
         // confirm that all map entries have been cleaned up
-        s = cpctx.getSet(idProvider.createTasksId(hctx));
+        s = cpctx.getSet(idProvider.createTasksId(hctx).getId());
         assertNotNull(s);
         assertFalse(s.contains("taskId1"));
-        assertEquals(0, cpctx.getMap(idProvider.createTaskPropertiesId(tctx)).size());
-        assertEquals(0, cpctx.getSet(idProvider.createTaskConditionsId(tctx)).size());
-        assertEquals(0, cpctx.getMap(idProvider.createTaskConditionId(tctx, "condition1")).size());
-        assertEquals(0, cpctx.getMap(idProvider.createTaskConditionPropertiesId(tctx, "condition1")).size());
+        assertEquals(0, cpctx.getMap(idProvider.createTaskPropertiesId(tctx).getId()).size());
+        assertEquals(0, cpctx.getSet(idProvider.createTaskConditionsId(tctx).getId()).size());
+        assertEquals(0, cpctx.getMap(idProvider.createTaskConditionId(tctx, "condition1").getId()).size());
+        assertEquals(0, cpctx.getMap(idProvider.createTaskConditionPropertiesId(tctx, "condition1").getId()).size());
     }
 
     @Test
@@ -204,11 +204,11 @@ public class CollectionPersisterTest {
         CollectionPersister cp = new CollectionPersister(idProvider);
         cp.saveActionSet(HubContext.createLocal(), pctx, as);
 
-        Map<String,Object> map = pctx.getMap(idProvider.createActionSetId(hctx, "set1"));
+        Map<String,Object> map = pctx.getMap(idProvider.createActionSetId(hctx, "set1").getId());
         assertEquals("set1", map.get("id"));
         assertEquals("Action Set 1", map.get("name"));
 
-        Set<Object> set = pctx.getSet(idProvider.createActionSetActionsId(hctx, "set1"));
+        Set<Object> set = pctx.getSet(idProvider.createActionSetActionsId(hctx, "set1").getId());
         assertTrue(set.contains("action1"));
 
         assertTrue(pctx.hasMap("hubs:local:actions:action1"));
@@ -253,11 +253,11 @@ public class CollectionPersisterTest {
         CollectionPersister cp = new CollectionPersister(idProvider);
         cp.saveActionSet(HubContext.createLocal(), pctx, as);
 
-        Map<String,Object> map = pctx.getMap(idProvider.createActionSetId(hctx, "set1"));
+        Map<String,Object> map = pctx.getMap(idProvider.createActionSetId(hctx, "set1").getId());
         assertEquals("set1", map.get("id"));
         assertEquals("Action Set 1", map.get("name"));
 
-        Set<Object> set = pctx.getSet(idProvider.createActionSetActionsId(hctx, "set1"));
+        Set<Object> set = pctx.getSet(idProvider.createActionSetActionsId(hctx, "set1").getId());
         assertTrue(set.contains("action1"));
         assertTrue(set.contains("action2"));
 
@@ -392,15 +392,15 @@ public class CollectionPersisterTest {
         assertEquals(TypedProperty.Type.STRING, d.getConfigurationClass().getSupportedProperty("foo").getType());
 
         // confirm device is added to set of hub devices
-        Set<Object> s = cpc.getSet(idProvider.createDevicesId(hctx));
+        Set<Object> s = cpc.getSet(idProvider.createDevicesId(hctx).getId());
         assertNotNull(s);
         assertEquals(1, s.size());
-        assertTrue(s.contains(idProvider.createDeviceId(dctx)));
+        assertTrue(s.contains(idProvider.createDeviceId(dctx).getId()));
 
         // confirm device deletes properly
         cp.deleteDevice(cpc, dctx);
         assertNull(cp.restoreDevice(cpc, dctx));
-        s = cpc.getSet(idProvider.createDevicesId(hctx));
+        s = cpc.getSet(idProvider.createDevicesId(hctx).getId());
         assertNotNull(s);
         assertEquals(0, s.size());
     }
@@ -455,10 +455,10 @@ public class CollectionPersisterTest {
         assertTrue(ds.getTags().contains("tag2"));
 
         cp.deleteDataStream(cpc, hctx, "id");
-        assertEquals(0, cpc.getMap(idProvider.createDataStreamId(hctx, "id")).size());
-        assertEquals(0, cpc.getSet(idProvider.createDataStreamFieldsId(hctx, "id")).size());
-        assertEquals(0, cpc.getMap(idProvider.createDataStreamFieldId(hctx, "id", "field1")).size());
-        assertEquals(0, cpc.getSet(idProvider.createDataStreamTagsId(hctx, "id")).size());
+        assertEquals(0, cpc.getMap(idProvider.createDataStreamId(hctx, "id").getId()).size());
+        assertEquals(0, cpc.getSet(idProvider.createDataStreamFieldsId(hctx, "id").getId()).size());
+        assertEquals(0, cpc.getMap(idProvider.createDataStreamFieldId(hctx, "id", "field1").getId()).size());
+        assertEquals(0, cpc.getSet(idProvider.createDataStreamTagsId(hctx, "id").getId()).size());
     }
 
     @Test
@@ -472,9 +472,9 @@ public class CollectionPersisterTest {
         fields.add(new DataStreamField("field2", "test2", DeviceVariableContext.create(hctx, "plugin2", "device2", "foo2")));
 
         DataStream ds = new DataStream("id", "Test", fields, null);
-        cp.saveDataStream(cpc, ds);
+        cp.saveDataStream(cpc, hctx, ds);
 
-        ds = cp.restoreDataStream(cpc, "id");
+        ds = cp.restoreDataStream(cpc, hctx, "id");
 
         assertEquals(0, ds.getTags().size());
     }

@@ -18,13 +18,13 @@ public class ContextPathIdProviderTest {
     @Test
     public void testCreateUserHubsId() {
         ContextPathIdProvider cdipd = new ContextPathIdProvider();
-        assertEquals("users:foo:hubs", cdipd.createUserHubsId("foo"));
+        assertEquals("users:foo:hubs", cdipd.createUserHubsId("foo").getId());
     }
 
     @Test
     public void testCreateHubId() {
         ContextPathIdProvider cdipd = new ContextPathIdProvider();
-        assertEquals("hubs:49a37a38-7e05-4991-a178-ea29a4d9da3e", cdipd.createHubId(HubContext.create("49a37a38-7e05-4991-a178-ea29a4d9da3e")));
+        assertEquals("hubs:49a37a38-7e05-4991-a178-ea29a4d9da3e", cdipd.createHubId(HubContext.create("49a37a38-7e05-4991-a178-ea29a4d9da3e")).getId());
     }
 
     @Test
@@ -49,7 +49,7 @@ public class ContextPathIdProviderTest {
     @Test
     public void testCreateDeviceId() {
         ContextPathIdProvider cdipd = new ContextPathIdProvider();
-        assertEquals("hubs:bar:devices:plugin1:device1", cdipd.createDeviceId(DeviceContext.create(PluginContext.create(HubContext.create("bar"), "plugin1"), "device1")));
+        assertEquals("hubs:bar:devices:plugin1:device1", cdipd.createDeviceId(DeviceContext.create(PluginContext.create(HubContext.create("bar"), "plugin1"), "device1")).getId());
     }
 
     @Test
@@ -74,7 +74,7 @@ public class ContextPathIdProviderTest {
     @Test
     public void testCreateDeviceVariableId() {
         ContextPathIdProvider cdipd = new ContextPathIdProvider();
-        assertEquals("hubs:bar:variables:plugin1:device1:var1", cdipd.createDeviceVariableId(DeviceVariableContext.create(DeviceContext.create(PluginContext.create(HubContext.create("bar"), "plugin1"), "device1"), "var1")));
+        assertEquals("hubs:bar:variables:plugin1:device1:var1", cdipd.createDeviceVariableId(DeviceVariableContext.create(DeviceContext.create(PluginContext.create(HubContext.create("bar"), "plugin1"), "device1"), "var1")).getId());
     }
 
     @Test
@@ -91,6 +91,6 @@ public class ContextPathIdProviderTest {
     @Test
     public void testCreateDeviceVariablesId() {
         ContextPathIdProvider cpidp = new ContextPathIdProvider();
-        assertEquals("hubs:local:variables:plugin1:device1", cpidp.createDeviceVariablesId(DeviceContext.createLocal("plugin1", "device1")));
+        assertEquals("hubs:local:variables:plugin1:device1", cpidp.createDeviceVariablesId(DeviceContext.createLocal("plugin1", "device1")).getId());
     }
 }

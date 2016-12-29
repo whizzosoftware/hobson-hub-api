@@ -42,29 +42,30 @@ public class CollectionPersister {
     }
 
     public void deleteAction(HubContext hctx, CollectionPersistenceContext pctx, String id) {
-        pctx.remove(idProvider.createActionPropertiesId(hctx, id));
-        pctx.remove(idProvider.createActionId(hctx, id));
+        pctx.remove(idProvider.createActionPropertiesId(hctx, id).getId());
+        pctx.remove(idProvider.createActionId(hctx, id).getId());
     }
 
     public void deleteActionSet(CollectionPersistenceContext pctx, HubContext hctx, String id) {
-        String key = idProvider.createActionSetActionsId(hctx, id);
+        String key = idProvider.createActionSetActionsId(hctx, id).getId();
         for (Object o : pctx.getSet(key)) {
             deleteAction(hctx, pctx, o.toString());
         }
-        pctx.remove(idProvider.createActionSetActionsId(hctx, id));
-        pctx.remove(idProvider.createActionSetId(hctx, id));
-        pctx.removeFromSet(idProvider.createActionSetsId(hctx), id);
+        pctx.remove(key);
+        pctx.remove(idProvider.createActionSetId(hctx, id).getId());
+        pctx.removeFromSet(idProvider.createActionSetsId(hctx).getId(), id);
     }
 
     public void deleteDataStream(CollectionPersistenceContext pctx, HubContext hctx, String id) {
-        Set<Object> fields = pctx.getSet(idProvider.createDataStreamFieldsId(hctx, id));
+        String s = idProvider.createDataStreamFieldsId(hctx, id).getId();
+        Set<Object> fields = pctx.getSet(s);
         for (Object key : fields) {
-            pctx.remove(idProvider.createDataStreamFieldId(hctx, id, (String)key));
+            pctx.remove(idProvider.createDataStreamFieldId(hctx, id, (String)key).getId());
         }
-        pctx.remove(idProvider.createDataStreamFieldsId(hctx, id));
-        pctx.remove(idProvider.createDataStreamTagsId(hctx, id));
-        pctx.remove(idProvider.createDataStreamId(hctx, id));
-        pctx.removeFromSet(idProvider.createDataStreamsId(hctx), id);
+        pctx.remove(s);
+        pctx.remove(idProvider.createDataStreamTagsId(hctx, id).getId());
+        pctx.remove(idProvider.createDataStreamId(hctx, id).getId());
+        pctx.removeFromSet(idProvider.createDataStreamsId(hctx).getId(), id);
     }
 
     public void deleteDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
@@ -73,7 +74,7 @@ public class CollectionPersister {
     }
 
     public void deleteDeviceConfiguration(CollectionPersistenceContext pctx, DeviceContext ctx, boolean commit) {
-        pctx.remove(idProvider.createDeviceConfigurationId(ctx));
+        pctx.remove(idProvider.createDeviceConfigurationId(ctx).getId());
         if (commit) {
             pctx.commit();
         }
@@ -85,49 +86,49 @@ public class CollectionPersister {
     }
 
     public void deleteHubConfiguration(CollectionPersistenceContext pctx, HubContext hctx, boolean commit) {
-        pctx.remove(idProvider.createHubConfigurationId(hctx));
+        pctx.remove(idProvider.createHubConfigurationId(hctx).getId());
         if (commit) {
             pctx.commit();
         }
     }
 
     public void deleteLocalPluginConfiguration(CollectionPersistenceContext cpctx, PluginContext pctx, boolean commit) {
-        cpctx.remove(idProvider.createLocalPluginConfigurationId(pctx));
+        cpctx.remove(idProvider.createLocalPluginConfigurationId(pctx).getId());
         if (commit) {
             cpctx.commit();
         }
     }
 
     public void deleteTask(CollectionPersistenceContext pctx, TaskContext tctx) {
-        String actionSetId = (String)pctx.getMapValue(idProvider.createTaskId(tctx), PropertyConstants.ACTION_SET_ID);
-        pctx.remove(idProvider.createTaskId(tctx));
+        String actionSetId = (String)pctx.getMapValue(idProvider.createTaskId(tctx).getId(), PropertyConstants.ACTION_SET_ID);
+        pctx.remove(idProvider.createTaskId(tctx).getId());
         pctx.removeFromSet(idProvider.createTasksId(tctx.getHubContext()).getId(), tctx.getTaskId());
-        pctx.remove(idProvider.createTaskPropertiesId(tctx));
+        pctx.remove(idProvider.createTaskPropertiesId(tctx).getId());
         deleteTaskConditions(pctx, tctx);
         deleteActionSet(pctx, tctx.getHubContext(), actionSetId);
         pctx.commit();
     }
 
     public void deletePresenceEntity(CollectionPersistenceContext pctx, PresenceEntityContext pectx) {
-        pctx.remove(idProvider.createPresenceEntityId(pectx));
+        pctx.remove(idProvider.createPresenceEntityId(pectx).getId());
         pctx.removeFromSet(idProvider.createPresenceEntitiesId(pectx.getHubContext()).getId(), pectx.getEntityId());
         pctx.commit();
     }
 
     public void deletePresenceLocation(CollectionPersistenceContext pctx, PresenceLocationContext plctx) {
-        pctx.remove(idProvider.createPresenceLocationId(plctx));
+        pctx.remove(idProvider.createPresenceLocationId(plctx).getId());
         pctx.removeFromSet(idProvider.createPresenceLocationsId(plctx.getHubContext()).getId(), plctx.getLocationId());
         pctx.commit();
     }
 
     public void deleteTaskCondition(CollectionPersistenceContext pctx, TaskContext tctx, String id) {
-        pctx.remove(idProvider.createTaskConditionId(tctx, id));
-        pctx.remove(idProvider.createTaskConditionPropertiesId(tctx, id));
-        pctx.removeFromSet(idProvider.createTaskConditionsId(tctx), id);
+        pctx.remove(idProvider.createTaskConditionId(tctx, id).getId());
+        pctx.remove(idProvider.createTaskConditionPropertiesId(tctx, id).getId());
+        pctx.removeFromSet(idProvider.createTaskConditionsId(tctx).getId(), id);
     }
 
     public void deleteTaskConditions(CollectionPersistenceContext pctx, TaskContext tctx) {
-        for (Object o : pctx.getSet(idProvider.createTaskConditionsId(tctx))) {
+        for (Object o : pctx.getSet(idProvider.createTaskConditionsId(tctx).getId())) {
             deleteTaskCondition(pctx, tctx, o.toString());
         }
     }
@@ -142,7 +143,7 @@ public class CollectionPersister {
     }
 
     public PropertyContainer restoreAction(CollectionPersistenceContext pctx, HubContext ctx, String actionId) {
-        String key = idProvider.createActionId(ctx, actionId);
+        String key = idProvider.createActionId(ctx, actionId).getId();
 
         Map<String,Object> map = pctx.getMap(key);
 
@@ -154,7 +155,7 @@ public class CollectionPersister {
     }
 
     public Map<String,Object> restoreActionProperties(HubContext ctx, CollectionPersistenceContext pctx, String actionId) {
-        String key = idProvider.createActionPropertiesId(ctx, actionId);
+        String key = idProvider.createActionPropertiesId(ctx, actionId).getId();
 
         Map<String,Object> map = pctx.getMap(key);
 
@@ -167,7 +168,7 @@ public class CollectionPersister {
     }
 
     public PropertyContainerSet restoreActionSet(HubContext ctx, CollectionPersistenceContext pctx, String actionSetId) {
-        String key = idProvider.createActionSetId(ctx, actionSetId);
+        String key = idProvider.createActionSetId(ctx, actionSetId).getId();
 
         Map<String,Object> map = pctx.getMap(key);
 
@@ -177,7 +178,7 @@ public class CollectionPersister {
                 tas.setName((String)map.get(PropertyConstants.NAME));
             }
             List<PropertyContainer> actions = new ArrayList<>();
-            for (Object o : pctx.getSet(idProvider.createActionSetActionsId(ctx, actionSetId))) {
+            for (Object o : pctx.getSet(idProvider.createActionSetActionsId(ctx, actionSetId).getId())) {
                 actions.add(restoreAction(pctx, ctx, (String)o));
             }
             tas.setProperties(actions);
@@ -190,18 +191,18 @@ public class CollectionPersister {
     public DataStream restoreDataStream(CollectionPersistenceContext pctx, HubContext hctx, String dataStreamId) {
         List<DataStreamField> fields = new ArrayList<>();
 
-        Set<Object> set = pctx.getSet(idProvider.createDataStreamFieldsId(hctx, dataStreamId));
+        Set<Object> set = pctx.getSet(idProvider.createDataStreamFieldsId(hctx, dataStreamId).getId());
         for (Object fieldId : set) {
-            Map<String,Object> map2 = pctx.getMap(idProvider.createDataStreamFieldId(hctx, dataStreamId, (String)fieldId));
+            Map<String,Object> map2 = pctx.getMap(idProvider.createDataStreamFieldId(hctx, dataStreamId, (String)fieldId).getId());
             fields.add(new DataStreamField((String)fieldId, (String)map2.get("name"), DeviceVariableContext.create((String)map2.get("variableId"))));
         }
 
         HashSet<String> tags = new HashSet<>();
-        for (Object o : pctx.getSet(idProvider.createDataStreamTagsId(hctx, dataStreamId))) {
+        for (Object o : pctx.getSet(idProvider.createDataStreamTagsId(hctx, dataStreamId).getId())) {
             tags.add(o.toString());
         }
 
-        Map<String,Object> map2 = pctx.getMap(idProvider.createDataStreamId(hctx, dataStreamId));
+        Map<String,Object> map2 = pctx.getMap(idProvider.createDataStreamId(hctx, dataStreamId).getId());
         return new DataStream(dataStreamId, (String)map2.get(PropertyConstants.NAME), fields, tags);
     }
 
@@ -224,7 +225,7 @@ public class CollectionPersister {
 
             // restore action classes
             List<ActionClass> actionClasses = null;
-            Set<Object> acSet = pctx.getSet(idProvider.createDeviceActionClassesId(ctx));
+            Set<Object> acSet = pctx.getSet(idProvider.createDeviceActionClassesId(ctx).getId());
             if (acSet != null && acSet.size() > 0) {
                 actionClasses = new ArrayList<>();
                 for (Object o : acSet) {
@@ -235,7 +236,7 @@ public class CollectionPersister {
 
             // restore tags
             Set<String> tags = null;
-            Set<Object> tagSet = pctx.getSet(idProvider.createDeviceTagsId(ctx));
+            Set<Object> tagSet = pctx.getSet(idProvider.createDeviceTagsId(ctx).getId());
             if (tagSet != null && tagSet.size() > 0) {
                 tags = new HashSet<>();
                 for (Object o : tagSet) {
@@ -261,7 +262,7 @@ public class CollectionPersister {
     }
 
     public Map<String,Object> restoreDeviceConfiguration(CollectionPersistenceContext pctx, DeviceContext ctx) {
-        Map<String,Object> map = pctx.getMap(idProvider.createDeviceConfigurationId(ctx));
+        Map<String,Object> map = pctx.getMap(idProvider.createDeviceConfigurationId(ctx).getId());
         return map != null ? map : new HashMap<String,Object>();
     }
 
@@ -276,7 +277,7 @@ public class CollectionPersister {
 
     public Set<String> restoreDeviceTags(CollectionPersistenceContext pctx, DeviceContext dctx) {
         Set<String> results = new HashSet<>();
-        Set<Object> tags = pctx.getSet(idProvider.createDeviceTagsId(dctx));
+        Set<Object> tags = pctx.getSet(idProvider.createDeviceTagsId(dctx).getId());
         for (Object o : tags) {
             results.add(o.toString());
         }
@@ -284,7 +285,7 @@ public class CollectionPersister {
     }
 
     public DeviceVariableDescriptor restoreDeviceVariableDescription(CollectionPersistenceContext pctx, DeviceContext ctx, String name) {
-        Map<String,Object> map = pctx.getMap(idProvider.createDeviceVariableDescriptionId(DeviceVariableContext.create(ctx, name)));
+        Map<String,Object> map = pctx.getMap(idProvider.createDeviceVariableDescriptionId(DeviceVariableContext.create(ctx, name)).getId());
         return new DeviceVariableDescriptor(
             DeviceVariableContext.create((String)map.get(PropertyConstants.CONTEXT)),
             VariableMask.valueOf((String)map.get(PropertyConstants.MASK)),
@@ -293,7 +294,7 @@ public class CollectionPersister {
     }
 
     public ActionClass restoreDeviceActionClass(CollectionPersistenceContext pctx, DeviceContext ctx, String actionClassId) {
-        Map<String,Object> map = pctx.getMap(idProvider.createDeviceActionClassId(ctx, actionClassId));
+        Map<String,Object> map = pctx.getMap(idProvider.createDeviceActionClassId(ctx, actionClassId).getId());
         ActionClass ac = new ActionClass(
             PropertyContainerClassContext.create(ctx, actionClassId),
             (String)map.get(PropertyConstants.NAME),
@@ -306,18 +307,18 @@ public class CollectionPersister {
     }
 
     public Map<String,Object> restoreHubConfiguration(CollectionPersistenceContext cpctx, HubContext hctx, PropertyContainerClassContext pccctx) {
-        Map<String,Object> map = cpctx.getMap(idProvider.createHubConfigurationId(hctx));
+        Map<String,Object> map = cpctx.getMap(idProvider.createHubConfigurationId(hctx).getId());
         return map != null ? map : new HashMap<String,Object>();
     }
 
     public Map<String,Object> restoreLocalPluginConfiguration(CollectionPersistenceContext cpctx, PluginContext pctx) {
-        Map<String,Object> map = cpctx.getMap(idProvider.createLocalPluginConfigurationId(pctx));
+        Map<String,Object> map = cpctx.getMap(idProvider.createLocalPluginConfigurationId(pctx).getId());
         return map != null ? map : new HashMap<String,Object>();
 
     }
 
     public PresenceEntity restorePresenceEntity(CollectionPersistenceContext pctx, PresenceEntityContext pectx) {
-        Map<String,Object> map = pctx.getMap(idProvider.createPresenceEntityId(pectx));
+        Map<String,Object> map = pctx.getMap(idProvider.createPresenceEntityId(pectx).getId());
         if (map != null && map.size() > 0) {
             return new PresenceEntity(pectx, (String)map.get(PropertyConstants.NAME), (Long)map.get(PropertyConstants.LAST_UPDATE));
         }
@@ -326,7 +327,7 @@ public class CollectionPersister {
 
     public PresenceLocation restorePresenceLocation(CollectionPersistenceContext pctx, PresenceLocationContext plctx) {
         if (plctx != null) {
-            Map<String, Object> map = pctx.getMap(idProvider.createPresenceLocationId(plctx));
+            Map<String, Object> map = pctx.getMap(idProvider.createPresenceLocationId(plctx).getId());
             if (map != null && map.size() > 0) {
                 return new PresenceLocation(
                         plctx,
@@ -344,7 +345,7 @@ public class CollectionPersister {
 
     public HobsonTask restoreTask(CollectionPersistenceContext taskCtx, TaskContext tctx) {
         HobsonTask task = null;
-        Map<String,Object> taskMap = taskCtx.getMap(idProvider.createTaskId(tctx));
+        Map<String,Object> taskMap = taskCtx.getMap(idProvider.createTaskId(tctx).getId());
         if (taskMap != null && taskMap.size() > 0) {
             task = new HobsonTask(
                 tctx,
@@ -356,7 +357,7 @@ public class CollectionPersister {
             );
 
             // restore properties
-            Map<String, Object> map = taskCtx.getMap(idProvider.createTaskPropertiesId(tctx));
+            Map<String, Object> map = taskCtx.getMap(idProvider.createTaskPropertiesId(tctx).getId());
             if (map != null) {
                 for (String name : map.keySet()) {
                     task.setProperty(name, map.get(name));
@@ -364,13 +365,13 @@ public class CollectionPersister {
             }
 
             // restore conditions
-            Set<Object> set = taskCtx.getSet(idProvider.createTaskConditionsId(tctx));
+            Set<Object> set = taskCtx.getSet(idProvider.createTaskConditionsId(tctx).getId());
             if (set != null) {
                 List<PropertyContainer> conditions = new ArrayList<>();
                 for (Object o : set) {
                     String conditionId = (String)o;
-                    map = taskCtx.getMap(idProvider.createTaskConditionId(tctx, conditionId));
-                    Map<String, Object> values = taskCtx.getMap(idProvider.createTaskConditionPropertiesId(tctx, conditionId));
+                    map = taskCtx.getMap(idProvider.createTaskConditionId(tctx, conditionId).getId());
+                    Map<String, Object> values = taskCtx.getMap(idProvider.createTaskConditionPropertiesId(tctx, conditionId).getId());
                     conditions.add(
                         new PropertyContainer(
                             conditionId,
@@ -390,7 +391,7 @@ public class CollectionPersister {
     }
 
     public void saveAction(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainer action) {
-        String key = idProvider.createActionId(ctx, action.getId());
+        String key = idProvider.createActionId(ctx, action.getId()).getId();
 
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.ID, action.getId());
@@ -403,7 +404,7 @@ public class CollectionPersister {
     }
 
     public void saveActionProperties(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainer action) {
-        String key = idProvider.createActionPropertiesId(ctx, action.getId());
+        String key = idProvider.createActionPropertiesId(ctx, action.getId()).getId();
 
         Map<String,Object> map = new HashMap<>();
 
@@ -421,7 +422,7 @@ public class CollectionPersister {
             actionSet.setId(UUID.randomUUID().toString());
         }
 
-        String key = idProvider.createActionSetId(ctx, actionSet.getId());
+        String key = idProvider.createActionSetId(ctx, actionSet.getId()).getId();
 
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.ID, actionSet.getId());
@@ -436,13 +437,13 @@ public class CollectionPersister {
                     action.setId(UUID.randomUUID().toString());
                 }
                 saveAction(ctx, pctx, action);
-                pctx.addSetValue(idProvider.createActionSetActionsId(ctx, actionSet.getId()), action.getId());
+                pctx.addSetValue(idProvider.createActionSetActionsId(ctx, actionSet.getId()).getId(), action.getId());
             }
         }
 
         pctx.setMap(key, map);
 
-        pctx.addSetValue(idProvider.createActionSetsId(ctx), actionSet.getId());
+        pctx.addSetValue(idProvider.createActionSetsId(ctx).getId(), actionSet.getId());
 
         pctx.commit();
 
@@ -462,14 +463,14 @@ public class CollectionPersister {
         if (pc.getContainerClassContext().hasPluginContext()) {
             cmap.put(PropertyConstants.PLUGIN_ID, pc.getContainerClassContext().getPluginId());
         }
-        pctx.setMap(idProvider.createTaskConditionId(tctx, pc.getId()), cmap);
-        pctx.addSetValue(idProvider.createTaskConditionsId(tctx), pc.getId());
+        pctx.setMap(idProvider.createTaskConditionId(tctx, pc.getId()).getId(), cmap);
+        pctx.addSetValue(idProvider.createTaskConditionsId(tctx).getId(), pc.getId());
         if (pc.hasPropertyValues()) {
             Map<String, Object> m = new HashMap<>();
             for (String pvalName : pc.getPropertyValues().keySet()) {
                 m.put(pvalName, pc.getPropertyValues().get(pvalName));
             }
-            pctx.setMap(idProvider.createTaskConditionPropertiesId(tctx, pc.getId()), m);
+            pctx.setMap(idProvider.createTaskConditionPropertiesId(tctx, pc.getId()).getId(), m);
         }
     }
 
@@ -479,7 +480,7 @@ public class CollectionPersister {
         map.put(PropertyConstants.ID, dataStream.getId());
         map.put(PropertyConstants.NAME, dataStream.getName());
 
-        pctx.setMap(idProvider.createDataStreamId(hctx, dataStream.getId()), map);
+        pctx.setMap(idProvider.createDataStreamId(hctx, dataStream.getId()).getId(), map);
 
         // save data stream variables
         for (DataStreamField dsf : dataStream.getFields()) {
@@ -488,21 +489,21 @@ public class CollectionPersister {
             if (dsfid == null) {
                 throw new HobsonRuntimeException("Data stream field with no ID found");
             }
-            String fid = idProvider.createDataStreamFieldId(hctx, dataStream.getId(), dsfid);
+            String fid = idProvider.createDataStreamFieldId(hctx, dataStream.getId(), dsfid).getId();
             map2.put("id", dsfid);
             map2.put("name", dsf.getName());
             map2.put("variableId", dsf.getVariable().toString());
             pctx.setMap(fid, map2);
 
             if (dataStream.hasTags()) {
-                pctx.setSet(idProvider.createDataStreamTagsId(hctx, dataStream.getId()), (Set<Object>)(Set<?>)dataStream.getTags());
+                pctx.setSet(idProvider.createDataStreamTagsId(hctx, dataStream.getId()).getId(), (Set<Object>)(Set<?>)dataStream.getTags());
             }
 
-            pctx.addSetValue(idProvider.createDataStreamFieldsId(hctx, dataStream.getId()), dsfid);
+            pctx.addSetValue(idProvider.createDataStreamFieldsId(hctx, dataStream.getId()).getId(), dsfid);
         }
 
         // add data stream ID to set of hub data streams
-        pctx.addSetValue(idProvider.createDataStreamsId(hctx), dataStream.getId());
+        pctx.addSetValue(idProvider.createDataStreamsId(hctx).getId(), dataStream.getId());
 
         // commit
         pctx.commit();
@@ -546,14 +547,14 @@ public class CollectionPersister {
         pctx.addSetValue(idProvider.createDevicesId(device.getContext().getHubContext()).getId(), deviceId);
 
         // save device to list of plugin devices
-        pctx.addSetValue(idProvider.createPluginDevicesId(device.getContext().getPluginContext()), deviceId);
+        pctx.addSetValue(idProvider.createPluginDevicesId(device.getContext().getPluginContext()).getId(), deviceId);
 
         // commit
         pctx.commit();
     }
 
     public void saveDeviceConfiguration(CollectionPersistenceContext pctx, DeviceContext dctx, Map<String,Object> config) {
-        pctx.setMap(idProvider.createDeviceConfigurationId(dctx), config);
+        pctx.setMap(idProvider.createDeviceConfigurationId(dctx).getId(), config);
         // also set the device name specifically if it has changed
         if (config.containsKey(PropertyConstants.NAME)) {
             pctx.setMapValue(idProvider.createDeviceId(dctx).getId(), PropertyConstants.NAME, config.get(PropertyConstants.NAME));
@@ -577,7 +578,7 @@ public class CollectionPersister {
     }
 
     public void saveDeviceTags(CollectionPersistenceContext pctx, DeviceContext dctx, Set<String> tags) {
-        String deviceTagId = idProvider.createDeviceTagsId(dctx);
+        String deviceTagId = idProvider.createDeviceTagsId(dctx).getId();
         pctx.setSet(deviceTagId, new HashSet<Object>(tags));
         pctx.commit();
     }
@@ -590,17 +591,17 @@ public class CollectionPersister {
         map.put(PropertyConstants.LAST_UPDATE, val.getLastUpdate());
         map.put(PropertyConstants.VALUE, StringConversionUtil.createTypedValueString(val.getValue()));
 
-        pctx.setMap(idProvider.createGlobalVariableId(desc.getContext()), map);
+        pctx.setMap(idProvider.createGlobalVariableId(desc.getContext()).getId(), map);
         pctx.commit();
     }
 
     public void saveHubConfiguration(CollectionPersistenceContext cpctx, HubContext hctx, Map<String,Object> config) {
-        cpctx.setMap(idProvider.createHubConfigurationId(hctx), config);
+        cpctx.setMap(idProvider.createHubConfigurationId(hctx).getId(), config);
         cpctx.commit();
     }
 
     public void saveLocalPluginConfiguration(CollectionPersistenceContext cpctx, PluginContext pctx, Map<String,Object> config) {
-        cpctx.setMap(idProvider.createLocalPluginConfigurationId(pctx), config);
+        cpctx.setMap(idProvider.createLocalPluginConfigurationId(pctx).getId(), config);
         cpctx.commit();
     }
 
@@ -620,7 +621,7 @@ public class CollectionPersister {
             for (String name : taskPropMap.keySet()) {
                 m.put(name, taskPropMap.get(name));
             }
-            pctx.setMap(idProvider.createTaskPropertiesId(task.getContext()), m);
+            pctx.setMap(idProvider.createTaskPropertiesId(task.getContext()).getId(), m);
         }
 
         // save task conditions
@@ -639,7 +640,7 @@ public class CollectionPersister {
         }
 
         // set the task map
-        pctx.setMap(idProvider.createTaskId(task.getContext()), map);
+        pctx.setMap(idProvider.createTaskId(task.getContext()).getId(), map);
 
         // add task ID to task id list
         pctx.addSetValue(idProvider.createTasksId(task.getContext().getHubContext()).getId(), task.getContext().getTaskId());
@@ -648,7 +649,7 @@ public class CollectionPersister {
     }
 
     public void savePresenceEntity(CollectionPersistenceContext pctx, PresenceEntity pe) {
-        String key = idProvider.createPresenceEntityId(pe.getContext());
+        String key = idProvider.createPresenceEntityId(pe.getContext()).getId();
 
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.CONTEXT, pe.getContext().toString());
@@ -663,7 +664,7 @@ public class CollectionPersister {
     }
 
     public void savePresenceLocation(CollectionPersistenceContext pctx, PresenceLocation pl) {
-        String key = idProvider.createPresenceLocationId(pl.getContext());
+        String key = idProvider.createPresenceLocationId(pl.getContext()).getId();
 
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.CONTEXT, pl.getContext().toString());
@@ -685,7 +686,7 @@ public class CollectionPersister {
     }
 
     public void saveDeviceVariableDescription(CollectionPersistenceContext pctx, DeviceVariableDescriptor vd) {
-        String key = idProvider.createDeviceVariableDescriptionId(vd.getContext());
+        String key = idProvider.createDeviceVariableDescriptionId(vd.getContext()).getId();
 
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.CONTEXT, vd.getContext().toString());
@@ -702,7 +703,7 @@ public class CollectionPersister {
 
     public void saveDeviceActionClass(CollectionPersistenceContext pctx, ActionClass ac) {
         DeviceContext dctx = DeviceContext.create(ac.getContext().getPluginContext(), ac.getContext().getDeviceId());
-        String key = idProvider.createDeviceActionClassId(dctx, ac.getContext().getContainerClassId());
+        String key = idProvider.createDeviceActionClassId(dctx, ac.getContext().getContainerClassId()).getId();
 
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.NAME, ac.getName());
@@ -711,7 +712,7 @@ public class CollectionPersister {
         map.put(PropertyConstants.TIMEOUT_INTERVAL, ac.getTimeoutInterval());
         map.put(PropertyConstants.SUPPORTED_PROPERTIES, ac.getSupportedProperties()); // TODO
         pctx.setMap(key, map);
-        pctx.addSetValue(idProvider.createDeviceActionClassesId(dctx), ac.getContext().getContainerClassId());
+        pctx.addSetValue(idProvider.createDeviceActionClassesId(dctx).getId(), ac.getContext().getContainerClassId());
 
         pctx.commit();
     }
