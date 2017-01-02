@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.event.hub;
 
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
+
 import java.util.Map;
 
 /**
@@ -17,11 +19,18 @@ import java.util.Map;
 public class HubConfigurationUpdateEvent extends HubEvent {
     public static final String ID = "hubConfigurationUpdate";
 
-    public HubConfigurationUpdateEvent(long timestamp) {
+    private static final String PROP_CONFIGURATION = "configuration";
+
+    public HubConfigurationUpdateEvent(long timestamp, PropertyContainer config) {
         super(timestamp, ID);
+        setProperty(PROP_CONFIGURATION, config);
     }
 
     public HubConfigurationUpdateEvent(Map<String,Object> props) {
         super(props);
+    }
+
+    public PropertyContainer getConfiguration() {
+        return (PropertyContainer)getProperty(PROP_CONFIGURATION);
     }
 }

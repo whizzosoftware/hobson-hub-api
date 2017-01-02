@@ -20,6 +20,7 @@ import com.whizzosoftware.hobson.api.property.TypedProperty;
 public class HubConfigurationClass extends PropertyContainerClass {
     public static final String ID = "hubConfiguration";
 
+    public static final String AWAY = "away";
     public static final String EMAIL_PASSWORD = "emailPassword";
     public static final String EMAIL_SECURE = "emailSecure";
     public static final String EMAIL_SENDER = "emailSender";
@@ -44,6 +45,7 @@ public class HubConfigurationClass extends PropertyContainerClass {
         addSupportedProperty(new TypedProperty.Builder(LONGITUDE, "Longitude", "The Hub location's longitude", TypedProperty.Type.NUMBER).build());
         addSupportedProperty(new TypedProperty.Builder(NAME, "Hub name", "A descriptive name for the Hub (e.g. Home)", TypedProperty.Type.STRING).build());
         addSupportedProperty(new TypedProperty.Builder(SSL_MODE, "Secure mode", "When enabled, runs the hub in secure mode", TypedProperty.Type.BOOLEAN).build());
+        addSupportedProperty(new TypedProperty.Builder(AWAY, "Away mode", "Indicates whether the Hub is in away mode", TypedProperty.Type.BOOLEAN).build());
         addSupportedProperty(new TypedProperty.Builder(SETUP_COMPLETE, "Setup completed", "Indicates whether the Hub setup process has been completed", TypedProperty.Type.BOOLEAN).build());
     }
 }
