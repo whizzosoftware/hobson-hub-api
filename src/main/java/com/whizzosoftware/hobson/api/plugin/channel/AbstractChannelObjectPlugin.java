@@ -326,7 +326,7 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
      *
      * @param pipeline the current channel pipeline
      */
-    private void configurePipeline(ChannelPipeline pipeline) {
+    protected void configurePipeline(ChannelPipeline pipeline) {
         pipeline.addLast("decoder", getDecoder());
         pipeline.addLast("encoder", getEncoder());
         if (getIdleDetectionConfig() != null) {
