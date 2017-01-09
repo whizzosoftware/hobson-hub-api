@@ -316,10 +316,7 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
         // shutdown the event loop group if there is one
         if (connectionEventLoopGroup != null) {
             logger.debug("Closing event loop group");
-            Future f = connectionEventLoopGroup.shutdownGracefully();
-            try {
-                f.sync();
-            } catch (InterruptedException ignored) {}
+            connectionEventLoopGroup.shutdownGracefully();
             logger.debug("Event loop group closed");
         }
     }
