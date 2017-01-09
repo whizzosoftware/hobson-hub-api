@@ -13,10 +13,14 @@ import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.variable.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractHobsonDeviceProxy.class);
+
     private PropertyContainerClass configurationClass;
     private DeviceContext context;
     private String defaultName;
@@ -187,6 +191,7 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
 
     protected void publishVariables(Collection<DeviceProxyVariable> vars) {
         for (DeviceProxyVariable v : vars) {
+            logger.debug("Publishing variable: {}", v);
             variables.put(v.getContext().getName(), v);
         }
         plugin.onDeviceUpdate(this);
@@ -213,9 +218,13 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
         if (name != null && value != null) {
             DeviceVariableContext dvctx = DeviceVariableContext.create(getContext(), name);
             DeviceProxyVariable var = variables.get(name);
-            Object oldVar = var.getValue();
-            var.setValue(value, updateTime);
-            postEvent(new DeviceVariablesUpdateEvent(System.currentTimeMillis(), new DeviceVariableUpdate(dvctx, oldVar != null ? oldVar : null, value, updateTime)));
+            if (var != null) {
+                Object oldVar = var.getValue();
+                var.setValue(value, updateTime);
+                postEvent(new DeviceVariablesUpdateEvent(System.currentTimeMillis(), new DeviceVariableUpdate(dvctx, oldVar != null ? oldVar : null, value, updateTime)));
+            } else {
+                throw new HobsonRuntimeException("Attempted to set value for unpublished variable: " + name);
+            }
         } else {
             throw new HobsonRuntimeException("Unable to set variable value for " + name + "=" + value);
         }

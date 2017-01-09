@@ -74,4 +74,8 @@ public class DeviceProxyVariable {
         this.value = value;
         this.lastUpdate = timestamp;
     }
+
+    public String toString() {
+        return getContext().toString();
+    }
 }

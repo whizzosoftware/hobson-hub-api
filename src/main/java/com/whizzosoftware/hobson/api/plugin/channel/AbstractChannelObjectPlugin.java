@@ -42,6 +42,9 @@ import java.util.concurrent.TimeUnit;
 abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    protected final static String PROP_SERIAL_PORT = "serial.port";
+    protected final static String PROP_SERIAL_HOSTNAME = "serial.hostname";
+
     private String serialDevice;
     private Channel channel;
     private SocketAddress socketAddress;
@@ -198,13 +201,13 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
         boolean didConfigChange = false;
 
         if (config != null) {
-            String s = (String) config.getPropertyValue("serial.port");
+            String s = (String) config.getPropertyValue(PROP_SERIAL_PORT);
             if (s != null && s.trim().length() > 0 && !s.equals(serialDevice)) {
                 serialDevice = s;
                 setRemoteAddress(new RxtxDeviceAddress(serialDevice));
                 didConfigChange = true;
             } else {
-                s = (String) config.getPropertyValue("serial.hostname");
+                s = (String) config.getPropertyValue(PROP_SERIAL_HOSTNAME);
                 if (s != null && s.trim().length() > 0 && !s.equals(serialDevice)) {
                     int port = getDefaultPort();
 
