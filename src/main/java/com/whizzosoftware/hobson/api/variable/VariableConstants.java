@@ -14,6 +14,10 @@ package com.whizzosoftware.hobson.api.variable;
  */
 public class VariableConstants {
     /**
+     * Indicates apparent power in volt-amperes.
+     */
+    public static final String APPARENT_POWER_VA = "va";
+    /**
      * Indicates whether the device is armed (e.g. security panels).
      */
     public static final String ARMED = "armed";
@@ -21,6 +25,10 @@ public class VariableConstants {
      * Indicates barometric pressure in inches of mercury.
      */
     public static final String BAROMETRIC_PRESSURE_INHG = "baromInHg";
+    /**
+     * Indicates current battery level (0-100 representing a percent).
+     */
+    public static final String BATTERY = "battery";
     /**
      * Indicates carbon dioxide in parts per million.
      */
@@ -58,13 +66,13 @@ public class VariableConstants {
      */
     public static final String INDOOR_RELATIVE_HUMIDITY = "inRh";
     /**
-     * Indicates an outdoor relative humidity.
+     * Indicates an indoor temperature in degrees Celsius.
      */
-    public static final String OUTDOOR_RELATIVE_HUMIDITY = "outRh";
+    public static final String INDOOR_TEMP_C = "inTempC";
     /**
-     * Indicates a light intensity in lux.
+     * Indicates an indoor temperature in degrees Fahrenheit.
      */
-    public static final String LX_LUX = "lxLux";
+    public static final String INDOOR_TEMP_F = "inTempF";
     /**
      * Indicates a URL for an image.
      */
@@ -74,9 +82,37 @@ public class VariableConstants {
      */
     public static final String LEVEL = "level";
     /**
+     * Indicates a light intensity in lux.
+     */
+    public static final String LX_LUX = "lxLux";
+    /**
+     * Indicates an outdoor relative humidity.
+     */
+    public static final String OUTDOOR_RELATIVE_HUMIDITY = "outRh";
+    /**
+     * Indicates an outdoor temperature in degrees Celsius.
+     */
+    public static final String OUTDOOR_TEMP_C = "outTempC";
+    /**
+     * Indicates an outdoor temperature in degrees Fahrenheit.
+     */
+    public static final String OUTDOOR_TEMP_F = "outTempF";
+    /**
      * Indicates whether a device is on/off.
      */
     public static final String ON = "on";
+    /**
+     * Indicates power factor (a dimensionless unit from -1..1).
+     */
+    public static final String POWER_FACTOR = "pf";
+    /**
+     * Indicates reactive power in volt-amperes reactive.
+     */
+    public static final String REACTIVE_POWER_VAR = "var";
+    /**
+     * Indicates relative humidity.
+     */
+    public static final String RELATIVE_HUMIDITY = "rh";
     /**
      * Indicates a target temperature in degrees Celsius (e.g. a thermostat).
      */
@@ -102,25 +138,17 @@ public class VariableConstants {
      */
     public static final String TARGET_COOL_TEMP_F = "targetCoolTempF";
     /**
+     * Indicates a temperature in degrees Fahrenheit.
+     */
+    public static final String TEMP_F = "tempF";
+    /**
+     * Indicates a temperature in degrees Celsius.
+     */
+    public static final String TEMP_C = "tempC";
+    /**
      * Indicates the time a device is reporting.
      */
     public static final String TIME = "time";
-    /**
-     * Indicates an indoor temperature in degrees Celsius.
-     */
-    public static final String INDOOR_TEMP_C = "inTempC";
-    /**
-     * Indicates an indoor temperature in degrees Fahrenheit.
-     */
-    public static final String INDOOR_TEMP_F = "inTempF";
-    /**
-     * Indicates an outdoor temperature in degrees Celsius.
-     */
-    public static final String OUTDOOR_TEMP_C = "outTempC";
-    /**
-     * Indicates an outdoor temperature in degrees Fahrenheit.
-     */
-    public static final String OUTDOOR_TEMP_F = "outTempF";
     /**
      * Indicates the current thermostat fan mode (e.g. on, off or auto).
      */
@@ -140,5 +168,17 @@ public class VariableConstants {
     /**
      * Indicates the wind speed in miles per hour.
      */
+    public static final String WIND_GUST_MPH = "windGustMph";
+    /**
+     * Indicates the wind speed in kilometers per hour.
+     */
+    public static final String WIND_GUST_KMH = "windGustKmh";
+    /**
+     * Indicates the wind speed in miles per hour.
+     */
     public static final String WIND_SPEED_MPH = "windSpdMph";
+    /**
+     * Indicates the wind speed in kilometers per hour.
+     */
+    public static final String WIND_SPEED_KMH = "windSpdKmh";
 }
