@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2014 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.device.proxy;
 
 import com.whizzosoftware.hobson.api.device.*;
@@ -52,9 +54,11 @@ public class AbstractHobsonDeviceProxyTest {
 
     @Test
     public void testStart() {
+        MockEventManager em = new MockEventManager();
         MockDeviceManager dm = new MockDeviceManager();
         MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0", "");
         p.setDeviceManager(dm);
+        p.setEventManager(em);
 
         MockDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB, "deviceName") {
             public void onStartup(String name, PropertyContainer config) {
@@ -90,7 +94,6 @@ public class AbstractHobsonDeviceProxyTest {
         assertEquals("manufacturer", device.getManufacturerName());
         assertEquals("mversion", device.getManufacturerVersion());
         assertEquals("pname", device.getPreferredVariableName());
-//        assertEquals(2000L, (long)device.getLastCheckin());
         assertNotNull(device.getVariable("foo"));
     }
 
@@ -225,6 +228,8 @@ public class AbstractHobsonDeviceProxyTest {
         plugin.setDeviceManager(dm);
         MockLightbulbDeviceProxy proxy = new MockLightbulbDeviceProxy(plugin, "did");
         proxy.onStartup(null, null);
+        assertEquals(1, em.getPostedEvents().size());
+        em.clearPostedEvents();
         assertEquals(0, em.getPostedEvents().size());
         proxy.setVariableValue(VariableConstants.ON, false, now);
         assertEquals(1, em.getPostedEvents().size());
@@ -248,8 +253,10 @@ public class AbstractHobsonDeviceProxyTest {
     @Test
     public void testDeviceVariableDescriptions() {
         MockDeviceManager dm = new MockDeviceManager();
+        MockEventManager em = new MockEventManager();
         MockHobsonPlugin plugin = new MockHobsonPlugin("pid", "plugin", "1.0.0", "");
         plugin.setDeviceManager(dm);
+        plugin.setEventManager(em);
         MockLightbulbDeviceProxy proxy = new MockLightbulbDeviceProxy(plugin, "did");
         proxy.onStartup(null, null);
         HobsonDeviceDescriptor hvd = proxy.getDescriptor();
