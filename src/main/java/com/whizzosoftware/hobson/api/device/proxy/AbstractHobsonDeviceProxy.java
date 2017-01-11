@@ -183,18 +183,26 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
     }
 
     protected void publishVariables(DeviceProxyVariable... vars) {
+        List<DeviceVariableUpdate> updates = new ArrayList<>();
+        long now = System.currentTimeMillis();
         for (DeviceProxyVariable v : vars) {
             variables.put(v.getContext().getName(), v);
+            updates.add(new DeviceVariableUpdate(DeviceVariableContext.create(getContext(), name), null, v.getValue(), now));
         }
         plugin.onDeviceUpdate(this);
+        postEvent(new DeviceVariablesUpdateEvent(System.currentTimeMillis(), updates));
     }
 
     protected void publishVariables(Collection<DeviceProxyVariable> vars) {
+        List<DeviceVariableUpdate> updates = new ArrayList<>();
+        long now = System.currentTimeMillis();
         for (DeviceProxyVariable v : vars) {
             logger.debug("Publishing variable: {}", v);
             variables.put(v.getContext().getName(), v);
+            updates.add(new DeviceVariableUpdate(DeviceVariableContext.create(getContext(), name), null, v.getValue(), now));
         }
         plugin.onDeviceUpdate(this);
+        postEvent(new DeviceVariablesUpdateEvent(System.currentTimeMillis(), updates));
     }
 
     protected void setConfigurationProperty(String name, Object value) {
