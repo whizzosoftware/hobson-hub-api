@@ -18,19 +18,18 @@ import java.util.Map;
  */
 public class PluginStoppedEvent extends PluginEvent {
     public static final String ID = "pluginStopped";
-
-    private static final String PROP_PLUGIN_ID = "pluginId";
+    public static final String PROP_PLUGIN_CONTEXT = "pluginCtx";
 
     public PluginStoppedEvent(long timestamp, PluginContext ctx) {
         super(timestamp, ID);
-        setProperty(PROP_PLUGIN_ID, ctx.getPluginId());
+        setProperty(PROP_PLUGIN_CONTEXT, ctx);
     }
 
     public PluginStoppedEvent(Map<String,Object> properties) {
         super(properties);
     }
 
-    public String getPluginId() {
-        return (String)getProperty(PROP_PLUGIN_ID);
+    public PluginContext getContext() {
+        return (PluginContext)getProperty(PROP_PLUGIN_CONTEXT);
     }
 }

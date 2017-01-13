@@ -13,6 +13,7 @@ import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.action.MockActionManager;
 import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.device.proxy.MockDeviceProxy;
+import com.whizzosoftware.hobson.api.event.MockEventManager;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.property.TypedProperty;
 import io.netty.util.concurrent.Future;
@@ -100,8 +101,10 @@ public class AbstractHobsonPluginTest {
     @Test
     public void testGetDeviceLastCheckin() {
         MockDeviceManager dm = new MockDeviceManager();
+        MockEventManager em = new MockEventManager();
         MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name", "1.0.0", "");
         plugin.setDeviceManager(dm);
+        plugin.setEventManager(em);
         MockDeviceProxy proxy = new MockDeviceProxy(plugin, "device1", DeviceType.CAMERA);
         proxy.setLastCheckin(4000L);
         plugin.publishDeviceProxy(proxy).syncUninterruptibly();

@@ -8,6 +8,7 @@ import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.DeviceError;
 import com.whizzosoftware.hobson.api.device.DeviceType;
 import com.whizzosoftware.hobson.api.device.HobsonDeviceDescriptor;
+import com.whizzosoftware.hobson.api.event.device.DeviceAvailableEvent;
 import com.whizzosoftware.hobson.api.event.device.DeviceVariablesUpdateEvent;
 import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
@@ -139,6 +140,9 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
     }
 
     public void setLastCheckin(Long lastCheckin) {
+        if (this.lastCheckin == null || (lastCheckin != null && lastCheckin - this.lastCheckin > HobsonDeviceDescriptor.AVAILABILITY_TIMEOUT_INTERVAL)) {
+            postEvent(new DeviceAvailableEvent(System.currentTimeMillis(), getContext()));
+        }
         this.lastCheckin = lastCheckin;
     }
 

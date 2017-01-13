@@ -10,6 +10,7 @@
 package com.whizzosoftware.hobson.api.device.proxy;
 
 import com.whizzosoftware.hobson.api.device.*;
+import com.whizzosoftware.hobson.api.event.device.DeviceAvailableEvent;
 import com.whizzosoftware.hobson.api.event.device.DeviceVariablesUpdateEvent;
 import com.whizzosoftware.hobson.api.event.MockEventManager;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
@@ -293,6 +294,31 @@ public class AbstractHobsonDeviceProxyTest {
 //        assertEquals(VariableConstants.ON, hv.getContext().getName());
 //        assertEquals(true, hv.getValue());
 //        assertEquals(now, (long)hv.getLastUpdate());
+    }
+
+    @Test
+    public void testLastCheckin() {
+        MockDeviceManager dm = new MockDeviceManager();
+        MockEventManager em = new MockEventManager();
+        MockHobsonPlugin plugin = new MockHobsonPlugin("pid", "plugin", "1.0.0", "");
+        plugin.setDeviceManager(dm);
+        plugin.setEventManager(em);
+        MockLightbulbDeviceProxy proxy = new MockLightbulbDeviceProxy(plugin, "did");
+
+        long start = System.currentTimeMillis();
+
+        assertEquals(0, em.getPostedEvents().size());
+        proxy.setLastCheckin(start);
+        assertEquals(1, em.getPostedEvents().size());
+        assertTrue(em.getPostedEvents().get(0) instanceof DeviceAvailableEvent);
+        em.clearPostedEvents();
+
+        proxy.setLastCheckin(start + HobsonDeviceDescriptor.AVAILABILITY_TIMEOUT_INTERVAL - 1);
+        assertEquals(0, em.getPostedEvents().size());
+
+        proxy.setLastCheckin(start + HobsonDeviceDescriptor.AVAILABILITY_TIMEOUT_INTERVAL * 2);
+        assertEquals(1, em.getPostedEvents().size());
+        assertTrue(em.getPostedEvents().get(0) instanceof DeviceAvailableEvent);
     }
 
     private class MockLightbulbDeviceProxy extends MockDeviceProxy {
