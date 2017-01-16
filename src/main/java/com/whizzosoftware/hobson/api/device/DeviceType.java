@@ -14,12 +14,13 @@ package com.whizzosoftware.hobson.api.device;
  */
 public enum DeviceType {
     CAMERA,
+    GENERIC_CONTROLLER,
     IRRIGATION_CONTROLLER,
     LIGHTBULB,
+    SECURITY_PANEL,
     SENSOR,
     SWITCH,
     THERMOSTAT,
     UNKNOWN,
-    WEATHER_STATION,
-    SECURITY_PANEL
+    WEATHER_STATION
 }

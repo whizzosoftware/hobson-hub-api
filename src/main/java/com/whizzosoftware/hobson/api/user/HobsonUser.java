@@ -1,11 +1,17 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.user;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Encapsulates information about a Hobson user.
@@ -17,7 +23,8 @@ public class HobsonUser {
     private String givenName;
     private String familyName;
     private String email;
-    private UserAccount account;
+    private List<HobsonRole> roles;
+    private Collection<String> hubs;
 
     public HobsonUser(String id) {
         this.id = id;
@@ -39,18 +46,31 @@ public class HobsonUser {
         return email;
     }
 
-    public UserAccount getAccount() {
-        return account;
+    public boolean hasRole(String roleName) {
+        if (roles != null) {
+            for (HobsonRole r : roles) {
+                if (r.name().equals(roleName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    public boolean isLocal() {
-        return !isRemote();
+    public boolean hasRoles() {
+        return (roles != null && roles.size() > 0);
     }
 
-    public boolean isRemote() {
-        return (account != null &&
-                account.getHubs() != null &&
-                (account.getHubs().size() > 1 || !account.getHubs().contains("local")));
+    public Collection<HobsonRole> getRoles() {
+        return roles;
+    }
+
+    public boolean hasHubs() {
+        return (hubs != null && hubs.size() > 0);
+    }
+
+    public Collection<String> getHubs() {
+        return hubs;
     }
 
     public static class Builder {
@@ -75,8 +95,26 @@ public class HobsonUser {
             return this;
         }
 
-        public Builder account(UserAccount account) {
-            user.account = account;
+        public Builder roles(List<String> roles) {
+            user.roles = new ArrayList<>();
+            if (roles != null) {
+                for (String r : roles) {
+                    user.roles.add(HobsonRole.valueOf(r));
+                }
+            }
+            return this;
+        }
+
+        public Builder role(HobsonRole role) {
+            if (user.roles == null) {
+                user.roles = new ArrayList<>();
+            }
+            user.roles.add(role);
+            return this;
+        }
+
+        public Builder hubs(List<String> hubs) {
+            user.hubs = hubs;
             return this;
         }
 

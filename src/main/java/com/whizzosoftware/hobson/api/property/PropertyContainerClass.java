@@ -1,12 +1,17 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.property;
 
+import com.whizzosoftware.hobson.api.HobsonInvalidRequestException;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,22 +27,20 @@ import java.util.List;
  *
  * @author Dan Noguerol
  */
-public class PropertyContainerClass {
+public class PropertyContainerClass implements Serializable { // TODO: remove
     private PropertyContainerClassContext context;
-    private String name;
     private PropertyContainerClassType type;
-    private String descriptionTemplate;
     private List<TypedProperty> supportedProperties;
 
+    // TODO: create builder to streamline construction with many supported properties
+
     public PropertyContainerClass(PropertyContainerClassContext context, PropertyContainerClassType type) {
-        this(context, null, type, null, null);
+        this(context, type, null);
     }
 
-    public PropertyContainerClass(PropertyContainerClassContext context, String name, PropertyContainerClassType type, String descriptionTemplate, List<TypedProperty> supportedProperties) {
+    public PropertyContainerClass(PropertyContainerClassContext context, PropertyContainerClassType type, List<TypedProperty> supportedProperties) {
         this.context = context;
-        this.name = name;
         this.type = type;
-        this.descriptionTemplate = descriptionTemplate;
         this.supportedProperties = supportedProperties;
     }
 
@@ -49,31 +52,8 @@ public class PropertyContainerClass {
         this.context = context;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public PropertyContainerClassType getType() {
         return type;
-    }
-
-    /**
-     * Returns the description template is a String that can be used by a user interface to generate a human-readable
-     * description of a property container (e.g. condition or action). The String can contain keys wrapped in
-     * curly braces (e.g. {message}) that will be replaced by the property container's value at runtime.
-     *
-     * @return a String
-     */
-    public String getDescriptionTemplate() {
-        return descriptionTemplate;
-    }
-
-    public void setDescriptionTemplate(String descriptionTemplate) {
-        this.descriptionTemplate = descriptionTemplate;
     }
 
     public boolean hasSupportedProperties() {
@@ -104,6 +84,25 @@ public class PropertyContainerClass {
             supportedProperties = new ArrayList<>();
         }
         supportedProperties.add(property);
+    }
+
+    public void validate(PropertyContainer properties) {
+        if (hasSupportedProperties()) {
+            for (TypedProperty tp : getSupportedProperties()) {
+                Object value = properties.getPropertyValue(tp.getId());
+                if (value == null && tp.hasConstraintValue(PropertyConstraintType.required, true)) {
+                    throw new HobsonInvalidRequestException("Missing required property \"" + tp.getName() + "\"");
+                } else if (value != null) {
+                    if (tp.getType().equals(TypedProperty.Type.NUMBER) && !(value instanceof Number)) {
+                        throw new HobsonInvalidRequestException("Property \"" + tp.getName() + "\" must be a numeric value");
+                    } else if (tp.getType().equals(TypedProperty.Type.BOOLEAN) && !(value instanceof Boolean)) {
+                        throw new HobsonInvalidRequestException("Property \"" + tp.getName() + "\" must be a boolean value");
+                    } else if (tp.getType().equals(TypedProperty.Type.STRING) && !(value instanceof String)) {
+                        throw new HobsonInvalidRequestException("Property \"" + tp.getName() + "\" must be a string value");
+                    }
+                }
+            }
+        }
     }
 
     /**

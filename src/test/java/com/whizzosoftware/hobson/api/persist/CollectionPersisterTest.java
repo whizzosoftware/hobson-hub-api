@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.persist;
 
 import com.whizzosoftware.hobson.api.data.DataStreamField;
@@ -18,11 +20,6 @@ import com.whizzosoftware.hobson.api.presence.PresenceLocationContext;
 import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.task.HobsonTask;
 import com.whizzosoftware.hobson.api.task.TaskContext;
-import com.whizzosoftware.hobson.api.task.TaskManager;
-import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
-import com.whizzosoftware.hobson.api.task.action.TaskActionExecutor;
-import com.whizzosoftware.hobson.api.task.condition.ConditionClassType;
-import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
 import com.whizzosoftware.hobson.api.data.DataStream;
 import com.whizzosoftware.hobson.api.variable.*;
 import org.junit.Test;
@@ -55,57 +52,44 @@ public class CollectionPersisterTest {
 
         cp.saveTask(cpctx, task);
 
-        Map<String,Object> m = cpctx.getMap(idProvider.createTaskId(tctx));
+        Map<String,Object> m = cpctx.getMap(idProvider.createTaskId(tctx).getId());
         assertNotNull(m);
         assertEquals("My Task", m.get("name"));
         assertEquals("My Desc", m.get("description"));
         assertEquals("actionSetId1", m.get("actionSetId"));
 
         // check the task set
-        Set<Object> s = cpctx.getSet(idProvider.createTasksId(hctx));
+        Set<Object> s = cpctx.getSet(idProvider.createTasksId(hctx).getId());
         assertNotNull(s);
         assertTrue(s.contains("taskId1"));
 
         // check map task properties
-        m = cpctx.getMap(idProvider.createTaskPropertiesId(tctx));
+        m = cpctx.getMap(idProvider.createTaskPropertiesId(tctx).getId());
         assertNotNull(m);
         assertEquals("bar", m.get("foo"));
         assertEquals("foo", m.get("bar"));
 
         // check task conditions set
-        Set<Object> set = cpctx.getSet(idProvider.createTaskConditionsId(tctx));
+        Set<Object> set = cpctx.getSet(idProvider.createTaskConditionsId(tctx).getId());
         assertNotNull(set);
         assertEquals(1, set.size());
         assertTrue(set.contains("condition1"));
 
         // check condition map
-        m = cpctx.getMap(idProvider.createTaskConditionId(tctx, "condition1"));
+        m = cpctx.getMap(idProvider.createTaskConditionId(tctx, "condition1").getId());
         assertNotNull(m);
         assertEquals("My Condition", m.get(PropertyConstants.NAME));
         assertEquals("cclass1", m.get(PropertyConstants.CONTAINER_CLASS_ID));
         assertEquals("plugin1", m.get(PropertyConstants.PLUGIN_ID));
 
         // check task condition properties
-        m = cpctx.getMap(idProvider.createTaskConditionPropertiesId(tctx, "condition1"));
+        m = cpctx.getMap(idProvider.createTaskConditionPropertiesId(tctx, "condition1").getId());
         assertNotNull(m);
         assertEquals(3, m.size());
         assertTrue(m.containsKey("device"));
         assertTrue(m.containsKey("devices"));
         assertTrue(m.containsKey("foo"));
         assertEquals("bar", m.get("foo"));
-
-        // check the action set
-        m = cpctx.getMap(idProvider.createActionSetId(hctx, "actionSetId1"));
-        assertNotNull(m);
-        assertEquals(2, m.size());
-        assertEquals("actionSetId1", m.get("id"));
-        assertEquals("ActionSet1", m.get("name"));
-
-        // check the action set actions
-        s = cpctx.getSet(idProvider.createActionSetActionsId(hctx, "actionSetId1"));
-        assertNotNull(s);
-        assertEquals(1, s.size());
-        assertEquals("action1", s.iterator().next());
 
         // restore task
         task = cp.restoreTask(cpctx, task.getContext());
@@ -133,7 +117,7 @@ public class CollectionPersisterTest {
 
         // check task action set
         assertEquals("actionSetId1", task.getActionSet().getId());
-        assertNotNull(task.getActionSet().getProperties());
+        assertNull(task.getActionSet().getProperties());
 
         // delete the task
         cp.deleteTask(cpctx, task.getContext());
@@ -142,13 +126,13 @@ public class CollectionPersisterTest {
         assertNull(cp.restoreTask(cpctx, task.getContext()));
 
         // confirm that all map entries have been cleaned up
-        s = cpctx.getSet(idProvider.createTasksId(hctx));
+        s = cpctx.getSet(idProvider.createTasksId(hctx).getId());
         assertNotNull(s);
         assertFalse(s.contains("taskId1"));
-        assertEquals(0, cpctx.getMap(idProvider.createTaskPropertiesId(tctx)).size());
-        assertEquals(0, cpctx.getSet(idProvider.createTaskConditionsId(tctx)).size());
-        assertEquals(0, cpctx.getMap(idProvider.createTaskConditionId(tctx, "condition1")).size());
-        assertEquals(0, cpctx.getMap(idProvider.createTaskConditionPropertiesId(tctx, "condition1")).size());
+        assertEquals(0, cpctx.getMap(idProvider.createTaskPropertiesId(tctx).getId()).size());
+        assertEquals(0, cpctx.getSet(idProvider.createTaskConditionsId(tctx).getId()).size());
+        assertEquals(0, cpctx.getMap(idProvider.createTaskConditionId(tctx, "condition1").getId()).size());
+        assertEquals(0, cpctx.getMap(idProvider.createTaskConditionPropertiesId(tctx, "condition1").getId()).size());
     }
 
     @Test
@@ -157,16 +141,7 @@ public class CollectionPersisterTest {
         MockCollectionPersistenceContext cpctx = new MockCollectionPersistenceContext();
         IdProvider idProvider = new ContextPathIdProvider();
 
-        PropertyContainerSet actionSet = new PropertyContainerSet(
-            Collections.singletonList(
-                new PropertyContainer(
-                    PropertyContainerClassContext.create(PluginContext.createLocal("plugin2"),
-                        "cclass2"
-                    ),
-                    Collections.singletonMap("foo", (Object)"bar")
-                )
-            )
-        );
+        PropertyContainerSet actionSet = new PropertyContainerSet("as1");
 
         TaskContext tctx = TaskContext.create(hctx, "taskId1");
         HobsonTask task = new HobsonTask(
@@ -192,9 +167,7 @@ public class CollectionPersisterTest {
         assertEquals("My Desc", task.getDescription());
         assertEquals(1, task.getConditions().size());
         assertEquals("cclass1", task.getConditions().get(0).getContainerClassContext().getContainerClassId());
-        assertEquals(1, task.getActionSet().getProperties().size());
-        assertEquals("cclass2", task.getActionSet().getProperties().iterator().next().getContainerClassContext().getContainerClassId());
-        assertEquals("bar", task.getActionSet().getProperties().iterator().next().getPropertyValue("foo"));
+        assertEquals("as1", task.getActionSet().getId());
 
         // update task data
         task.setName("My Task2");
@@ -205,14 +178,7 @@ public class CollectionPersisterTest {
                 Collections.singletonMap("foo2", (Object)"bar2")
             )
         ));
-        task.getActionSet().setProperties(Collections.singletonList(
-            new PropertyContainer(
-                PropertyContainerClassContext.create(PluginContext.createLocal("plugin3"),
-                    "cclass3"
-                ),
-                Collections.singletonMap("bar", (Object)"foo")
-            )
-        ));
+        task.setActionSet(new PropertyContainerSet("as2"));
 
         // re-save task
         cp.saveTask(cpctx, task);
@@ -222,9 +188,7 @@ public class CollectionPersisterTest {
         assertEquals("My Desc2", task.getDescription());
         assertEquals(1, task.getConditions().size());
         assertEquals("cclass6", task.getConditions().get(0).getContainerClassContext().getContainerClassId());
-        assertEquals(1, task.getActionSet().getProperties().size());
-        assertEquals("cclass3", task.getActionSet().getProperties().iterator().next().getContainerClassContext().getContainerClassId());
-        assertEquals("foo", task.getActionSet().getProperties().iterator().next().getPropertyValue("bar"));
+        assertEquals("as2", task.getActionSet().getId());
     }
 
     @Test
@@ -240,11 +204,11 @@ public class CollectionPersisterTest {
         CollectionPersister cp = new CollectionPersister(idProvider);
         cp.saveActionSet(HubContext.createLocal(), pctx, as);
 
-        Map<String,Object> map = pctx.getMap(idProvider.createActionSetId(hctx, "set1"));
+        Map<String,Object> map = pctx.getMap(idProvider.createActionSetId(hctx, "set1").getId());
         assertEquals("set1", map.get("id"));
         assertEquals("Action Set 1", map.get("name"));
 
-        Set<Object> set = pctx.getSet(idProvider.createActionSetActionsId(hctx, "set1"));
+        Set<Object> set = pctx.getSet(idProvider.createActionSetActionsId(hctx, "set1").getId());
         assertTrue(set.contains("action1"));
 
         assertTrue(pctx.hasMap("hubs:local:actions:action1"));
@@ -258,7 +222,6 @@ public class CollectionPersisterTest {
         assertEquals("Sbar", map.get("foo"));
 
         // test restore
-        MockTaskManager taskManager = new MockTaskManager();
         PropertyContainerSet as2 = cp.restoreActionSet(HubContext.createLocal(), pctx, "set1");
         assertEquals("set1", as2.getId());
         assertEquals("Action Set 1", as2.getName());
@@ -290,11 +253,11 @@ public class CollectionPersisterTest {
         CollectionPersister cp = new CollectionPersister(idProvider);
         cp.saveActionSet(HubContext.createLocal(), pctx, as);
 
-        Map<String,Object> map = pctx.getMap(idProvider.createActionSetId(hctx, "set1"));
+        Map<String,Object> map = pctx.getMap(idProvider.createActionSetId(hctx, "set1").getId());
         assertEquals("set1", map.get("id"));
         assertEquals("Action Set 1", map.get("name"));
 
-        Set<Object> set = pctx.getSet(idProvider.createActionSetActionsId(hctx, "set1"));
+        Set<Object> set = pctx.getSet(idProvider.createActionSetActionsId(hctx, "set1").getId());
         assertTrue(set.contains("action1"));
         assertTrue(set.contains("action2"));
 
@@ -392,37 +355,52 @@ public class CollectionPersisterTest {
         CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
         HubContext hctx = HubContext.createLocal();
         DeviceContext dctx = DeviceContext.create(hctx, "plugin1", "device1");
+        List<DeviceVariableDescriptor> descriptions = new ArrayList<>();
+        descriptions.add(new DeviceVariableDescriptor(DeviceVariableContext.create(dctx, "foo"), VariableMask.READ_ONLY, VariableMediaType.IMAGE_PNG));
+        PropertyContainerClassContext pcctx = PropertyContainerClassContext.create(dctx, "configuration");
+        List<TypedProperty> props = new ArrayList<>();
+        props.add(new TypedProperty.Builder("foo", "fooName", "fooDesc", TypedProperty.Type.STRING).build());
+        PropertyContainerClass cclass = new PropertyContainerClass(pcctx, PropertyContainerClassType.DEVICE_CONFIG, props);
 
         // create and save device
-        HobsonDeviceStub device = new HobsonDeviceStub.Builder(dctx).
+        HobsonDeviceDescriptor device = new HobsonDeviceDescriptor.Builder(dctx).
             name("foo").
             type(DeviceType.LIGHTBULB).
+            configurationClass(cclass).
             manufacturerName("Mfg1").
             manufacturerVersion("1.0").
             modelName("model").
             preferredVariableName(VariableConstants.ON).
+            variableDescriptions(descriptions).
             build();
         cp.saveDevice(cpc, device);
 
         // confirm device restores properly
-        HobsonDevice d = cp.restoreDevice(cpc, dctx);
+        HobsonDeviceDescriptor d = cp.restoreDevice(cpc, dctx);
+        assertNotNull(d);
         assertEquals("foo", d.getName());
         assertEquals(DeviceType.LIGHTBULB, d.getType());
         assertEquals("Mfg1", d.getManufacturerName());
         assertEquals("1.0", d.getManufacturerVersion());
         assertEquals("model", d.getModelName());
         assertEquals(VariableConstants.ON, d.getPreferredVariableName());
+        assertNotNull(d.getVariables());
+        assertEquals(1, d.getVariables().size());
+        assertNotNull(d.getConfigurationClass());
+        assertEquals("fooName", d.getConfigurationClass().getSupportedProperty("foo").getName());
+        assertEquals("fooDesc", d.getConfigurationClass().getSupportedProperty("foo").getDescription());
+        assertEquals(TypedProperty.Type.STRING, d.getConfigurationClass().getSupportedProperty("foo").getType());
 
         // confirm device is added to set of hub devices
-        Set<Object> s = cpc.getSet(idProvider.createDevicesId(hctx));
+        Set<Object> s = cpc.getSet(idProvider.createDevicesId(hctx).getId());
         assertNotNull(s);
         assertEquals(1, s.size());
-        assertTrue(s.contains(idProvider.createDeviceId(dctx)));
+        assertTrue(s.contains(idProvider.createDeviceId(dctx).getId()));
 
         // confirm device deletes properly
         cp.deleteDevice(cpc, dctx);
         assertNull(cp.restoreDevice(cpc, dctx));
-        s = cpc.getSet(idProvider.createDevicesId(hctx));
+        s = cpc.getSet(idProvider.createDevicesId(hctx).getId());
         assertNotNull(s);
         assertEquals(0, s.size());
     }
@@ -438,84 +416,8 @@ public class CollectionPersisterTest {
         map.put("lastCheckIn", "L1449186686774");
         cpc.setMap("local:hubs:local:devices:plugin1:device1", map);
 
-        HobsonDevice d = cp.restoreDevice(cpc, dctx);
+        HobsonDeviceDescriptor d = cp.restoreDevice(cpc, dctx);
         assertNull(d);
-    }
-
-    @Test
-    public void testSaveRestoreDeleteDeviceVariable() {
-        IdProvider idProvider = new ContextPathIdProvider();
-        CollectionPersister cp = new CollectionPersister(idProvider);
-        CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
-        HubContext hctx = HubContext.create("hub1");
-        DeviceContext dctx = DeviceContext.create(hctx, "plugin1", "device1");
-        VariableContext vctx = VariableContext.create(dctx, "foo");
-
-        ImmutableHobsonVariable mhv = new ImmutableHobsonVariable(vctx, HobsonVariable.Mask.READ_ONLY, "bar", 1000L, VariableMediaType.IMAGE_JPG);
-        cp.saveDeviceVariable(cpc, mhv);
-
-        Map<String,Object> map = cpc.getMap(idProvider.createVariableId(vctx));
-        assertEquals("plugin1", map.get(PropertyConstants.PLUGIN_ID));
-        assertEquals("device1", map.get(PropertyConstants.DEVICE_ID));
-        assertEquals("foo", map.get(PropertyConstants.NAME));
-        assertEquals("bar", map.get(PropertyConstants.VALUE));
-        assertEquals("READ_ONLY", map.get(PropertyConstants.MASK));
-        assertEquals(VariableMediaType.IMAGE_JPG.toString(), map.get(PropertyConstants.MEDIA_TYPE));
-        assertEquals(1000L, map.get(PropertyConstants.LAST_UPDATE));
-
-        // confirm variable is restorable
-        HobsonVariable hv = cp.restoreDeviceVariable(cpc, dctx, "foo");
-        assertNotNull(hv);
-        assertEquals("hub1", hv.getContext().getHubId());
-        assertEquals("plugin1", hv.getPluginId());
-        assertEquals("device1", hv.getDeviceId());
-        assertEquals("foo", hv.getName());
-        assertEquals("bar", hv.getValue());
-        assertEquals(HobsonVariable.Mask.READ_ONLY, hv.getMask());
-        assertEquals(VariableMediaType.IMAGE_JPG, hv.getMediaType());
-        assertEquals(1000L, (long)hv.getLastUpdate());
-
-        // confirm list of device variables is correct
-        Set<Object> set = cpc.getSet(idProvider.createDeviceVariablesId(dctx));
-        assertNotNull(set);
-        assertEquals(1, set.size());
-        assertTrue(set.contains("foo"));
-
-        // delete variable
-        cp.deleteDeviceVariable(cpc, vctx);
-        assertNull(cp.restoreDeviceVariable(cpc, dctx, vctx.getName()));
-        set = cpc.getSet(idProvider.createDeviceVariablesId(dctx));
-        assertNotNull(set);
-        assertEquals(0, set.size());
-    }
-
-    @Test
-    public void testSaveRestoreDeleteDevicePassport() {
-        IdProvider idProvider = new ContextPathIdProvider();
-        CollectionPersister cp = new CollectionPersister(idProvider);
-        CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
-        HubContext hctx = HubContext.create("hub1");
-
-        long now = System.currentTimeMillis();
-        DevicePassport dp = new DevicePassport(hctx, "dp1", "foo", now);
-        cp.saveDevicePassport(cpc, hctx, dp);
-
-        // confirm passport is restorable
-        dp = cp.restoreDevicePassport(cpc, hctx, "dp1");
-        assertNotNull(dp);
-
-        // confirm list of device passports is correct
-        Set<Object> set = cpc.getSet(idProvider.createDevicePassportsId(hctx));
-        assertNotNull(set);
-        assertEquals(1, set.size());
-        assertTrue(set.contains("dp1"));
-
-        // delete passport
-        cp.deleteDevicePassport(cpc, hctx, "dp1");
-        assertNull(cp.restoreDevicePassport(cpc, hctx, "dp1"));
-        set = cpc.getSet(idProvider.createDevicePassportsId(hctx));
-        assertNotNull(set);
-        assertEquals(0, set.size());
     }
 
     @Test
@@ -525,8 +427,8 @@ public class CollectionPersisterTest {
         CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
         HubContext hctx = HubContext.createLocal();
 
-        VariableContext vctx1 = VariableContext.create(hctx, "plugin1", "device1", "foo");
-        VariableContext vctx2 = VariableContext.create(hctx, "plugin2", "device2", "foo2");
+        DeviceVariableContext vctx1 = DeviceVariableContext.create(hctx, "plugin1", "device1", "foo");
+        DeviceVariableContext vctx2 = DeviceVariableContext.create(hctx, "plugin2", "device2", "foo2");
         Collection<DataStreamField> fields = new ArrayList<>();
         fields.add(new DataStreamField("field1", "test", vctx1));
         fields.add(new DataStreamField("field2", "test2", vctx2));
@@ -534,9 +436,9 @@ public class CollectionPersisterTest {
         tags.add("tag1");
         tags.add("tag2");
         DataStream ds = new DataStream("id", "Test", fields, tags);
-        cp.saveDataStream(cpc, ds);
+        cp.saveDataStream(cpc, hctx, ds);
 
-        ds = cp.restoreDataStream(cpc, "id");
+        ds = cp.restoreDataStream(cpc, hctx,"id");
         assertEquals("id", ds.getId());
         assertEquals("Test", ds.getName());
         assertEquals(2, ds.getFields().size());
@@ -552,11 +454,11 @@ public class CollectionPersisterTest {
         assertTrue(ds.getTags().contains("tag1"));
         assertTrue(ds.getTags().contains("tag2"));
 
-        cp.deleteDataStream(cpc, "id");
-        assertEquals(0, cpc.getMap(idProvider.createDataStreamId("id")).size());
-        assertEquals(0, cpc.getSet(idProvider.createDataStreamFieldsId("id")).size());
-        assertEquals(0, cpc.getMap(idProvider.createDataStreamFieldId("id", "field1")).size());
-        assertEquals(0, cpc.getSet(idProvider.createDataStreamTagsId("id")).size());
+        cp.deleteDataStream(cpc, hctx, "id");
+        assertEquals(0, cpc.getMap(idProvider.createDataStreamId(hctx, "id").getId()).size());
+        assertEquals(0, cpc.getSet(idProvider.createDataStreamFieldsId(hctx, "id").getId()).size());
+        assertEquals(0, cpc.getMap(idProvider.createDataStreamFieldId(hctx, "id", "field1").getId()).size());
+        assertEquals(0, cpc.getSet(idProvider.createDataStreamTagsId(hctx, "id").getId()).size());
     }
 
     @Test
@@ -566,13 +468,13 @@ public class CollectionPersisterTest {
         CollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
         HubContext hctx = HubContext.createLocal();
         Collection<DataStreamField> fields = new ArrayList<>();
-        fields.add(new DataStreamField("field1", "test", VariableContext.create(hctx, "plugin1", "device1", "foo")));
-        fields.add(new DataStreamField("field2", "test2", VariableContext.create(hctx, "plugin2", "device2", "foo2")));
+        fields.add(new DataStreamField("field1", "test", DeviceVariableContext.create(hctx, "plugin1", "device1", "foo")));
+        fields.add(new DataStreamField("field2", "test2", DeviceVariableContext.create(hctx, "plugin2", "device2", "foo2")));
 
         DataStream ds = new DataStream("id", "Test", fields, null);
-        cp.saveDataStream(cpc, ds);
+        cp.saveDataStream(cpc, hctx, ds);
 
-        ds = cp.restoreDataStream(cpc, "id");
+        ds = cp.restoreDataStream(cpc, hctx, "id");
 
         assertEquals(0, ds.getTags().size());
     }
@@ -612,121 +514,4 @@ public class CollectionPersisterTest {
         cp.deletePresenceLocation(cpc, pctx);
         assertNull(cp.restorePresenceLocation(cpc, pctx));
     }
-
-    public class MockTaskManager implements TaskManager {
-        @Override
-        public void createTask(HubContext ctx, String name, String description, List<PropertyContainer> conditions, PropertyContainerSet actionSet) {
-
-        }
-
-        @Override
-        public void deleteTask(TaskContext ctx) {
-
-        }
-
-        @Override
-        public void executeTask(TaskContext ctx) {
-
-        }
-
-        @Override
-        public void executeActionSet(HubContext ctx, String actionSetId) {
-
-        }
-
-        @Override
-        public void fireTaskTrigger(TaskContext ctx) {
-
-        }
-
-        @Override
-        public TaskActionClass getActionClass(PropertyContainerClassContext ctx) {
-            return new TaskActionClass(ctx, "", "") {
-                @Override
-                public List<TypedProperty> createProperties() {
-                    return null;
-                }
-
-                @Override
-                public TaskActionExecutor getExecutor() {
-                    return null;
-                }
-            };
-        }
-
-        @Override
-        public PropertyContainerSet getActionSet(HubContext ctx, String actionSetId) {
-            return null;
-        }
-
-        @Override
-        public Collection<TaskActionClass> getAllActionClasses(HubContext ctx, boolean applyConstraints) {
-            return null;
-        }
-
-        @Override
-        public Collection<PropertyContainerSet> getAllActionSets(HubContext ctx) {
-            return null;
-        }
-
-        @Override
-        public Collection<TaskConditionClass> getAllConditionClasses(HubContext ctx, ConditionClassType type, boolean applyConstraints) {
-            return null;
-        }
-
-        @Override
-        public Collection<HobsonTask> getAllTasks(HubContext ctx) {
-            return null;
-        }
-
-        @Override
-        public TaskConditionClass getConditionClass(PropertyContainerClassContext ctx) {
-            return null;
-        }
-
-        @Override
-        public HobsonTask getTask(TaskContext ctx) {
-            return null;
-        }
-
-        @Override
-        public void publishActionClass(TaskActionClass actionClass) {
-        }
-
-        @Override
-        public PropertyContainerSet publishActionSet(HubContext ctx, String name, List<PropertyContainer> actions) {
-            return null;
-        }
-
-        @Override
-        public void publishConditionClass(TaskConditionClass conditionClass) {
-
-        }
-
-        @Override
-        public void unpublishAllActionClasses(PluginContext ctx) {
-
-        }
-
-        @Override
-        public void unpublishAllActionSets(PluginContext ctx) {
-
-        }
-
-        @Override
-        public void unpublishAllConditionClasses(PluginContext ctx) {
-
-        }
-
-        @Override
-        public void updateTask(TaskContext ctx, String name, String description, List<PropertyContainer> conditions, PropertyContainerSet actionSet) {
-
-        }
-
-        @Override
-        public void updateTaskProperties(TaskContext ctx, Map<String, Object> properties) {
-
-        }
-    }
-
 }

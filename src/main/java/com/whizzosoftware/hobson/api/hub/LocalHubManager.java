@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ ******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.hub;
 
 import com.whizzosoftware.hobson.api.data.DataStreamManager;
@@ -32,19 +34,11 @@ public interface LocalHubManager {
     void addDataStreamManager(DataStreamManager manager);
 
     /**
-     * Authenticates the local admin user.
-     *
-     * @param ctx the hub context
-     * @param password the password to check (plain text)
-     *
-     * @return true if the password is valid
-     */
-    boolean authenticateLocal(HubContext ctx, String password);
-
-    /**
      * Returns a viable network interface to be used for communication.
      *
      * @return a NetworkInterface object
+     *
+     * @throws IOException on failure
      */
     NetworkInfo getNetworkInfo() throws IOException;
 
@@ -56,16 +50,6 @@ public interface LocalHubManager {
     void publishWebApplication(HubWebApplication app);
 
     /**
-     * Sets the password for the local admin user.
-     *
-     * @param ctx the context of the target hub
-     * @param change a PasswordChange instance
-     *
-     * @throws com.whizzosoftware.hobson.api.HobsonInvalidRequestException if password does not meet complexity requirements
-     */
-    void setLocalPassword(HubContext ctx, PasswordChange change);
-
-    /**
      * Remove an appender for error logging.
      *
      * @param aAppender the appender to remove
@@ -73,11 +57,13 @@ public interface LocalHubManager {
     void removeLogAppender(Object aAppender);
 
     /**
-     * Sets a URI for a web socket server exposed by the hub.
+     * Sets connection information for a web socket server exposed by the hub.
      *
-     * @param uri the URI of the websocket server
+     * @param protocol the protocol of the web socket server (ws or wss)
+     * @param port the port number of the server
+     * @param path the URL path component
      */
-    void setWebSocketUri(String uri);
+    void setWebSocketInfo(String protocol, int port, String path);
 
     /**
      * Unpublish a previously published web application from the local hub.

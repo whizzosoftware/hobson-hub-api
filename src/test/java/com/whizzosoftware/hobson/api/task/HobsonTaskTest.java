@@ -1,11 +1,11 @@
 package com.whizzosoftware.hobson.api.task;
 
+import com.whizzosoftware.hobson.api.action.ActionClass;
+import com.whizzosoftware.hobson.api.action.ActionClassProvider;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
-import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
-import com.whizzosoftware.hobson.api.task.action.TaskActionClassProvider;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -27,9 +27,9 @@ public class HobsonTaskTest {
         task.setActionSet(new PropertyContainerSet("aid1"));
         assertEquals(1, task.getDependencies(null).size());
 
-        Collection<PropertyContainerClassContext> deps = task.getDependencies(new TaskActionClassProvider() {
+        Collection<PropertyContainerClassContext> deps = task.getDependencies(new ActionClassProvider() {
             @Override
-            public TaskActionClass getActionClass(PropertyContainerClassContext ctx) {
+            public ActionClass getActionClass(PropertyContainerClassContext ctx) {
                 return null;
             }
 

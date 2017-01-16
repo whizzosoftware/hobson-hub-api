@@ -25,6 +25,7 @@ public class PropertyConstants {
     public static final String EXPIRE_TIME = "expireTime";
     public static final String FAMILY_NAME = "familyName";
     public static final String GIVEN_NAME = "givenName";
+    public static final String HUB_ID = "hubId";
     public static final String HUBS = "hubs";
     public static final String ID = "id";
     public static final String NAME = "name";
@@ -43,6 +44,9 @@ public class PropertyConstants {
     public static final String PREFERRED_VARIABLE_NAME = "preferredVariableName";
     public static final String RADIUS = "radius";
     public static final String SECRET = "secret";
+    public static final String SUPPORTED_PROPERTIES = "supportedProperties";
+    public static final String TASK_ACTION = "taskAction";
     public static final String TASK_ID = "taskId";
+    public static final String TIMEOUT_INTERVAL = "timeoutInterval";
     public static final String VALUE = "value";
 }

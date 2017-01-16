@@ -16,18 +16,25 @@ import java.util.Collection;
  */
 public interface TaskProvider {
     /**
-     * Callback when a task is created.
+     * Callback when existing tasks are registered at during plugin startup.
      *
      * @param tasks the tasks that have been created
      */
-    void onCreateTasks(Collection<HobsonTask> tasks);
+    void onRegisterTasks(Collection<TaskContext> tasks);
+
+    /**
+     * Callback when a task is created.
+     *
+     * @param ctx the task that has been created
+     */
+    void onCreateTask(TaskContext ctx);
 
     /**
      * Callback when a task is updated.
      *
-     * @param task an existing task to update
+     * @param ctx an existing task to update
      */
-    void onUpdateTask(HobsonTask task);
+    void onUpdateTask(TaskContext ctx);
 
     /**
      * Callback when a task is deleted.

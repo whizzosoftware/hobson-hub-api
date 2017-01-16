@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.plugin;
 
+import io.netty.util.concurrent.Future;
+
 /**
  * An interface that allows the invocation of code from within an event loop thread.
  *
@@ -18,6 +20,8 @@ public interface EventLoopExecutor {
      * executed so this should not be used for long running tasks.
      *
      * @param runnable a task to execute
+     *
+     * @return a Future representing the result of the execution
      */
-    void executeInEventLoop(Runnable runnable);
+    Future executeInEventLoop(Runnable runnable);
 }

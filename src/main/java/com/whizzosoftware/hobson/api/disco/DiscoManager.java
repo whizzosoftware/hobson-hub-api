@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2014 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.disco;
 
 import com.whizzosoftware.hobson.api.hub.HubContext;
@@ -30,17 +32,10 @@ public interface DiscoManager {
      *
      * @param ctx the context of the plugin requesting the snapshot
      * @param protocolId the protocol ID for the advertisements requested
-     */
-    void requestExternalDeviceAdvertisementSnapshot(PluginContext ctx, String protocolId);
-
-    /**
-     * Returns all published internal device advertisements.
-     * @param ctx the hub context
-     * @param protocolId the protocol associated with the advertisement
      *
-     * @return a Collection of DeviceAdvertisement objects (or null if none are found)
+     * @return a Collection of DeviceAdvertisement instances
      */
-    Collection<DeviceAdvertisement> getInternalDeviceAdvertisements(HubContext ctx, String protocolId);
+    Collection<DeviceAdvertisement> getExternalDeviceAdvertisements(PluginContext ctx, String protocolId);
 
     /**
      * Returns a specific published internal device advertisement.
@@ -54,11 +49,22 @@ public interface DiscoManager {
     DeviceAdvertisement getInternalDeviceAdvertisement(HubContext ctx, String protocolId, String advId);
 
     /**
-     * Publishes an internal DeviceAdvertisement. This will insure that the advertisement is included in any discovery
-     * requests that external clients make for a particular protocol.
+     * Returns all published internal device advertisements.
+     * @param ctx the hub context
+     * @param protocolId the protocol associated with the advertisement
+     *
+     * @return a Collection of DeviceAdvertisement objects (or null if none are found)
+     */
+    Collection<DeviceAdvertisement> getInternalDeviceAdvertisements(HubContext ctx, String protocolId);
+
+    /**
+     * Publishes a device advertisement.
      *
      * @param ctx the context of the hub publishing the advertisement
      * @param advertisement the advertisement to publish
+     * @param internal indicates if this is an internal advertisement. A value of true will insure that the
+     *                 advertisement is included in any discovery requests that external clients make for a
+     *                 particular protocol.
      */
     void publishDeviceAdvertisement(HubContext ctx, DeviceAdvertisement advertisement, boolean internal);
 }

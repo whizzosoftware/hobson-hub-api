@@ -1,17 +1,23 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2014 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.plugin;
 
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
+import com.whizzosoftware.hobson.api.action.*;
+import com.whizzosoftware.hobson.api.device.*;
+import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
+import com.whizzosoftware.hobson.api.event.device.DeviceConfigurationUpdateEvent;
+import com.whizzosoftware.hobson.api.event.device.DeviceDeletedEvent;
+import com.whizzosoftware.hobson.api.event.device.DeviceVariablesUpdateRequestEvent;
+import com.whizzosoftware.hobson.api.event.task.*;
 import com.whizzosoftware.hobson.api.property.*;
-import com.whizzosoftware.hobson.api.device.DeviceContext;
-import com.whizzosoftware.hobson.api.device.HobsonDevice;
-import com.whizzosoftware.hobson.api.device.DeviceManager;
 import com.whizzosoftware.hobson.api.disco.DeviceAdvertisement;
 import com.whizzosoftware.hobson.api.disco.DiscoManager;
 import com.whizzosoftware.hobson.api.event.*;
@@ -19,7 +25,6 @@ import com.whizzosoftware.hobson.api.hub.HobsonHub;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.hub.HubManager;
 import com.whizzosoftware.hobson.api.task.TaskContext;
-import com.whizzosoftware.hobson.api.task.action.TaskActionClass;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.task.condition.TaskConditionClass;
@@ -40,57 +45,157 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Dan Noguerol
  */
-abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPluginRuntime, EventLoopExecutor {
+abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExecutor {
     private static final Logger logger = LoggerFactory.getLogger(AbstractHobsonPlugin.class);
 
+    private PluginContext context;
+    private String description;
+    private String version;
+    private PropertyContainerClass configurationClass;
+    private PluginStatus status;
     private DeviceManager deviceManager;
     private DiscoManager discoManager;
     private EventManager eventManager;
     private HubManager hubManager;
+    private ActionManager actionManager;
     private PluginManager pluginManager;
-    private VariableManager variableManager;
     private TaskManager taskManager;
-    private PluginContext ctx;
-    private String version;
-    private PluginStatus status = PluginStatus.initializing();
-    private final PropertyContainerClass configClass;
+    private TaskProvider taskProvider;
     private EventLoopGroup eventLoop;
-    private final Map<PropertyContainerClassContext,TaskActionClass> actionClasses = new HashMap<>();
+    private final Map<String,HobsonDeviceProxy> devices = Collections.synchronizedMap(new HashMap<String,HobsonDeviceProxy>());
 
-    public AbstractHobsonPlugin(String pluginId) {
-        this(pluginId, new LocalEventLoopGroup(1));
+    public AbstractHobsonPlugin(String pluginId, String version, String description) {
+        this(pluginId, version, description, new LocalEventLoopGroup(1));
     }
 
-    AbstractHobsonPlugin(String pluginId, EventLoopGroup eventLoop) {
-        this.ctx = PluginContext.createLocal(pluginId);
+    AbstractHobsonPlugin(String pluginId, String version, String description, EventLoopGroup eventLoop) {
+        this.context = PluginContext.create(HubContext.createLocal(), pluginId);
+        this.version = version;
+        this.description = description;
         this.eventLoop = eventLoop;
-        this.configClass = new PropertyContainerClass(PropertyContainerClassContext.create(ctx, "configurationClass"), PropertyContainerClassType.PLUGIN_CONFIG);
+        this.configurationClass = new PropertyContainerClass(PropertyContainerClassContext.create(getContext(), "configurationClass"), PropertyContainerClassType.PLUGIN_CONFIG);
 
         // register any supported properties the subclass needs
-        TypedProperty[] props = createSupportedProperties();
+        TypedProperty[] props = getConfigurationPropertyTypes();
         if (props != null) {
             for (TypedProperty p : props) {
-                configClass.addSupportedProperty(p);
+                this.configurationClass.addSupportedProperty(p);
             }
         }
+    }
+
+    @Override
+    public PluginContext getContext() {
+        return context;
+    }
+
+    protected void setStatus(PluginStatus status) {
+        this.status = status;
+    }
+
+    @Override
+    public HobsonLocalPluginDescriptor getDescriptor() {
+        HobsonLocalPluginDescriptor d = new HobsonLocalPluginDescriptor(getContext(), getType(), getName(), getDescription(), version, status);
+        d.setConfigurationClass(configurationClass);
+        d.setActionClasses(getActionClasses());
+        return d;
+    }
+
+    @EventHandler
+    public void onHandleTaskEvents(final TaskEvent event) {
+        if (hasTaskProvider()) {
+            if (event instanceof TaskRegistrationEvent) {
+                getTaskProvider().onRegisterTasks(((TaskRegistrationEvent)event).getTasks());
+            } else if (event instanceof TaskCreatedEvent) {
+                getTaskProvider().onCreateTask(((TaskCreatedEvent)event).getTask());
+            } else if (event instanceof TaskUpdatedEvent) {
+                getTaskProvider().onUpdateTask(((TaskUpdatedEvent)event).getTask());
+            } else if (event instanceof TaskDeletedEvent) {
+                getTaskProvider().onDeleteTask(((TaskDeletedEvent)event).getContext());
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDeviceDeleted(final DeviceDeletedEvent event) {
+        if (event.getDeviceContext().getPluginId().equals(getContext().getPluginId())) {
+            String deviceId = event.getDeviceContext().getDeviceId();
+            HobsonDeviceProxy device = devices.get(deviceId);
+            device.onShutdown();
+            devices.remove(deviceId);
+        }
+    }
+
+    abstract protected String getName();
+
+    protected String getDescription() {
+        return description;
+    }
+
+    protected PluginType getType() {
+        return PluginType.PLUGIN;
     }
 
     /*
      * HobsonPlugin methods
      */
-    @Override
-    public PluginContext getContext() {
-        return ctx;
+
+    protected boolean hasDeviceProxy(String deviceId) {
+        return devices.containsKey(deviceId);
+    }
+
+    protected HobsonDeviceProxy getDeviceProxy(String deviceId) {
+        HobsonDeviceProxy p = devices.get(deviceId);
+        if (p == null) {
+            throw new DeviceNotFoundException(DeviceContext.create(getContext(), deviceId));
+        } else {
+            return p;
+        }
+    }
+
+    protected Collection<HobsonDeviceProxy> getDeviceProxies() {
+        return devices.values();
+    }
+
+    protected ActionClass getActionClass(String actionId) {
+        validateActionManager();
+        return actionManager.getActionClass(PropertyContainerClassContext.create(getContext(), actionId));
+    }
+
+    protected Collection<ActionClass> getActionClasses() {
+        validateActionManager();
+        return actionManager.getActionClasses(getContext());
     }
 
     @Override
-    public String[] getEventTopics() {
-        return null;
+    public Object getDeviceConfigurationProperty(String deviceId, String name) {
+        validateDeviceManager();
+        return deviceManager.getDeviceConfigurationProperty(DeviceContext.create(getContext(), deviceId), name);
     }
 
     @Override
-    public PropertyContainerClass getConfigurationClass() {
-        return configClass;
+    public Long getDeviceLastCheckin(String deviceId) {
+        Long result = null;
+        HobsonDeviceProxy d = devices.get(deviceId);
+        if (d != null) {
+            result = d.getLastCheckin();
+        }
+        return result;
+    }
+
+    @Override
+    public DeviceVariableState getDeviceVariableState(String deviceId, String name) {
+        HobsonDeviceProxy proxy = devices.get(deviceId);
+        if (proxy != null) {
+            return proxy.getVariableState(name);
+        } else {
+            return null;
+        }
+    }
+
+    protected DeviceVariableState getDeviceVariableState(DeviceVariableContext dvctx) {
+        validateDeviceManager();
+        return deviceManager.getDeviceVariable(dvctx);
     }
 
     @Override
@@ -99,33 +204,17 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public HobsonPluginRuntime getRuntime() {
-        return this;
-    }
-
-    @Override
-    public PluginStatus getStatus() {
-        return status;
-    }
-
-    @Override
     public TaskProvider getTaskProvider() {
-        return null;
+        return taskProvider;
+    }
+
+    public void setTaskProvider(TaskProvider taskProvider) {
+        this.taskProvider = taskProvider;
     }
 
     @Override
-    public PluginType getType() {
-        return PluginType.PLUGIN;
-    }
-
-    @Override
-    public String getVersion() {
-        return version;
-    }
-
-    @Override
-    public boolean isConfigurable() {
-        return configClass.hasSupportedProperties();
+    public boolean hasTaskProvider() {
+        return (taskProvider != null);
     }
 
     /*
@@ -138,97 +227,43 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public void fireHobsonEvent(HobsonEvent event) {
+    public void postEvent(HobsonEvent event) {
         validateEventManager();
         eventManager.postEvent(HubContext.createLocal(), event);
     }
 
-    @Override
-    public void fireVariableUpdateNotification(VariableUpdate update) {
-        // post the variable update notification event
-        validateVariableManager();
-        variableManager.fireVariableUpdateNotifications(HubContext.createLocal(), Collections.singletonList(update));
-    }
-
-    @Override
-    public void fireVariableUpdateNotifications(List<VariableUpdate> updates) {
-        // post the variable update notification event
-        validateVariableManager();
-        variableManager.fireVariableUpdateNotifications(HubContext.createLocal(), updates);
-    }
-
-    @Override
-    public HobsonVariable getDeviceVariable(DeviceContext ctx, String variableName) {
-        validateVariableManager();
-        return variableManager.getVariable(VariableContext.create(ctx, variableName));
-    }
-
-    @Override
-    public boolean hasDeviceVariable(DeviceContext ctx, String variableName) {
-        validateVariableManager();
-        return variableManager.hasVariable(VariableContext.create(ctx, variableName));
-    }
-
-    @Override
-    public void setDeviceAvailability(DeviceContext ctx, boolean available, Long checkInTime) {
-        validateDeviceManager();
-        deviceManager.setDeviceAvailability(ctx, available, checkInTime);
-    }
-
-    @Override
-    public void onDeviceConfigurationUpdate(DeviceContext ctx, PropertyContainer config) {
-        getDevice(ctx).getRuntime().onDeviceConfigurationUpdate(config);
-    }
-
-    @Override
-    public void onExecuteAction(final PropertyContainer action) {
-        final TaskActionClass tac = actionClasses.get(action.getContainerClassContext());
-        if (tac != null) {
-            submitInEventLoop(new Runnable() {
-                @Override
-                public void run() {
-                    tac.getExecutor().executeAction(action);
-                }
-            });
+    @EventHandler
+    public void onDeviceConfigurationUpdate(DeviceConfigurationUpdateEvent event) {
+        if (event.getPluginId().equals(getContext().getPluginId())) {
+            getDeviceProxy(event.getDeviceId()).onDeviceConfigurationUpdate(event.getConfiguration());
         }
     }
 
     @Override
-    public void onHobsonEvent(HobsonEvent event) {
+    public void onDeviceUpdate(HobsonDeviceProxy device) {
+        validateDeviceManager();
+        deviceManager.updateDevice(device.getDescriptor());
     }
 
     @Override
     public void onRefresh() {
     }
 
-    @Override
-    public void onSetDeviceVariable(DeviceContext ctx, String variableName, Object value) {
-        getDevice(ctx).getRuntime().onSetVariable(variableName, value);
+    @EventHandler
+    public void onSetDeviceVariables(DeviceVariablesUpdateRequestEvent event) {
+        if (event.getDeviceContext().getPluginContext().equals(getContext())) {
+            getDeviceProxy(event.getDeviceContext().getDeviceId()).onSetVariables(event.getValues());
+        }
     }
 
     @Override
-    public void publishActionClass(TaskActionClass actionClass) {
-        validateTaskManager();
-        taskManager.publishActionClass(actionClass);
-        actionClasses.put(actionClass.getContext(), actionClass);
+    public void publishActionProvider(ActionProvider provider) {
+        actionManager.publishActionProvider(provider);
     }
 
-    @Override
-    public void publishConditionClass(TaskConditionClass conditionClass) {
+    protected void publishTaskConditionClass(TaskConditionClass conditionClass) {
         validateTaskManager();
         taskManager.publishConditionClass(conditionClass);
-    }
-
-    @Override
-    public void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask, Long lastUpdate) {
-        validateVariableManager();
-        variableManager.publishVariable(ctx, value, mask, lastUpdate);
-    }
-
-    @Override
-    public void publishVariable(VariableContext ctx, Object value, HobsonVariable.Mask mask, Long lastUpdate, VariableMediaType mediaType) {
-        validateVariableManager();
-        variableManager.publishVariable(ctx, value, mask, lastUpdate, mediaType);
     }
 
     @Override
@@ -237,9 +272,15 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
-    public void setDeviceConfigurationProperty(DeviceContext ctx, String name, Object value, boolean overwrite) {
+    public void setDeviceConfigurationProperty(DeviceContext dctx, PropertyContainerClass configClass, String name, Object value) {
         validateDeviceManager();
-        deviceManager.setDeviceConfigurationProperty(ctx, name, value, overwrite);
+        deviceManager.setDeviceConfigurationProperty(dctx, configClass, name, value);
+    }
+
+    @Override
+    public void setDeviceConfigurationProperties(DeviceContext dctx, PropertyContainerClass configClass, Map<String,Object> values) {
+        validateDeviceManager();
+        deviceManager.setDeviceConfiguration(dctx, configClass, values);
     }
 
     @Override
@@ -263,6 +304,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
     }
 
     @Override
+    public void setActionManager(ActionManager actionManager) {
+        this.actionManager = actionManager;
+    }
+
+    @Override
     public void setPluginManager(PluginManager pluginManager) {
         this.pluginManager = pluginManager;
     }
@@ -272,32 +318,13 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         this.taskManager = taskManager;
     }
 
-    @Override
-    public void setVariableManager(VariableManager variableManager) {
-        this.variableManager = variableManager;
-    }
-
-    @Override
-    public Future submitInEventLoop(final Runnable runnable) {
-        return eventLoop.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    runnable.run();
-                } catch (Throwable t) {
-                    logger.error("An uncaught exception was thrown in the event loop", t);
-                }
-            }
-        });
-    }
-
     /*
      * EventLoopExecutor methods
      */
 
     @Override
-    public void executeInEventLoop(final Runnable runnable) {
-        eventLoop.execute(new Runnable() {
+    public Future executeInEventLoop(final Runnable runnable) {
+        return eventLoop.submit(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -314,30 +341,12 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
      */
 
     /**
-     * Returns information about the local Hub.
-     *
-     * @return a HobsonHub instance
-     */
-    public HobsonHub getHub() {
-        return hubManager.getHub(HubContext.createLocal());
-    }
-
-    /**
-     * Sets the plugin version string.
-     *
-     * @param version the version string
-     */
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    /**
      * Returns an array of configuration properties the plugin supports. These will automatically
      * be registered with the plugin's configuration class.
      *
      * @return an array of TypedProperty objects (or null if there are none)
      */
-    abstract protected TypedProperty[] createSupportedProperties();
+    abstract protected TypedProperty[] getConfigurationPropertyTypes();
 
     /**
      * Returns a File for the plugin's directory sandbox.
@@ -359,13 +368,12 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         return pluginManager.getDataFile(getContext(), filename);
     }
 
-    /**
-     * Sets the plugin status.
-     *
-     * @param status the status
-     */
-    protected void setStatus(PluginStatus status) {
-        this.status = status;
+    protected boolean hasDeviceVariable(String deviceId, String name) {
+        HobsonDeviceProxy device = getDeviceProxy(deviceId);
+        if (device != null) {
+            return device.hasVariable(name);
+        }
+        return false;
     }
 
     /**
@@ -380,49 +388,34 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         pluginManager.setLocalPluginConfigurationProperty(ctx, name, value);
     }
 
-    /**
-     * Publishes a new device and invokes its start() method.
-     *
-     * @param device the device to publish
-     */
-    protected void publishDevice(final HobsonDevice device) {
-        publishDevice(device, false);
+    protected Future publishDeviceProxy(HobsonDeviceProxy proxy) {
+        PropertyContainer config = deviceManager != null ? deviceManager.getDeviceConfiguration(proxy.getContext()) : null;
+        return publishDeviceProxy(proxy, config != null ? config.getPropertyValues() : null);
     }
 
-    /**
-     * Publishes a new device and invokes its start() method.
-     *
-     * @param device the device to publish
-     * @param republish indicates whether this is a re-publish of a previously published device (if this is false, a re-publish will throw an exception)
-     */
-    protected void publishDevice(final HobsonDevice device, boolean republish) {
+    protected Future publishDeviceProxy(final HobsonDeviceProxy proxy, final Map<String,Object> config) {
         validateDeviceManager();
-        deviceManager.publishDevice(device, republish);
+        logger.trace("Publishing device: {}", proxy.getContext());
+        return deviceManager.publishDevice(proxy, config, new Runnable() {
+            @Override
+            public void run() {
+                String deviceId = proxy.getContext().getDeviceId();
+                devices.put(deviceId, proxy);
+            }
+        });
     }
 
-    /**
-     * Convenience method for publishing a global variable.
-     *
-     * @param name the variable name
-     * @param value the variable value
-     * @param mask the variable mask
-     * @param lastUpdate the last time the variable was updated
-     */
-    protected void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask, Long lastUpdate) {
-        publishGlobalVariable(name, value, mask, lastUpdate, null);
+    protected void deleteDeviceProxy(String deviceId) {
+        validateDeviceManager();
+        if (devices.containsKey(deviceId)) {
+            logger.trace("Deleting device: {}", deviceId);
+            deviceManager.deleteDevice(DeviceContext.create(getContext(), deviceId));
+        }
     }
 
-    /**
-     * Convenience method for publishing a global variable.
-     *
-     * @param name the variable name
-     * @param value the variable value
-     * @param mask the variable mask
-     * @param lastUpdate the last time the variable was updated
-     * @param mediaType the variable media type
-     */
-    protected void publishGlobalVariable(String name, Object value, HobsonVariable.Mask mask, Long lastUpdate, VariableMediaType mediaType) {
-        publishVariable(VariableContext.createGlobal(getContext(), name), value, mask, lastUpdate, mediaType);
+    protected void addJobStatusMessage(String msg, Object props) {
+        validateActionManager();
+        actionManager.addJobStatusMessage(getContext(), msg, props);
     }
 
     /**
@@ -430,22 +423,21 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
      * as multiple DeviceAdvertisementEvent events to the plugin's onHobsonEvent() callback.
      *
      * @param protocolId the protocol ID for the advertisements requested
+     *
+     * @return a Collection of DeviceAdvertisement instances
      */
-    protected void requestDeviceAdvertisementSnapshot(final String protocolId) {
+    protected Collection<DeviceAdvertisement> getDeviceAdvertisementSnapshot(final String protocolId) {
         validateDiscoManager();
-        // this is called in the plugin event loop so that it can safely be invoked in the onStartup() method
-        executeInEventLoop(new Runnable() {
-            @Override
-            public void run() {
-            discoManager.requestExternalDeviceAdvertisementSnapshot(getContext(), protocolId);
-            }
-        });
+        return discoManager.getExternalDeviceAdvertisements(getContext(), protocolId);
     }
 
     /**
      * Publishes a new DeviceAdvertisement.
      *
      * @param advertisement the advertisement to publish
+     * @param internal indicates if this is an internal advertisement. A value of true will insure that the
+     *                 advertisement is included in any discovery requests that external clients make for a
+     *                 particular protocol.
      */
     public void publishDeviceAdvertisement(DeviceAdvertisement advertisement, boolean internal) {
         validateDiscoManager();
@@ -457,77 +449,14 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         taskManager.fireTaskTrigger(context);
     }
 
-    /**
-     * Indicates whether a specific device ID has already been published.
-     *
-     * @param ctx the context of the device
-     *
-     * @return a boolean
-     */
-    protected boolean hasDevice(DeviceContext ctx) {
-        return deviceManager.hasDevice(ctx);
-    }
-
-    /**
-     * Retrieves all HobsonDevices that have been published.
-     *
-     * @return a Collection of HobsonDevice instances
-     */
-    protected Collection<HobsonDevice> getAllDevices() {
-        return deviceManager.getAllDevices(HubContext.createLocal());
-    }
-
-    /**
-     * Retrieves all HobsonDevices that have been published by this plugin.
-     *
-     * @return a Collection of HobsonDevice instances
-     */
-    protected Collection<HobsonDevice> getAllPluginDevices() {
-        return deviceManager.getAllDevices(getContext());
-    }
-
-    /**
-     * Retrieves a HobsonDevice with the specific device ID.
-     *
-     * @param ctx the device context
-     *
-     * @return a HobsonDevice instance
-     * @throws com.whizzosoftware.hobson.api.HobsonNotFoundException if the device ID was not found
-     */
-    protected HobsonDevice getDevice(DeviceContext ctx) {
+    protected Collection<HobsonDeviceDescriptor> getPublishedDeviceDescriptions() {
         validateDeviceManager();
-        return deviceManager.getDevice(ctx);
+        return deviceManager.getDevices(getContext());
     }
 
-    /**
-     * Unpublishes a published device after invoking its stop() method.
-     *
-     * @param deviceId the device ID to unpublish
-     */
-    protected void unpublishDevice(final String deviceId) {
-        validateVariableManager();
-        validateDeviceManager();
-        DeviceContext dctx = DeviceContext.create(getContext(), deviceId);
-        variableManager.unpublishAllVariables(dctx);
-        deviceManager.unpublishDevice(dctx, this);
-    }
-
-    /**
-     * Unpublishes all published devices associates with a plugin after invoking their stop() methods.
-     */
-    protected void unpublishAllDevices() {
-        validateVariableManager();
-        validateDeviceManager();
-        variableManager.unpublishAllVariables(getContext());
-        deviceManager.unpublishAllDevices(getContext(), this);
-    }
-
-    protected Collection<HobsonVariable> getAllVariables() {
-        return variableManager.getAllVariables(HubContext.createLocal());
-    }
-
-    protected DeviceManager getDeviceManager() {
-        return deviceManager;
+    protected HobsonHub getLocalHub() {
+        validateHubManager();
+        return hubManager.getHub(HubContext.createLocal());
     }
 
     protected DiscoManager getDiscoManager() {
@@ -536,10 +465,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
 
     protected HubManager getHubManager() {
         return hubManager;
-    }
-
-    protected VariableManager getVariableManager() {
-        return variableManager;
     }
 
     protected TaskManager getTaskManager() {
@@ -564,6 +489,18 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         }
     }
 
+    private void validateHubManager() {
+        if (hubManager == null) {
+            throw new HobsonRuntimeException("No hub manager has been set");
+        }
+    }
+
+    private void validateActionManager() {
+        if (actionManager == null) {
+            throw new HobsonRuntimeException("No action manager has been set");
+        }
+    }
+
     private void validatePluginManager() {
         if (pluginManager == null) {
             throw new HobsonRuntimeException("No plugin manager has been set");
@@ -576,9 +513,15 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, HobsonPlugin
         }
     }
 
-    private void validateVariableManager() {
-        if (variableManager == null) {
-            throw new HobsonRuntimeException("No variable manager has been set");
+    protected void setGlobalVariable(String name, Object value, long timestamp) {
+        hubManager.setGlobalVariable(GlobalVariableContext.create(getContext(), name), value, timestamp);
+    }
+
+    protected void setGlobalVariables(Map<String,Object> values, long timestamp) {
+        Map<GlobalVariableContext,Object> vars = new HashMap<>();
+        for (String name : values.keySet()) {
+            vars.put(GlobalVariableContext.create(getContext(), name), values.get(name));
         }
+        hubManager.setGlobalVariables(vars, timestamp);
     }
 }

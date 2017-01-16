@@ -1,17 +1,22 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2014 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.device;
 
+import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
 import com.whizzosoftware.hobson.api.hub.HubContext;
-import com.whizzosoftware.hobson.api.plugin.EventLoopExecutor;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
+import io.netty.util.concurrent.Future;
 
 import java.util.Collection;
 import java.util.Map;
@@ -25,245 +30,165 @@ import java.util.Set;
  */
 public interface DeviceManager {
     /**
-     * Activates a device passport.
+     * Deletes a specific device.
      *
-     * @param hubContext the hub context
-     * @param deviceId the device ID
-     *
-     * @return a DevicePassport
+     * @param dctx the context of the device to delete
      */
-    DevicePassport activateDevicePassport(HubContext hubContext, String deviceId);
-
-    /**
-     * Creates a new device passport with a globally unique ID.
-     *
-     *
-     * @param hubContext the hub context
-     * @param deviceId the globally unique device ID
-     *
-     * @return the device secret
-     */
-    DevicePassport createDevicePassport(HubContext hubContext, String deviceId);
-
-    /**
-     * Deletes a device passport.
-     *
-     * @param hubContext the hub context
-     * @param id the passport ID
-     */
-    void deleteDevicePassport(HubContext hubContext, String id);
-
-    /**
-     * Returns all devices published by a hub.
-     *
-     * @param ctx the context of the hub that published the devices
-     *
-     * @return a Collection of HobsonDevice instances
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    Collection<HobsonDevice> getAllDevices(HubContext ctx);
-
-    /**
-     * Returns all devices published by a plugin.
-     *
-     * @param ctx the context of the plugin that published the devices
-     *
-     * @return a Collection of HobsonDevice instances
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    Collection<HobsonDevice> getAllDevices(PluginContext ctx);
+    void deleteDevice(DeviceContext dctx);
 
     /**
      * Returns a specific device.
      *
-     * @param ctx the context of the device to retrieve
+     * @param dctx the context of the device to retrieve
      *
-     * @return a HobsonDevice instance (or null if it wasn't found)
+     * @return a HobsonDeviceDescription instance (or null if it wasn't found)
+     *
      * @throws DeviceNotFoundException if device isn't found
      *
      * @since hobson-hub-api 0.1.6
      */
-    HobsonDevice getDevice(DeviceContext ctx);
-
-    /**
-     * Returns a collection of all created device passports.
-     *
-     * @param hubContext the hub context
-     *
-     * @return a Collection of DevicePassport instances
-     */
-    Collection<DevicePassport> getDevicePassports(HubContext hubContext);
-
-    /**
-     * Retrieves a device passport.
-     *
-     * @param hubContext the hub context
-     * @param id the passport ID
-     *
-     * @return a DevicePassport instance
-     */
-    DevicePassport getDevicePassport(HubContext hubContext, String id);
+    HobsonDeviceDescriptor getDevice(DeviceContext dctx);
 
     /**
      * Returns a specific device's configuration.
      *
-     * @param ctx the context of the desired device
+     * @param dctx the context of the desired device
      *
      * @return a Dictionary (or null if there is no configuration)
      */
-    PropertyContainer getDeviceConfiguration(DeviceContext ctx);
-
-    /**
-     * Returns a specific device's configuration class.
-     *
-     * @param ctx the context of the desired device
-     *
-     * @return a PropertyContainerClass object
-     */
-    PropertyContainerClass getDeviceConfigurationClass(DeviceContext ctx);
+    PropertyContainer getDeviceConfiguration(DeviceContext dctx);
 
     /**
      * Returns a device configuration property.
      *
-     * @param ctx the context of the device to retrieve configuration for
+     * @param dctx the context of the device to retrieve configuration for
      * @param name the configuration property name
      *
      * @return the property value (or null if not set)
      */
-    Object getDeviceConfigurationProperty(DeviceContext ctx, String name);
+    Object getDeviceConfigurationProperty(DeviceContext dctx, String name);
 
     /**
-     * Returns the last time the device was contacted.
+     * Returns the last time a device checked in.
      *
-     * @param ctx the context of the device
+     * @param dctx the device context
      *
-     * @return a Long value (or null if it has never been contacted)
+     * @return the last check in time (or null if it has never checked in)
      */
-    Long getDeviceLastCheckIn(DeviceContext ctx);
+    Long getDeviceLastCheckin(DeviceContext dctx);
 
     /**
-     * Returns the tags for a device.
+     * Returns all devices published by a plugin.
      *
-     * @param ctx the device context
+     * @param pctx the context of the plugin that published the devices
      *
-     * @return a set of String tags (or null if none are defined)
+     * @return a Collection of HobsonDeviceDescription instances
+     *
+     * @since hobson-hub-api 0.1.6
      */
-    Set<String> getDeviceTags(DeviceContext ctx);
+    Collection<HobsonDeviceDescriptor> getDevices(PluginContext pctx);
+
+    /**
+     * Returns all devices published by a hub.
+     *
+     * @param hctx the context of the hub that published the devices
+     *
+     * @return a Collection of HobsonDeviceDescription instances
+     *
+     * @since hobson-hub-api 0.1.6
+     */
+    Collection<HobsonDeviceDescriptor> getDevices(HubContext hctx);
+
+    /**
+     * Returns the state of a device variable.
+     *
+     * @param ctx the variable context
+     *
+     * @return a DeviceVariableState instance
+     */
+    DeviceVariableState getDeviceVariable(DeviceVariableContext ctx);
+
+    /**
+     * Returns all variable names published by all devices.
+     *
+     * @param hctx the hub context
+     *
+     * @return a set of Strings
+     */
+    Collection<String> getDeviceVariableNames(HubContext hctx);
 
     /**
      * Indicates whether a device has been published.
      *
-     * @param ctx the context of the device to check
+     * @param dctx the context of the device to check
      *
      * @return a boolean
      *
      * @since hobson-hub-api 0.1.6
      */
-    boolean hasDevice(DeviceContext ctx);
+    boolean hasDevice(DeviceContext dctx);
 
     /**
-     * Returns whether a device is available.
+     * Indicates whether a device is currently available.
      *
-     * @param ctx the context of the device
+     * @param ctx the device context
      *
      * @return a boolean
      */
     boolean isDeviceAvailable(DeviceContext ctx);
 
     /**
-     * Publishes a device to the device registry and starts it.
+     * Called by plugins to publish device proxies to the device registry and start them.
      *
-     * @param device the HobsonDevice to publish
+     * @param device the DeviceProxy to publish
+     * @param config the device configuration (or null if it is not known)
+     * @param runnable a Runnable to execute after the device has been successfully published
+     *
+     * @return a Future representing the result of publishing the device
      *
      * @since hobson-hub-api 0.1.6
      */
-    void publishDevice(HobsonDevice device);
-
-    /**
-     * Publishes a device to the device registry and starts it.
-     *
-     * @param device the HobsonDevice to publish
-     * @param republish indicates whether this is a forced republish of an existing device
-     *
-     * @since hobson-hub-api 0.4.2
-     */
-    void publishDevice(HobsonDevice device, boolean republish);
-
-    /**
-     * Resets a device passport to its initially created state. This will allow a device to successfully
-     * re-activate the passport.
-     *
-     * @param hubContext the hub context
-     * @param id the globally unique device ID
-     */
-    void resetDevicePassport(HubContext hubContext, String id);
-
-    /**
-     * Updates the a device's availability.
-     *
-     * @param ctx the device context
-     * @param checkInTime the check-in time
-     */
-    void setDeviceAvailability(DeviceContext ctx, boolean available, Long checkInTime);
-
-    /**
-     * Set a device configuration property.
-     *
-     * @param ctx the context of the target device
-     * @param name the configuration property name
-     * @param value the configuration property value
-     * @param overwrite indicates whether an existing configuration value should be overwritten
-     */
-    void setDeviceConfigurationProperty(DeviceContext ctx, String name, Object value, boolean overwrite);
+    Future publishDevice(HobsonDeviceProxy device, Map<String, Object> config, Runnable runnable);
 
     /**
      * Sets device configuration properties.
      *
-     * @param ctx the context of the target device
+     * @param dctx the context of the target device
+     * @param configClass the configuration class
      * @param values a map of configuration property name to values
-     * @param overwrite indicates whether an existing configuration value should be overwritten
      */
-    void setDeviceConfigurationProperties(DeviceContext ctx, Map<String,Object> values, boolean overwrite);
+    void setDeviceConfiguration(DeviceContext dctx, PropertyContainerClass configClass, Map<String, Object> values);
+
+    /**
+     * Set a device configuration property.
+     *
+     * @param dctx the context of the target device
+     * @param configClass the configuration class
+     * @param name the configuration property name
+     * @param value the configuration property value
+     */
+    void setDeviceConfigurationProperty(DeviceContext dctx, PropertyContainerClass configClass, String name, Object value);
+
+    /**
+     * Sets the name of a device.
+     *
+     * @param dctx the device context
+     * @param name the new name of the device
+     */
+    void setDeviceName(DeviceContext dctx, String name);
 
     /**
      * Sets the tag(s) for a device.
      *
-     * @param ctx the device context
+     * @param dctx the device context
      * @param tags the tags
      */
-    void setDeviceTags(DeviceContext ctx, Set<String> tags);
+    void setDeviceTags(DeviceContext dctx, Set<String> tags);
 
     /**
-     * Stops an unpublishes all devices associated with a specific plugin.
+     * Updates information about a previously published device.
      *
-     * @param ctx the context of the plugin that published the devices
-     * @param executor an executor used to call the plugins' onShutdown() lifecycle method
-     *
-     * @since hobson-hub-api 0.1.6
+     * @param device the device descriptor information
      */
-    void unpublishAllDevices(PluginContext ctx, EventLoopExecutor executor);
-
-    /**
-     * Stops and unpublishes a device associated with a specific plugin. This allows plugins that require it
-     * (e.g. the RadioRA plugin) to unpublish individual devices.
-     *
-     * @param ctx the context of the target device
-     * @param executor an executor used to call the plugin's onShutdown() lifecycle method
-     *
-     * @since hobson-hub-api 0.1.6
-     */
-    void unpublishDevice(DeviceContext ctx, EventLoopExecutor executor);
-
-    /**
-     * Verifies a device passport.
-     *
-     * @param hubContext the hub context
-     * @param id the globally unique device ID
-     * @param secret the secret to verify
-     *
-     * @return a boolean indicating whether the device ID and secret are valid
-     */
-    boolean verifyDevicePassport(HubContext hubContext, String id, String secret);
+    void updateDevice(HobsonDeviceDescriptor device);
 }

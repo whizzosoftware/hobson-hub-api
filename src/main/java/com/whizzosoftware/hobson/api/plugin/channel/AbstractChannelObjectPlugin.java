@@ -1,13 +1,17 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2014 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.plugin.channel;
 
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
+import com.whizzosoftware.hobson.api.event.EventHandler;
+import com.whizzosoftware.hobson.api.event.plugin.PluginConfigurationUpdateEvent;
 import com.whizzosoftware.hobson.api.plugin.AbstractHobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.PluginStatus;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
@@ -22,7 +26,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
-import io.netty.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +43,9 @@ import java.util.concurrent.TimeUnit;
 abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    protected final static String PROP_SERIAL_PORT = "serial.port";
+    protected final static String PROP_SERIAL_HOSTNAME = "serial.hostname";
+
     private String serialDevice;
     private Channel channel;
     private SocketAddress socketAddress;
@@ -47,8 +53,8 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
     private EventLoopGroup connectionEventLoopGroup;
     private boolean isRunning = true;
 
-    public AbstractChannelObjectPlugin(String pluginId) {
-        super(pluginId);
+    public AbstractChannelObjectPlugin(String pluginId, String version, String description) {
+        super(pluginId, version, description);
     }
 
     @Override
@@ -59,9 +65,9 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
         }
     }
 
-    @Override
-    public void onPluginConfigurationUpdate(PropertyContainer config) {
-        if (processConfig(config)) {
+    @EventHandler
+    public void onPluginConfigurationUpdate(PluginConfigurationUpdateEvent event) {
+        if (event.getPluginId().equals(getContext().getPluginId()) && processConfig(event.getConfiguration())) {
             connectionEventLoopGroup = createEventLoopGroup();
             attemptConnect();
         }
@@ -196,13 +202,13 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
         boolean didConfigChange = false;
 
         if (config != null) {
-            String s = (String) config.getPropertyValue("serial.port");
+            String s = (String) config.getPropertyValue(PROP_SERIAL_PORT);
             if (s != null && s.trim().length() > 0 && !s.equals(serialDevice)) {
                 serialDevice = s;
                 setRemoteAddress(new RxtxDeviceAddress(serialDevice));
                 didConfigChange = true;
             } else {
-                s = (String) config.getPropertyValue("serial.hostname");
+                s = (String) config.getPropertyValue(PROP_SERIAL_HOSTNAME);
                 if (s != null && s.trim().length() > 0 && !s.equals(serialDevice)) {
                     int port = getDefaultPort();
 
@@ -311,10 +317,7 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
         // shutdown the event loop group if there is one
         if (connectionEventLoopGroup != null) {
             logger.debug("Closing event loop group");
-            Future f = connectionEventLoopGroup.shutdownGracefully();
-            try {
-                f.sync();
-            } catch (InterruptedException ignored) {}
+            connectionEventLoopGroup.shutdownGracefully();
             logger.debug("Event loop group closed");
         }
     }
@@ -324,7 +327,7 @@ abstract public class AbstractChannelObjectPlugin extends AbstractHobsonPlugin {
      *
      * @param pipeline the current channel pipeline
      */
-    private void configurePipeline(ChannelPipeline pipeline) {
+    protected void configurePipeline(ChannelPipeline pipeline) {
         pipeline.addLast("decoder", getDecoder());
         pipeline.addLast("encoder", getEncoder());
         if (getIdleDetectionConfig() != null) {

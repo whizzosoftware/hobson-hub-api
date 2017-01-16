@@ -1,17 +1,23 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2014 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.hub;
 
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
+import com.whizzosoftware.hobson.api.user.HobsonUser;
+import com.whizzosoftware.hobson.api.variable.GlobalVariable;
+import com.whizzosoftware.hobson.api.variable.GlobalVariableContext;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * A manager interface for Hub-related functions.
@@ -33,7 +39,7 @@ public interface HubManager {
      *
      * @return a Collection of HobsonHub instances
      */
-    Collection<HubContext> getAllHubs();
+    Collection<HubContext> getHubs();
 
     /**
      * Returns the hubs associated with a user.
@@ -106,6 +112,31 @@ public interface HubManager {
     PropertyContainerClass getContainerClass(PropertyContainerClassContext ctx);
 
     /**
+     * Returns the local OIDC configuration.
+     *
+     * @return an OIDCConfig instance
+     */
+    OIDCConfig getOIDCConfiguration();
+
+    /**
+     * Converts a JWT token into a HobsonUser.
+     *
+     * @param token the toke string
+     *
+     * @return a HobsonUser instance
+     */
+    HobsonUser convertTokenToUser(String token);
+
+    /**
+     * Indicates whether a property container class exists.
+     *
+     * @param ctx the context of the container class
+     *
+     * @return a boolean
+     */
+    boolean hasPropertyContainerClass(PropertyContainerClassContext ctx);
+
+    /**
      * Returns content from the Hub log.
      *
      * @param ctx the context of the hub that owns the logs
@@ -160,4 +191,39 @@ public interface HubManager {
      * @param configuration the configuration to set
      */
     void setConfiguration(HubContext ctx, PropertyContainer configuration);
+
+    /**
+     * Sets a global variable.
+     *
+     * @param gctx the variable context
+     * @param value the new value
+     * @param timestamp the timestamp associated with the new value
+     */
+    void setGlobalVariable(GlobalVariableContext gctx, Object value, long timestamp);
+
+    /**
+     * Sets multiple global variables.
+     *
+     * @param values the variable values
+     * @param timestamp the timestamp associated with the new values
+     */
+    void setGlobalVariables(Map<GlobalVariableContext,Object> values, long timestamp);
+
+    /**
+     * Returns a global variable.
+     *
+     * @param gctx the variable context
+     *
+     * @return a GlobalVariable instance
+     */
+    GlobalVariable getGlobalVariable(GlobalVariableContext gctx);
+
+    /**
+     * Returns all global variables associated with a hub.
+     *
+     * @param hctx the hub context
+     *
+     * @return a Collection of GlobalVariable instances
+     */
+    Collection<GlobalVariable> getGlobalVariables(HubContext hctx);
 }

@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.persist;
 
 import com.whizzosoftware.hobson.api.device.DeviceContext;
@@ -16,7 +18,8 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassType;
 import com.whizzosoftware.hobson.api.task.TaskContext;
-import com.whizzosoftware.hobson.api.variable.VariableContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
+import com.whizzosoftware.hobson.api.variable.GlobalVariableContext;
 
 /**
  * An interface for classes that can provide IDs for common Hobson model entities.
@@ -24,78 +27,83 @@ import com.whizzosoftware.hobson.api.variable.VariableContext;
  * @author Dan Noguerol
  */
 public interface IdProvider {
-    String createActionId(HubContext ctx, String actionId);
-    String createActionSetId(HubContext ctx, String actionSetId);
-    String createActionSetActionsId(HubContext ctx, String actionSetId);
-    String createActionSetsId(HubContext ctx);
-    String createActionPropertiesId(HubContext ctx, String actionId);
-    String createActivityLogId(HubContext ctx);
-    String createDataStreamsId();
-    String createDataStreamId(String dataStreamId);
-    String createDataStreamDataId(String dataStreamId);
-    String createDataStreamFieldId(String dataStreamId, String fieldId);
-    String createDataStreamFieldsId(String dataStreamId);
-    String createDataStreamTagsId(String dataStreamId);
-    String createDevicesId(HubContext ctx);
+    TemplatedId createActionClassesId(HubContext ctx);
+    TemplatedId createActionClassId(PropertyContainerClassContext ctx);
+    TemplatedId createActionId(HubContext ctx, String actionId);
+    TemplatedId createActionSetId(HubContext ctx, String actionSetId);
+    TemplatedId createActionSetActionsId(HubContext ctx, String actionSetId);
+    TemplatedId createActionSetsId(HubContext ctx);
+    TemplatedId createActionPropertiesId(HubContext ctx, String actionId);
+    TemplatedId createActivityLogId(HubContext ctx);
+    TemplatedId createDataStreamsId(HubContext ctx);
+    TemplatedId createDataStreamId(HubContext ctx, String dataStreamId);
+    TemplatedId createDataStreamDataId(HubContext ctx, String dataStreamId);
+    TemplatedId createDataStreamFieldId(HubContext ctx, String dataStreamId, String fieldId);
+    TemplatedId createDataStreamFieldsId(HubContext ctx, String dataStreamId);
+    TemplatedId createDataStreamTagsId(HubContext ctx, String dataStreamId);
+    TemplatedId createDevicesId(HubContext ctx);
     DeviceContext createDeviceContext(String deviceId);
     DeviceContext createDeviceContextWithHub(HubContext ctx, String deviceId);
-    String createDeviceId(DeviceContext ctx);
-    String createDevicePassportId(HubContext ctx, String passportId);
-    String createDevicePassportsId(HubContext ctx);
-    String createDeviceConfigurationId(DeviceContext ctx);
-    String createDeviceConfigurationClassId(DeviceContext ctx);
-    String createDeviceVariablesId(DeviceContext ctx);
-    String createGlobalVariableId(HubContext ctx, String name);
-    String createGlobalVariablesId(HubContext ctx);
-    String createHubId(HubContext ctx);
-    String createHubConfigurationClassId(HubContext ctx);
-    String createHubConfigurationId(HubContext ctx);
-    String createHubLogId(HubContext ctx);
-    String createHubPasswordId(HubContext ctx);
-    String createHubSerialPortsId(HubContext ctx);
-    String createHubSerialPortId(HubContext ctx, String name);
-    String createHubUploadCredentialsId(HubContext ctx);
-    String createLocalPluginConfigurationId(PluginContext ctx);
-    String createLocalPluginConfigurationClassId(PluginContext ctx);
-    String createLocalPluginId(PluginContext ctx);
-    String createLocalPluginIconId(PluginContext ctx);
-    String createLocalPluginReloadId(PluginContext ctx);
-    String createLocalPluginsId(HubContext ctx);
-    String createPersonId(String userId);
+    TemplatedId createDeviceActionClassId(DeviceContext ctx, String actionClassId);
+    TemplatedId createDeviceActionClassesId(DeviceContext ctx);
+    TemplatedId createDeviceId(DeviceContext ctx);
+    TemplatedId createDeviceConfigurationId(DeviceContext ctx);
+    TemplatedId createDeviceNameId(DeviceContext ctx);
+    TemplatedId createDeviceVariableDescriptionId(DeviceVariableContext vctx);
+    TemplatedId createDeviceVariableId(DeviceVariableContext vctx);
+    TemplatedId createDeviceVariablesId(DeviceContext ctx);
+    TemplatedId createDeviceConfigurationClassId(DeviceContext ctx);
+    TemplatedId createDeviceTagsId(DeviceContext ctx);
+    TemplatedId createPluginDeviceConfigurationClassesId(PluginContext ctx);
+    TemplatedId createPluginDeviceConfigurationClassId(PluginContext ctx, String name);
+    TemplatedId createGlobalVariableId(GlobalVariableContext gvctx);
+    TemplatedId createGlobalVariablesId(HubContext ctx);
+    TemplatedId createHubId(HubContext ctx);
+    TemplatedId createHubConfigurationClassId(HubContext ctx);
+    TemplatedId createHubConfigurationId(HubContext ctx);
+    TemplatedId createHubLogId(HubContext ctx);
+    TemplatedId createHubPasswordId(HubContext ctx);
+    TemplatedId createHubSerialPortsId(HubContext ctx);
+    TemplatedId createHubSerialPortId(HubContext ctx, String name);
+    TemplatedId createJobId(HubContext ctx, String jobId);
+    TemplatedId createLocalPluginActionClassesId(PluginContext ctx);
+    TemplatedId createLocalPluginConfigurationId(PluginContext ctx);
+    TemplatedId createLocalPluginConfigurationClassId(PluginContext ctx);
+    TemplatedId createLocalPluginId(PluginContext ctx);
+    TemplatedId createLocalPluginIconId(PluginContext ctx);
+    TemplatedId createLocalPluginReloadId(PluginContext ctx);
+    TemplatedId createLocalPluginsId(HubContext ctx);
+    TemplatedId createPersonId(String userId);
     PluginContext createPluginContext(String pluginId);
-    String createPluginDevicesId(PluginContext pctx);
-    String createPresenceEntitiesId(HubContext ctx);
+    TemplatedId createPluginDevicesId(PluginContext pctx);
+    TemplatedId createPresenceEntitiesId(HubContext ctx);
     PresenceEntityContext createPresenceEntityContext(String presenceEntityId);
-    String createPresenceEntityId(PresenceEntityContext ctx);
-    String createPresenceLocationsId(HubContext ctx);
+    TemplatedId createPresenceEntityId(PresenceEntityContext ctx);
+    TemplatedId createPresenceLocationsId(HubContext ctx);
     PresenceLocationContext createPresenceLocationContext(String presenceLocationId);
-    String createPresenceLocationId(PresenceLocationContext ctx);
-    String createPropertyContainerId(String id, PropertyContainerClass pcc);
-    String createPropertyContainerClassesId(PluginContext pctx);
-    String createPropertyContainerClassId(PropertyContainerClassContext pccc, PropertyContainerClassType type);
-    String createRemotePluginId(PluginContext ctx, String version);
-    String createRemotePluginInstallId(PluginContext ctx, String version);
-    String createRemotePluginsId(HubContext ctx);
-    String createRepositoriesId(HubContext ctx);
-    String createRepositoryId(HubContext ctx, String uri);
-    String createSendTestEmailId(HubContext ctx);
-    String createShutdownId(HubContext ctx);
-    String createTaskActionClassesId(HubContext ctx);
-    String createTaskActionClassId(PropertyContainerClassContext ctx);
-    String createTaskActionSetId(HubContext ctx, String id);
-    String createTaskActionSetsId(HubContext ctx);
-    String createTaskConditionClassesId(HubContext ctx);
-    String createTaskConditionClassId(PropertyContainerClassContext ctx);
-    String createTaskConditionId(TaskContext ctx, String propertyContainerId);
-    String createTaskConditionPropertiesId(TaskContext ctx, String propertyContainerId);
-    String createTaskConditionsId(TaskContext ctx);
-    String createTaskId(TaskContext ctx);
-    String createTaskPropertiesId(TaskContext ctx);
-    String createTasksId(HubContext ctx);
-    String createUserId(String userId);
-    String createUserHubsId(String userId);
-    String createUsersId();
-    VariableContext createVariableContext(String variableId);
-    String createVariableId(VariableContext ctx);
-    String createVariablesId(HubContext ctx);
+    TemplatedId createPresenceLocationId(PresenceLocationContext ctx);
+    TemplatedId createPropertyContainerId(String id, PropertyContainerClass pcc);
+    TemplatedId createPropertyContainerClassesId(PluginContext pctx);
+    TemplatedId createPropertyContainerClassId(PropertyContainerClassContext pccc, PropertyContainerClassType type);
+    TemplatedId createRemotePluginId(HubContext ctx, String pluginId, String version);
+    TemplatedId createRemotePluginInstallId(HubContext ctx, String pluginId, String version);
+    TemplatedId createRemotePluginsId(HubContext ctx);
+    TemplatedId createRepositoriesId(HubContext ctx);
+    TemplatedId createRepositoryId(HubContext ctx, String uri);
+    TemplatedId createSendTestEmailId(HubContext ctx);
+    TemplatedId createShutdownId(HubContext ctx);
+    TemplatedId createTaskActionSetId(HubContext ctx, String id);
+    TemplatedId createTaskActionSetsId(HubContext ctx);
+    TemplatedId createTaskConditionClassesId(HubContext ctx);
+    TemplatedId createTaskConditionClassId(PropertyContainerClassContext ctx);
+    TemplatedId createTaskConditionId(TaskContext ctx, String propertyContainerId);
+    TemplatedId createTaskConditionPropertiesId(TaskContext ctx, String propertyContainerId);
+    TemplatedId createTaskConditionsId(TaskContext ctx);
+    TemplatedId createTaskId(TaskContext ctx);
+    TemplatedId createTaskPropertiesId(TaskContext ctx);
+    TemplatedId createTasksId(HubContext ctx);
+    TemplatedId createUserId(String userId);
+    TemplatedId createUserHubsId(String userId);
+    TemplatedId createUsersId();
+    DeviceVariableContext createDeviceVariableContext(String variableId);
 }

@@ -1,13 +1,16 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.persist;
 
 import com.whizzosoftware.hobson.api.HobsonRuntimeException;
+import com.whizzosoftware.hobson.api.action.ActionClass;
 import com.whizzosoftware.hobson.api.data.DataStreamField;
 import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.hub.HubContext;
@@ -16,17 +19,12 @@ import com.whizzosoftware.hobson.api.presence.PresenceEntity;
 import com.whizzosoftware.hobson.api.presence.PresenceEntityContext;
 import com.whizzosoftware.hobson.api.presence.PresenceLocation;
 import com.whizzosoftware.hobson.api.presence.PresenceLocationContext;
-import com.whizzosoftware.hobson.api.property.PropertyContainer;
-import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
-import com.whizzosoftware.hobson.api.property.PropertyContainerSet;
+import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.task.HobsonTask;
 import com.whizzosoftware.hobson.api.task.TaskContext;
 import com.whizzosoftware.hobson.api.data.DataStream;
 import com.whizzosoftware.hobson.api.util.StringConversionUtil;
-import com.whizzosoftware.hobson.api.variable.HobsonVariable;
-import com.whizzosoftware.hobson.api.variable.ImmutableHobsonVariable;
-import com.whizzosoftware.hobson.api.variable.VariableContext;
-import com.whizzosoftware.hobson.api.variable.VariableMediaType;
+import com.whizzosoftware.hobson.api.variable.*;
 
 import java.util.*;
 
@@ -44,98 +42,93 @@ public class CollectionPersister {
     }
 
     public void deleteAction(HubContext hctx, CollectionPersistenceContext pctx, String id) {
-        pctx.remove(idProvider.createActionPropertiesId(hctx, id));
-        pctx.remove(idProvider.createActionId(hctx, id));
+        pctx.remove(idProvider.createActionPropertiesId(hctx, id).getId());
+        pctx.remove(idProvider.createActionId(hctx, id).getId());
     }
 
-    public void deleteActionSet(HubContext hctx, CollectionPersistenceContext pctx, String id) {
-        String key = idProvider.createActionSetActionsId(hctx, id);
+    public void deleteActionSet(CollectionPersistenceContext pctx, HubContext hctx, String id) {
+        String key = idProvider.createActionSetActionsId(hctx, id).getId();
         for (Object o : pctx.getSet(key)) {
             deleteAction(hctx, pctx, o.toString());
         }
-        pctx.remove(idProvider.createActionSetActionsId(hctx, id));
-        pctx.remove(idProvider.createActionSetId(hctx, id));
-        pctx.removeFromSet(idProvider.createActionSetsId(hctx), id);
+        pctx.remove(key);
+        pctx.remove(idProvider.createActionSetId(hctx, id).getId());
+        pctx.removeFromSet(idProvider.createActionSetsId(hctx).getId(), id);
     }
 
-    public void deleteDataStream(CollectionPersistenceContext pctx, String id) {
-        Set<Object> fields = pctx.getSet(idProvider.createDataStreamFieldsId(id));
+    public void deleteDataStream(CollectionPersistenceContext pctx, HubContext hctx, String id) {
+        String s = idProvider.createDataStreamFieldsId(hctx, id).getId();
+        Set<Object> fields = pctx.getSet(s);
         for (Object key : fields) {
-            pctx.remove(idProvider.createDataStreamFieldId(id, (String)key));
+            pctx.remove(idProvider.createDataStreamFieldId(hctx, id, (String)key).getId());
         }
-        pctx.remove(idProvider.createDataStreamFieldsId(id));
-        pctx.remove(idProvider.createDataStreamTagsId(id));
-        pctx.remove(idProvider.createDataStreamId(id));
-        pctx.removeFromSet(idProvider.createDataStreamsId(), id);
+        pctx.remove(s);
+        pctx.remove(idProvider.createDataStreamTagsId(hctx, id).getId());
+        pctx.remove(idProvider.createDataStreamId(hctx, id).getId());
+        pctx.removeFromSet(idProvider.createDataStreamsId(hctx).getId(), id);
     }
 
     public void deleteDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
-        pctx.remove(idProvider.createDeviceId(ctx));
-        pctx.removeFromSet(idProvider.createDevicesId(ctx.getHubContext()), idProvider.createDeviceId(ctx));
+        pctx.remove(idProvider.createDeviceId(ctx).getId());
+        pctx.removeFromSet(idProvider.createDevicesId(ctx.getHubContext()).getId(), idProvider.createDeviceId(ctx).getId());
     }
 
     public void deleteDeviceConfiguration(CollectionPersistenceContext pctx, DeviceContext ctx, boolean commit) {
-        pctx.remove(idProvider.createDeviceConfigurationId(ctx));
+        pctx.remove(idProvider.createDeviceConfigurationId(ctx).getId());
         if (commit) {
             pctx.commit();
         }
     }
 
-    public void deleteDevicePassport(CollectionPersistenceContext pctx, HubContext hctx, String id) {
-        pctx.remove(idProvider.createDevicePassportId(hctx, id));
-        pctx.removeFromSet(idProvider.createDevicePassportsId(hctx), id);
-        pctx.commit();
-    }
-
-    public void deleteDeviceVariable(CollectionPersistenceContext pctx, VariableContext vctx) {
-        pctx.remove(idProvider.createVariableId(vctx));
-        pctx.removeFromSet(idProvider.createDeviceVariablesId(vctx.getDeviceContext()), vctx.getName());
+    public void deleteDeviceVariable(CollectionPersistenceContext pctx, DeviceVariableContext vctx) {
+        pctx.remove(idProvider.createDeviceVariableId(vctx).getId());
+        pctx.removeFromSet(idProvider.createDeviceVariablesId(vctx.getDeviceContext()).getId(), vctx.getName());
     }
 
     public void deleteHubConfiguration(CollectionPersistenceContext pctx, HubContext hctx, boolean commit) {
-        pctx.remove(idProvider.createHubConfigurationId(hctx));
+        pctx.remove(idProvider.createHubConfigurationId(hctx).getId());
         if (commit) {
             pctx.commit();
         }
     }
 
     public void deleteLocalPluginConfiguration(CollectionPersistenceContext cpctx, PluginContext pctx, boolean commit) {
-        cpctx.remove(idProvider.createLocalPluginConfigurationId(pctx));
+        cpctx.remove(idProvider.createLocalPluginConfigurationId(pctx).getId());
         if (commit) {
             cpctx.commit();
         }
     }
 
     public void deleteTask(CollectionPersistenceContext pctx, TaskContext tctx) {
-        String actionSetId = (String)pctx.getMapValue(idProvider.createTaskId(tctx), PropertyConstants.ACTION_SET_ID);
-        pctx.remove(idProvider.createTaskId(tctx));
-        pctx.removeFromSet(idProvider.createTasksId(tctx.getHubContext()), tctx.getTaskId());
-        pctx.remove(idProvider.createTaskPropertiesId(tctx));
+        String actionSetId = (String)pctx.getMapValue(idProvider.createTaskId(tctx).getId(), PropertyConstants.ACTION_SET_ID);
+        pctx.remove(idProvider.createTaskId(tctx).getId());
+        pctx.removeFromSet(idProvider.createTasksId(tctx.getHubContext()).getId(), tctx.getTaskId());
+        pctx.remove(idProvider.createTaskPropertiesId(tctx).getId());
         deleteTaskConditions(pctx, tctx);
-        deleteActionSet(tctx.getHubContext(), pctx, actionSetId);
+        deleteActionSet(pctx, tctx.getHubContext(), actionSetId);
         pctx.commit();
     }
 
     public void deletePresenceEntity(CollectionPersistenceContext pctx, PresenceEntityContext pectx) {
-        pctx.remove(idProvider.createPresenceEntityId(pectx));
-        pctx.removeFromSet(idProvider.createPresenceEntitiesId(pectx.getHubContext()), pectx.getEntityId());
+        pctx.remove(idProvider.createPresenceEntityId(pectx).getId());
+        pctx.removeFromSet(idProvider.createPresenceEntitiesId(pectx.getHubContext()).getId(), pectx.getEntityId());
         pctx.commit();
     }
 
     public void deletePresenceLocation(CollectionPersistenceContext pctx, PresenceLocationContext plctx) {
-        pctx.remove(idProvider.createPresenceLocationId(plctx));
-        pctx.removeFromSet(idProvider.createPresenceLocationsId(plctx.getHubContext()), plctx.getLocationId());
+        pctx.remove(idProvider.createPresenceLocationId(plctx).getId());
+        pctx.removeFromSet(idProvider.createPresenceLocationsId(plctx.getHubContext()).getId(), plctx.getLocationId());
         pctx.commit();
     }
 
     public void deleteTaskCondition(CollectionPersistenceContext pctx, TaskContext tctx, String id) {
-        pctx.remove(idProvider.createTaskConditionId(tctx, id));
-        pctx.remove(idProvider.createTaskConditionPropertiesId(tctx, id));
-        pctx.removeFromSet(idProvider.createTaskConditionsId(tctx), id);
+        pctx.remove(idProvider.createTaskConditionId(tctx, id).getId());
+        pctx.remove(idProvider.createTaskConditionPropertiesId(tctx, id).getId());
+        pctx.removeFromSet(idProvider.createTaskConditionsId(tctx).getId(), id);
     }
 
     public void deleteTaskConditions(CollectionPersistenceContext pctx, TaskContext tctx) {
-        for (Object o : pctx.getSet(idProvider.createTaskConditionsId(tctx))) {
+        for (Object o : pctx.getSet(idProvider.createTaskConditionsId(tctx).getId())) {
             deleteTaskCondition(pctx, tctx, o.toString());
         }
     }
@@ -145,12 +138,12 @@ public class CollectionPersister {
     }
 
     public boolean hasDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
-        Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(ctx));
+        Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(ctx).getId());
         return (deviceMap != null && deviceMap.size() > 0);
     }
 
     public PropertyContainer restoreAction(CollectionPersistenceContext pctx, HubContext ctx, String actionId) {
-        String key = idProvider.createActionId(ctx, actionId);
+        String key = idProvider.createActionId(ctx, actionId).getId();
 
         Map<String,Object> map = pctx.getMap(key);
 
@@ -162,7 +155,7 @@ public class CollectionPersister {
     }
 
     public Map<String,Object> restoreActionProperties(HubContext ctx, CollectionPersistenceContext pctx, String actionId) {
-        String key = idProvider.createActionPropertiesId(ctx, actionId);
+        String key = idProvider.createActionPropertiesId(ctx, actionId).getId();
 
         Map<String,Object> map = pctx.getMap(key);
 
@@ -175,7 +168,7 @@ public class CollectionPersister {
     }
 
     public PropertyContainerSet restoreActionSet(HubContext ctx, CollectionPersistenceContext pctx, String actionSetId) {
-        String key = idProvider.createActionSetId(ctx, actionSetId);
+        String key = idProvider.createActionSetId(ctx, actionSetId).getId();
 
         Map<String,Object> map = pctx.getMap(key);
 
@@ -185,7 +178,7 @@ public class CollectionPersister {
                 tas.setName((String)map.get(PropertyConstants.NAME));
             }
             List<PropertyContainer> actions = new ArrayList<>();
-            for (Object o : pctx.getSet(idProvider.createActionSetActionsId(ctx, actionSetId))) {
+            for (Object o : pctx.getSet(idProvider.createActionSetActionsId(ctx, actionSetId).getId())) {
                 actions.add(restoreAction(pctx, ctx, (String)o));
             }
             tas.setProperties(actions);
@@ -195,98 +188,137 @@ public class CollectionPersister {
         return null;
     }
 
-    public DataStream restoreDataStream(CollectionPersistenceContext pctx, String dataStreamId) {
+    public DataStream restoreDataStream(CollectionPersistenceContext pctx, HubContext hctx, String dataStreamId) {
         List<DataStreamField> fields = new ArrayList<>();
 
-        Set<Object> set = pctx.getSet(idProvider.createDataStreamFieldsId(dataStreamId));
+        Set<Object> set = pctx.getSet(idProvider.createDataStreamFieldsId(hctx, dataStreamId).getId());
         for (Object fieldId : set) {
-            Map<String,Object> map2 = pctx.getMap(idProvider.createDataStreamFieldId(dataStreamId, (String)fieldId));
-            fields.add(new DataStreamField((String)fieldId, (String)map2.get("name"), VariableContext.create((String)map2.get("variableId"))));
+            Map<String,Object> map2 = pctx.getMap(idProvider.createDataStreamFieldId(hctx, dataStreamId, (String)fieldId).getId());
+            fields.add(new DataStreamField((String)fieldId, (String)map2.get("name"), DeviceVariableContext.create((String)map2.get("variableId"))));
         }
 
         HashSet<String> tags = new HashSet<>();
-        for (Object o : pctx.getSet(idProvider.createDataStreamTagsId(dataStreamId))) {
+        for (Object o : pctx.getSet(idProvider.createDataStreamTagsId(hctx, dataStreamId).getId())) {
             tags.add(o.toString());
         }
 
-        Map<String,Object> map2 = pctx.getMap(idProvider.createDataStreamId(dataStreamId));
+        Map<String,Object> map2 = pctx.getMap(idProvider.createDataStreamId(hctx, dataStreamId).getId());
         return new DataStream(dataStreamId, (String)map2.get(PropertyConstants.NAME), fields, tags);
     }
 
-    public HobsonDevice restoreDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
-        Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(ctx));
+    public HobsonDeviceDescriptor restoreDevice(CollectionPersistenceContext pctx, DeviceContext ctx) {
+        Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(ctx).getId());
         String name = (String)deviceMap.get(PropertyConstants.NAME);
         String type = (String)deviceMap.get(PropertyConstants.TYPE);
 
         if (name != null && type != null) {
-            return new HobsonDeviceStub.Builder(ctx).
-                    name(name).
-                    type(DeviceType.valueOf(type)).
-                    manufacturerName((String)deviceMap.get(PropertyConstants.MANUFACTURER_NAME)).
-                    manufacturerVersion((String)deviceMap.get(PropertyConstants.MANUFACTURER_VERSION)).
-                    modelName((String)deviceMap.get(PropertyConstants.MODEL_NAME)).
-                    preferredVariableName((String)deviceMap.get(PropertyConstants.PREFERRED_VARIABLE_NAME)).
-                    build();
+            // restore configuration class
+            PropertyContainerClass pcc = (PropertyContainerClass)deviceMap.get("cclass");
+
+            // restore variable descriptions
+            List<DeviceVariableDescriptor> descriptions = new ArrayList<>();
+            Set<Object> vdSet = pctx.getSet(idProvider.createDeviceVariablesId(ctx).getId());
+            for (Object o : vdSet) {
+                String vname = o.toString();
+                descriptions.add(restoreDeviceVariableDescription(pctx, ctx, vname));
+            }
+
+            // restore action classes
+            List<ActionClass> actionClasses = null;
+            Set<Object> acSet = pctx.getSet(idProvider.createDeviceActionClassesId(ctx).getId());
+            if (acSet != null && acSet.size() > 0) {
+                actionClasses = new ArrayList<>();
+                for (Object o : acSet) {
+                    String actionClassId = o.toString();
+                    actionClasses.add(restoreDeviceActionClass(pctx, ctx, actionClassId));
+                }
+            }
+
+            // restore tags
+            Set<String> tags = null;
+            Set<Object> tagSet = pctx.getSet(idProvider.createDeviceTagsId(ctx).getId());
+            if (tagSet != null && tagSet.size() > 0) {
+                tags = new HashSet<>();
+                for (Object o : tagSet) {
+                    tags.add(o.toString());
+                }
+            }
+
+            return new HobsonDeviceDescriptor.Builder(ctx).
+                name(name).
+                type(DeviceType.valueOf(type)).
+                configurationClass(pcc).
+                manufacturerName((String)deviceMap.get(PropertyConstants.MANUFACTURER_NAME)).
+                manufacturerVersion((String)deviceMap.get(PropertyConstants.MANUFACTURER_VERSION)).
+                modelName((String)deviceMap.get(PropertyConstants.MODEL_NAME)).
+                preferredVariableName((String)deviceMap.get(PropertyConstants.PREFERRED_VARIABLE_NAME)).
+                variableDescriptions(descriptions).
+                actionClasses(actionClasses).
+                tags(tags).
+                build();
         } else {
             return null;
         }
     }
 
     public Map<String,Object> restoreDeviceConfiguration(CollectionPersistenceContext pctx, DeviceContext ctx) {
-        Map<String,Object> map = pctx.getMap(idProvider.createDeviceConfigurationId(ctx));
+        Map<String,Object> map = pctx.getMap(idProvider.createDeviceConfigurationId(ctx).getId());
         return map != null ? map : new HashMap<String,Object>();
     }
 
     public Long restoreDeviceLastCheckIn(CollectionPersistenceContext pctx, DeviceContext dctx) {
-        return (Long)pctx.getMapValue(idProvider.createDeviceId(dctx), PropertyConstants.LAST_CHECKIN);
+        return (Long)pctx.getMapValue(idProvider.createDeviceId(dctx).getId(), PropertyConstants.LAST_CHECKIN);
     }
 
-    public DevicePassport restoreDevicePassport(CollectionPersistenceContext pctx, HubContext hctx, String passportId) {
-        Map<String,Object> map = pctx.getMap(idProvider.createDevicePassportId(hctx, passportId));
-        if (map != null) {
-            String deviceId = (String) map.get(PropertyConstants.DEVICE_ID);
-            if (deviceId != null) {
-                DevicePassport db = new DevicePassport(
-                        hctx,
-                        passportId,
-                        deviceId,
-                        (Long)map.get(PropertyConstants.CREATION_TIME),
-                        (Long)map.get(PropertyConstants.ACTIVATION_TIME)
-                );
-                db.setSecret((String)map.get(PropertyConstants.SECRET));
-                return db;
-            }
-        }
-        return null;
+    public String restoreDeviceName(CollectionPersistenceContext pctx, DeviceContext dctx) {
+        Map<String,Object> deviceMap = pctx.getMap(idProvider.createDeviceId(dctx).getId());
+        return (String)deviceMap.get(PropertyConstants.NAME);
     }
 
-    public HobsonVariable restoreDeviceVariable(CollectionPersistenceContext pctx, DeviceContext ctx, String name) {
-        Map<String,Object> varMap = pctx.getMap(idProvider.createVariableId(VariableContext.create(ctx, name)));
-        if (varMap.size() > 0) {
-            String proxyType = (String)varMap.get(PropertyConstants.MEDIA_TYPE);
-            return new ImmutableHobsonVariable(
-                    VariableContext.create(ctx, name),
-                    varMap.containsKey(PropertyConstants.MASK) ? HobsonVariable.Mask.valueOf((String)varMap.get(PropertyConstants.MASK)) : null,
-                    varMap.get(PropertyConstants.VALUE), (Long)varMap.get(PropertyConstants.LAST_UPDATE), proxyType != null ? VariableMediaType.valueOf(proxyType) : null
-            );
-        } else {
-            return null;
+    public Set<String> restoreDeviceTags(CollectionPersistenceContext pctx, DeviceContext dctx) {
+        Set<String> results = new HashSet<>();
+        Set<Object> tags = pctx.getSet(idProvider.createDeviceTagsId(dctx).getId());
+        for (Object o : tags) {
+            results.add(o.toString());
         }
+        return results;
+    }
+
+    public DeviceVariableDescriptor restoreDeviceVariableDescription(CollectionPersistenceContext pctx, DeviceContext ctx, String name) {
+        Map<String,Object> map = pctx.getMap(idProvider.createDeviceVariableDescriptionId(DeviceVariableContext.create(ctx, name)).getId());
+        return new DeviceVariableDescriptor(
+            DeviceVariableContext.create((String)map.get(PropertyConstants.CONTEXT)),
+            VariableMask.valueOf((String)map.get(PropertyConstants.MASK)),
+            map.containsKey(PropertyConstants.MEDIA_TYPE) ? VariableMediaType.valueOf((String)map.get(PropertyConstants.MEDIA_TYPE)) : null
+        );
+    }
+
+    public ActionClass restoreDeviceActionClass(CollectionPersistenceContext pctx, DeviceContext ctx, String actionClassId) {
+        Map<String,Object> map = pctx.getMap(idProvider.createDeviceActionClassId(ctx, actionClassId).getId());
+        ActionClass ac = new ActionClass(
+            PropertyContainerClassContext.create(ctx, actionClassId),
+            (String)map.get(PropertyConstants.NAME),
+            (String)map.get(PropertyConstants.DESCRIPTION),
+            (Boolean)map.get(PropertyConstants.TASK_ACTION),
+            (Long)map.get(PropertyConstants.TIMEOUT_INTERVAL)
+        );
+        ac.setSupportedProperties((List<TypedProperty>)map.get(PropertyConstants.SUPPORTED_PROPERTIES)); // TODO
+        return ac;
     }
 
     public Map<String,Object> restoreHubConfiguration(CollectionPersistenceContext cpctx, HubContext hctx, PropertyContainerClassContext pccctx) {
-        Map<String,Object> map = cpctx.getMap(idProvider.createHubConfigurationId(hctx));
+        Map<String,Object> map = cpctx.getMap(idProvider.createHubConfigurationId(hctx).getId());
         return map != null ? map : new HashMap<String,Object>();
     }
 
     public Map<String,Object> restoreLocalPluginConfiguration(CollectionPersistenceContext cpctx, PluginContext pctx) {
-        Map<String,Object> map = cpctx.getMap(idProvider.createLocalPluginConfigurationId(pctx));
+        Map<String,Object> map = cpctx.getMap(idProvider.createLocalPluginConfigurationId(pctx).getId());
         return map != null ? map : new HashMap<String,Object>();
 
     }
 
     public PresenceEntity restorePresenceEntity(CollectionPersistenceContext pctx, PresenceEntityContext pectx) {
-        Map<String,Object> map = pctx.getMap(idProvider.createPresenceEntityId(pectx));
+        Map<String,Object> map = pctx.getMap(idProvider.createPresenceEntityId(pectx).getId());
         if (map != null && map.size() > 0) {
             return new PresenceEntity(pectx, (String)map.get(PropertyConstants.NAME), (Long)map.get(PropertyConstants.LAST_UPDATE));
         }
@@ -295,7 +327,7 @@ public class CollectionPersister {
 
     public PresenceLocation restorePresenceLocation(CollectionPersistenceContext pctx, PresenceLocationContext plctx) {
         if (plctx != null) {
-            Map<String, Object> map = pctx.getMap(idProvider.createPresenceLocationId(plctx));
+            Map<String, Object> map = pctx.getMap(idProvider.createPresenceLocationId(plctx).getId());
             if (map != null && map.size() > 0) {
                 return new PresenceLocation(
                         plctx,
@@ -311,21 +343,21 @@ public class CollectionPersister {
         return null;
     }
 
-    public HobsonTask restoreTask(CollectionPersistenceContext pctx, TaskContext tctx) {
+    public HobsonTask restoreTask(CollectionPersistenceContext taskCtx, TaskContext tctx) {
         HobsonTask task = null;
-        Map<String,Object> taskMap = pctx.getMap(idProvider.createTaskId(tctx));
+        Map<String,Object> taskMap = taskCtx.getMap(idProvider.createTaskId(tctx).getId());
         if (taskMap != null && taskMap.size() > 0) {
             task = new HobsonTask(
-                    tctx,
-                    (String)taskMap.get(PropertyConstants.NAME),
-                    (String)taskMap.get(PropertyConstants.DESCRIPTION),
-                    null,
-                    null,
-                    restoreActionSet(tctx.getHubContext(), pctx, (String)taskMap.get(PropertyConstants.ACTION_SET_ID))
+                tctx,
+                (String)taskMap.get(PropertyConstants.NAME),
+                (String)taskMap.get(PropertyConstants.DESCRIPTION),
+                null,
+                null,
+                new PropertyContainerSet((String)taskMap.get(PropertyConstants.ACTION_SET_ID))
             );
 
             // restore properties
-            Map<String, Object> map = pctx.getMap(idProvider.createTaskPropertiesId(tctx));
+            Map<String, Object> map = taskCtx.getMap(idProvider.createTaskPropertiesId(tctx).getId());
             if (map != null) {
                 for (String name : map.keySet()) {
                     task.setProperty(name, map.get(name));
@@ -333,13 +365,13 @@ public class CollectionPersister {
             }
 
             // restore conditions
-            Set<Object> set = pctx.getSet(idProvider.createTaskConditionsId(tctx));
+            Set<Object> set = taskCtx.getSet(idProvider.createTaskConditionsId(tctx).getId());
             if (set != null) {
                 List<PropertyContainer> conditions = new ArrayList<>();
                 for (Object o : set) {
                     String conditionId = (String)o;
-                    map = pctx.getMap(idProvider.createTaskConditionId(tctx, conditionId));
-                    Map<String, Object> values = pctx.getMap(idProvider.createTaskConditionPropertiesId(tctx, conditionId));
+                    map = taskCtx.getMap(idProvider.createTaskConditionId(tctx, conditionId).getId());
+                    Map<String, Object> values = taskCtx.getMap(idProvider.createTaskConditionPropertiesId(tctx, conditionId).getId());
                     conditions.add(
                         new PropertyContainer(
                             conditionId,
@@ -359,7 +391,7 @@ public class CollectionPersister {
     }
 
     public void saveAction(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainer action) {
-        String key = idProvider.createActionId(ctx, action.getId());
+        String key = idProvider.createActionId(ctx, action.getId()).getId();
 
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.ID, action.getId());
@@ -372,7 +404,7 @@ public class CollectionPersister {
     }
 
     public void saveActionProperties(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainer action) {
-        String key = idProvider.createActionPropertiesId(ctx, action.getId());
+        String key = idProvider.createActionPropertiesId(ctx, action.getId()).getId();
 
         Map<String,Object> map = new HashMap<>();
 
@@ -385,12 +417,12 @@ public class CollectionPersister {
 
     public String saveActionSet(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainerSet actionSet) {
         if (actionSet.hasId()) {
-            deleteActionSet(ctx, pctx, actionSet.getId());
+            deleteActionSet(pctx, ctx, actionSet.getId());
         } else {
             actionSet.setId(UUID.randomUUID().toString());
         }
 
-        String key = idProvider.createActionSetId(ctx, actionSet.getId());
+        String key = idProvider.createActionSetId(ctx, actionSet.getId()).getId();
 
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.ID, actionSet.getId());
@@ -405,13 +437,13 @@ public class CollectionPersister {
                     action.setId(UUID.randomUUID().toString());
                 }
                 saveAction(ctx, pctx, action);
-                pctx.addSetValue(idProvider.createActionSetActionsId(ctx, actionSet.getId()), action.getId());
+                pctx.addSetValue(idProvider.createActionSetActionsId(ctx, actionSet.getId()).getId(), action.getId());
             }
         }
 
         pctx.setMap(key, map);
 
-        pctx.addSetValue(idProvider.createActionSetsId(ctx), actionSet.getId());
+        pctx.addSetValue(idProvider.createActionSetsId(ctx).getId(), actionSet.getId());
 
         pctx.commit();
 
@@ -431,24 +463,24 @@ public class CollectionPersister {
         if (pc.getContainerClassContext().hasPluginContext()) {
             cmap.put(PropertyConstants.PLUGIN_ID, pc.getContainerClassContext().getPluginId());
         }
-        pctx.setMap(idProvider.createTaskConditionId(tctx, pc.getId()), cmap);
-        pctx.addSetValue(idProvider.createTaskConditionsId(tctx), pc.getId());
+        pctx.setMap(idProvider.createTaskConditionId(tctx, pc.getId()).getId(), cmap);
+        pctx.addSetValue(idProvider.createTaskConditionsId(tctx).getId(), pc.getId());
         if (pc.hasPropertyValues()) {
             Map<String, Object> m = new HashMap<>();
             for (String pvalName : pc.getPropertyValues().keySet()) {
                 m.put(pvalName, pc.getPropertyValues().get(pvalName));
             }
-            pctx.setMap(idProvider.createTaskConditionPropertiesId(tctx, pc.getId()), m);
+            pctx.setMap(idProvider.createTaskConditionPropertiesId(tctx, pc.getId()).getId(), m);
         }
     }
 
-    public void saveDataStream(CollectionPersistenceContext pctx, DataStream dataStream) {
+    public void saveDataStream(CollectionPersistenceContext pctx, HubContext hctx, DataStream dataStream) {
         // save data stream meta data
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.ID, dataStream.getId());
         map.put(PropertyConstants.NAME, dataStream.getName());
 
-        pctx.setMap(idProvider.createDataStreamId(dataStream.getId()), map);
+        pctx.setMap(idProvider.createDataStreamId(hctx, dataStream.getId()).getId(), map);
 
         // save data stream variables
         for (DataStreamField dsf : dataStream.getFields()) {
@@ -457,117 +489,119 @@ public class CollectionPersister {
             if (dsfid == null) {
                 throw new HobsonRuntimeException("Data stream field with no ID found");
             }
-            String fid = idProvider.createDataStreamFieldId(dataStream.getId(), dsfid);
+            String fid = idProvider.createDataStreamFieldId(hctx, dataStream.getId(), dsfid).getId();
             map2.put("id", dsfid);
             map2.put("name", dsf.getName());
             map2.put("variableId", dsf.getVariable().toString());
             pctx.setMap(fid, map2);
 
             if (dataStream.hasTags()) {
-                pctx.setSet(idProvider.createDataStreamTagsId(dataStream.getId()), (Set<Object>)(Set<?>)dataStream.getTags());
+                pctx.setSet(idProvider.createDataStreamTagsId(hctx, dataStream.getId()).getId(), (Set<Object>)(Set<?>)dataStream.getTags());
             }
 
-            pctx.addSetValue(idProvider.createDataStreamFieldsId(dataStream.getId()), dsfid);
+            pctx.addSetValue(idProvider.createDataStreamFieldsId(hctx, dataStream.getId()).getId(), dsfid);
         }
 
         // add data stream ID to set of hub data streams
-        pctx.addSetValue(idProvider.createDataStreamsId(), dataStream.getId());
+        pctx.addSetValue(idProvider.createDataStreamsId(hctx).getId(), dataStream.getId());
 
         // commit
         pctx.commit();
     }
 
-    public void saveDevice(CollectionPersistenceContext pctx, HobsonDevice device) {
+    public void saveDevice(CollectionPersistenceContext pctx, HobsonDeviceDescriptor device) {
         // create device map
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.NAME, device.getName());
         map.put(PropertyConstants.TYPE, device.getType() != null ? device.getType().toString() : null);
+        map.put("cclass", device.getConfigurationClass());
         map.put(PropertyConstants.MANUFACTURER_NAME, device.getManufacturerName());
         map.put(PropertyConstants.MANUFACTURER_VERSION, device.getManufacturerVersion());
         map.put(PropertyConstants.MODEL_NAME, device.getModelName());
         map.put(PropertyConstants.PREFERRED_VARIABLE_NAME, device.getPreferredVariableName());
 
         // save the map
-        String deviceId = idProvider.createDeviceId(device.getContext());
+        String deviceId = idProvider.createDeviceId(device.getContext()).getId();
         pctx.setMap(deviceId, map);
 
+        // save the device variables
+        if (device.hasVariableDescriptions()) {
+            for (DeviceVariableDescriptor vd : device.getVariables()) {
+                saveDeviceVariableDescription(pctx, vd);
+            }
+        }
+
+        // save the action classes
+        if (device.hasActionClasses()) {
+            for (ActionClass ac : device.getActionClasses()) {
+                saveDeviceActionClass(pctx, ac);
+            }
+        }
+
+        // save the tags
+        if (device.hasTags()) {
+            saveDeviceTags(pctx, device.getContext(), device.getTags());
+        }
+
         // save device to list of hub devices
-        pctx.addSetValue(idProvider.createDevicesId(device.getContext().getHubContext()), deviceId);
+        pctx.addSetValue(idProvider.createDevicesId(device.getContext().getHubContext()).getId(), deviceId);
+
+        // save device to list of plugin devices
+        pctx.addSetValue(idProvider.createPluginDevicesId(device.getContext().getPluginContext()).getId(), deviceId);
 
         // commit
         pctx.commit();
     }
 
     public void saveDeviceConfiguration(CollectionPersistenceContext pctx, DeviceContext dctx, Map<String,Object> config) {
-        pctx.setMap(idProvider.createDeviceConfigurationId(dctx), config);
+        pctx.setMap(idProvider.createDeviceConfigurationId(dctx).getId(), config);
         // also set the device name specifically if it has changed
         if (config.containsKey(PropertyConstants.NAME)) {
-            pctx.setMapValue(idProvider.createDeviceId(dctx), PropertyConstants.NAME, config.get(PropertyConstants.NAME));
+            pctx.setMapValue(idProvider.createDeviceId(dctx).getId(), PropertyConstants.NAME, config.get(PropertyConstants.NAME));
         }
         pctx.commit();
     }
 
     public void saveDeviceLastCheckIn(CollectionPersistenceContext pctx, DeviceContext dctx, long lastCheckin) {
-        pctx.setMapValue(idProvider.createDeviceId(dctx), PropertyConstants.LAST_CHECKIN, lastCheckin);
+        pctx.setMapValue(idProvider.createDeviceId(dctx).getId(), PropertyConstants.LAST_CHECKIN, lastCheckin);
         pctx.commit();
     }
 
-    public void saveDevicePassport(CollectionPersistenceContext pctx, HubContext hctx, DevicePassport db) {
-        Map<String,Object> map = new HashMap<>();
-        map.put(PropertyConstants.ID, db.getId());
-        map.put(PropertyConstants.DEVICE_ID, db.getDeviceId());
-        map.put(PropertyConstants.SECRET, db.getSecret());
-        map.put(PropertyConstants.CREATION_TIME, db.getCreationTime());
-        if (db.isActivated()) {
-            map.put(PropertyConstants.ACTIVATION_TIME, db.getActivationTime());
-        }
-        pctx.setMap(idProvider.createDevicePassportId(hctx, db.getId()), map);
-        pctx.addSetValue(idProvider.createDevicePassportsId(hctx), db.getId());
+    public void saveDeviceName(CollectionPersistenceContext pctx, DeviceContext dctx, String name) {
+        String deviceId = idProvider.createDeviceId(dctx).getId();
+        Map<String,Object> deviceMap = pctx.getMap(deviceId);
+        Map<String,Object> map = new HashMap<>(deviceMap);
+        map.put(PropertyConstants.NAME, name);
+        pctx.setMap(deviceId, map);
+        pctx.commit();
+
+    }
+
+    public void saveDeviceTags(CollectionPersistenceContext pctx, DeviceContext dctx, Set<String> tags) {
+        String deviceTagId = idProvider.createDeviceTagsId(dctx).getId();
+        pctx.setSet(deviceTagId, new HashSet<Object>(tags));
         pctx.commit();
     }
 
-    public void saveDeviceVariable(CollectionPersistenceContext pctx, HobsonVariable var) {
-        // build a device variable map
+    public void saveGlobalVariable(CollectionPersistenceContext pctx, GlobalVariableDescriptor desc, GlobalVariable val) {
         Map<String,Object> map = new HashMap<>();
-        map.put(PropertyConstants.PLUGIN_ID, var.getPluginId());
-        map.put(PropertyConstants.DEVICE_ID, var.getDeviceId());
-        map.put(PropertyConstants.NAME, var.getName());
-        map.put(PropertyConstants.MASK, var.getMask() != null ? var.getMask().toString() : null);
-        map.put(PropertyConstants.LAST_UPDATE, var.getLastUpdate());
-        map.put(PropertyConstants.VALUE, var.getValue());
-        if (var.hasMediaType()) {
-            map.put(PropertyConstants.MEDIA_TYPE, var.getMediaType().toString());
-        }
+        map.put(PropertyConstants.HUB_ID, desc.getHubId());
+        map.put(PropertyConstants.PLUGIN_ID, desc.getPluginId());
+        map.put(PropertyConstants.NAME, desc.getName());
+        map.put(PropertyConstants.LAST_UPDATE, val.getLastUpdate());
+        map.put(PropertyConstants.VALUE, StringConversionUtil.createTypedValueString(val.getValue()));
 
-        // save the map
-        pctx.setMap(idProvider.createVariableId(var.getContext()), map);
-
-        // save the variable name in the device variable set
-        pctx.addSetValue(idProvider.createDeviceVariablesId(var.getContext().getDeviceContext()), var.getName());
-
-        // commit
-        pctx.commit();
-    }
-
-    public void saveGlobalVariable(CollectionPersistenceContext pctx, HubContext hctx, HobsonVariable var) {
-        Map<String,Object> map = new HashMap<>();
-        map.put(PropertyConstants.PLUGIN_ID, var.getPluginId());
-        map.put(PropertyConstants.NAME, var.getName());
-        map.put(PropertyConstants.MASK, var.getMask().toString());
-        map.put(PropertyConstants.LAST_UPDATE, var.getLastUpdate());
-        map.put(PropertyConstants.VALUE, StringConversionUtil.createTypedValueString(var.getValue()));
-
-        pctx.setMap(idProvider.createGlobalVariableId(hctx, var.getName()), map);
+        pctx.setMap(idProvider.createGlobalVariableId(desc.getContext()).getId(), map);
         pctx.commit();
     }
 
     public void saveHubConfiguration(CollectionPersistenceContext cpctx, HubContext hctx, Map<String,Object> config) {
-        cpctx.setMap(idProvider.createHubConfigurationId(hctx), config);
+        cpctx.setMap(idProvider.createHubConfigurationId(hctx).getId(), config);
         cpctx.commit();
     }
 
     public void saveLocalPluginConfiguration(CollectionPersistenceContext cpctx, PluginContext pctx, Map<String,Object> config) {
-        cpctx.setMap(idProvider.createLocalPluginConfigurationId(pctx), config);
+        cpctx.setMap(idProvider.createLocalPluginConfigurationId(pctx).getId(), config);
         cpctx.commit();
     }
 
@@ -587,7 +621,7 @@ public class CollectionPersister {
             for (String name : taskPropMap.keySet()) {
                 m.put(name, taskPropMap.get(name));
             }
-            pctx.setMap(idProvider.createTaskPropertiesId(task.getContext()), m);
+            pctx.setMap(idProvider.createTaskPropertiesId(task.getContext()).getId(), m);
         }
 
         // save task conditions
@@ -599,19 +633,23 @@ public class CollectionPersister {
         }
 
         // save task action set
-        map.put(PropertyConstants.ACTION_SET_ID, saveActionSet(task.getContext().getHubContext(), pctx, task.getActionSet()));
+        if (task.getActionSet().hasId()) {
+            map.put(PropertyConstants.ACTION_SET_ID, task.getActionSet().getId());
+        } else {
+            throw new HobsonRuntimeException("Attempt to save task without action set ID");
+        }
 
         // set the task map
-        pctx.setMap(idProvider.createTaskId(task.getContext()), map);
+        pctx.setMap(idProvider.createTaskId(task.getContext()).getId(), map);
 
         // add task ID to task id list
-        pctx.addSetValue(idProvider.createTasksId(task.getContext().getHubContext()), task.getContext().getTaskId());
+        pctx.addSetValue(idProvider.createTasksId(task.getContext().getHubContext()).getId(), task.getContext().getTaskId());
 
         pctx.commit();
     }
 
     public void savePresenceEntity(CollectionPersistenceContext pctx, PresenceEntity pe) {
-        String key = idProvider.createPresenceEntityId(pe.getContext());
+        String key = idProvider.createPresenceEntityId(pe.getContext()).getId();
 
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.CONTEXT, pe.getContext().toString());
@@ -621,12 +659,12 @@ public class CollectionPersister {
         }
 
         pctx.setMap(key, map);
-        pctx.addSetValue(idProvider.createPresenceEntitiesId(pe.getContext().getHubContext()), pe.getContext().getEntityId());
+        pctx.addSetValue(idProvider.createPresenceEntitiesId(pe.getContext().getHubContext()).getId(), pe.getContext().getEntityId());
         pctx.commit();
     }
 
     public void savePresenceLocation(CollectionPersistenceContext pctx, PresenceLocation pl) {
-        String key = idProvider.createPresenceLocationId(pl.getContext());
+        String key = idProvider.createPresenceLocationId(pl.getContext()).getId();
 
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.CONTEXT, pl.getContext().toString());
@@ -642,7 +680,39 @@ public class CollectionPersister {
         }
 
         pctx.setMap(key, map);
-        pctx.addSetValue(idProvider.createPresenceLocationsId(pl.getContext().getHubContext()), pl.getContext().getLocationId());
+        pctx.addSetValue(idProvider.createPresenceLocationsId(pl.getContext().getHubContext()).getId(), pl.getContext().getLocationId());
+
+        pctx.commit();
+    }
+
+    public void saveDeviceVariableDescription(CollectionPersistenceContext pctx, DeviceVariableDescriptor vd) {
+        String key = idProvider.createDeviceVariableDescriptionId(vd.getContext()).getId();
+
+        Map<String,Object> map = new HashMap<>();
+        map.put(PropertyConstants.CONTEXT, vd.getContext().toString());
+        map.put(PropertyConstants.NAME, vd.getContext().getName());
+        map.put(PropertyConstants.MASK, vd.getMask().toString());
+        if (vd.hasMediaType()) {
+            map.put(PropertyConstants.MEDIA_TYPE, vd.getMediaType().toString());
+        }
+        pctx.setMap(key, map);
+        pctx.addSetValue(idProvider.createDeviceVariablesId(vd.getContext().getDeviceContext()).getId(), vd.getContext().getName());
+
+        pctx.commit();
+    }
+
+    public void saveDeviceActionClass(CollectionPersistenceContext pctx, ActionClass ac) {
+        DeviceContext dctx = DeviceContext.create(ac.getContext().getPluginContext(), ac.getContext().getDeviceId());
+        String key = idProvider.createDeviceActionClassId(dctx, ac.getContext().getContainerClassId()).getId();
+
+        Map<String,Object> map = new HashMap<>();
+        map.put(PropertyConstants.NAME, ac.getName());
+        map.put(PropertyConstants.DESCRIPTION, ac.getDescription());
+        map.put(PropertyConstants.TASK_ACTION, ac.isTaskAction());
+        map.put(PropertyConstants.TIMEOUT_INTERVAL, ac.getTimeoutInterval());
+        map.put(PropertyConstants.SUPPORTED_PROPERTIES, ac.getSupportedProperties()); // TODO
+        pctx.setMap(key, map);
+        pctx.addSetValue(idProvider.createDeviceActionClassesId(dctx).getId(), ac.getContext().getContainerClassId());
 
         pctx.commit();
     }

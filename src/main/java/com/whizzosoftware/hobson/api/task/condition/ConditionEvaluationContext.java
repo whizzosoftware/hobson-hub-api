@@ -7,7 +7,10 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.task.condition;
 
-import com.whizzosoftware.hobson.api.variable.VariableManager;
+import com.whizzosoftware.hobson.api.hub.HubContext;
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
 
 /**
  * An interface used by callbacks that evaluate conditions.
@@ -15,5 +18,6 @@ import com.whizzosoftware.hobson.api.variable.VariableManager;
  * @author Dan Noguerol
  */
 public interface ConditionEvaluationContext {
-    VariableManager getVariableManager();
+    PropertyContainer getHubConfiguration(HubContext ctx);
+    DeviceVariableState getDeviceVariableState(DeviceVariableContext dvctx);
 }

@@ -1,21 +1,30 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2014 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.plugin;
 
+import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.image.ImageInputStream;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
+import com.whizzosoftware.hobson.api.variable.GlobalVariable;
+import com.whizzosoftware.hobson.api.variable.GlobalVariableContext;
+import io.netty.util.concurrent.Future;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Map;
 
 /**
- * An interface for managing Hobson plugins.
+ * An interface for managing Hobson plugin functions.
  *
  * Note that this interface differentiates between local plugins (i.e. plugins installed on the hub) and remote
  * plugins (i.e. plugins available from a remote repository).
@@ -51,13 +60,31 @@ public interface PluginManager {
     File getDataFile(PluginContext ctx, String filename);
 
     /**
+     * Returns a global variable.
+     *
+     * @param gvctx the variable context
+     *
+     * @return a GlobalVariable instance
+     */
+    GlobalVariable getGlobalVariable(GlobalVariableContext gvctx);
+
+    /**
+     * Returns all global variables published by a plugin.
+     *
+     * @param pctx the plugin context
+     *
+     * @return a Collection of GlobalVariable instances
+     */
+    Collection<GlobalVariable> getGlobalVariables(PluginContext pctx);
+
+    /**
      * Retrieves a specific plugin.
      *
      * @param ctx the context of the target plugin
      *
      * @return a HobsonPlugin instance (or null if not found)
      */
-    HobsonPlugin getLocalPlugin(PluginContext ctx);
+    HobsonLocalPluginDescriptor getLocalPlugin(PluginContext ctx);
 
     /**
      * Returns the plugin level configuration.
@@ -69,6 +96,25 @@ public interface PluginManager {
     PropertyContainer getLocalPluginConfiguration(PluginContext ctx);
 
     /**
+     * Returns the last check in time of a plugin's device.
+     *
+     * @param ctx the plugin context
+     * @param deviceId the device ID
+     *
+     * @return the last check in time (or null if the device has never checked in)
+     */
+    Long getLocalPluginDeviceLastCheckin(PluginContext ctx, String deviceId);
+
+    /**
+     * Returns information about a plugin device variable.
+     *
+     * @param ctx the variable context
+     *
+     * @return a DeviceVariableState instance
+     */
+    DeviceVariableState getLocalPluginDeviceVariable(DeviceVariableContext ctx);
+
+    /**
      * Returns a plugin's icon.
      *
      * @param ctx the context of the target plugin
@@ -78,13 +124,13 @@ public interface PluginManager {
     ImageInputStream getLocalPluginIcon(PluginContext ctx);
 
     /**
-     * Retrieve descriptors for all locally installed plugins.
+     * Returns information about all local plugins installed on the hub.
      *
-     * @param ctx the context of the target hub
+     * @param ctx the hub context
      *
-     * @return a PluginList
+     * @return a Collection of HobsonLocalPluginDescriptor instances
      */
-    Collection<PluginDescriptor> getLocalPluginDescriptors(HubContext ctx);
+    Collection<HobsonLocalPluginDescriptor> getLocalPlugins(HubContext ctx);
 
     /**
      * Retrieves descriptor for a remotely available plugin.
@@ -93,7 +139,7 @@ public interface PluginManager {
      * @param version the plugin version
      * @return a PluginDescriptor instance
      */
-    PluginDescriptor getRemotePluginDescriptor(PluginContext ctx, String version);
+    HobsonPluginDescriptor getRemotePlugin(PluginContext ctx, String version);
 
     /**
      * Retrieve descriptors for all remotely available plugins.
@@ -102,7 +148,16 @@ public interface PluginManager {
      *
      * @return a PluginList
      */
-    Collection<PluginDescriptor> getRemotePluginDescriptors(HubContext ctx);
+    Collection<HobsonPluginDescriptor> getRemotePlugins(HubContext ctx);
+
+    /**
+     * Retrieve the latest version of available remote plugins.
+     *
+     * @param ctx the hub context
+     *
+     * @return a Map of plugin ID to version string
+     */
+    Map<String,String> getRemotePluginVersions(HubContext ctx);
 
     /**
      * Returns the remote repositories that have been enabled.
@@ -135,7 +190,7 @@ public interface PluginManager {
 
     /**
      * Sets the plugin level configuration.
-     *  @param ctx the context of the target plugin
+     * @param ctx the context of the target plugin
      * @param config the plugin configuration
      */
     void setLocalPluginConfiguration(PluginContext ctx, PropertyContainer config);
@@ -148,4 +203,16 @@ public interface PluginManager {
      * @param value the configuration property value
      */
     void setLocalPluginConfigurationProperty(PluginContext ctx, String name, Object value);
+
+    /**
+     * Starts a plugin device.
+     *
+     * @param device the device proxy
+     * @param name the device's name
+     * @param config the device's configuration
+     * @param runnable a Runnable to execute after the device has started.
+     *
+     * @return a Future that indicates when the device has finished starting
+     */
+    Future startPluginDevice(final HobsonDeviceProxy device, String name, final PropertyContainer config, final Runnable runnable);
 }

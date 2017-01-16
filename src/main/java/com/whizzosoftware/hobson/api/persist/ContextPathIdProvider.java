@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.persist;
 
 import com.whizzosoftware.hobson.api.device.DeviceContext;
@@ -16,7 +18,8 @@ import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassType;
 import com.whizzosoftware.hobson.api.task.TaskContext;
-import com.whizzosoftware.hobson.api.variable.VariableContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
+import com.whizzosoftware.hobson.api.variable.GlobalVariableContext;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -26,61 +29,98 @@ import org.apache.commons.lang3.StringUtils;
  * @author Dan Noguerol
  */
 public class ContextPathIdProvider implements IdProvider {
-    public String createActionId(HubContext ctx, String actionId) {
-        return createHubId(ctx) + HubContext.DELIMITER + "actions" + HubContext.DELIMITER + actionId;
+    public TemplatedId createActionId(HubContext ctx, String actionId) {
+        return new TemplatedId(
+            createHubId(ctx).getId() + HubContext.DELIMITER + "actions" + HubContext.DELIMITER + actionId,
+            ""
+        );
     }
 
-    public String createActionSetId(HubContext ctx, String actionSetId) {
-        return createActionSetsId(ctx) + HubContext.DELIMITER + actionSetId;
-    }
-
-    @Override
-    public String createActionSetActionsId(HubContext ctx, String actionSetId) {
-        return createActionSetId(ctx, actionSetId) + HubContext.DELIMITER + "actions";
-    }
-
-    @Override
-    public String createActionSetsId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "actionSets";
-    }
-
-    public String createActionPropertiesId(HubContext ctx, String actionId) {
-        return createActionId(ctx, actionId) + HubContext.DELIMITER + "properties";
+    public TemplatedId createActionSetId(HubContext ctx, String actionSetId) {
+        return new TemplatedId(
+            createActionSetsId(ctx).getId() + HubContext.DELIMITER + actionSetId,
+            ""
+        );
     }
 
     @Override
-    public String createActivityLogId(HubContext ctx) {
-        return null;
+    public TemplatedId createActionSetActionsId(HubContext ctx, String actionSetId) {
+        return new TemplatedId(
+            createActionSetId(ctx, actionSetId).getId() + HubContext.DELIMITER + "actions",
+            ""
+        );
     }
 
     @Override
-    public String createDataStreamsId() {
-        return "dataStreams";
+    public TemplatedId createActionSetsId(HubContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx).getId() + HubContext.DELIMITER + "actionSets",
+            ""
+        );
     }
 
     @Override
-    public String createDataStreamId(String dataStreamId) {
-        return createDataStreamsId() + HubContext.DELIMITER + dataStreamId;
+    public TemplatedId createActionPropertiesId(HubContext ctx, String actionId) {
+        return new TemplatedId(
+            createActionId(ctx, actionId).getId() + HubContext.DELIMITER + "properties",
+            ""
+        );
     }
 
     @Override
-    public String createDataStreamDataId(String dataStreamId) {
-        return createDataStreamId(dataStreamId) + HubContext.DELIMITER + "data";
+    public TemplatedId createActivityLogId(HubContext ctx) {
+        return new TemplatedId(
+            "",
+            ""
+        );
     }
 
     @Override
-    public String createDataStreamFieldsId(String dataStreamId) {
-        return createDataStreamId(dataStreamId) + HubContext.DELIMITER + "fields";
+    public TemplatedId createDataStreamsId(HubContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx).getId() + HubContext.DELIMITER + "dataStreams",
+            "hubs:{hubId}:dataStreams"
+        );
     }
 
     @Override
-    public String createDataStreamFieldId(String dataStreamId, String fieldId) {
-        return createDataStreamFieldsId(dataStreamId) + HubContext.DELIMITER + fieldId;
+    public TemplatedId createDataStreamId(HubContext ctx, String dataStreamId) {
+        return new TemplatedId(
+            createDataStreamsId(ctx).getId() + HubContext.DELIMITER + dataStreamId,
+            ""
+        );
     }
 
     @Override
-    public String createDataStreamTagsId(String dataStreamId) {
-        return createDataStreamId(dataStreamId) + HubContext.DELIMITER + "tags";
+    public TemplatedId createDataStreamDataId(HubContext ctx, String dataStreamId) {
+        return new TemplatedId(
+            createDataStreamId(ctx, dataStreamId).getId() + HubContext.DELIMITER + "data",
+            ""
+        );
+    }
+
+    @Override
+    public TemplatedId createDataStreamFieldsId(HubContext ctx, String dataStreamId) {
+        return new TemplatedId(
+            createDataStreamId(ctx, dataStreamId).getId() + HubContext.DELIMITER + "fields",
+            ""
+        );
+    }
+
+    @Override
+    public TemplatedId createDataStreamFieldId(HubContext ctx, String dataStreamId, String fieldId) {
+        return new TemplatedId(
+            createDataStreamFieldsId(ctx, dataStreamId).getId() + HubContext.DELIMITER + fieldId,
+            ""
+        );
+    }
+
+    @Override
+    public TemplatedId createDataStreamTagsId(HubContext ctx, String dataStreamId) {
+        return new TemplatedId(
+            createDataStreamId(ctx, dataStreamId).getId() + HubContext.DELIMITER + "tags",
+            ""
+        );
     }
 
     @Override
@@ -104,152 +144,266 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public String createDeviceId(DeviceContext ctx) {
-        return createDevicesId(ctx.getHubContext()) + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId();
+    public TemplatedId createDeviceActionClassId(DeviceContext ctx, String actionClassId) {
+        return new TemplatedId(
+            createDeviceActionClassesId(ctx).getId() + HubContext.DELIMITER + actionClassId,
+            ""
+        );
     }
 
     @Override
-    public String createDevicesId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "devices";
+    public TemplatedId createDeviceActionClassesId(DeviceContext ctx) {
+        return new TemplatedId(
+            createDeviceId(ctx).getId() + HubContext.DELIMITER + "actionClasses",
+            ""
+        );
     }
 
     @Override
-    public String createDevicePassportId(HubContext ctx, String passportId) {
-        return createDevicePassportsId(ctx) + HubContext.DELIMITER + passportId;
+    public TemplatedId createDeviceId(DeviceContext ctx) {
+        return new TemplatedId(
+            createDevicesId(ctx.getHubContext()).getId() + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId(),
+            "hubs:{hubId}:{pluginId}:{deviceId}"
+        );
     }
 
     @Override
-    public String createDevicePassportsId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "passports";
+    public TemplatedId createDevicesId(HubContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx).getId() + HubContext.DELIMITER + "devices",
+            "hubs:{hubId}:devices"
+        );
     }
 
     @Override
-    public String createDeviceConfigurationId(DeviceContext ctx) {
-        return createHubId(ctx.getHubContext()) + HubContext.DELIMITER + "configuration" + HubContext.DELIMITER + "device" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId();
+    public TemplatedId createDeviceConfigurationId(DeviceContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx.getHubContext()).getId() + HubContext.DELIMITER + "configuration" + HubContext.DELIMITER + "device" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId(),
+            ""
+        );
     }
 
     @Override
-    public String createDeviceConfigurationClassId(DeviceContext ctx) {
-        return null;
-    }
-
-    public String createVariablesId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "variables";
-    }
-
-    @Override
-    public String createDeviceVariablesId(DeviceContext ctx) {
-        return createVariablesId(ctx.getHubContext()) + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId();
+    public TemplatedId createDeviceNameId(DeviceContext ctx) {
+        return new TemplatedId(
+            createDeviceId(ctx).getId() + HubContext.DELIMITER + "name",
+            ""
+        );
     }
 
     @Override
-    public String createGlobalVariableId(HubContext ctx, String variableName) {
-        return createGlobalVariablesId(ctx) + HubContext.DELIMITER + variableName;
+    public TemplatedId createDeviceVariableDescriptionId(DeviceVariableContext vctx) {
+        return new TemplatedId(
+            createDeviceVariableId(vctx).getId() + HubContext.DELIMITER + "description",
+            ""
+        );
     }
 
     @Override
-    public String createGlobalVariablesId(HubContext ctx) {
-        return createVariablesId(ctx) + HubContext.DELIMITER + "global";
+    public TemplatedId createDeviceVariableId(DeviceVariableContext vctx) {
+        return new TemplatedId(
+            createHubId(vctx.getHubContext()).getId() + HubContext.DELIMITER + "variables" + HubContext.DELIMITER + vctx.getPluginId() + HubContext.DELIMITER + vctx.getDeviceId() + HubContext.DELIMITER + vctx.getName(),
+            "hubs:{hubId}:variables:{pluginId}:{deviceId}:{name}"
+        );
     }
 
     @Override
-    public String createHubId(HubContext ctx) {
-        return "hubs" + HubContext.DELIMITER + ctx.getHubId();
+    public TemplatedId createDeviceConfigurationClassId(DeviceContext ctx) {
+        return new TemplatedId(
+            "",
+            ""
+        );
     }
 
     @Override
-    public String createUserHubsId(String userId) {
-        return createUserId(userId) + HubContext.DELIMITER + "hubs";
+    public TemplatedId createDeviceTagsId(DeviceContext ctx) {
+        return new TemplatedId(
+            createDeviceId(ctx).getId() + HubContext.DELIMITER + "tags",
+            ""
+        );
     }
 
     @Override
-    public String createUsersId() {
-        return "users";
+    public TemplatedId createLocalPluginActionClassesId(PluginContext ctx) {
+        return new TemplatedId(
+            createPluginId(ctx) + HubContext.DELIMITER + "actionClasses",
+            ""
+        );
     }
 
     @Override
-    public VariableContext createVariableContext(String variableId) {
+    public TemplatedId createPluginDeviceConfigurationClassesId(PluginContext ctx) {
+        return new TemplatedId(
+            createPluginId(ctx) + HubContext.DELIMITER + "deviceConfigurationClasses",
+            ""
+        );
+    }
+
+    @Override
+    public TemplatedId createPluginDeviceConfigurationClassId(PluginContext ctx, String name) {
+        return new TemplatedId(
+            createPluginDeviceConfigurationClassesId(ctx).getId() + HubContext.DELIMITER + name,
+            ""
+        );
+    }
+
+    private String createVariablesId(HubContext ctx) {
+        return createHubId(ctx).getId() + HubContext.DELIMITER + "variables";
+    }
+
+    @Override
+    public TemplatedId createDeviceVariablesId(DeviceContext ctx) {
+        return new TemplatedId(
+            createVariablesId(ctx.getHubContext()) + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId(),
+            "hubs:{hubId}:variables:{pluginId}:{deviceId}"
+        );
+    }
+
+    @Override
+    public TemplatedId createGlobalVariableId(GlobalVariableContext gvctx) {
+        return new TemplatedId(
+            createVariablesId(gvctx.getPluginContext().getHubContext()) + HubContext.DELIMITER + gvctx.getPluginId() + HubContext.DELIMITER + gvctx.getName(),
+            ""
+        );
+    }
+
+    @Override
+    public TemplatedId createGlobalVariablesId(HubContext ctx) {
+        return new TemplatedId(
+            createVariablesId(ctx) + HubContext.DELIMITER + "global",
+            ""
+        );
+    }
+
+    @Override
+    public TemplatedId createHubId(HubContext ctx) {
+        return new TemplatedId(
+            "hubs" + HubContext.DELIMITER + ctx.getHubId(),
+            "hubs:{hubId}"
+        );
+    }
+
+    @Override
+    public TemplatedId createUserHubsId(String userId) {
+        return new TemplatedId(createUserId(userId).getId() + HubContext.DELIMITER + "hubs", null);
+    }
+
+    @Override
+    public TemplatedId createUsersId() {
+        return new TemplatedId("users", null);
+    }
+
+    @Override
+    public DeviceVariableContext createDeviceVariableContext(String variableId) {
         String[] s = StringUtils.split(variableId, ":");
         if (s.length >= 6) {
-            return VariableContext.create(DeviceContext.create(PluginContext.create(HubContext.create(s[1]), s[3]), s[4]), s[5]);
+            return DeviceVariableContext.create(DeviceContext.create(PluginContext.create(HubContext.create(s[1]), s[3]), s[4]), s[5]);
         } else {
             return null;
         }
     }
 
     @Override
-    public String createVariableId(VariableContext ctx) {
-        return createHubId(ctx.getHubContext()) + HubContext.DELIMITER + "variables" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId() + HubContext.DELIMITER + ctx.getName();
+    public TemplatedId createJobId(HubContext ctx, String jobId) {
+        return new TemplatedId(
+            createHubId(ctx).getId() + HubContext.DELIMITER + "jobs" + HubContext.DELIMITER + jobId,
+            ""
+        );
     }
 
     @Override
-    public String createHubUploadCredentialsId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "uploadCredentials";
+    public TemplatedId createHubConfigurationId(HubContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx).getId() + HubContext.DELIMITER + "configuration",
+            ""
+        );
     }
 
     @Override
-    public String createHubConfigurationId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "configuration";
+    public TemplatedId createHubConfigurationClassId(HubContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx).getId() + HubContext.DELIMITER + "configurationClass",
+            "hubs:{hubId}:configurationClass"
+        );
     }
 
     @Override
-    public String createHubConfigurationClassId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "configurationClass";
+    public TemplatedId createHubLogId(HubContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx).getId() + HubContext.DELIMITER + "log",
+            ""
+        );
     }
 
     @Override
-    public String createHubLogId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "log";
+    public TemplatedId createHubPasswordId(HubContext ctx) {
+        return new TemplatedId(
+            "",
+            ""
+        );
     }
 
     @Override
-    public String createHubPasswordId(HubContext ctx) {
+    public TemplatedId createHubSerialPortsId(HubContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx).getId() + HubContext.DELIMITER + "serialPorts",
+            "hubs:{hubId}:serialPorts"
+        );
+    }
+
+    @Override
+    public TemplatedId createHubSerialPortId(HubContext ctx, String name) {
+        return new TemplatedId(
+            createHubSerialPortsId(ctx).getId() + HubContext.DELIMITER + name,
+            ""
+        );
+    }
+
+    @Override
+    public TemplatedId createLocalPluginConfigurationId(PluginContext ctx) {
+        return new TemplatedId(
+            createLocalPluginId(ctx).getId() + HubContext.DELIMITER + "configuration",
+            ""
+        );
+    }
+
+    @Override
+    public TemplatedId createLocalPluginConfigurationClassId(PluginContext ctx) {
         return null;
     }
 
     @Override
-    public String createHubSerialPortsId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "serialPorts";
+    public TemplatedId createLocalPluginId(PluginContext ctx) {
+        return new TemplatedId(
+            createLocalPluginsId(ctx.getHubContext()).getId() + HubContext.DELIMITER + ctx.getPluginId(),
+            ""
+        );
     }
 
     @Override
-    public String createHubSerialPortId(HubContext ctx, String name) {
-        return createHubSerialPortsId(ctx) + HubContext.DELIMITER + name;
+    public TemplatedId createLocalPluginIconId(PluginContext ctx) {
+        return new TemplatedId("", "");
     }
 
     @Override
-    public String createLocalPluginConfigurationId(PluginContext ctx) {
-        return createLocalPluginId(ctx) + HubContext.DELIMITER + "configuration";
-    }
-
-    @Override
-    public String createLocalPluginConfigurationClassId(PluginContext ctx) {
+    public TemplatedId createLocalPluginReloadId(PluginContext ctx) {
         return null;
     }
 
     @Override
-    public String createLocalPluginId(PluginContext ctx) {
-        return createLocalPluginsId(ctx.getHubContext()) + HubContext.DELIMITER + ctx.getPluginId();
+    public TemplatedId createLocalPluginsId(HubContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx).getId() + HubContext.DELIMITER + "localPlugins",
+            ""
+        );
     }
 
     @Override
-    public String createLocalPluginIconId(PluginContext ctx) {
-        return null;
-    }
-
-    @Override
-    public String createLocalPluginReloadId(PluginContext ctx) {
-        return null;
-    }
-
-    @Override
-    public String createLocalPluginsId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "localPlugins";
-    }
-
-    @Override
-    public String createPersonId(String userId) {
-        return null;
+    public TemplatedId createPersonId(String userId) {
+        return new TemplatedId(
+            null,
+            null
+        );
     }
 
     @Override
@@ -263,7 +417,7 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     public String createPluginsId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "plugins";
+        return createHubId(ctx).getId() + HubContext.DELIMITER + "plugins";
     }
 
     public String createPluginId(PluginContext ctx) {
@@ -275,16 +429,22 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     public String createPluginDeviceId(HubContext ctx, String pluginAndDeviceId) {
-        return createHubId(ctx) + HubContext.DELIMITER + "plugins" + HubContext.DELIMITER + pluginAndDeviceId;
+        return createHubId(ctx).getId() + HubContext.DELIMITER + "plugins" + HubContext.DELIMITER + pluginAndDeviceId;
     }
 
     @Override
-    public String createPluginDevicesId(PluginContext ctx) {
-        return createHubId(ctx.getHubContext()) + HubContext.DELIMITER + "devices" + HubContext.DELIMITER + ctx.getPluginId();
+    public TemplatedId createPluginDevicesId(PluginContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx.getHubContext()).getId() + HubContext.DELIMITER + "devices" + HubContext.DELIMITER + ctx.getPluginId(),
+            ""
+        );
     }
 
-    public String createPresenceEntitiesId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "presenceEntities";
+    public TemplatedId createPresenceEntitiesId(HubContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx).getId() + HubContext.DELIMITER + "presenceEntities",
+            "hubs:{hubId}:presenceEntities"
+        );
     }
 
     @Override
@@ -293,13 +453,19 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public String createPresenceEntityId(PresenceEntityContext ctx) {
-        return createPresenceEntitiesId(ctx.getHubContext()) + HubContext.DELIMITER + ctx.getEntityId();
+    public TemplatedId createPresenceEntityId(PresenceEntityContext ctx) {
+        return new TemplatedId(
+            createPresenceEntitiesId(ctx.getHubContext()).getId() + HubContext.DELIMITER + ctx.getEntityId(),
+            ""
+        );
     }
 
     @Override
-    public String createPresenceLocationsId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "presenceLocations";
+    public TemplatedId createPresenceLocationsId(HubContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx).getId() + HubContext.DELIMITER + "presenceLocations",
+            "hubs:{hubId}:presenceLocations"
+        );
     }
 
     @Override
@@ -308,26 +474,29 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public String createPresenceLocationId(PresenceLocationContext ctx) {
-        return createPresenceLocationsId(ctx.getHubContext()) + HubContext.DELIMITER + ctx.getLocationId();
+    public TemplatedId createPresenceLocationId(PresenceLocationContext ctx) {
+        return new TemplatedId(
+            createPresenceLocationsId(ctx.getHubContext()).getId() + HubContext.DELIMITER + ctx.getLocationId(),
+            ""
+        );
     }
 
     @Override
-    public String createPropertyContainerId(String id, PropertyContainerClass pcc) {
+    public TemplatedId createPropertyContainerId(String id, PropertyContainerClass pcc) {
         if (pcc != null) {
             switch (pcc.getType()) {
                 case CONDITION:
                 case ACTION: {
-                    return id;
+                    return new TemplatedId(id, "");
                 }
                 case HUB_CONFIG: {
-                    return createHubConfigurationId(pcc.getContext().getHubContext());
+                    return new TemplatedId(createHubConfigurationId(pcc.getContext().getHubContext()).getId(), "");
                 }
                 case PLUGIN_CONFIG: {
-                    return createLocalPluginConfigurationId(pcc.getContext().getPluginContext());
+                    return new TemplatedId(createLocalPluginConfigurationId(pcc.getContext().getPluginContext()).getId(), "");
                 }
                 case DEVICE_CONFIG: {
-                    return createDeviceConfigurationId(DeviceContext.create(pcc.getContext().getHubContext(), pcc.getContext().getPluginId(), pcc.getContext().getDeviceId()));
+                    return new TemplatedId(createDeviceConfigurationId(DeviceContext.create(pcc.getContext().getHubContext(), pcc.getContext().getPluginId(), pcc.getContext().getDeviceId())).getId(), "");
                 }
                 default: {
                     return null;
@@ -339,114 +508,138 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public String createPropertyContainerClassesId(PluginContext pctx) {
-        return createPluginId(pctx) + HubContext.DELIMITER + "containerClasses";
+    public TemplatedId createPropertyContainerClassesId(PluginContext pctx) {
+        return new TemplatedId(
+            createPluginId(pctx) + HubContext.DELIMITER + "containerClasses",
+            ""
+        );
     }
 
     @Override
-    public String createPropertyContainerClassId(PropertyContainerClassContext pccc, PropertyContainerClassType type) {
-        return  createPropertyContainerClassesId(pccc.getPluginContext()) + HubContext.DELIMITER + pccc.getContainerClassId();
+    public TemplatedId createPropertyContainerClassId(PropertyContainerClassContext pccc, PropertyContainerClassType type) {
+        return new TemplatedId(
+            createPropertyContainerClassesId(pccc.getPluginContext()).getId() + HubContext.DELIMITER + pccc.getContainerClassId(),
+            ""
+        );
     }
 
     @Override
-    public String createRemotePluginId(PluginContext ctx, String version) {
+    public TemplatedId createRemotePluginId(HubContext ctx, String pluginId, String version) {
+        return new TemplatedId(null, null);
+    }
+
+    @Override
+    public TemplatedId createRemotePluginInstallId(HubContext ctx, String pluginId, String version) {
+        return new TemplatedId(null, null);
+    }
+
+    @Override
+    public TemplatedId createRemotePluginsId(HubContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx).getId() + HubContext.DELIMITER + "remotePlugins",
+            "hubs:{hubId}:remotePlugins"
+        );
+    }
+
+    @Override
+    public TemplatedId createRepositoriesId(HubContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx).getId() + HubContext.DELIMITER + "repositories",
+            "hubs:{hubId}:repositories"
+        );
+    }
+
+    @Override
+    public TemplatedId createRepositoryId(HubContext ctx, String uri) {
+        return new TemplatedId(null, null);
+    }
+
+    @Override
+    public TemplatedId createSendTestEmailId(HubContext ctx) {
+        return new TemplatedId(null, null);
+    }
+
+    @Override
+    public TemplatedId createShutdownId(HubContext ctx) {
+        return new TemplatedId(null, null);
+    }
+
+    @Override
+    public TemplatedId createActionClassesId(HubContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx).getId() + HubContext.DELIMITER + "actionClasses",
+            "hubs:{hubId}:actionClasses"
+        );
+    }
+
+    @Override
+    public TemplatedId createActionClassId(PropertyContainerClassContext ctx) {
         return null;
     }
 
     @Override
-    public String createRemotePluginInstallId(PluginContext ctx, String version) {
-        return null;
+    public TemplatedId createTaskActionSetId(HubContext ctx, String id) {
+        return new TemplatedId(createTaskActionSetsId(ctx).getId() + HubContext.DELIMITER + id, null);
     }
 
     @Override
-    public String createRemotePluginsId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "remotePlugins";
+    public TemplatedId createTaskActionSetsId(HubContext ctx) {
+        return new TemplatedId(createHubId(ctx).getId() + HubContext.DELIMITER + "actionSets", null);
     }
 
     @Override
-    public String createRepositoriesId(HubContext ctx) {
-        return null;
+    public TemplatedId createTaskConditionClassesId(HubContext ctx) {
+        return new TemplatedId(createHubId(ctx).getId() + HubContext.DELIMITER + "conditionClasses", null);
     }
 
     @Override
-    public String createRepositoryId(HubContext ctx, String uri) {
-        return null;
+    public TemplatedId createTaskConditionClassId(PropertyContainerClassContext ctx) {
+        return new TemplatedId(
+            createPluginId(ctx.getPluginContext()) + HubContext.DELIMITER + ctx.getContainerClassId(),
+            ""
+        );
     }
 
     @Override
-    public String createSendTestEmailId(HubContext ctx) {
-        return null;
+    public TemplatedId createTaskId(TaskContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx.getHubContext()).getId() + HubContext.DELIMITER + "tasks" + HubContext.DELIMITER + ctx.getTaskId(),
+            null
+        );
     }
 
     @Override
-    public String createShutdownId(HubContext ctx) {
-        return null;
+    public TemplatedId createTasksId(HubContext ctx) {
+        return new TemplatedId(
+            createHubId(ctx).getId() + HubContext.DELIMITER + "tasks",
+            "hubs:{hubId}:local"
+        );
     }
 
     @Override
-    public String createTaskActionClassesId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "actionClasses";
+    public TemplatedId createUserId(String userId) {
+        return new TemplatedId(createUsersId().getId() + HubContext.DELIMITER + userId, null);
+    }
+
+    public TemplatedId createTaskPropertiesId(TaskContext ctx) {
+        return new TemplatedId(createTaskId(ctx).getId() + HubContext.DELIMITER + "properties", null);
+    }
+
+    public TemplatedId createTaskConditionsId(TaskContext ctx) {
+        return new TemplatedId(createTaskId(ctx).getId() + HubContext.DELIMITER + "conditions", null);
+    }
+
+    public TemplatedId createTaskConditionId(TaskContext ctx, String propertyContainerId) {
+        return new TemplatedId(createTaskConditionsId(ctx).getId() + HubContext.DELIMITER + propertyContainerId, null);
     }
 
     @Override
-    public String createTaskActionClassId(PropertyContainerClassContext ctx) {
-        return null;
-    }
-
-    @Override
-    public String createTaskActionSetId(HubContext ctx, String id) {
-        return createTaskActionSetsId(ctx) + HubContext.DELIMITER + id;
-    }
-
-    @Override
-    public String createTaskActionSetsId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "actionSets";
-    }
-
-    @Override
-    public String createTaskConditionClassesId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "conditionClasses";
-    }
-
-    @Override
-    public String createTaskConditionClassId(PropertyContainerClassContext ctx) {
-        return createPluginId(ctx.getPluginContext()) + HubContext.DELIMITER + ctx.getContainerClassId();
-    }
-
-    @Override
-    public String createTaskId(TaskContext ctx) {
-        return createHubId(ctx.getHubContext()) + HubContext.DELIMITER + "tasks" + HubContext.DELIMITER + ctx.getTaskId();
-    }
-
-    @Override
-    public String createTasksId(HubContext ctx) {
-        return createHubId(ctx) + HubContext.DELIMITER + "tasks";
-    }
-
-    @Override
-    public String createUserId(String userId) {
-        return createUsersId() + HubContext.DELIMITER + userId;
-    }
-
-    public String createTaskPropertiesId(TaskContext ctx) {
-        return createTaskId(ctx) + HubContext.DELIMITER + "properties";
-    }
-
-    public  String createTaskConditionsId(TaskContext ctx) {
-        return createTaskId(ctx) + HubContext.DELIMITER + "conditions";
-    }
-
-    public String createTaskConditionId(TaskContext ctx, String propertyContainerId) {
-        return createTaskConditionsId(ctx) + HubContext.DELIMITER + propertyContainerId;
-    }
-
-    @Override
-    public String createTaskConditionPropertiesId(TaskContext ctx, String propertyContainerId) {
-        return createTaskConditionId(ctx, propertyContainerId) + HubContext.DELIMITER + "properties";
+    public TemplatedId createTaskConditionPropertiesId(TaskContext ctx, String propertyContainerId) {
+        return new TemplatedId(createTaskConditionId(ctx, propertyContainerId).getId() + HubContext.DELIMITER + "properties", null);
     }
 
     public String createTaskConditionValuesId(TaskContext ctx, String propertyContainerId) {
-        return createTaskConditionsId(ctx) + HubContext.DELIMITER + "conditionValues" + HubContext.DELIMITER + propertyContainerId;
+        return createTaskConditionsId(ctx).getId() + HubContext.DELIMITER + "conditionValues" + HubContext.DELIMITER + propertyContainerId;
     }
 
     public String createTaskConditionPropertyId(TaskContext ctx, String propertyContainerId, String name) {

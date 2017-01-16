@@ -7,12 +7,14 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.property;
 
+import java.io.Serializable;
+
 /**
  * An enumeration for the different PropertyContainerClass types.
  *
  * @author Dan Noguerol
  */
-public enum PropertyContainerClassType {
+public enum PropertyContainerClassType implements Serializable { // TODO: remove
     ACTION,
     CONDITION,
     HUB_CONFIG,

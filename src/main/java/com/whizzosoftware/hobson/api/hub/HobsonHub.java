@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.hub;
 
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
@@ -22,7 +24,7 @@ public class HobsonHub {
     private String name;
     private String version;
     private String apiKey;
-    private String webSocketUri;
+    private WebSocketInfo webSocketInfo;
     private HubConfigurationClass configurationClass = new HubConfigurationClass();
     private PropertyContainer configuration;
 
@@ -55,8 +57,12 @@ public class HobsonHub {
         return apiKey;
     }
 
-    public String getWebSocketUri() {
-        return webSocketUri;
+    public boolean hasWebSocketInfo() {
+        return (webSocketInfo != null);
+    }
+
+    public WebSocketInfo getWebSocketInfo() {
+        return webSocketInfo;
     }
 
     public PropertyContainerClass getConfigurationClass() {
@@ -98,8 +104,8 @@ public class HobsonHub {
             return this;
         }
 
-        public Builder webSocketUri(String webSocketUri) {
-            hub.webSocketUri = webSocketUri;
+        public Builder webSocketInfo(WebSocketInfo webSocketInfo) {
+            hub.webSocketInfo = webSocketInfo;
             return this;
         }
 

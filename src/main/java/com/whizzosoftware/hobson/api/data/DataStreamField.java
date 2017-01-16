@@ -7,7 +7,7 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.data;
 
-import com.whizzosoftware.hobson.api.variable.VariableContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 
 /**
  * Represents a field in a data stream. It is essentially a named reference to a variable.
@@ -17,9 +17,9 @@ import com.whizzosoftware.hobson.api.variable.VariableContext;
 public class DataStreamField {
     private String id;
     private String name;
-    private VariableContext ctx;
+    private DeviceVariableContext ctx;
 
-    public DataStreamField(String id, String name, VariableContext ctx) {
+    public DataStreamField(String id, String name, DeviceVariableContext ctx) {
         this.id = id;
         this.name = name;
         this.ctx = ctx;
@@ -37,7 +37,7 @@ public class DataStreamField {
         return name;
     }
 
-    public VariableContext getVariable() {
+    public DeviceVariableContext getVariable() {
         return ctx;
     }
 }

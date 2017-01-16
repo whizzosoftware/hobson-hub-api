@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2014 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.event;
 
 import java.util.HashMap;
@@ -25,22 +27,15 @@ abstract public class HobsonEvent {
      */
     public static final String PROP_EVENT_ID = "eventId";
 
-    private String topic;
     private Map<String,Object> properties;
 
-    public HobsonEvent(Long timestamp, String topic, String eventId) {
-        this.topic = topic;
+    public HobsonEvent(Long timestamp, String eventId) {
         setProperty(PROP_TIMESTAMP, timestamp);
         setProperty(PROP_EVENT_ID, eventId);
     }
 
-    public HobsonEvent(String topic, Map<String,Object> properties) {
-        this.topic = topic;
+    public HobsonEvent(Map<String,Object> properties) {
         this.properties = properties;
-    }
-
-    public String getTopic() {
-        return topic;
     }
 
     public Long getTimestamp() {
