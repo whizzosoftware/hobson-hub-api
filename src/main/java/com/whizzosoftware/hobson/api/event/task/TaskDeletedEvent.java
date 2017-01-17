@@ -30,7 +30,7 @@ public class TaskDeletedEvent extends TaskEvent {
         super(properties);
     }
 
-    public TaskContext getContext() {
+    public TaskContext getTask() {
         return (TaskContext)getProperty(PROP_CONTEXT);
     }
 }
