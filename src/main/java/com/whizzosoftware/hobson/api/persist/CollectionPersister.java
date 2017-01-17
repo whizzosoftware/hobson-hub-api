@@ -351,6 +351,7 @@ public class CollectionPersister {
                 tctx,
                 (String)taskMap.get(PropertyConstants.NAME),
                 (String)taskMap.get(PropertyConstants.DESCRIPTION),
+                taskMap.containsKey(PropertyConstants.ENABLED) ? (Boolean)taskMap.get(PropertyConstants.ENABLED) : true,
                 null,
                 null,
                 new PropertyContainerSet((String)taskMap.get(PropertyConstants.ACTION_SET_ID))
@@ -610,6 +611,7 @@ public class CollectionPersister {
 
         map.put(PropertyConstants.NAME, task.getName());
         map.put(PropertyConstants.TASK_ID, task.getContext().getTaskId());
+        map.put(PropertyConstants.ENABLED, task.isEnabled());
         if (task.getDescription() != null) {
             map.put(PropertyConstants.DESCRIPTION, task.getDescription());
         }

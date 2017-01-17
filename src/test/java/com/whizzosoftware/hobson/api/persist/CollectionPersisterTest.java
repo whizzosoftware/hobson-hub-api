@@ -46,7 +46,7 @@ public class CollectionPersisterTest {
         conditions.add(new PropertyContainer("condition1", "My Condition", PropertyContainerClassContext.create(PluginContext.createLocal("plugin1"), "cclass1"), values));
 
         TaskContext tctx = TaskContext.create(hctx, "taskId1");
-        HobsonTask task = new HobsonTask(tctx, "My Task", "My Desc", props, conditions, new PropertyContainerSet("actionSetId1", "ActionSet1", Collections.singletonList(new PropertyContainer("action1", PropertyContainerClassContext.create(PluginContext.createLocal("plugin2"), "cclass2"), Collections.singletonMap("foo", (Object)"bar")))));
+        HobsonTask task = new HobsonTask(tctx, "My Task", "My Desc", true, props, conditions, new PropertyContainerSet("actionSetId1", "ActionSet1", Collections.singletonList(new PropertyContainer("action1", PropertyContainerClassContext.create(PluginContext.createLocal("plugin2"), "cclass2"), Collections.singletonMap("foo", (Object)"bar")))));
 
         CollectionPersister cp = new CollectionPersister(idProvider);
 
@@ -56,6 +56,7 @@ public class CollectionPersisterTest {
         assertNotNull(m);
         assertEquals("My Task", m.get("name"));
         assertEquals("My Desc", m.get("description"));
+        assertTrue((boolean)m.get("enabled"));
         assertEquals("actionSetId1", m.get("actionSetId"));
 
         // check the task set
@@ -148,6 +149,7 @@ public class CollectionPersisterTest {
             tctx,
             "My Task",
             "My Desc",
+            false,
             null,
             Collections.singletonList(
                 new PropertyContainer(
@@ -165,6 +167,7 @@ public class CollectionPersisterTest {
         assertNotNull(task);
         assertEquals("My Task", task.getName());
         assertEquals("My Desc", task.getDescription());
+        assertFalse(task.isEnabled());
         assertEquals(1, task.getConditions().size());
         assertEquals("cclass1", task.getConditions().get(0).getContainerClassContext().getContainerClassId());
         assertEquals("as1", task.getActionSet().getId());
@@ -186,6 +189,7 @@ public class CollectionPersisterTest {
         task = cp.restoreTask(cpctx, tctx);
         assertEquals("My Task2", task.getName());
         assertEquals("My Desc2", task.getDescription());
+        assertFalse(task.isEnabled());
         assertEquals(1, task.getConditions().size());
         assertEquals("cclass6", task.getConditions().get(0).getContainerClassContext().getContainerClassId());
         assertEquals("as2", task.getActionSet().getId());

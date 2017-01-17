@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2014 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.task;
 
 import com.whizzosoftware.hobson.api.action.ActionClassProvider;
@@ -23,16 +25,18 @@ public class HobsonTask {
     private TaskContext context;
     private String name;
     private String description;
+    private boolean enabled;
     private Map<String,Object> properties;
     private List<PropertyContainer> conditions;
     private PropertyContainerSet actionSet;
 
     public HobsonTask() {}
 
-    public HobsonTask(TaskContext context, String name, String description, Map<String, Object> properties, List<PropertyContainer> conditions, PropertyContainerSet actionSet) {
+    public HobsonTask(TaskContext context, String name, String description, boolean enabled, Map<String, Object> properties, List<PropertyContainer> conditions, PropertyContainerSet actionSet) {
         this.context = context;
         this.name = name;
         this.description = description;
+        this.enabled = enabled;
         this.properties = properties;
         this.conditions = conditions;
         this.actionSet = actionSet;
@@ -90,6 +94,14 @@ public class HobsonTask {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     /**

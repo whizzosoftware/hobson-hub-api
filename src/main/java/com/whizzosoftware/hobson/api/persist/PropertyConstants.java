@@ -22,6 +22,7 @@ public class PropertyConstants {
     public static final String DESCRIPTION = "description";
     public static final String DEVICE_ID = "deviceId";
     public static final String EMAIL = "email";
+    public static final String ENABLED = "enabled";
     public static final String EXPIRE_TIME = "expireTime";
     public static final String FAMILY_NAME = "familyName";
     public static final String GIVEN_NAME = "givenName";

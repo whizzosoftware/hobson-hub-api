@@ -114,7 +114,7 @@ public interface TaskManager extends TaskConditionClassProvider {
      * @param conditions the task's conditions
      * @param actionSet  the task's action set
      */
-    void updateTask(TaskContext ctx, String name, String description, List<PropertyContainer> conditions, PropertyContainerSet actionSet);
+    void updateTask(TaskContext ctx, String name, String description, boolean enabled, List<PropertyContainer> conditions, PropertyContainerSet actionSet);
 
     /**
      * Updates a task's properties.
