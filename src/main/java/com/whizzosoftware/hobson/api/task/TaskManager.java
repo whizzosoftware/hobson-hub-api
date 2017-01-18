@@ -108,19 +108,22 @@ public interface TaskManager extends TaskConditionClassProvider {
 
     /**
      * Updates an existing task.
-     * @param ctx the context of the task to update
+     *
+     * @param pctx the plugin updating the task (prevents that plugin from receiving the update event)
+     * @param tctx the context of the task to update
      * @param name the new task name
      * @param description the description of the new task
      * @param conditions the task's conditions
      * @param actionSet  the task's action set
      */
-    void updateTask(TaskContext ctx, String name, String description, boolean enabled, List<PropertyContainer> conditions, PropertyContainerSet actionSet);
+    void updateTask(PluginContext pctx, TaskContext tctx, String name, String description, boolean enabled, List<PropertyContainer> conditions, PropertyContainerSet actionSet);
 
     /**
      * Updates a task's properties.
      *
-     * @param ctx the task context
+     * @param pctx the plugin updating the task (prevents that plugin from receiving the update event)
+     * @param tctx the task context
      * @param properties the new properties
      */
-    void updateTaskProperties(TaskContext ctx, Map<String,Object> properties);
+    void updateTaskProperties(PluginContext pctx, TaskContext tctx, Map<String,Object> properties);
 }

@@ -107,7 +107,10 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
             if (event instanceof TaskRegistrationEvent) {
                 getTaskProvider().onRegisterTasks(((TaskRegistrationEvent)event).getTasks());
             } else if (event instanceof TaskUpdatedEvent) {
-                getTaskProvider().onUpdateTask(((TaskUpdatedEvent)event).getTask());
+                TaskUpdatedEvent e = (TaskUpdatedEvent)event;
+                if (e.getPluginId() == null || !getContext().getPluginId().equals(e.getPluginId())) {
+                    getTaskProvider().onUpdateTask(e.getTask());
+                }
             } else if (event instanceof TaskDeletedEvent) {
                 getTaskProvider().onDeleteTask(((TaskDeletedEvent)event).getTask());
             }

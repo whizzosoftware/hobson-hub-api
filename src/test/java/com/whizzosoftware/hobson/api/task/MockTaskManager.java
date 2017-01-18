@@ -59,12 +59,12 @@ public class MockTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(TaskContext ctx, String name, String description, boolean enabled, List<PropertyContainer> conditions, PropertyContainerSet actionSet) {
+    public void updateTask(PluginContext pctx, TaskContext ctx, String name, String description, boolean enabled, List<PropertyContainer> conditions, PropertyContainerSet actionSet) {
 
     }
 
     @Override
-    public void updateTaskProperties(TaskContext ctx, Map<String, Object> properties) {
+    public void updateTaskProperties(PluginContext pctx, TaskContext ctx, Map<String, Object> properties) {
 
     }
 }

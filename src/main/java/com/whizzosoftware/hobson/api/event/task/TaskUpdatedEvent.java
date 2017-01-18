@@ -19,15 +19,21 @@ import java.util.Map;
 public class TaskUpdatedEvent extends TaskEvent {
     public static final String ID = "taskUpdated";
 
+    private static final String PROP_PLUGIN_ID = "pluginId";
     private static final String PROP_TASK = "task";
 
-    public TaskUpdatedEvent(long timestamp, TaskContext ctx) {
+    public TaskUpdatedEvent(long timestamp, String pluginId, TaskContext ctx) {
         super(timestamp, ID);
+        setProperty(PROP_PLUGIN_ID, pluginId);
         setProperty(PROP_TASK, ctx);
     }
 
     public TaskUpdatedEvent(Map<String,Object> properties) {
         super(properties);
+    }
+
+    public String getPluginId() {
+        return (String)getProperty(PROP_PLUGIN_ID);
     }
 
     public TaskContext getTask() {
