@@ -24,24 +24,24 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class AbstractHobsonDeviceProxyTest {
-//    @Test
-//    public void testGetPluginId() {
-//        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name");
-//        p.setDeviceManager(new MockDeviceManager());
-//        DeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB);
-//        assertEquals("did", d.getPluginId());
-//    }
+    @Test
+    public void testGetPluginId() {
+        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0", "description");
+        p.setDeviceManager(new MockDeviceManager());
+        HobsonDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB);
+        assertEquals("pid", d.getContext().getPluginId());
+    }
 
     @Test
     public void testGetName() {
-//        MockAbstractHobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
-//        p.setDeviceManager(new MockDeviceManager());
-//        MockDeviceProxy d = new MockDeviceProxy(p, "did");
-//        // name should default to device ID
-//        assertEquals("did", d.getDescription().getName());
-//        // if default name is set, name should default to that
-//        d.setDefaultName("foo");
-//        assertEquals("foo", d.getDescription().getName());
+        MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0", "description");
+        p.setDeviceManager(new MockDeviceManager());
+        MockDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB, "defaultName");
+        // name should default to default name
+        assertEquals("defaultName", d.getName());
+        // if default name is set, name should default to that
+        d.start("foo", null);
+        assertEquals("foo", d.getName());
     }
 
     @Test
@@ -54,7 +54,7 @@ public class AbstractHobsonDeviceProxyTest {
     }
 
     @Test
-    public void testStart() {
+    public void testStart() throws Exception {
         MockEventManager em = new MockEventManager();
         MockDeviceManager dm = new MockDeviceManager();
         MockHobsonPlugin p = new MockHobsonPlugin("pid", "name", "1.0.0", "");
@@ -79,7 +79,7 @@ public class AbstractHobsonDeviceProxyTest {
                 return "mversion";
             }
         };
-        p.publishDeviceProxy(d);
+        p.publishDeviceProxy(d).sync();
 
         assertFalse(d.isStarted());
         d.start("name", new PropertyContainer());

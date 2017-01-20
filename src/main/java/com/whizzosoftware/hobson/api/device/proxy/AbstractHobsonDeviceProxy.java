@@ -1,3 +1,12 @@
+/*
+ *******************************************************************************
+ * Copyright (c) 2016 Whizzo Software, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.device.proxy;
 
 import com.whizzosoftware.hobson.api.HobsonNotFoundException;
@@ -106,7 +115,7 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
 
     @Override
     public String getName() {
-        return name;
+        return name != null ? name : defaultName;
     }
 
     @Override
@@ -211,10 +220,6 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
 
     protected void setConfigurationProperty(String name, Object value) {
         plugin.setDeviceConfigurationProperty(getContext(), configurationClass, name, value);
-    }
-
-    protected void setConfigurationProperties(Map<String,Object> props) {
-        plugin.setDeviceConfigurationProperties(getContext(), configurationClass, props);
     }
 
     /**

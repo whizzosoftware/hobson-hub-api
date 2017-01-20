@@ -1,3 +1,12 @@
+/*
+ *******************************************************************************
+ * Copyright (c) 2016 Whizzo Software, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.device.proxy;
 
 import com.whizzosoftware.hobson.api.device.DeviceContext;
@@ -10,6 +19,11 @@ import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
 
 import java.util.Map;
 
+/**
+ * An interface for classes that act as a proxy between Hobson and actual hardware.
+ *
+ * @author Dan Noguerol
+ */
 public interface HobsonDeviceProxy {
     PropertyContainerClass getConfigurationClass();
     DeviceContext getContext();
@@ -21,12 +35,12 @@ public interface HobsonDeviceProxy {
     String getManufacturerVersion();
     String getModelName();
     String getName();
+    String getPreferredVariableName();
     DeviceType getType();
     DeviceVariableState getVariableState(String name);
     boolean hasError();
     boolean hasVariable(String name);
     boolean isStarted();
-    String getPreferredVariableName();
     void onDeviceConfigurationUpdate(PropertyContainer config);
     void onSetVariables(Map<String,Object> values);
     void onShutdown();
