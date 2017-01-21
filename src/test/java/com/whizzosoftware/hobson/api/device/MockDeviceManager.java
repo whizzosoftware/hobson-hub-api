@@ -114,6 +114,11 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
+    public boolean hasDeviceVariable(DeviceVariableContext ctx) {
+        return false;
+    }
+
+    @Override
     public void setDeviceConfigurationProperty(DeviceContext dctx, PropertyContainerClass configClass, String name, Object value) {
         configuration.put(configClass.getContext().getPluginId() + "." + configClass.getContext().getDeviceId() + "." + name, value);
     }

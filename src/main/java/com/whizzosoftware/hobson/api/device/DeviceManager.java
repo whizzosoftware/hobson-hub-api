@@ -109,6 +109,15 @@ public interface DeviceManager {
     DeviceVariableState getDeviceVariable(DeviceVariableContext ctx);
 
     /**
+     * Returns whether a device has published a variable.
+     *
+     * @param ctx the variable context
+     *
+     * @return a boolean
+     */
+    boolean hasDeviceVariable(DeviceVariableContext ctx);
+
+    /**
      * Returns all variable names published by all devices.
      *
      * @param hctx the hub context

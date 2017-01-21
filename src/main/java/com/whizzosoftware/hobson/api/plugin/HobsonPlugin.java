@@ -37,10 +37,31 @@ public interface HobsonPlugin {
     PluginContext getContext();
     Object getDeviceConfigurationProperty(String deviceId, String name);
     Long getDeviceLastCheckin(String deviceId);
+
+    /**
+     * Returns the device variable state for a device published by this plugin.
+     *
+     * @param deviceId the device ID
+     * @param name the variable name
+     *
+     * @return a DeviceVariableState
+     */
     DeviceVariableState getDeviceVariableState(String deviceId, String name);
+
     EventLoopExecutor getEventLoopExecutor();
     long getRefreshInterval();
     TaskProvider getTaskProvider();
+
+    /**
+     * Returns whether this device has published a variable.
+     *
+     * @param deviceId the device ID
+     * @param name the variable name
+     *
+     * @return a boolean
+     */
+    boolean hasDeviceVariableState(String deviceId, String name);
+
     boolean hasTaskProvider();
     void onDeviceUpdate(HobsonDeviceProxy device);
     void onRefresh();

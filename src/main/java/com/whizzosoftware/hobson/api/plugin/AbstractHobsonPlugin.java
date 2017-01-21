@@ -194,9 +194,31 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
         }
     }
 
+    @Override
+    public boolean hasDeviceVariableState(String deviceId, String name) {
+        HobsonDeviceProxy proxy = devices.get(deviceId);
+        if (proxy != null) {
+            return proxy.hasVariable(name);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Returns the device variable state for a device not created by this plugin.
+     *
+     * @param dvctx the device variable context
+     *
+     * @return the device state
+     */
     protected DeviceVariableState getDeviceVariableState(DeviceVariableContext dvctx) {
         validateDeviceManager();
         return deviceManager.getDeviceVariable(dvctx);
+    }
+
+    protected boolean hasDeviceVariableState(DeviceVariableContext dvctx) {
+        validateDeviceManager();
+        return deviceManager.hasDeviceVariable(dvctx);
     }
 
     @Override
