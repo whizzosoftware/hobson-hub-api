@@ -17,6 +17,7 @@ import com.whizzosoftware.hobson.api.event.device.DeviceConfigurationUpdateEvent
 import com.whizzosoftware.hobson.api.event.device.DeviceDeletedEvent;
 import com.whizzosoftware.hobson.api.event.device.DeviceVariablesUpdateRequestEvent;
 import com.whizzosoftware.hobson.api.event.plugin.PluginConfigurationUpdateEvent;
+import com.whizzosoftware.hobson.api.event.plugin.PluginStatusChangeEvent;
 import com.whizzosoftware.hobson.api.event.task.*;
 import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.disco.DeviceAdvertisement;
@@ -75,6 +76,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
         this.description = description;
         this.eventLoop = eventLoop;
         this.configurationClass = new PropertyContainerClass(PropertyContainerClassContext.create(getContext(), "configurationClass"), PropertyContainerClassType.PLUGIN_CONFIG);
+        this.status = PluginStatus.initializing();
 
         // register any supported properties the subclass needs
         TypedProperty[] props = getConfigurationPropertyTypes();
@@ -92,6 +94,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
 
     protected void setStatus(PluginStatus status) {
         this.status = status;
+        eventManager.postEvent(getContext().getHubContext(), new PluginStatusChangeEvent(System.currentTimeMillis(), getContext(), status));
     }
 
     @Override

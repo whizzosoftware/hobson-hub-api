@@ -65,7 +65,17 @@ public interface HobsonPlugin {
     boolean hasTaskProvider();
     void onDeviceUpdate(HobsonDeviceProxy device);
     void onRefresh();
+
+    /**
+     * Callback method for plugins to perform tasks when they are being stopped.
+     */
     void onShutdown();
+
+    /**
+     * Callback method for plugins to perform initialization once they've been started.
+     *
+     * @param config the current plugin configuration
+     */
     void onStartup(PropertyContainer config);
     void postEvent(HobsonEvent event);
     void publishActionProvider(ActionProvider actionProvider);
