@@ -37,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.NotSerializableException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -309,11 +308,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     @Override
     public void setDeviceConfigurationProperty(DeviceContext dctx, PropertyContainerClass configClass, String name, Object value) {
         validateDeviceManager();
-        try {
-            deviceManager.setDeviceConfigurationProperty(dctx, configClass, name, value);
-        } catch (NotSerializableException e) {
-            throw new HobsonRuntimeException("Unable to save device configuration for " + dctx + ": \"" + name + "\"=\"" + value + "\"", e);
-        }
+        deviceManager.setDeviceConfigurationProperty(dctx, configClass, name, value);
     }
 
     @Override
