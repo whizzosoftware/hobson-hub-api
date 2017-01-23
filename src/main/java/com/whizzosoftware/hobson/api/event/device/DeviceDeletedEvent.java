@@ -20,18 +20,12 @@ import java.util.Map;
  */
 public class DeviceDeletedEvent extends DeviceEvent {
     public static final String ID = "deviceDeleted";
-    public static final String PROP_DEVICE_CONTEXT = "deviceCtx";
 
-    public DeviceDeletedEvent(long timestamp, DeviceContext deviceCtx) {
-        super(timestamp, ID);
-        setProperty(PROP_DEVICE_CONTEXT, deviceCtx);
+    public DeviceDeletedEvent(long timestamp, DeviceContext dctx) {
+        super(timestamp, ID, dctx);
     }
 
     public DeviceDeletedEvent(Map<String,Object> properties) {
         super(properties);
-    }
-
-    public DeviceContext getDeviceContext() {
-        return (DeviceContext)getProperty(PROP_DEVICE_CONTEXT);
     }
 }

@@ -15,6 +15,7 @@ import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 
+import java.io.NotSerializableException;
 import java.util.Map;
 
 /**
@@ -87,7 +88,7 @@ public interface ConfigurationManager {
      * @param ctx the device context
      * @param values the configuration property values
      */
-    void setDeviceConfigurationProperties(DeviceContext ctx, Map<String, Object> values);
+    void setDeviceConfigurationProperties(DeviceContext ctx, Map<String, Object> values) throws NotSerializableException;
 
     /**
      * Sets a single property of a device's configuration.
@@ -96,7 +97,7 @@ public interface ConfigurationManager {
      * @param name the configuration property name
      * @param value the configuration property value
      */
-    void setDeviceConfigurationProperty(DeviceContext ctx, String name, Object value);
+    void setDeviceConfigurationProperty(DeviceContext ctx, String name, Object value) throws NotSerializableException;
 
     /**
      * Sets the configuration associated with a Hub.
@@ -104,14 +105,14 @@ public interface ConfigurationManager {
      * @param ctx the context of the hub
      * @param configuration the configuration to set
      */
-    void setHubConfiguration(HubContext ctx, PropertyContainer configuration);
+    void setHubConfiguration(HubContext ctx, PropertyContainer configuration) throws NotSerializableException;
 
     /**
      * Sets the configuration for a local plugin.
      *  @param ctx the plugin context
      * @param newConfig the new configuration
      */
-    void setLocalPluginConfiguration(PluginContext ctx, PropertyContainer newConfig);
+    void setLocalPluginConfiguration(PluginContext ctx, PropertyContainer newConfig) throws NotSerializableException;
 
     /**
      * Sets a configuration property for a local plugin.
@@ -119,5 +120,5 @@ public interface ConfigurationManager {
      * @param name the configuration property name
      * @param value the configuration property value
      */
-    void setLocalPluginConfigurationProperty(PluginContext ctx, String name, Object value);
+    void setLocalPluginConfigurationProperty(PluginContext ctx, String name, Object value) throws NotSerializableException;
 }

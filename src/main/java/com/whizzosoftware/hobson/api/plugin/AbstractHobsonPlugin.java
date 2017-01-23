@@ -16,6 +16,7 @@ import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
 import com.whizzosoftware.hobson.api.event.device.DeviceConfigurationUpdateEvent;
 import com.whizzosoftware.hobson.api.event.device.DeviceDeletedEvent;
 import com.whizzosoftware.hobson.api.event.device.DeviceVariablesUpdateRequestEvent;
+import com.whizzosoftware.hobson.api.event.plugin.PluginConfigurationUpdateEvent;
 import com.whizzosoftware.hobson.api.event.task.*;
 import com.whizzosoftware.hobson.api.property.*;
 import com.whizzosoftware.hobson.api.disco.DeviceAdvertisement;
@@ -36,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.NotSerializableException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -118,13 +120,50 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     }
 
     @EventHandler
-    public void onDeviceDeleted(final DeviceDeletedEvent event) {
+    public void onDeviceConfigurationUpdateEvent(DeviceConfigurationUpdateEvent event) {
+        if (event.getDeviceContext().getPluginId().equals(getContext().getPluginId())) {
+            getDeviceProxy(event.getDeviceContext().getDeviceId()).onDeviceConfigurationUpdate(event.getConfiguration());
+        }
+    }
+
+    @EventHandler
+    public void onDeviceDeletedEvent(final DeviceDeletedEvent event) {
         if (event.getDeviceContext().getPluginId().equals(getContext().getPluginId())) {
             String deviceId = event.getDeviceContext().getDeviceId();
             HobsonDeviceProxy device = devices.get(deviceId);
             device.onShutdown();
             devices.remove(deviceId);
         }
+    }
+
+    @EventHandler
+    public void onPluginConfigurationUpdateEvent(PluginConfigurationUpdateEvent event) {
+        if (event.getPluginId().equals(getContext().getPluginId())) {
+            onPluginConfigurationUpdate(event.getConfiguration());
+        }
+    }
+
+    abstract public void onPluginConfigurationUpdate(PropertyContainer config);
+
+    /**
+     * Returns the device variable state for a device not created by this plugin.
+     *
+     * @param dvctx the device variable context
+     *
+     * @return the device state
+     */
+    protected DeviceVariableState getDeviceVariableState(DeviceVariableContext dvctx) {
+        validateDeviceManager();
+        return deviceManager.getDeviceVariable(dvctx);
+    }
+
+    protected boolean hasDeviceVariableState(DeviceVariableContext dvctx) {
+        validateDeviceManager();
+        return deviceManager.hasDeviceVariable(dvctx);
+    }
+
+    public void setTaskProvider(TaskProvider taskProvider) {
+        this.taskProvider = taskProvider;
     }
 
     abstract protected String getName();
@@ -204,21 +243,9 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
         }
     }
 
-    /**
-     * Returns the device variable state for a device not created by this plugin.
-     *
-     * @param dvctx the device variable context
-     *
-     * @return the device state
-     */
-    protected DeviceVariableState getDeviceVariableState(DeviceVariableContext dvctx) {
-        validateDeviceManager();
-        return deviceManager.getDeviceVariable(dvctx);
-    }
-
-    protected boolean hasDeviceVariableState(DeviceVariableContext dvctx) {
-        validateDeviceManager();
-        return deviceManager.hasDeviceVariable(dvctx);
+    @Override
+    public boolean hasTaskProvider() {
+        return (taskProvider != null);
     }
 
     @Override
@@ -231,14 +258,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
         return taskProvider;
     }
 
-    public void setTaskProvider(TaskProvider taskProvider) {
-        this.taskProvider = taskProvider;
-    }
-
-    @Override
-    public boolean hasTaskProvider() {
-        return (taskProvider != null);
-    }
 
     /*
      * HobsonPluginRuntime methods
@@ -253,13 +272,6 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     public void postEvent(HobsonEvent event) {
         validateEventManager();
         eventManager.postEvent(HubContext.createLocal(), event);
-    }
-
-    @EventHandler
-    public void onDeviceConfigurationUpdate(DeviceConfigurationUpdateEvent event) {
-        if (event.getPluginId().equals(getContext().getPluginId())) {
-            getDeviceProxy(event.getDeviceId()).onDeviceConfigurationUpdate(event.getConfiguration());
-        }
     }
 
     @Override
@@ -297,7 +309,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     @Override
     public void setDeviceConfigurationProperty(DeviceContext dctx, PropertyContainerClass configClass, String name, Object value) {
         validateDeviceManager();
-        deviceManager.setDeviceConfigurationProperty(dctx, configClass, name, value);
+        try {
+            deviceManager.setDeviceConfigurationProperty(dctx, configClass, name, value);
+        } catch (NotSerializableException e) {
+            throw new HobsonRuntimeException("Unable to save device configuration for " + dctx + ": \"" + name + "\"=\"" + value + "\"", e);
+        }
     }
 
     @Override

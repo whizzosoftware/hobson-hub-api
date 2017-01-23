@@ -7,6 +7,8 @@
  *******************************************************************************/
 package com.whizzosoftware.hobson.api.property;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -125,5 +127,14 @@ public class PropertyContainer {
 
     public void setPropertyValues(Map<String, Object> propertyValues) {
         this.propertyValues = propertyValues;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).
+            append("id", id).
+            append("name", name).
+            append("context", containerClassContext).
+            append("properties", propertyValues).
+            toString();
     }
 }

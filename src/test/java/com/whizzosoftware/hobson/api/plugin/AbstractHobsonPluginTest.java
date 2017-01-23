@@ -14,7 +14,10 @@ import com.whizzosoftware.hobson.api.action.MockActionManager;
 import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.device.proxy.MockDeviceProxy;
 import com.whizzosoftware.hobson.api.event.MockEventManager;
+import com.whizzosoftware.hobson.api.event.plugin.PluginConfigurationUpdateEvent;
 import com.whizzosoftware.hobson.api.hub.HubContext;
+import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
 import com.whizzosoftware.hobson.api.property.TypedProperty;
 import io.netty.util.concurrent.Future;
 import org.junit.Test;
@@ -110,5 +113,19 @@ public class AbstractHobsonPluginTest {
         plugin.publishDeviceProxy(proxy).syncUninterruptibly();
         assertEquals(4000L, (long)plugin.getDeviceLastCheckin("device1"));
         assertNull(plugin.getDeviceLastCheckin("device2"));
+    }
+
+    @Test
+    public void testOnPluginConfigurationUpdateEvent() {
+        PluginContext ctx = PluginContext.createLocal("pid");
+        PluginContext ctx2 = PluginContext.createLocal("pid1");
+        PropertyContainer cfg = new PropertyContainer(PropertyContainerClassContext.create(ctx, "config"), null);
+        PropertyContainer cfg2 = new PropertyContainer(PropertyContainerClassContext.create(ctx, "config"), null);
+        MockHobsonPlugin plugin = new MockHobsonPlugin(ctx.getPluginId(), "name", "1.0.0", "");
+        assertFalse(plugin.hasConfiguration());
+        plugin.onPluginConfigurationUpdateEvent(new PluginConfigurationUpdateEvent(System.currentTimeMillis(), ctx2, cfg2));
+        assertFalse(plugin.hasConfiguration());
+        plugin.onPluginConfigurationUpdateEvent(new PluginConfigurationUpdateEvent(System.currentTimeMillis(), ctx, cfg));
+        assertTrue(plugin.hasConfiguration());
     }
 }

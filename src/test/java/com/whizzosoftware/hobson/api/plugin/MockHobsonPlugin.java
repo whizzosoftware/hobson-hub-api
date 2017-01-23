@@ -16,6 +16,7 @@ import io.netty.util.concurrent.Future;
 
 public class MockHobsonPlugin extends AbstractHobsonPlugin {
     private String name;
+    private PropertyContainer config;
 
     public MockHobsonPlugin(String pluginId, String name, String version, String description) {
         super(pluginId, version, description, new MockEventLoopGroup());
@@ -40,6 +41,19 @@ public class MockHobsonPlugin extends AbstractHobsonPlugin {
     @Override
     protected TypedProperty[] getConfigurationPropertyTypes() {
         return null;
+    }
+
+    @Override
+    public void onPluginConfigurationUpdate(PropertyContainer config) {
+        this.config = config;
+    }
+
+    public boolean hasConfiguration() {
+        return (config != null);
+    }
+
+    public void clearConfiguration() {
+        config = null;
     }
 
     @Override

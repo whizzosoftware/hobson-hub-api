@@ -29,7 +29,7 @@ public class DeviceVariablesUpdateEvent extends DeviceEvent {
     }
 
     public DeviceVariablesUpdateEvent(long timestamp, List<DeviceVariableUpdate> updates) {
-        super(timestamp, ID);
+        super(timestamp, ID, null);
         setProperty(PROP_UPDATES, updates);
     }
 

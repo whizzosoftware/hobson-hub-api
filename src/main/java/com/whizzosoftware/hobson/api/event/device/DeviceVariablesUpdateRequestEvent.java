@@ -16,7 +16,6 @@ import java.util.Map;
 
 public class DeviceVariablesUpdateRequestEvent extends DeviceEvent {
     public static final String ID = "devVarsUpdateRequest";
-    public static final String PROP_DEVICE_CONTEXT = "deviceCtx";
     public static final String PROP_VALUES = "values";
 
     public DeviceVariablesUpdateRequestEvent(long timestamp, DeviceContext dctx, String name, Object value) {
@@ -24,17 +23,12 @@ public class DeviceVariablesUpdateRequestEvent extends DeviceEvent {
     }
 
     public DeviceVariablesUpdateRequestEvent(long timestamp, DeviceContext dctx, Map<String,Object> values) {
-        super(timestamp, ID);
-        setProperty(PROP_DEVICE_CONTEXT, dctx);
+        super(timestamp, ID, dctx);
         setProperty(PROP_VALUES, values);
     }
 
     public DeviceVariablesUpdateRequestEvent(Map<String,Object> properties) {
         super(properties);
-    }
-
-    public DeviceContext getDeviceContext() {
-        return (DeviceContext)getProperty(PROP_DEVICE_CONTEXT);
     }
 
     public Map<String,Object> getValues() {

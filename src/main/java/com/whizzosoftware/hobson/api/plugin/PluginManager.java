@@ -167,6 +167,15 @@ public interface PluginManager {
     Collection<String> getRemoteRepositories();
 
     /**
+     * Indicates whether a plugin has published a device variable.
+     *
+     * @param ctx the device variable context
+     *
+     * @return a boolean
+     */
+    boolean hasLocalPluginDeviceVariable(DeviceVariableContext ctx);
+
+    /**
      * Installs a specific version of a remote plugin.
      *
      * @param ctx the context of the target plugin

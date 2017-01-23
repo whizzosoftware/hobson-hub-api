@@ -9,6 +9,7 @@
 */
 package com.whizzosoftware.hobson.api.plugin;
 
+import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.config.ConfigurationManager;
 import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
 import com.whizzosoftware.hobson.api.event.EventManager;
@@ -23,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.NotSerializableException;
 import java.util.Collection;
 
 /**
@@ -49,14 +51,22 @@ abstract public class AbstractPluginManager implements PluginManager {
 
     @Override
     public void setLocalPluginConfiguration(PluginContext ctx, PropertyContainer newConfig) {
-        getConfigurationManager().setLocalPluginConfiguration(ctx, newConfig);
-        postPluginConfigurationUpdateEvent(ctx);
+        try {
+            getConfigurationManager().setLocalPluginConfiguration(ctx, newConfig);
+            postPluginConfigurationUpdateEvent(ctx);
+        } catch (NotSerializableException e) {
+            throw new HobsonRuntimeException("Error setting plugin configuration for " + ctx + ": " + newConfig, e);
+        }
     }
 
     @Override
     public void setLocalPluginConfigurationProperty(PluginContext ctx, String name, Object value) {
-        getConfigurationManager().setLocalPluginConfigurationProperty(ctx, name, value);
-        postPluginConfigurationUpdateEvent(ctx);
+        try {
+            getConfigurationManager().setLocalPluginConfigurationProperty(ctx, name, value);
+            postPluginConfigurationUpdateEvent(ctx);
+        } catch (NotSerializableException e) {
+            throw new HobsonRuntimeException("Error setting plugin configuration property for " + ctx + ": \"" + name + "\"=\"" + value + "\"");
+        }
     }
 
     @Override
@@ -105,6 +115,11 @@ abstract public class AbstractPluginManager implements PluginManager {
     @Override
     public DeviceVariableState getLocalPluginDeviceVariable(DeviceVariableContext ctx) {
         return getLocalPluginInternal(ctx.getPluginContext()).getDeviceVariableState(ctx.getDeviceContext().getDeviceId(), ctx.getName());
+    }
+
+    @Override
+    public boolean hasLocalPluginDeviceVariable(DeviceVariableContext ctx) {
+        return getLocalPluginInternal(ctx.getPluginContext()).hasDeviceVariableState(ctx.getDeviceContext().getDeviceId(), ctx.getName());
     }
 
     private void postPluginConfigurationUpdateEvent(PluginContext ctx) {
