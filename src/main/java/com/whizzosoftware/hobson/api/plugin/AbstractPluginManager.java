@@ -15,6 +15,8 @@ import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
 import com.whizzosoftware.hobson.api.event.EventManager;
 import com.whizzosoftware.hobson.api.event.plugin.PluginConfigurationUpdateEvent;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
+import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
+import com.whizzosoftware.hobson.api.property.TypedProperty;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
 import com.whizzosoftware.hobson.api.variable.GlobalVariable;
@@ -26,6 +28,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.NotSerializableException;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An abstract implementation of PluginManager.
@@ -52,6 +56,11 @@ abstract public class AbstractPluginManager implements PluginManager {
     @Override
     public void setLocalPluginConfiguration(PluginContext ctx, PropertyContainer newConfig) {
         try {
+            HobsonPlugin plugin = getLocalPluginInternal(ctx);
+            PropertyContainerClass pcc = plugin.getConfigurationClass();
+
+            pcc.validate(newConfig);
+
             getConfigurationManager().setLocalPluginConfiguration(ctx, newConfig);
             postPluginConfigurationUpdateEvent(ctx);
         } catch (NotSerializableException e) {
@@ -124,13 +133,15 @@ abstract public class AbstractPluginManager implements PluginManager {
 
     private void postPluginConfigurationUpdateEvent(PluginContext ctx) {
         // post event
-        getEventManager().postEvent(
-                ctx.getHubContext(),
-                new PluginConfigurationUpdateEvent(
-                        System.currentTimeMillis(),
-                        ctx,
-                        getLocalPluginConfiguration(ctx)
-                )
-        );
+        if (getEventManager() != null) {
+            getEventManager().postEvent(
+                    ctx.getHubContext(),
+                    new PluginConfigurationUpdateEvent(
+                            System.currentTimeMillis(),
+                            ctx,
+                            getLocalPluginConfiguration(ctx)
+                    )
+            );
+        }
     }
 }

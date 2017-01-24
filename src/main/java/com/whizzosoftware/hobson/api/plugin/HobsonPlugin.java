@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
  */
 public interface HobsonPlugin {
     HobsonLocalPluginDescriptor getDescriptor();
+    PropertyContainerClass getConfigurationClass();
     PluginContext getContext();
     Object getDeviceConfigurationProperty(String deviceId, String name);
     Long getDeviceLastCheckin(String deviceId);

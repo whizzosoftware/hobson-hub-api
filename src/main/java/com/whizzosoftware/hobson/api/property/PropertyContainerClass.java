@@ -12,9 +12,7 @@ package com.whizzosoftware.hobson.api.property;
 import com.whizzosoftware.hobson.api.HobsonInvalidRequestException;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * A generic container that defines a set of typed properties that can be assigned values. This is used to define
@@ -30,7 +28,7 @@ import java.util.List;
 public class PropertyContainerClass implements Serializable { // TODO: remove
     private PropertyContainerClassContext context;
     private PropertyContainerClassType type;
-    private List<TypedProperty> supportedProperties;
+    private Map<String,TypedProperty> supportedProperties;
 
     // TODO: create builder to streamline construction with many supported properties
 
@@ -41,7 +39,8 @@ public class PropertyContainerClass implements Serializable { // TODO: remove
     public PropertyContainerClass(PropertyContainerClassContext context, PropertyContainerClassType type, List<TypedProperty> supportedProperties) {
         this.context = context;
         this.type = type;
-        this.supportedProperties = supportedProperties;
+
+        setSupportedProperties(supportedProperties);
     }
 
     public PropertyContainerClassContext getContext() {
@@ -60,13 +59,13 @@ public class PropertyContainerClass implements Serializable { // TODO: remove
         return (supportedProperties != null && supportedProperties.size() > 0);
     }
 
-    public List<TypedProperty> getSupportedProperties() {
-        return supportedProperties;
+    public Collection<TypedProperty> getSupportedProperties() {
+        return supportedProperties.values();
     }
 
     public TypedProperty getSupportedProperty(String id) {
         if (supportedProperties != null) {
-            for (TypedProperty tp : supportedProperties) {
+            for (TypedProperty tp : supportedProperties.values()) {
                 if (tp.getId() != null && tp.getId().equals(id)) {
                     return tp;
                 }
@@ -76,20 +75,30 @@ public class PropertyContainerClass implements Serializable { // TODO: remove
     }
 
     public void setSupportedProperties(List<TypedProperty> supportedProperties) {
-        this.supportedProperties = supportedProperties;
+        this.supportedProperties = new HashMap<>();
+        if (supportedProperties != null) {
+            for (TypedProperty tp : supportedProperties) {
+                this.supportedProperties.put(tp.getId(), tp);
+            }
+        }
     }
 
     public void addSupportedProperty(TypedProperty property) {
         if (supportedProperties == null) {
-            supportedProperties = new ArrayList<>();
+            supportedProperties = new HashMap<>();
         }
-        supportedProperties.add(property);
+        supportedProperties.put(property.getId(), property);
     }
 
     public void validate(PropertyContainer properties) {
+        validate(properties.getPropertyValues());
+    }
+
+    public void validate(Map<String,Object> values) {
         if (hasSupportedProperties()) {
-            for (TypedProperty tp : getSupportedProperties()) {
-                Object value = properties.getPropertyValue(tp.getId());
+            // validate that all required properties are present and of the specified type
+            for (TypedProperty tp : supportedProperties.values()) {
+                Object value = values.get(tp.getId());
                 if (value == null && tp.hasConstraintValue(PropertyConstraintType.required, true)) {
                     throw new HobsonInvalidRequestException("Missing required property \"" + tp.getName() + "\"");
                 } else if (value != null) {
@@ -100,6 +109,12 @@ public class PropertyContainerClass implements Serializable { // TODO: remove
                     } else if (tp.getType().equals(TypedProperty.Type.STRING) && !(value instanceof String)) {
                         throw new HobsonInvalidRequestException("Property \"" + tp.getName() + "\" must be a string value");
                     }
+                }
+            }
+            // validate that all only supported properties are present
+            for (String key : values.keySet()) {
+                if (!supportedProperties.containsKey(key)) {
+                    throw new HobsonInvalidRequestException("\"" + key + "\" is not a supported property");
                 }
             }
         }
@@ -115,7 +130,7 @@ public class PropertyContainerClass implements Serializable { // TODO: remove
      */
     public boolean evaluatePropertyConstraints(Collection<String> publishedVariableNames) {
         if (supportedProperties != null) {
-            for (TypedProperty tp : supportedProperties) {
+            for (TypedProperty tp : supportedProperties.values()) {
                 if (!tp.evaluateConstraints(publishedVariableNames)) {
                     return false;
                 }

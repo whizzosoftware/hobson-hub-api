@@ -92,9 +92,16 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
         return context;
     }
 
+    @Override
+    public PropertyContainerClass getConfigurationClass() {
+        return configurationClass;
+    }
+
     protected void setStatus(PluginStatus status) {
         this.status = status;
-        eventManager.postEvent(getContext().getHubContext(), new PluginStatusChangeEvent(System.currentTimeMillis(), getContext(), status));
+        if (eventManager != null) {
+            eventManager.postEvent(getContext().getHubContext(), new PluginStatusChangeEvent(System.currentTimeMillis(), getContext(), status));
+        }
     }
 
     @Override
