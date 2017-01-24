@@ -87,7 +87,7 @@ public class AbstractHobsonPluginTest {
     public void testSetDeviceConfigurationPropertyWithNoDeviceManager() {
         try {
             MockHobsonPlugin plugin = new MockHobsonPlugin("id", "name", "1.0.0", "");
-            plugin.setDeviceConfigurationProperty(DeviceContext.createLocal("id", "id"), null, "name", true);
+            plugin.setDeviceConfigurationProperty(DeviceContext.createLocal("id", "id"), "name", true);
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {
         }

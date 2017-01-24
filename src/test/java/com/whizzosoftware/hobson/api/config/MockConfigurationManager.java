@@ -12,15 +12,13 @@ package com.whizzosoftware.hobson.api.config;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
-import com.whizzosoftware.hobson.api.property.PropertyContainer;
-import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 
 import java.io.NotSerializableException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MockConfigurationManager implements ConfigurationManager {
-    private Map<PluginContext,PropertyContainer> pluginConfigMap = new HashMap<>();
+    private Map<PluginContext,Map<String,Object>> pluginConfigMap = new HashMap<>();
 
     @Override
     public void deleteHubConfiguration(HubContext ctx) {
@@ -28,7 +26,7 @@ public class MockConfigurationManager implements ConfigurationManager {
     }
 
     @Override
-    public PropertyContainer getDeviceConfiguration(DeviceContext ctx, PropertyContainerClass metas) {
+    public Map<String,Object> getDeviceConfiguration(DeviceContext ctx) {
         return null;
     }
 
@@ -38,7 +36,7 @@ public class MockConfigurationManager implements ConfigurationManager {
     }
 
     @Override
-    public PropertyContainer getHubConfiguration(HubContext ctx) {
+    public Map<String,Object> getHubConfiguration(HubContext ctx) {
         return null;
     }
 
@@ -48,7 +46,7 @@ public class MockConfigurationManager implements ConfigurationManager {
     }
 
     @Override
-    public PropertyContainer getLocalPluginConfiguration(PluginContext ctx, PropertyContainerClass configurationClass) {
+    public Map<String,Object> getLocalPluginConfiguration(PluginContext ctx) {
         return pluginConfigMap.get(ctx);
     }
 
@@ -63,13 +61,13 @@ public class MockConfigurationManager implements ConfigurationManager {
     }
 
     @Override
-    public void setHubConfiguration(HubContext ctx, PropertyContainer configuration) throws NotSerializableException {
+    public void setHubConfiguration(HubContext ctx, Map<String,Object> config) throws NotSerializableException {
 
     }
 
     @Override
-    public void setLocalPluginConfiguration(PluginContext ctx, PropertyContainer newConfig) throws NotSerializableException {
-        pluginConfigMap.put(ctx, newConfig);
+    public void setLocalPluginConfiguration(PluginContext ctx, Map<String,Object> config) throws NotSerializableException {
+        pluginConfigMap.put(ctx, config);
     }
 
     @Override

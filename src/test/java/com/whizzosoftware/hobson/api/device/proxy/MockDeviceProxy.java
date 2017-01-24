@@ -40,7 +40,7 @@ public class MockDeviceProxy extends AbstractHobsonDeviceProxy {
     }
 
     @Override
-    public void onDeviceConfigurationUpdate(PropertyContainer config) {
+    public void onDeviceConfigurationUpdate(Map<String,Object> config) {
     }
 
     @Override
@@ -49,7 +49,7 @@ public class MockDeviceProxy extends AbstractHobsonDeviceProxy {
     }
 
     @Override
-    public void onStartup(String name, PropertyContainer config) {
+    public void onStartup(String name, Map<String,Object> config) {
     }
 
     @Override

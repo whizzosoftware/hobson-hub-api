@@ -13,7 +13,6 @@ import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
-import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
 import io.netty.util.concurrent.Future;
@@ -163,20 +162,18 @@ public interface DeviceManager {
      * Sets device configuration properties.
      *
      * @param dctx the context of the target device
-     * @param configClass the configuration class
-     * @param values a map of configuration property name to values
+     * @param config a map of configuration property name to values
      */
-    void setDeviceConfiguration(DeviceContext dctx, PropertyContainerClass configClass, Map<String, Object> values);
+    void setDeviceConfiguration(DeviceContext dctx, Map<String, Object> config);
 
     /**
      * Set a device configuration property.
      *
      * @param dctx the context of the target device
-     * @param configClass the configuration class
      * @param name the configuration property name
      * @param value the configuration property value
      */
-    void setDeviceConfigurationProperty(DeviceContext dctx, PropertyContainerClass configClass, String name, Object value);
+    void setDeviceConfigurationProperty(DeviceContext dctx, String name, Object value);
 
     /**
      * Sets the name of a device.

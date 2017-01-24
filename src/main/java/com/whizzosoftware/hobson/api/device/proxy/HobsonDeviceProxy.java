@@ -13,7 +13,6 @@ import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.device.DeviceError;
 import com.whizzosoftware.hobson.api.device.DeviceType;
 import com.whizzosoftware.hobson.api.device.HobsonDeviceDescriptor;
-import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
 
@@ -41,10 +40,10 @@ public interface HobsonDeviceProxy {
     boolean hasError();
     boolean hasVariable(String name);
     boolean isStarted();
-    void onDeviceConfigurationUpdate(PropertyContainer config);
+    void onDeviceConfigurationUpdate(Map<String,Object> config);
     void onSetVariables(Map<String,Object> values);
     void onShutdown();
-    void onStartup(String name, PropertyContainer config);
+    void onStartup(String name, Map<String,Object> config);
     void setLastCheckin(Long lastCheckin);
-    void start(String name, PropertyContainer config);
+    void start(String name, Map<String,Object> config);
 }

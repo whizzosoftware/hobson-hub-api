@@ -15,11 +15,13 @@ import com.whizzosoftware.hobson.api.event.device.DeviceVariablesUpdateEvent;
 import com.whizzosoftware.hobson.api.event.MockEventManager;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.MockHobsonPlugin;
-import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableDescriptor;
 import com.whizzosoftware.hobson.api.variable.VariableConstants;
 import com.whizzosoftware.hobson.api.variable.VariableMask;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -62,7 +64,7 @@ public class AbstractHobsonDeviceProxyTest {
         p.setEventManager(em);
 
         MockDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB, "deviceName") {
-            public void onStartup(String name, PropertyContainer config) {
+            public void onStartup(String name, Map<String,Object> config) {
                 setLastCheckin(2000L);
                 publishVariables(createDeviceVariable("foo", VariableMask.READ_WRITE));
             }
@@ -82,7 +84,7 @@ public class AbstractHobsonDeviceProxyTest {
         p.publishDeviceProxy(d).sync();
 
         assertFalse(d.isStarted());
-        d.start("name", new PropertyContainer());
+        d.start("name", new HashMap<String,Object>());
         assertTrue(d.isStarted());
 
         // device manager is in charge of flagging the device as available, so make sure it is still unavailable here
@@ -327,7 +329,7 @@ public class AbstractHobsonDeviceProxyTest {
         }
 
         @Override
-        public void onStartup(String name, PropertyContainer config) {
+        public void onStartup(String name, Map<String,Object> config) {
             publishVariables(createDeviceVariable(VariableConstants.ON, VariableMask.READ_WRITE));
         }
     }

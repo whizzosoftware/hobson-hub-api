@@ -160,6 +160,14 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
+    public TemplatedId createDeviceActionClassSupportedPropertiesId(DeviceContext dctx, String containerClassId) {
+        return new TemplatedId(
+            createDeviceActionClassId(dctx, containerClassId).getId() + HubContext.DELIMITER + "supportedProperties",
+            ""
+        );
+    }
+
+    @Override
     public TemplatedId createDeviceId(DeviceContext ctx) {
         return new TemplatedId(
             createDevicesId(ctx.getHubContext()).getId() + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId(),

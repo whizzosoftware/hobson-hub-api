@@ -25,14 +25,14 @@ public class HobsonHub {
     private String version;
     private String apiKey;
     private WebSocketInfo webSocketInfo;
-    private HubConfigurationClass configurationClass = new HubConfigurationClass();
+    private PropertyContainerClass configurationClass;
     private PropertyContainer configuration;
 
-    public HobsonHub(HubContext ctx) {
+    private HobsonHub(HubContext ctx) {
         this.ctx = ctx;
     }
 
-    public HobsonHub(HubContext ctx, String name) {
+    private HobsonHub(HubContext ctx, String name) {
         this(ctx);
         this.name = name;
     }
@@ -91,6 +91,11 @@ public class HobsonHub {
 
         public Builder version(String version) {
             hub.version = version;
+            return this;
+        }
+
+        public Builder configurationClass(PropertyContainerClass configurationClass) {
+            hub.configurationClass = configurationClass;
             return this;
         }
 

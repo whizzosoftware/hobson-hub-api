@@ -302,8 +302,30 @@ public class CollectionPersister {
             (Boolean)map.get(PropertyConstants.TASK_ACTION),
             (Long)map.get(PropertyConstants.TIMEOUT_INTERVAL)
         );
-        ac.setSupportedProperties((List<TypedProperty>)map.get(PropertyConstants.SUPPORTED_PROPERTIES)); // TODO
+        ac.setSupportedProperties(restoreDeviceActionClassSupportedProperties(pctx, ctx, actionClassId));
         return ac;
+    }
+
+    private List<TypedProperty> restoreDeviceActionClassSupportedProperties(CollectionPersistenceContext cpctx, DeviceContext ctx, String actionClassId) {
+        List<TypedProperty> results = new ArrayList<>();
+
+        Set<Object> set = cpctx.getSet(idProvider.createDeviceActionClassSupportedPropertiesId(ctx, actionClassId).getId());
+        for (Object o : set) {
+            Map<String,Object> map = (Map<String,Object>)o;
+            TypedProperty.Builder b = new TypedProperty.Builder((String)map.get(PropertyConstants.ID), (String)map.get(PropertyConstants.NAME), (String)map.get(PropertyConstants.DESCRIPTION), TypedProperty.Type.valueOf((String)map.get(PropertyConstants.TYPE)));
+            if (map.containsKey(PropertyConstants.ENUMERATION)) {
+                b.enumeration((Map<String,String>)map.get(PropertyConstants.ENUMERATION));
+            }
+            if (map.containsKey(PropertyConstants.CONSTRAINTS)) {
+                Map<String,Object> c = (Map<String,Object>)map.get(PropertyConstants.CONSTRAINTS);
+                for (String k : c.keySet()) {
+                    b.constraint(PropertyConstraintType.valueOf(k), c.get(k));
+                }
+            }
+            results.add(b.build());
+        }
+
+        return results;
     }
 
     public Map<String,Object> restoreHubConfiguration(CollectionPersistenceContext cpctx, HubContext hctx, PropertyContainerClassContext pccctx) {
@@ -712,10 +734,29 @@ public class CollectionPersister {
         map.put(PropertyConstants.DESCRIPTION, ac.getDescription());
         map.put(PropertyConstants.TASK_ACTION, ac.isTaskAction());
         map.put(PropertyConstants.TIMEOUT_INTERVAL, ac.getTimeoutInterval());
-        map.put(PropertyConstants.SUPPORTED_PROPERTIES, ac.getSupportedProperties()); // TODO
+        saveTypedPropertyCollection(pctx, idProvider.createDeviceActionClassSupportedPropertiesId(dctx, ac.getContext().getContainerClassId()).getId(), ac.getSupportedProperties());
         pctx.setMap(key, map);
         pctx.addSetValue(idProvider.createDeviceActionClassesId(dctx).getId(), ac.getContext().getContainerClassId());
 
         pctx.commit();
+    }
+
+    private void saveTypedPropertyCollection(CollectionPersistenceContext pctx, String key, Collection<TypedProperty> tps) {
+        Set<Object> props = new HashSet<>();
+        for (TypedProperty tp : tps) {
+            Map<String,Object> map = new HashMap<>();
+            map.put(PropertyConstants.ID, tp.getId());
+            map.put(PropertyConstants.NAME, tp.getName());
+            map.put(PropertyConstants.DESCRIPTION, tp.getDescription());
+            map.put(PropertyConstants.TYPE, tp.getType().toString());
+            map.put(PropertyConstants.ENUMERATION, tp.getEnumeration());
+            Map<String,Object> constraints = new HashMap<>();
+            for (TypedPropertyConstraint tpc : tp.getConstraints()) {
+                constraints.put(tpc.getType().toString(), tpc.getArgument());
+            }
+            map.put(PropertyConstants.CONSTRAINTS, constraints);
+            props.add(map);
+        }
+        pctx.setSet(key, props);
     }
 }

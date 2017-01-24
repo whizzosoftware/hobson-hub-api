@@ -202,7 +202,7 @@ public interface PluginManager {
      * @param ctx the context of the target plugin
      * @param config the plugin configuration
      */
-    void setLocalPluginConfiguration(PluginContext ctx, PropertyContainer config);
+    void setLocalPluginConfiguration(PluginContext ctx, Map<String,Object> config);
 
     /**
      * Sets an individual plugin level configuration property.
@@ -223,5 +223,5 @@ public interface PluginManager {
      *
      * @return a Future that indicates when the device has finished starting
      */
-    Future startPluginDevice(final HobsonDeviceProxy device, String name, final PropertyContainer config, final Runnable runnable);
+    Future startPluginDevice(final HobsonDeviceProxy device, String name, final Map<String,Object> config, final Runnable runnable);
 }

@@ -18,7 +18,7 @@ import com.whizzosoftware.hobson.api.property.TypedProperty;
  * @author Dan Noguerol
  */
 public class HubConfigurationClass extends PropertyContainerClass {
-    public static final String ID = "hubConfiguration";
+    public static final String ID = "configuration";
 
     public static final String AWAY = "away";
     public static final String EMAIL_PASSWORD = "emailPassword";
@@ -34,7 +34,7 @@ public class HubConfigurationClass extends PropertyContainerClass {
     public static final String SSL_MODE = "sslMode";
 
     public HubConfigurationClass() {
-        super(PropertyContainerClassContext.create(HubContext.createLocal(), "configuration"), PropertyContainerClassType.HUB_CONFIG);
+        super(PropertyContainerClassContext.create(HubContext.createLocal(), ID), PropertyContainerClassType.HUB_CONFIG);
         addSupportedProperty(new TypedProperty.Builder(EMAIL_PASSWORD, "E-mail password", "The e-mail password to use for sending mail", TypedProperty.Type.STRING).build());
         addSupportedProperty(new TypedProperty.Builder(EMAIL_SECURE, "E-mail Secure", "Indicates whether the e-mail sending channel should be secure", TypedProperty.Type.BOOLEAN).build());
         addSupportedProperty(new TypedProperty.Builder(EMAIL_SENDER, "E-mail sender address", "The sender address to use for sending mail", TypedProperty.Type.STRING).build());

@@ -76,6 +76,10 @@ public class TypedProperty implements Serializable { // TODO: remove
         return this;
     }
 
+    public boolean hasConstraintValues() {
+        return (constraints != null && constraints.size() > 0);
+    }
+
     public boolean hasConstraintValue(PropertyConstraintType type, Object value) {
         if (constraints != null) {
             for (TypedPropertyConstraint tpc : constraints) {
@@ -85,6 +89,10 @@ public class TypedProperty implements Serializable { // TODO: remove
             }
         }
         return false;
+    }
+
+    public boolean hasEnumeration() {
+        return (enumeration != null && enumeration.size() > 0);
     }
 
     /**
@@ -132,8 +140,10 @@ public class TypedProperty implements Serializable { // TODO: remove
         }
 
         public Builder enumeration(Map<String,String> enumeration) {
-            for (String val : enumeration.keySet()) {
-                enumerate(val, enumeration.get(val));
+            if (enumeration != null) {
+                for (String val : enumeration.keySet()) {
+                    enumerate(val, enumeration.get(val));
+                }
             }
             return this;
         }

@@ -16,7 +16,6 @@ import com.whizzosoftware.hobson.api.event.EventManager;
 import com.whizzosoftware.hobson.api.event.plugin.PluginConfigurationUpdateEvent;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
-import com.whizzosoftware.hobson.api.property.TypedProperty;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
 import com.whizzosoftware.hobson.api.variable.GlobalVariable;
@@ -28,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.NotSerializableException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,21 +48,21 @@ abstract public class AbstractPluginManager implements PluginManager {
 
     @Override
     public PropertyContainer getLocalPluginConfiguration(PluginContext ctx) {
-        return getConfigurationManager().getLocalPluginConfiguration(ctx, getLocalPlugin(ctx).getConfigurationClass());
+        return new PropertyContainer(getLocalPlugin(ctx).getConfigurationClass().getContext(), getConfigurationManager().getLocalPluginConfiguration(ctx));
     }
 
     @Override
-    public void setLocalPluginConfiguration(PluginContext ctx, PropertyContainer newConfig) {
+    public void setLocalPluginConfiguration(PluginContext ctx, Map<String,Object> config) {
         try {
             HobsonPlugin plugin = getLocalPluginInternal(ctx);
             PropertyContainerClass pcc = plugin.getConfigurationClass();
 
-            pcc.validate(newConfig);
+            pcc.validate(config);
 
-            getConfigurationManager().setLocalPluginConfiguration(ctx, newConfig);
+            getConfigurationManager().setLocalPluginConfiguration(ctx, config);
             postPluginConfigurationUpdateEvent(ctx);
         } catch (NotSerializableException e) {
-            throw new HobsonRuntimeException("Error setting plugin configuration for " + ctx + ": " + newConfig, e);
+            throw new HobsonRuntimeException("Error setting plugin configuration for " + ctx + ": " + config, e);
         }
     }
 
@@ -79,7 +77,7 @@ abstract public class AbstractPluginManager implements PluginManager {
     }
 
     @Override
-    public Future startPluginDevice(final HobsonDeviceProxy device, final String name, final PropertyContainer config, final Runnable runnable) {
+    public Future startPluginDevice(final HobsonDeviceProxy device, final String name, final Map<String,Object> config, final Runnable runnable) {
         HobsonPlugin plugin = getLocalPluginInternal(device.getContext().getPluginContext());
         return plugin.getEventLoopExecutor().executeInEventLoop(new Runnable() {
             @Override

@@ -15,6 +15,7 @@ public class PropertyConstants {
     public static final String AVAILABLE = "available";
     public static final String BEACON_MAJOR = "beaconMajor";
     public static final String BEACON_MINOR = "beaconMinor";
+    public static final String CONSTRAINTS = "constraints";
     public static final String CONTAINER_CLASS_ID = "containerClassId";
     public static final String CONTEXT = "context";
     public static final String CREATION_TIME = "creationTime";
@@ -23,6 +24,7 @@ public class PropertyConstants {
     public static final String DEVICE_ID = "deviceId";
     public static final String EMAIL = "email";
     public static final String ENABLED = "enabled";
+    public static final String ENUMERATION = "enumeration";
     public static final String EXPIRE_TIME = "expireTime";
     public static final String FAMILY_NAME = "familyName";
     public static final String GIVEN_NAME = "givenName";

@@ -53,7 +53,7 @@ public class AbstractPluginManagerTest {
         values.put("username", "foo@bar.com");
         values.put("password", "password");
 
-        pm.setLocalPluginConfiguration(plugin.getContext(), new PropertyContainer(PropertyContainerClassContext.create(plugin.getContext(), "config"), values));
+        pm.setLocalPluginConfiguration(plugin.getContext(), values);
 
         PropertyContainer config = pm.getLocalPluginConfiguration(plugin.getContext());
         assertNotNull(config);
@@ -69,7 +69,7 @@ public class AbstractPluginManagerTest {
         values.put("foo", "bar");
 
         try {
-            pm.setLocalPluginConfiguration(plugin.getContext(), new PropertyContainer(PropertyContainerClassContext.create(plugin.getContext(), "config"), values));
+            pm.setLocalPluginConfiguration(plugin.getContext(), values);
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {}
     }
@@ -80,7 +80,7 @@ public class AbstractPluginManagerTest {
         values.put("password", "password");
 
         try {
-            pm.setLocalPluginConfiguration(plugin.getContext(), new PropertyContainer(PropertyContainerClassContext.create(plugin.getContext(), "config"), values));
+            pm.setLocalPluginConfiguration(plugin.getContext(), values);
             fail("Should have thrown exception");
         } catch (HobsonRuntimeException ignored) {}
     }

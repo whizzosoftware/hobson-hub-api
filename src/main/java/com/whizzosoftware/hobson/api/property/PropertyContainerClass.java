@@ -90,10 +90,6 @@ public class PropertyContainerClass implements Serializable { // TODO: remove
         supportedProperties.put(property.getId(), property);
     }
 
-    public void validate(PropertyContainer properties) {
-        validate(properties.getPropertyValues());
-    }
-
     public void validate(Map<String,Object> values) {
         if (hasSupportedProperties()) {
             // validate that all required properties are present and of the specified type

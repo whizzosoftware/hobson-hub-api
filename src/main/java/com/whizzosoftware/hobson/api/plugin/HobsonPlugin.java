@@ -82,8 +82,8 @@ public interface HobsonPlugin {
     void publishActionProvider(ActionProvider actionProvider);
     void scheduleAtFixedRateInEventLoop(Runnable runnable, long initialDelay, long time, TimeUnit unit);
     void setActionManager(ActionManager actionManager);
-    void setDeviceConfigurationProperty(DeviceContext dctx, PropertyContainerClass configClass, String name, Object value);
-    void setDeviceConfigurationProperties(DeviceContext dctx, PropertyContainerClass configClass, Map<String,Object> values);
+    void setDeviceConfigurationProperty(DeviceContext dctx, String name, Object value);
+    void setDeviceConfigurationProperties(DeviceContext dctx, Map<String,Object> values);
     void setDeviceManager(DeviceManager deviceManager);
     void setDiscoManager(DiscoManager discoManager);
     void setEventManager(EventManager eventManager);

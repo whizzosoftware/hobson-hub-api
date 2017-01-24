@@ -12,8 +12,6 @@ package com.whizzosoftware.hobson.api.config;
 import com.whizzosoftware.hobson.api.device.DeviceContext;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
-import com.whizzosoftware.hobson.api.property.PropertyContainer;
-import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 
 import java.io.NotSerializableException;
 import java.util.Map;
@@ -37,11 +35,10 @@ public interface ConfigurationManager {
      * Retrieves a specific device's configuration.
      *
      * @param ctx the device context
-     * @param metas the class for the configuration
      *
      * @return a PropertyContainer instance containing the configuration
      */
-    PropertyContainer getDeviceConfiguration(DeviceContext ctx, PropertyContainerClass metas);
+    Map<String,Object> getDeviceConfiguration(DeviceContext ctx);
 
     /**
      * Retrieves a specific device's configuration property.
@@ -60,7 +57,7 @@ public interface ConfigurationManager {
      *
      * @return a PropertyContainer instance containing the configuration
      */
-    PropertyContainer getHubConfiguration(HubContext ctx);
+    Map<String,Object> getHubConfiguration(HubContext ctx);
 
     /**
      * Returns a configuration property associated with a Hub.
@@ -76,11 +73,10 @@ public interface ConfigurationManager {
      * Returns the configuration for a local plugin.
      *
      * @param ctx the plugin context
-     * @param configurationClass the associated class of the configuration
      *
      * @return a PropertyContainer containing the configuration
      */
-    PropertyContainer getLocalPluginConfiguration(PluginContext ctx, PropertyContainerClass configurationClass);
+    Map<String,Object> getLocalPluginConfiguration(PluginContext ctx);
 
     /**
      * Sets a device's configuration.
@@ -103,16 +99,16 @@ public interface ConfigurationManager {
      * Sets the configuration associated with a Hub.
      *
      * @param ctx the context of the hub
-     * @param configuration the configuration to set
+     * @param config the configuration to set
      */
-    void setHubConfiguration(HubContext ctx, PropertyContainer configuration) throws NotSerializableException;
+    void setHubConfiguration(HubContext ctx, Map<String,Object> config) throws NotSerializableException;
 
     /**
      * Sets the configuration for a local plugin.
      *  @param ctx the plugin context
-     * @param newConfig the new configuration
+     * @param config the new configuration
      */
-    void setLocalPluginConfiguration(PluginContext ctx, PropertyContainer newConfig) throws NotSerializableException;
+    void setLocalPluginConfiguration(PluginContext ctx, Map<String,Object> config) throws NotSerializableException;
 
     /**
      * Sets a configuration property for a local plugin.

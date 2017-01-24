@@ -10,7 +10,6 @@
 package com.whizzosoftware.hobson.api.property;
 
 import com.whizzosoftware.hobson.api.HobsonInvalidRequestException;
-import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import org.junit.Test;
@@ -43,26 +42,25 @@ public class PropertyContainerClassTest {
         values.put("port", 8888);
         values.put("desc", "Test Description");
         values.put("enabled", true);
-        PropertyContainer props = new PropertyContainer(ctx, values);
 
         // test valid
-        ac.validate(props);
+        ac.validate(values);
 
         // test still valid
         values.remove("desc");
-        ac.validate(props);
+        ac.validate(values);
 
         // test invalid (missing)
         values.remove("port");
         try {
-            ac.validate(props);
+            ac.validate(values);
             fail("Should have thrown exception");
         } catch (HobsonInvalidRequestException ignored) {}
 
         // test invalid (not a number)
         values.put("port", "8888");
         try {
-            ac.validate(props);
+            ac.validate(values);
             fail("Should have thrown exception");
         } catch (HobsonInvalidRequestException ignored) {}
 
@@ -70,7 +68,7 @@ public class PropertyContainerClassTest {
         values.put("port", 8888);
         values.put("enabled", "true");
         try {
-            ac.validate(props);
+            ac.validate(values);
             fail("Should have thrown exception");
         } catch (HobsonInvalidRequestException ignored) {}
 
@@ -78,7 +76,7 @@ public class PropertyContainerClassTest {
         values.put("enabled", true);
         values.put("name", 1000);
         try {
-            ac.validate(props);
+            ac.validate(values);
             fail("Should have thrown exception");
         } catch (HobsonInvalidRequestException ignored) {}
     }
@@ -87,8 +85,7 @@ public class PropertyContainerClassTest {
     public void testValidateWithoutSupportedProperties() {
         PropertyContainerClassContext ctx = PropertyContainerClassContext.create(PluginContext.createLocal("plugin1"), "cc1");
         PropertyContainerClass ac = new PropertyContainerClass(ctx, PropertyContainerClassType.ACTION);
-        PropertyContainer props = new PropertyContainer(ctx, new HashMap<String,Object>());
-        ac.validate(props);
+        ac.validate(new HashMap<String,Object>());
     }
 
     @Test
@@ -102,7 +99,7 @@ public class PropertyContainerClassTest {
         values.put("port", 8888);
 
         try {
-            pcc.validate(new PropertyContainer(pcctx, values));
+            pcc.validate(values);
             fail("Should have thrown exception");
         } catch (HobsonInvalidRequestException ignored) {}
     }

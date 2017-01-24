@@ -13,7 +13,6 @@ import com.whizzosoftware.hobson.api.device.proxy.HobsonDeviceProxy;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
-import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
 import io.netty.channel.EventLoopGroup;
@@ -84,7 +83,7 @@ public class MockDeviceManager implements DeviceManager {
             public void run() {
                 publishedDevices.add(device);
                 if (config != null) {
-                    setDeviceConfiguration(device.getContext(), device.getConfigurationClass(), config);
+                    setDeviceConfiguration(device.getContext(), config);
                 }
                 if (runnable != null) {
                     runnable.run();
@@ -119,15 +118,15 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
-    public void setDeviceConfigurationProperty(DeviceContext dctx, PropertyContainerClass configClass, String name, Object value) {
-        configuration.put(configClass.getContext().getPluginId() + "." + configClass.getContext().getDeviceId() + "." + name, value);
+    public void setDeviceConfigurationProperty(DeviceContext dctx, String name, Object value) {
+        configuration.put(dctx.getPluginId() + "." + dctx.getDeviceId() + "." + name, value);
     }
 
     @Override
-    public void setDeviceConfiguration(DeviceContext dctx, PropertyContainerClass configClass, Map<String, Object> values) {
+    public void setDeviceConfiguration(DeviceContext dctx, Map<String, Object> values) {
         if (values != null) {
             for (String name : values.keySet()) {
-                setDeviceConfigurationProperty(dctx, configClass, name, values.get(name));
+                setDeviceConfigurationProperty(dctx, name, values.get(name));
             }
         }
     }

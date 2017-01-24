@@ -155,7 +155,7 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
         this.lastCheckin = lastCheckin;
     }
 
-    public void start(final String name, final PropertyContainer config) {
+    public void start(final String name, final Map<String,Object> config) {
         this.name = name;
         onStartup(name, config);
         started = true;
@@ -219,7 +219,7 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
     }
 
     protected void setConfigurationProperty(String name, Object value) {
-        plugin.setDeviceConfigurationProperty(getContext(), configurationClass, name, value);
+        plugin.setDeviceConfigurationProperty(getContext(), name, value);
     }
 
     /**
