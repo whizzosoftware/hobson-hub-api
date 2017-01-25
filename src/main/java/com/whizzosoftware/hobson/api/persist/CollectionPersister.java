@@ -413,7 +413,7 @@ public class CollectionPersister {
         return task;
     }
 
-    public void saveAction(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainer action) {
+    public void saveAction(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainer action, boolean commit) {
         String key = idProvider.createActionId(ctx, action.getId()).getId();
 
         Map<String,Object> map = new HashMap<>();
@@ -421,12 +421,16 @@ public class CollectionPersister {
         map.put(PropertyConstants.PLUGIN_ID, action.getContainerClassContext().getPluginId());
         map.put(PropertyConstants.CONTAINER_CLASS_ID, action.getContainerClassContext().getContainerClassId());
 
-        saveActionProperties(ctx, pctx, action);
+        saveActionProperties(ctx, pctx, action, false);
 
         pctx.setMap(key, map);
+
+        if (commit) {
+            pctx.commit();
+        }
     }
 
-    public void saveActionProperties(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainer action) {
+    public void saveActionProperties(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainer action, boolean commit) {
         String key = idProvider.createActionPropertiesId(ctx, action.getId()).getId();
 
         Map<String,Object> map = new HashMap<>();
@@ -436,9 +440,13 @@ public class CollectionPersister {
         }
 
         pctx.setMap(key, map);
+
+        if (commit) {
+            pctx.commit();
+        }
     }
 
-    public String saveActionSet(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainerSet actionSet) {
+    public String saveActionSet(HubContext ctx, CollectionPersistenceContext pctx, PropertyContainerSet actionSet, boolean commit) {
         if (actionSet.hasId()) {
             deleteActionSet(pctx, ctx, actionSet.getId());
         } else {
@@ -459,7 +467,7 @@ public class CollectionPersister {
                 if (!action.hasId()) {
                     action.setId(UUID.randomUUID().toString());
                 }
-                saveAction(ctx, pctx, action);
+                saveAction(ctx, pctx, action, false);
                 pctx.addSetValue(idProvider.createActionSetActionsId(ctx, actionSet.getId()).getId(), action.getId());
             }
         }
@@ -468,12 +476,14 @@ public class CollectionPersister {
 
         pctx.addSetValue(idProvider.createActionSetsId(ctx).getId(), actionSet.getId());
 
-        pctx.commit();
+        if (commit) {
+            pctx.commit();
+        }
 
         return actionSet.getId();
     }
 
-    public void saveCondition(CollectionPersistenceContext pctx, TaskContext tctx, PropertyContainer pc) {
+    public void saveCondition(CollectionPersistenceContext pctx, TaskContext tctx, PropertyContainer pc, boolean commit) {
         Map<String,Object> cmap = new HashMap<>();
         if (!pc.hasId()) {
             pc.setId(UUID.randomUUID().toString());
@@ -495,9 +505,13 @@ public class CollectionPersister {
             }
             pctx.setMap(idProvider.createTaskConditionPropertiesId(tctx, pc.getId()).getId(), m);
         }
+
+        if (commit) {
+            pctx.commit();
+        }
     }
 
-    public void saveDataStream(CollectionPersistenceContext pctx, HubContext hctx, DataStream dataStream) {
+    public void saveDataStream(CollectionPersistenceContext pctx, HubContext hctx, DataStream dataStream, boolean commit) {
         // save data stream meta data
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.ID, dataStream.getId());
@@ -529,10 +543,12 @@ public class CollectionPersister {
         pctx.addSetValue(idProvider.createDataStreamsId(hctx).getId(), dataStream.getId());
 
         // commit
-        pctx.commit();
+        if (commit) {
+            pctx.commit();
+        }
     }
 
-    public void saveDevice(CollectionPersistenceContext pctx, HobsonDeviceDescriptor device) {
+    public void saveDevice(CollectionPersistenceContext pctx, HobsonDeviceDescriptor device, boolean commit) {
         // create device map
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.NAME, device.getName());
@@ -550,20 +566,20 @@ public class CollectionPersister {
         // save the device variables
         if (device.hasVariableDescriptions()) {
             for (DeviceVariableDescriptor vd : device.getVariables()) {
-                saveDeviceVariableDescription(pctx, vd);
+                saveDeviceVariableDescription(pctx, vd, false);
             }
         }
 
         // save the action classes
         if (device.hasActionClasses()) {
             for (ActionClass ac : device.getActionClasses()) {
-                saveDeviceActionClass(pctx, ac);
+                saveDeviceActionClass(pctx, ac, false);
             }
         }
 
         // save the tags
         if (device.hasTags()) {
-            saveDeviceTags(pctx, device.getContext(), device.getTags());
+            saveDeviceTags(pctx, device.getContext(), device.getTags(), false);
         }
 
         // save device to list of hub devices
@@ -573,40 +589,50 @@ public class CollectionPersister {
         pctx.addSetValue(idProvider.createPluginDevicesId(device.getContext().getPluginContext()).getId(), deviceId);
 
         // commit
-        pctx.commit();
+        if (commit) {
+            pctx.commit();
+        }
     }
 
-    public void saveDeviceConfiguration(CollectionPersistenceContext pctx, DeviceContext dctx, Map<String,Object> config) {
+    public void saveDeviceConfiguration(CollectionPersistenceContext pctx, DeviceContext dctx, Map<String,Object> config, boolean commit) {
         pctx.setMap(idProvider.createDeviceConfigurationId(dctx).getId(), config);
         // also set the device name specifically if it has changed
         if (config.containsKey(PropertyConstants.NAME)) {
             pctx.setMapValue(idProvider.createDeviceId(dctx).getId(), PropertyConstants.NAME, config.get(PropertyConstants.NAME));
         }
-        pctx.commit();
+
+        if (commit) {
+            pctx.commit();
+        }
     }
 
-    public void saveDeviceLastCheckIn(CollectionPersistenceContext pctx, DeviceContext dctx, long lastCheckin) {
+    public void saveDeviceLastCheckIn(CollectionPersistenceContext pctx, DeviceContext dctx, long lastCheckin, boolean commit) {
         pctx.setMapValue(idProvider.createDeviceId(dctx).getId(), PropertyConstants.LAST_CHECKIN, lastCheckin);
-        pctx.commit();
+        if (commit) {
+            pctx.commit();
+        }
     }
 
-    public void saveDeviceName(CollectionPersistenceContext pctx, DeviceContext dctx, String name) {
+    public void saveDeviceName(CollectionPersistenceContext pctx, DeviceContext dctx, String name, boolean commit) {
         String deviceId = idProvider.createDeviceId(dctx).getId();
         Map<String,Object> deviceMap = pctx.getMap(deviceId);
         Map<String,Object> map = new HashMap<>(deviceMap);
         map.put(PropertyConstants.NAME, name);
         pctx.setMap(deviceId, map);
-        pctx.commit();
-
+        if (commit) {
+            pctx.commit();
+        }
     }
 
-    public void saveDeviceTags(CollectionPersistenceContext pctx, DeviceContext dctx, Set<String> tags) {
+    public void saveDeviceTags(CollectionPersistenceContext pctx, DeviceContext dctx, Set<String> tags, boolean commit) {
         String deviceTagId = idProvider.createDeviceTagsId(dctx).getId();
         pctx.setSet(deviceTagId, new HashSet<Object>(tags));
-        pctx.commit();
+        if (commit) {
+            pctx.commit();
+        }
     }
 
-    public void saveGlobalVariable(CollectionPersistenceContext pctx, GlobalVariableDescriptor desc, GlobalVariable val) {
+    public void saveGlobalVariable(CollectionPersistenceContext pctx, GlobalVariableDescriptor desc, GlobalVariable val, boolean commit) {
         Map<String,Object> map = new HashMap<>();
         map.put(PropertyConstants.HUB_ID, desc.getHubId());
         map.put(PropertyConstants.PLUGIN_ID, desc.getPluginId());
@@ -615,20 +641,27 @@ public class CollectionPersister {
         map.put(PropertyConstants.VALUE, StringConversionUtil.createTypedValueString(val.getValue()));
 
         pctx.setMap(idProvider.createGlobalVariableId(desc.getContext()).getId(), map);
-        pctx.commit();
+
+        if (commit) {
+            pctx.commit();
+        }
     }
 
-    public void saveHubConfiguration(CollectionPersistenceContext cpctx, HubContext hctx, Map<String,Object> config) {
+    public void saveHubConfiguration(CollectionPersistenceContext cpctx, HubContext hctx, Map<String,Object> config, boolean commit) {
         cpctx.setMap(idProvider.createHubConfigurationId(hctx).getId(), config);
-        cpctx.commit();
+        if (commit) {
+            cpctx.commit();
+        }
     }
 
-    public void saveLocalPluginConfiguration(CollectionPersistenceContext cpctx, PluginContext pctx, Map<String,Object> config) {
+    public void saveLocalPluginConfiguration(CollectionPersistenceContext cpctx, PluginContext pctx, Map<String,Object> config, boolean commit) {
         cpctx.setMap(idProvider.createLocalPluginConfigurationId(pctx).getId(), config);
-        cpctx.commit();
+        if (commit) {
+            cpctx.commit();
+        }
     }
 
-    public void saveTask(CollectionPersistenceContext pctx, HobsonTask task) {
+    public void saveTask(CollectionPersistenceContext pctx, HobsonTask task, boolean commit) {
         Map<String,Object> map = new HashMap<>();
 
         map.put(PropertyConstants.NAME, task.getName());
@@ -652,7 +685,7 @@ public class CollectionPersister {
         deleteTaskConditions(pctx, task.getContext());
         if (task.hasConditions()) {
             for (PropertyContainer pc : task.getConditions()) {
-                saveCondition(pctx, task.getContext(), pc);
+                saveCondition(pctx, task.getContext(), pc, false);
             }
         }
 
@@ -669,10 +702,12 @@ public class CollectionPersister {
         // add task ID to task id list
         pctx.addSetValue(idProvider.createTasksId(task.getContext().getHubContext()).getId(), task.getContext().getTaskId());
 
-        pctx.commit();
+        if (commit) {
+            pctx.commit();
+        }
     }
 
-    public void savePresenceEntity(CollectionPersistenceContext pctx, PresenceEntity pe) {
+    public void savePresenceEntity(CollectionPersistenceContext pctx, PresenceEntity pe, boolean commit) {
         String key = idProvider.createPresenceEntityId(pe.getContext()).getId();
 
         Map<String,Object> map = new HashMap<>();
@@ -684,10 +719,13 @@ public class CollectionPersister {
 
         pctx.setMap(key, map);
         pctx.addSetValue(idProvider.createPresenceEntitiesId(pe.getContext().getHubContext()).getId(), pe.getContext().getEntityId());
-        pctx.commit();
+
+        if (commit) {
+            pctx.commit();
+        }
     }
 
-    public void savePresenceLocation(CollectionPersistenceContext pctx, PresenceLocation pl) {
+    public void savePresenceLocation(CollectionPersistenceContext pctx, PresenceLocation pl, boolean commit) {
         String key = idProvider.createPresenceLocationId(pl.getContext()).getId();
 
         Map<String,Object> map = new HashMap<>();
@@ -706,10 +744,12 @@ public class CollectionPersister {
         pctx.setMap(key, map);
         pctx.addSetValue(idProvider.createPresenceLocationsId(pl.getContext().getHubContext()).getId(), pl.getContext().getLocationId());
 
-        pctx.commit();
+        if (commit) {
+            pctx.commit();
+        }
     }
 
-    public void saveDeviceVariableDescription(CollectionPersistenceContext pctx, DeviceVariableDescriptor vd) {
+    public void saveDeviceVariableDescription(CollectionPersistenceContext pctx, DeviceVariableDescriptor vd, boolean commit) {
         String key = idProvider.createDeviceVariableDescriptionId(vd.getContext()).getId();
 
         Map<String,Object> map = new HashMap<>();
@@ -722,10 +762,12 @@ public class CollectionPersister {
         pctx.setMap(key, map);
         pctx.addSetValue(idProvider.createDeviceVariablesId(vd.getContext().getDeviceContext()).getId(), vd.getContext().getName());
 
-        pctx.commit();
+        if (commit) {
+            pctx.commit();
+        }
     }
 
-    public void saveDeviceActionClass(CollectionPersistenceContext pctx, ActionClass ac) {
+    public void saveDeviceActionClass(CollectionPersistenceContext pctx, ActionClass ac, boolean commit) {
         DeviceContext dctx = DeviceContext.create(ac.getContext().getPluginContext(), ac.getContext().getDeviceId());
         String key = idProvider.createDeviceActionClassId(dctx, ac.getContext().getContainerClassId()).getId();
 
@@ -734,14 +776,16 @@ public class CollectionPersister {
         map.put(PropertyConstants.DESCRIPTION, ac.getDescription());
         map.put(PropertyConstants.TASK_ACTION, ac.isTaskAction());
         map.put(PropertyConstants.TIMEOUT_INTERVAL, ac.getTimeoutInterval());
-        saveTypedPropertyCollection(pctx, idProvider.createDeviceActionClassSupportedPropertiesId(dctx, ac.getContext().getContainerClassId()).getId(), ac.getSupportedProperties());
+        saveTypedPropertyCollection(pctx, idProvider.createDeviceActionClassSupportedPropertiesId(dctx, ac.getContext().getContainerClassId()).getId(), ac.getSupportedProperties(), false);
         pctx.setMap(key, map);
         pctx.addSetValue(idProvider.createDeviceActionClassesId(dctx).getId(), ac.getContext().getContainerClassId());
 
-        pctx.commit();
+        if (commit) {
+            pctx.commit();
+        }
     }
 
-    private void saveTypedPropertyCollection(CollectionPersistenceContext pctx, String key, Collection<TypedProperty> tps) {
+    private void saveTypedPropertyCollection(CollectionPersistenceContext pctx, String key, Collection<TypedProperty> tps, boolean commit) {
         Set<Object> props = new HashSet<>();
         for (TypedProperty tp : tps) {
             Map<String,Object> map = new HashMap<>();
@@ -757,6 +801,11 @@ public class CollectionPersister {
             map.put(PropertyConstants.CONSTRAINTS, constraints);
             props.add(map);
         }
+
         pctx.setSet(key, props);
+
+        if (commit) {
+            pctx.commit();
+        }
     }
 }

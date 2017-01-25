@@ -50,7 +50,7 @@ public class CollectionPersisterTest {
 
         CollectionPersister cp = new CollectionPersister(idProvider);
 
-        cp.saveTask(cpctx, task);
+        cp.saveTask(cpctx, task, true);
 
         Map<String,Object> m = cpctx.getMap(idProvider.createTaskId(tctx).getId());
         assertNotNull(m);
@@ -161,7 +161,7 @@ public class CollectionPersisterTest {
         );
 
         CollectionPersister cp = new CollectionPersister(idProvider);
-        cp.saveTask(cpctx, task);
+        cp.saveTask(cpctx, task, true);
 
         task = cp.restoreTask(cpctx, tctx);
         assertNotNull(task);
@@ -184,7 +184,7 @@ public class CollectionPersisterTest {
         task.setActionSet(new PropertyContainerSet("as2"));
 
         // re-save task
-        cp.saveTask(cpctx, task);
+        cp.saveTask(cpctx, task, true);
 
         task = cp.restoreTask(cpctx, tctx);
         assertEquals("My Task2", task.getName());
@@ -206,7 +206,7 @@ public class CollectionPersisterTest {
         MockCollectionPersistenceContext pctx = new MockCollectionPersistenceContext();
 
         CollectionPersister cp = new CollectionPersister(idProvider);
-        cp.saveActionSet(HubContext.createLocal(), pctx, as);
+        cp.saveActionSet(HubContext.createLocal(), pctx, as, true);
 
         Map<String,Object> map = pctx.getMap(idProvider.createActionSetId(hctx, "set1").getId());
         assertEquals("set1", map.get("id"));
@@ -255,7 +255,7 @@ public class CollectionPersisterTest {
         CollectionPersistenceContext pctx = new MockCollectionPersistenceContext();
 
         CollectionPersister cp = new CollectionPersister(idProvider);
-        cp.saveActionSet(HubContext.createLocal(), pctx, as);
+        cp.saveActionSet(HubContext.createLocal(), pctx, as, true);
 
         Map<String,Object> map = pctx.getMap(idProvider.createActionSetId(hctx, "set1").getId());
         assertEquals("set1", map.get("id"));
@@ -316,7 +316,7 @@ public class CollectionPersisterTest {
 
         CollectionPersistenceContext pctx = new MockCollectionPersistenceContext();
         CollectionPersister cp = new CollectionPersister(idProvider);
-        cp.saveActionSet(hctx, pctx, as);
+        cp.saveActionSet(hctx, pctx, as, true);
 
         as = cp.restoreActionSet(hctx, pctx, "set1");
         assertEquals(2, as.getProperties().size());
@@ -331,7 +331,7 @@ public class CollectionPersisterTest {
         actions.add(new PropertyContainer("action4", PropertyContainerClassContext.create("local", "plugin", null, "foo"), Collections.singletonMap("bar", (Object)"foo")));
         as.setProperties(actions);
 
-        cp.saveActionSet(hctx, pctx, as);
+        cp.saveActionSet(hctx, pctx, as, true);
 
         as = cp.restoreActionSet(hctx, pctx, "set1");
         assertEquals(2, as.getProperties().size());
@@ -349,7 +349,7 @@ public class CollectionPersisterTest {
 
         TaskContext tctx = TaskContext.create(hctx, "task1");
         PropertyContainer pc = new PropertyContainer(PropertyContainerClassContext.create(hctx, "cc1"), null);
-        cp.saveCondition(pctx, tctx, pc);
+        cp.saveCondition(pctx, tctx, pc, true);
     }
 
     @Test
@@ -377,7 +377,7 @@ public class CollectionPersisterTest {
             preferredVariableName(VariableConstants.ON).
             variableDescriptions(descriptions).
             build();
-        cp.saveDevice(cpc, device);
+        cp.saveDevice(cpc, device, true);
 
         // confirm device restores properly
         HobsonDeviceDescriptor d = cp.restoreDevice(cpc, dctx);
@@ -440,7 +440,7 @@ public class CollectionPersisterTest {
         tags.add("tag1");
         tags.add("tag2");
         DataStream ds = new DataStream("id", "Test", fields, tags);
-        cp.saveDataStream(cpc, hctx, ds);
+        cp.saveDataStream(cpc, hctx, ds, true);
 
         ds = cp.restoreDataStream(cpc, hctx,"id");
         assertEquals("id", ds.getId());
@@ -476,7 +476,7 @@ public class CollectionPersisterTest {
         fields.add(new DataStreamField("field2", "test2", DeviceVariableContext.create(hctx, "plugin2", "device2", "foo2")));
 
         DataStream ds = new DataStream("id", "Test", fields, null);
-        cp.saveDataStream(cpc, hctx, ds);
+        cp.saveDataStream(cpc, hctx, ds, true);
 
         ds = cp.restoreDataStream(cpc, hctx, "id");
 
@@ -491,7 +491,7 @@ public class CollectionPersisterTest {
         HubContext hctx = HubContext.createLocal();
         PresenceEntityContext pctx = PresenceEntityContext.create(hctx, "entity1");
 
-        cp.savePresenceEntity(cpc, new PresenceEntity(pctx, "John"));
+        cp.savePresenceEntity(cpc, new PresenceEntity(pctx, "John"), true);
 
         PresenceEntity pe = cp.restorePresenceEntity(cpc, pctx);
         assertEquals("entity1", pe.getContext().getEntityId());
@@ -509,7 +509,7 @@ public class CollectionPersisterTest {
         HubContext hctx = HubContext.createLocal();
         PresenceLocationContext pctx = PresenceLocationContext.create(hctx, "location1");
 
-        cp.savePresenceLocation(cpc, new PresenceLocation(pctx, "Home"));
+        cp.savePresenceLocation(cpc, new PresenceLocation(pctx, "Home"), true);
 
         PresenceLocation pe = cp.restorePresenceLocation(cpc, pctx);
         assertEquals("location1", pe.getContext().getLocationId());
