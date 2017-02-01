@@ -28,7 +28,7 @@ import java.util.*;
 public class PropertyContainerClass implements Serializable { // TODO: remove
     private PropertyContainerClassContext context;
     private PropertyContainerClassType type;
-    private Map<String,TypedProperty> supportedProperties;
+    private List<TypedProperty> supportedProperties;
 
     // TODO: create builder to streamline construction with many supported properties
 
@@ -60,12 +60,12 @@ public class PropertyContainerClass implements Serializable { // TODO: remove
     }
 
     public Collection<TypedProperty> getSupportedProperties() {
-        return supportedProperties.values();
+        return supportedProperties;
     }
 
     public TypedProperty getSupportedProperty(String id) {
         if (supportedProperties != null) {
-            for (TypedProperty tp : supportedProperties.values()) {
+            for (TypedProperty tp : supportedProperties) {
                 if (tp.getId() != null && tp.getId().equals(id)) {
                     return tp;
                 }
@@ -75,25 +75,25 @@ public class PropertyContainerClass implements Serializable { // TODO: remove
     }
 
     public void setSupportedProperties(List<TypedProperty> supportedProperties) {
-        this.supportedProperties = new HashMap<>();
-        if (supportedProperties != null) {
-            for (TypedProperty tp : supportedProperties) {
-                this.supportedProperties.put(tp.getId(), tp);
-            }
-        }
+        this.supportedProperties = supportedProperties;
     }
 
     public void addSupportedProperty(TypedProperty property) {
         if (supportedProperties == null) {
-            supportedProperties = new HashMap<>();
+            supportedProperties = new ArrayList<>();
         }
-        supportedProperties.put(property.getId(), property);
+        supportedProperties.add(property);
     }
 
     public void validate(Map<String,Object> values) {
         if (hasSupportedProperties()) {
+            Map<String,TypedProperty> pMap = new HashMap<>();
+            for (TypedProperty tp : supportedProperties) {
+                pMap.put(tp.getId(), tp);
+            }
+
             // validate that all required properties are present and of the specified type
-            for (TypedProperty tp : supportedProperties.values()) {
+            for (TypedProperty tp : supportedProperties) {
                 Object value = values.get(tp.getId());
                 if (value == null && tp.hasConstraintValue(PropertyConstraintType.required, true)) {
                     throw new HobsonInvalidRequestException("Missing required property \"" + tp.getName() + "\"");
@@ -109,7 +109,7 @@ public class PropertyContainerClass implements Serializable { // TODO: remove
             }
             // validate that all only supported properties are present
             for (String key : values.keySet()) {
-                if (!supportedProperties.containsKey(key)) {
+                if (!pMap.containsKey(key)) {
                     throw new HobsonInvalidRequestException("\"" + key + "\" is not a supported property");
                 }
             }
@@ -126,7 +126,7 @@ public class PropertyContainerClass implements Serializable { // TODO: remove
      */
     public boolean evaluatePropertyConstraints(Collection<String> publishedVariableNames) {
         if (supportedProperties != null) {
-            for (TypedProperty tp : supportedProperties.values()) {
+            for (TypedProperty tp : supportedProperties) {
                 if (!tp.evaluateConstraints(publishedVariableNames)) {
                     return false;
                 }

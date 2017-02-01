@@ -14,13 +14,29 @@ import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static junit.framework.TestCase.fail;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class PropertyContainerClassTest {
+    @Test
+    public void testSupportedPropertyOrder() {
+        List<TypedProperty> props = new ArrayList<>();
+        props.add(new TypedProperty.Builder("c", "c", "desc", TypedProperty.Type.STRING).constraint(PropertyConstraintType.required, true).build());
+        props.add(new TypedProperty.Builder("b", "b", "desc", TypedProperty.Type.STRING).constraint(PropertyConstraintType.required, true).build());
+        props.add(new TypedProperty.Builder("a", "a", "desc", TypedProperty.Type.STRING).constraint(PropertyConstraintType.required, true).build());
+        props.add(new TypedProperty.Builder("d", "d", "desc", TypedProperty.Type.STRING).constraint(PropertyConstraintType.required, true).build());
+        PropertyContainerClass pcc = new PropertyContainerClass(PropertyContainerClassContext.create(HubContext.createLocal(), "cc1"), PropertyContainerClassType.DEVICE_CONFIG, props);
+
+        Iterator<TypedProperty> it = pcc.getSupportedProperties().iterator();
+        assertEquals("c", it.next().getId());
+        assertEquals("b", it.next().getId());
+        assertEquals("a", it.next().getId());
+        assertEquals("d", it.next().getId());
+    }
+
     @Test
     public void testEvaluatePropertyConstraintsWithNoProperties() {
         PropertyContainerClass pcc = new PropertyContainerClass(PropertyContainerClassContext.create(HubContext.createLocal(), "cc1"), PropertyContainerClassType.DEVICE_CONFIG, null);
