@@ -14,6 +14,7 @@ import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableDescriptor;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.local.LocalEventLoopGroup;
@@ -30,9 +31,9 @@ public class MockDeviceManager implements DeviceManager {
     public void setDeviceName(DeviceContext dctx, String name) {
 
     }
-
+    
     @Override
-    public void updateDevice(HobsonDeviceDescriptor device) {
+    public void updateDeviceVariables(Collection<DeviceVariableDescriptor> vars) {
 
     }
 

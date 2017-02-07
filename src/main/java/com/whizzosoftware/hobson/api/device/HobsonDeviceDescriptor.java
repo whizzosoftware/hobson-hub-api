@@ -70,6 +70,10 @@ public class HobsonDeviceDescriptor {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getPreferredVariableName() {
         return preferredVariableName;
     }
@@ -80,6 +84,10 @@ public class HobsonDeviceDescriptor {
 
     public Set<String> getTags() {
         return tags;
+    }
+
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
     }
 
     public DeviceType getType() {
@@ -122,7 +130,7 @@ public class HobsonDeviceDescriptor {
         return (tags != null && tags.size() > 0);
     }
 
-    protected void addVariableDescription(DeviceVariableDescriptor dvd) {
+    public void setVariableDescriptor(DeviceVariableDescriptor dvd) {
         if (variables == null) {
             variables = new HashMap<>();
         }

@@ -24,6 +24,18 @@ import java.util.Collection;
  */
 public interface TaskStore {
     /**
+     * Closes the store and performs cleanup.
+     */
+    void close();
+
+    /**
+     * Deletes a task from the store.
+     *
+     * @param context a task context
+     */
+    void deleteTask(TaskContext context);
+
+    /**
      * Returns all tasks in the store.
      *
      * @param hctx the hub context
@@ -61,14 +73,7 @@ public interface TaskStore {
     HobsonTask saveTask(HobsonTask task);
 
     /**
-     * Deletes a task from the store.
-     *
-     * @param context a task context
+     * Allows the task store to perform any implementation-specific housekeeping tasks.
      */
-    void deleteTask(TaskContext context);
-
-    /**
-     * Closes the store and performs cleanup.
-     */
-    void close();
+    void performHousekeeping();
 }

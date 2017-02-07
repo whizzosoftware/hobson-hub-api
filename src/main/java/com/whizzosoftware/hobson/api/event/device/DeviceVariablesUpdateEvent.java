@@ -11,8 +11,8 @@ package com.whizzosoftware.hobson.api.event.device;
 
 import com.whizzosoftware.hobson.api.variable.DeviceVariableUpdate;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,7 +28,7 @@ public class DeviceVariablesUpdateEvent extends DeviceEvent {
         this(timestamp, Collections.singletonList(update));
     }
 
-    public DeviceVariablesUpdateEvent(long timestamp, List<DeviceVariableUpdate> updates) {
+    public DeviceVariablesUpdateEvent(long timestamp, Collection<DeviceVariableUpdate> updates) {
         super(timestamp, ID, null);
         setProperty(PROP_UPDATES, updates);
     }
@@ -37,7 +37,7 @@ public class DeviceVariablesUpdateEvent extends DeviceEvent {
         super(properties);
     }
 
-    public List<DeviceVariableUpdate> getUpdates() {
-        return (List<DeviceVariableUpdate>)getProperty(PROP_UPDATES);
+    public Collection<DeviceVariableUpdate> getUpdates() {
+        return (Collection<DeviceVariableUpdate>)getProperty(PROP_UPDATES);
     }
 }

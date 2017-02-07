@@ -14,6 +14,7 @@ import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.plugin.PluginContext;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableContext;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableDescriptor;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
 import io.netty.util.concurrent.Future;
 
@@ -192,9 +193,9 @@ public interface DeviceManager {
     void setDeviceTags(DeviceContext dctx, Set<String> tags);
 
     /**
-     * Updates information about a previously published device.
+     * Updates information about previously published device variables.
      *
-     * @param device the device descriptor information
+     * @param vars the variable descriptors to update
      */
-    void updateDevice(HobsonDeviceDescriptor device);
+    void updateDeviceVariables(Collection<DeviceVariableDescriptor> vars);
 }

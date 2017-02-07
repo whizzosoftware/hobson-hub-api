@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.persist;
 
 import com.whizzosoftware.hobson.api.device.DeviceContext;
@@ -28,20 +30,9 @@ public class ContextPathIdProviderTest {
     }
 
     @Test
-    public void testCreatePluginId() {
-        ContextPathIdProvider cdipd = new ContextPathIdProvider();
-        assertEquals("hubs:bar:plugins:plugin1", cdipd.createPluginId(PluginContext.create(HubContext.create("bar"), "plugin1")));
-    }
-
-    @Test
     public void testCreatePluginContext() {
         ContextPathIdProvider cpidp = new ContextPathIdProvider();
-        PluginContext ctx = PluginContext.create(HubContext.create("hub1"), "plugin1");
-
-        String pluginId = cpidp.createPluginId(ctx);
-        assertEquals("hubs:hub1:plugins:plugin1", pluginId);
-
-        PluginContext ctx2 = cpidp.createPluginContext(pluginId);
+        PluginContext ctx2 = cpidp.createPluginContext("hubs:hub1:plugins:plugin1");
         assertEquals("hub1", ctx2.getHubId());
         assertEquals("plugin1", ctx2.getPluginId());
     }

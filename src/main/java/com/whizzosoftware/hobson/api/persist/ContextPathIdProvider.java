@@ -31,14 +31,14 @@ import org.apache.commons.lang3.StringUtils;
 public class ContextPathIdProvider implements IdProvider {
     public TemplatedId createActionId(HubContext ctx, String actionId) {
         return new TemplatedId(
-            createHubId(ctx).getId() + HubContext.DELIMITER + "actions" + HubContext.DELIMITER + actionId,
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "actions" + HubContext.DELIMITER + actionId,
             ""
         );
     }
 
     public TemplatedId createActionSetId(HubContext ctx, String actionSetId) {
         return new TemplatedId(
-            createActionSetsId(ctx).getId() + HubContext.DELIMITER + actionSetId,
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "actionSets" + HubContext.DELIMITER + actionSetId,
             ""
         );
     }
@@ -46,7 +46,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createActionSetActionsId(HubContext ctx, String actionSetId) {
         return new TemplatedId(
-            createActionSetId(ctx, actionSetId).getId() + HubContext.DELIMITER + "actions",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "actionSets" + HubContext.DELIMITER + actionSetId + HubContext.DELIMITER + "actions",
             ""
         );
     }
@@ -54,7 +54,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createActionSetsId(HubContext ctx) {
         return new TemplatedId(
-            createHubId(ctx).getId() + HubContext.DELIMITER + "actionSets",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "actionSets",
             ""
         );
     }
@@ -62,7 +62,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createActionPropertiesId(HubContext ctx, String actionId) {
         return new TemplatedId(
-            createActionId(ctx, actionId).getId() + HubContext.DELIMITER + "properties",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "actions" + HubContext.DELIMITER + actionId + HubContext.DELIMITER + "properties",
             ""
         );
     }
@@ -78,7 +78,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createDataStreamsId(HubContext ctx) {
         return new TemplatedId(
-            createHubId(ctx).getId() + HubContext.DELIMITER + "dataStreams",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "dataStreams",
             "hubs:{hubId}:dataStreams"
         );
     }
@@ -86,7 +86,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createDataStreamId(HubContext ctx, String dataStreamId) {
         return new TemplatedId(
-            createDataStreamsId(ctx).getId() + HubContext.DELIMITER + dataStreamId,
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "dataStreams" + HubContext.DELIMITER + dataStreamId,
             ""
         );
     }
@@ -94,7 +94,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createDataStreamDataId(HubContext ctx, String dataStreamId) {
         return new TemplatedId(
-            createDataStreamId(ctx, dataStreamId).getId() + HubContext.DELIMITER + "data",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "dataStreams" + HubContext.DELIMITER + dataStreamId + HubContext.DELIMITER + "data",
             ""
         );
     }
@@ -102,7 +102,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createDataStreamFieldsId(HubContext ctx, String dataStreamId) {
         return new TemplatedId(
-            createDataStreamId(ctx, dataStreamId).getId() + HubContext.DELIMITER + "fields",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "dataStreams" + HubContext.DELIMITER + dataStreamId + HubContext.DELIMITER + "fields",
             ""
         );
     }
@@ -110,7 +110,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createDataStreamFieldId(HubContext ctx, String dataStreamId, String fieldId) {
         return new TemplatedId(
-            createDataStreamFieldsId(ctx, dataStreamId).getId() + HubContext.DELIMITER + fieldId,
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "dataStreams" + HubContext.DELIMITER + dataStreamId + HubContext.DELIMITER + "fields" + HubContext.DELIMITER + fieldId,
             ""
         );
     }
@@ -118,7 +118,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createDataStreamTagsId(HubContext ctx, String dataStreamId) {
         return new TemplatedId(
-            createDataStreamId(ctx, dataStreamId).getId() + HubContext.DELIMITER + "tags",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "dataStreams" + HubContext.DELIMITER + dataStreamId + HubContext.DELIMITER + "tags",
             ""
         );
     }
@@ -146,7 +146,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createDeviceActionClassId(DeviceContext ctx, String actionClassId) {
         return new TemplatedId(
-            createDeviceActionClassesId(ctx).getId() + HubContext.DELIMITER + actionClassId,
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "devices" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId() + HubContext.DELIMITER + "actionClasses" + HubContext.DELIMITER + actionClassId,
             ""
         );
     }
@@ -154,15 +154,15 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createDeviceActionClassesId(DeviceContext ctx) {
         return new TemplatedId(
-            createDeviceId(ctx).getId() + HubContext.DELIMITER + "actionClasses",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "devices" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId() + HubContext.DELIMITER + "actionClasses",
             ""
         );
     }
 
     @Override
-    public TemplatedId createDeviceActionClassSupportedPropertiesId(DeviceContext dctx, String containerClassId) {
+    public TemplatedId createDeviceActionClassSupportedPropertiesId(DeviceContext dctx, String actionClassId) {
         return new TemplatedId(
-            createDeviceActionClassId(dctx, containerClassId).getId() + HubContext.DELIMITER + "supportedProperties",
+            "hubs" + HubContext.DELIMITER + dctx.getHubId() + HubContext.DELIMITER + "devices" + HubContext.DELIMITER + dctx.getPluginId() + HubContext.DELIMITER + dctx.getDeviceId() + HubContext.DELIMITER + "actionClasses" + HubContext.DELIMITER + actionClassId + HubContext.DELIMITER + "supportedProperties",
             ""
         );
     }
@@ -170,7 +170,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createDeviceId(DeviceContext ctx) {
         return new TemplatedId(
-            createDevicesId(ctx.getHubContext()).getId() + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId(),
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "devices" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId(),
             "hubs:{hubId}:{pluginId}:{deviceId}"
         );
     }
@@ -178,7 +178,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createDevicesId(HubContext ctx) {
         return new TemplatedId(
-            createHubId(ctx).getId() + HubContext.DELIMITER + "devices",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "devices",
             "hubs:{hubId}:devices"
         );
     }
@@ -186,7 +186,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createDeviceConfigurationId(DeviceContext ctx) {
         return new TemplatedId(
-            createHubId(ctx.getHubContext()).getId() + HubContext.DELIMITER + "configuration" + HubContext.DELIMITER + "device" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId(),
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "configuration" + HubContext.DELIMITER + "device" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId(),
             ""
         );
     }
@@ -194,7 +194,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createDeviceNameId(DeviceContext ctx) {
         return new TemplatedId(
-            createDeviceId(ctx).getId() + HubContext.DELIMITER + "name",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "devices" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId() + HubContext.DELIMITER + "name",
             ""
         );
     }
@@ -202,7 +202,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createDeviceVariableDescriptionId(DeviceVariableContext vctx) {
         return new TemplatedId(
-            createDeviceVariableId(vctx).getId() + HubContext.DELIMITER + "description",
+            "hubs" + HubContext.DELIMITER + vctx.getHubId() + HubContext.DELIMITER + "variables" + HubContext.DELIMITER + vctx.getPluginId() + HubContext.DELIMITER + vctx.getDeviceId() + HubContext.DELIMITER + vctx.getName() + HubContext.DELIMITER + "description",
             ""
         );
     }
@@ -210,7 +210,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createDeviceVariableId(DeviceVariableContext vctx) {
         return new TemplatedId(
-            createHubId(vctx.getHubContext()).getId() + HubContext.DELIMITER + "variables" + HubContext.DELIMITER + vctx.getPluginId() + HubContext.DELIMITER + vctx.getDeviceId() + HubContext.DELIMITER + vctx.getName(),
+            "hubs" + HubContext.DELIMITER + vctx.getHubId() + HubContext.DELIMITER + "variables" + HubContext.DELIMITER + vctx.getPluginId() + HubContext.DELIMITER + vctx.getDeviceId() + HubContext.DELIMITER + vctx.getName(),
             "hubs:{hubId}:variables:{pluginId}:{deviceId}:{name}"
         );
     }
@@ -226,7 +226,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createDeviceTagsId(DeviceContext ctx) {
         return new TemplatedId(
-            createDeviceId(ctx).getId() + HubContext.DELIMITER + "tags",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "devices" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getDeviceId() + HubContext.DELIMITER + "tags",
             ""
         );
     }
@@ -234,7 +234,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createLocalPluginActionClassesId(PluginContext ctx) {
         return new TemplatedId(
-            createPluginId(ctx) + HubContext.DELIMITER + "actionClasses",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "plugins" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + "actionClasses",
             ""
         );
     }
@@ -242,7 +242,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createPluginDeviceConfigurationClassesId(PluginContext ctx) {
         return new TemplatedId(
-            createPluginId(ctx) + HubContext.DELIMITER + "deviceConfigurationClasses",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "plugins" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + "deviceConfigurationClasses",
             ""
         );
     }
@@ -256,7 +256,7 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     private String createVariablesId(HubContext ctx) {
-        return createHubId(ctx).getId() + HubContext.DELIMITER + "variables";
+        return "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "variables";
     }
 
     @Override
@@ -314,7 +314,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createJobId(HubContext ctx, String jobId) {
         return new TemplatedId(
-            createHubId(ctx).getId() + HubContext.DELIMITER + "jobs" + HubContext.DELIMITER + jobId,
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "jobs" + HubContext.DELIMITER + jobId,
             ""
         );
     }
@@ -322,7 +322,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createHubConfigurationId(HubContext ctx) {
         return new TemplatedId(
-            createHubId(ctx).getId() + HubContext.DELIMITER + "configuration",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "configuration",
             ""
         );
     }
@@ -330,7 +330,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createHubConfigurationClassId(HubContext ctx) {
         return new TemplatedId(
-            createHubId(ctx).getId() + HubContext.DELIMITER + "configurationClass",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "configurationClass",
             "hubs:{hubId}:configurationClass"
         );
     }
@@ -338,7 +338,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createHubLogId(HubContext ctx) {
         return new TemplatedId(
-            createHubId(ctx).getId() + HubContext.DELIMITER + "log",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "log",
             ""
         );
     }
@@ -354,7 +354,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createHubSerialPortsId(HubContext ctx) {
         return new TemplatedId(
-            createHubId(ctx).getId() + HubContext.DELIMITER + "serialPorts",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "serialPorts",
             "hubs:{hubId}:serialPorts"
         );
     }
@@ -362,7 +362,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createHubSerialPortId(HubContext ctx, String name) {
         return new TemplatedId(
-            createHubSerialPortsId(ctx).getId() + HubContext.DELIMITER + name,
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "serialPorts" + HubContext.DELIMITER + name,
             ""
         );
     }
@@ -370,7 +370,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createLocalPluginConfigurationId(PluginContext ctx) {
         return new TemplatedId(
-            createLocalPluginId(ctx).getId() + HubContext.DELIMITER + "configuration",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "localPlugins" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + "configuration",
             ""
         );
     }
@@ -383,7 +383,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createLocalPluginId(PluginContext ctx) {
         return new TemplatedId(
-            createLocalPluginsId(ctx.getHubContext()).getId() + HubContext.DELIMITER + ctx.getPluginId(),
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "localPlugins" + HubContext.DELIMITER + ctx.getPluginId(),
             ""
         );
     }
@@ -401,7 +401,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createLocalPluginsId(HubContext ctx) {
         return new TemplatedId(
-            createHubId(ctx).getId() + HubContext.DELIMITER + "localPlugins",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "localPlugins",
             ""
         );
     }
@@ -424,33 +424,17 @@ public class ContextPathIdProvider implements IdProvider {
         }
     }
 
-    public String createPluginsId(HubContext ctx) {
-        return createHubId(ctx).getId() + HubContext.DELIMITER + "plugins";
-    }
-
-    public String createPluginId(PluginContext ctx) {
-        return createPluginsId(ctx.getHubContext()) + HubContext.DELIMITER + ctx.getPluginId();
-    }
-
-    public String createPluginConfigurationId(PluginContext ctx) {
-        return createPluginId(ctx) + HubContext.DELIMITER + "configuration";
-    }
-
-    public String createPluginDeviceId(HubContext ctx, String pluginAndDeviceId) {
-        return createHubId(ctx).getId() + HubContext.DELIMITER + "plugins" + HubContext.DELIMITER + pluginAndDeviceId;
-    }
-
     @Override
     public TemplatedId createPluginDevicesId(PluginContext ctx) {
         return new TemplatedId(
-            createHubId(ctx.getHubContext()).getId() + HubContext.DELIMITER + "devices" + HubContext.DELIMITER + ctx.getPluginId(),
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "devices" + HubContext.DELIMITER + ctx.getPluginId(),
             ""
         );
     }
 
     public TemplatedId createPresenceEntitiesId(HubContext ctx) {
         return new TemplatedId(
-            createHubId(ctx).getId() + HubContext.DELIMITER + "presenceEntities",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "presenceEntities",
             "hubs:{hubId}:presenceEntities"
         );
     }
@@ -471,7 +455,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createPresenceLocationsId(HubContext ctx) {
         return new TemplatedId(
-            createHubId(ctx).getId() + HubContext.DELIMITER + "presenceLocations",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "presenceLocations",
             "hubs:{hubId}:presenceLocations"
         );
     }
@@ -516,9 +500,9 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
-    public TemplatedId createPropertyContainerClassesId(PluginContext pctx) {
+    public TemplatedId createPropertyContainerClassesId(PluginContext ctx) {
         return new TemplatedId(
-            createPluginId(pctx) + HubContext.DELIMITER + "containerClasses",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "plugins" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + "containerClasses",
             ""
         );
     }
@@ -544,7 +528,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createRemotePluginsId(HubContext ctx) {
         return new TemplatedId(
-            createHubId(ctx).getId() + HubContext.DELIMITER + "remotePlugins",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "remotePlugins",
             "hubs:{hubId}:remotePlugins"
         );
     }
@@ -552,7 +536,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createRepositoriesId(HubContext ctx) {
         return new TemplatedId(
-            createHubId(ctx).getId() + HubContext.DELIMITER + "repositories",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "repositories",
             "hubs:{hubId}:repositories"
         );
     }
@@ -575,7 +559,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createActionClassesId(HubContext ctx) {
         return new TemplatedId(
-            createHubId(ctx).getId() + HubContext.DELIMITER + "actionClasses",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "actionClasses",
             "hubs:{hubId}:actionClasses"
         );
     }
@@ -592,18 +576,18 @@ public class ContextPathIdProvider implements IdProvider {
 
     @Override
     public TemplatedId createTaskActionSetsId(HubContext ctx) {
-        return new TemplatedId(createHubId(ctx).getId() + HubContext.DELIMITER + "actionSets", null);
+        return new TemplatedId("hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "actionSets", null);
     }
 
     @Override
     public TemplatedId createTaskConditionClassesId(HubContext ctx) {
-        return new TemplatedId(createHubId(ctx).getId() + HubContext.DELIMITER + "conditionClasses", null);
+        return new TemplatedId("hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "conditionClasses", null);
     }
 
     @Override
     public TemplatedId createTaskConditionClassId(PropertyContainerClassContext ctx) {
         return new TemplatedId(
-            createPluginId(ctx.getPluginContext()) + HubContext.DELIMITER + ctx.getContainerClassId(),
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "plugins" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + ctx.getContainerClassId(),
             ""
         );
     }
@@ -611,7 +595,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createTaskId(TaskContext ctx) {
         return new TemplatedId(
-            createHubId(ctx.getHubContext()).getId() + HubContext.DELIMITER + "tasks" + HubContext.DELIMITER + ctx.getTaskId(),
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "tasks" + HubContext.DELIMITER + ctx.getTaskId(),
             null
         );
     }
@@ -619,7 +603,7 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createTasksId(HubContext ctx) {
         return new TemplatedId(
-            createHubId(ctx).getId() + HubContext.DELIMITER + "tasks",
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "tasks",
             "hubs:{hubId}:local"
         );
     }
@@ -644,13 +628,5 @@ public class ContextPathIdProvider implements IdProvider {
     @Override
     public TemplatedId createTaskConditionPropertiesId(TaskContext ctx, String propertyContainerId) {
         return new TemplatedId(createTaskConditionId(ctx, propertyContainerId).getId() + HubContext.DELIMITER + "properties", null);
-    }
-
-    public String createTaskConditionValuesId(TaskContext ctx, String propertyContainerId) {
-        return createTaskConditionsId(ctx).getId() + HubContext.DELIMITER + "conditionValues" + HubContext.DELIMITER + propertyContainerId;
-    }
-
-    public String createTaskConditionPropertyId(TaskContext ctx, String propertyContainerId, String name) {
-        return createTaskConditionValuesId(ctx, propertyContainerId) + HubContext.DELIMITER + name;
     }
 }

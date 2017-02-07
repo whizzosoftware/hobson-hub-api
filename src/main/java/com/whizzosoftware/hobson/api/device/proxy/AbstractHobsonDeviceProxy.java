@@ -156,9 +156,11 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
     }
 
     public void start(final String name, final Map<String,Object> config) {
+        logger.trace("Starting device: {}", getContext());
         this.name = name;
         onStartup(name, config);
         started = true;
+        logger.trace("Device startup complete: {}", getContext());
     }
 
     //=================================================================================
@@ -196,25 +198,40 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
     }
 
     protected void publishVariables(DeviceProxyVariable... vars) {
-        List<DeviceVariableUpdate> updates = new ArrayList<>();
-        long now = System.currentTimeMillis();
-        for (DeviceProxyVariable v : vars) {
-            variables.put(v.getContext().getName(), v);
-            updates.add(new DeviceVariableUpdate(DeviceVariableContext.create(getContext(), name), null, v.getValue(), now));
-        }
-        plugin.onDeviceUpdate(this);
-        postEvent(new DeviceVariablesUpdateEvent(System.currentTimeMillis(), updates));
-    }
-
-    protected void publishVariables(Collection<DeviceProxyVariable> vars) {
-        List<DeviceVariableUpdate> updates = new ArrayList<>();
+        logger.trace("Publishing variables for device {}: {}", getContext(), vars);
+        Collection<DeviceVariableUpdate> updates = new ArrayList<>();
+        Collection<DeviceVariableDescriptor> newVars = new ArrayList<>();
         long now = System.currentTimeMillis();
         for (DeviceProxyVariable v : vars) {
             logger.debug("Publishing variable: {}", v);
             variables.put(v.getContext().getName(), v);
+            newVars.add(v.getDescriptor());
             updates.add(new DeviceVariableUpdate(DeviceVariableContext.create(getContext(), name), null, v.getValue(), now));
         }
-        plugin.onDeviceUpdate(this);
+        // only alert the plugin to the variable changes if the device has been started (this prevents unnecessary
+        // events early on in the device startup cycle)
+        if (started) {
+            plugin.onDeviceVariablesUpdate(newVars);
+        }
+        postEvent(new DeviceVariablesUpdateEvent(System.currentTimeMillis(), updates));
+    }
+
+    protected void publishVariables(Collection<DeviceProxyVariable> vars) {
+        logger.trace("Publishing variables for device {}: {}", getContext(), vars);
+        Collection<DeviceVariableUpdate> updates = new ArrayList<>();
+        Collection<DeviceVariableDescriptor> newVars = new ArrayList<>();
+        long now = System.currentTimeMillis();
+        for (DeviceProxyVariable v : vars) {
+            logger.debug("Publishing variable: {}", v);
+            variables.put(v.getContext().getName(), v);
+            newVars.add(v.getDescriptor());
+            updates.add(new DeviceVariableUpdate(DeviceVariableContext.create(getContext(), name), null, v.getValue(), now));
+        }
+        // only alert the plugin to the variable changes if the device has been started (this prevents unnecessary
+        // events early on in the device startup cycle)
+        if (started) {
+            plugin.onDeviceVariablesUpdate(newVars);
+        }
         postEvent(new DeviceVariablesUpdateEvent(System.currentTimeMillis(), updates));
     }
 

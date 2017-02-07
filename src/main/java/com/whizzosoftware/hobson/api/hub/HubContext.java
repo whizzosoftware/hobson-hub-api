@@ -1,10 +1,12 @@
-/*******************************************************************************
+/*
+ *******************************************************************************
  * Copyright (c) 2015 Whizzo Software, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ *******************************************************************************
+*/
 package com.whizzosoftware.hobson.api.hub;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -48,6 +50,10 @@ public class HubContext implements Serializable {
 
     public void setHubId(String hubId) {
         this.hubId = hubId;
+    }
+
+    public boolean isLocal() {
+        return (hubId != null && hubId.equals(DEFAULT_HUB));
     }
 
     public boolean equals(Object o) {

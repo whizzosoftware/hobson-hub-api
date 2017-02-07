@@ -284,9 +284,9 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     }
 
     @Override
-    public void onDeviceUpdate(HobsonDeviceProxy device) {
+    public void onDeviceVariablesUpdate(Collection<DeviceVariableDescriptor> vars) {
         validateDeviceManager();
-        deviceManager.updateDevice(device.getDescriptor());
+        deviceManager.updateDeviceVariables(vars);
     }
 
     @Override

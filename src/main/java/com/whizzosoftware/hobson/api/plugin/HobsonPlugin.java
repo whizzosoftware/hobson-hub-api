@@ -22,8 +22,10 @@ import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableDescriptor;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableState;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -64,7 +66,7 @@ public interface HobsonPlugin {
     boolean hasDeviceVariableState(String deviceId, String name);
 
     boolean hasTaskProvider();
-    void onDeviceUpdate(HobsonDeviceProxy device);
+    void onDeviceVariablesUpdate(Collection<DeviceVariableDescriptor> vars);
     void onRefresh();
 
     /**

@@ -16,6 +16,7 @@ import com.whizzosoftware.hobson.api.event.MockEventManager;
 import com.whizzosoftware.hobson.api.plugin.HobsonPlugin;
 import com.whizzosoftware.hobson.api.plugin.MockHobsonPlugin;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableDescriptor;
+import com.whizzosoftware.hobson.api.variable.DeviceVariableUpdate;
 import com.whizzosoftware.hobson.api.variable.VariableConstants;
 import com.whizzosoftware.hobson.api.variable.VariableMask;
 import org.junit.Test;
@@ -230,27 +231,29 @@ public class AbstractHobsonDeviceProxyTest {
         plugin.setEventManager(em);
         plugin.setDeviceManager(dm);
         MockLightbulbDeviceProxy proxy = new MockLightbulbDeviceProxy(plugin, "did");
-        proxy.onStartup(null, null);
+        proxy.start(null, null);
         assertEquals(1, em.getPostedEvents().size());
         em.clearPostedEvents();
         assertEquals(0, em.getPostedEvents().size());
         proxy.setVariableValue(VariableConstants.ON, false, now);
         assertEquals(1, em.getPostedEvents().size());
+        DeviceVariableUpdate u = ((DeviceVariablesUpdateEvent)em.getPostedEvents().get(0)).getUpdates().iterator().next();
         assertEquals(1, ((DeviceVariablesUpdateEvent)em.getPostedEvents().get(0)).getUpdates().size());
-        assertEquals("pid", ((DeviceVariablesUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getPluginId());
-        assertEquals("did", ((DeviceVariablesUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getDeviceId());
-        assertEquals(VariableConstants.ON, ((DeviceVariablesUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getName());
-        assertNull(((DeviceVariablesUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getOldValue());
-        assertEquals(false, ((DeviceVariablesUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getNewValue());
+        assertEquals("pid", u.getPluginId());
+        assertEquals("did", u.getDeviceId());
+        assertEquals(VariableConstants.ON, u.getName());
+        assertNull(u.getOldValue());
+        assertEquals(false, u.getNewValue());
         em.clearPostedEvents();
         proxy.setVariableValue(VariableConstants.ON, true, now);
         assertEquals(1, em.getPostedEvents().size());
         assertEquals(1, ((DeviceVariablesUpdateEvent)em.getPostedEvents().get(0)).getUpdates().size());
-        assertEquals("pid", ((DeviceVariablesUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getPluginId());
-        assertEquals("did", ((DeviceVariablesUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getDeviceId());
-        assertEquals(VariableConstants.ON, ((DeviceVariablesUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getName());
-        assertEquals(false, ((DeviceVariablesUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getOldValue());
-        assertEquals(true, ((DeviceVariablesUpdateEvent)em.getPostedEvents().get(0)).getUpdates().get(0).getNewValue());
+        u = ((DeviceVariablesUpdateEvent)em.getPostedEvents().get(0)).getUpdates().iterator().next();
+        assertEquals("pid", u.getPluginId());
+        assertEquals("did", u.getDeviceId());
+        assertEquals(VariableConstants.ON, u.getName());
+        assertEquals(false, u.getOldValue());
+        assertEquals(true, u.getNewValue());
     }
 
     @Test

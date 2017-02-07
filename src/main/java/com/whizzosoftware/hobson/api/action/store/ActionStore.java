@@ -23,13 +23,16 @@ import java.util.List;
  */
 public interface ActionStore {
     /**
-     * Returns all action sets in the store.
-     *
-     * @param ctx a hub context
-     *
-     * @return a Collection of PropertyContainerSet instances representing the actions
+     * Closes the store and performs cleanup.
      */
-    Collection<PropertyContainerSet> getAllActionSets(HubContext ctx);
+    void close();
+
+    /**
+     * Deletes an action set from the store.
+     *
+     * @param actionSetId an action set ID
+     */
+    void deleteActionSet(String actionSetId);
 
     /**
      * Returns a particular action set from the store.
@@ -42,6 +45,20 @@ public interface ActionStore {
     PropertyContainerSet getActionSet(HubContext ctx, String actionSetId);
 
     /**
+     * Returns all action sets in the store.
+     *
+     * @param ctx a hub context
+     *
+     * @return a Collection of PropertyContainerSet instances representing the actions
+     */
+    Collection<PropertyContainerSet> getAllActionSets(HubContext ctx);
+
+    /**
+     * Allows the action store to perform whatever implementation-specific housekeeping tasks are needed.
+     */
+    void performHousekeeping();
+
+    /**
      * Adds an action set to the store.
      *
      * @param ctx a hub context
@@ -51,16 +68,4 @@ public interface ActionStore {
      * @return a PropertyContainerSet instance representing the new action set
      */
     PropertyContainerSet saveActionSet(HubContext ctx, String name, List<PropertyContainer> actions);
-
-    /**
-     * Deletes an action set from the store.
-     *
-     * @param actionSetId an action set ID
-     */
-    void deleteActionSet(String actionSetId);
-
-    /**
-     * Closes the store and performs cleanup.
-     */
-    void close();
 }
