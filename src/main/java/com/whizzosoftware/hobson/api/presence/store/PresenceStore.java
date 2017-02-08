@@ -17,29 +17,9 @@ import java.util.Collection;
 
 public interface PresenceStore {
     /**
-     * Returns a collection of all presence entities.
-     *
-     * @param ctx the hub context
-     *
-     * @return a collection of PresenceEntity instances
+     * Cleans up and closes the presence store.
      */
-    Collection<PresenceEntity> getAllPresenceEntities(HubContext ctx);
-
-    /**
-     * Returns a presence entity.
-     *
-     * @param ctx the context of the presence entity
-     *
-     * @return a PresenceEntity instance
-     */
-    PresenceEntity getPresenceEntity(PresenceEntityContext ctx);
-
-    /**
-     * Saves a presence entity.
-     *
-     * @param pe the presence entity to save
-     */
-    void savePresenceEntity(PresenceEntity pe);
+    void close();
 
     /**
      * Deletes an existing presence entity.
@@ -47,6 +27,22 @@ public interface PresenceStore {
      * @param ctx the context of the presence entity
      */
     void deletePresenceEntity(PresenceEntityContext ctx);
+
+    /**
+     * Deletes a presence location.
+     *
+     * @param ctx the presence location context
+     */
+    void deletePresenceLocation(PresenceLocationContext ctx);
+
+    /**
+     * Returns a collection of all presence entities.
+     *
+     * @param ctx the hub context
+     *
+     * @return a collection of PresenceEntity instances
+     */
+    Collection<PresenceEntity> getAllPresenceEntities(HubContext ctx);
 
     /**
      * Returns a collection of all presence locations.
@@ -58,6 +54,15 @@ public interface PresenceStore {
     Collection<PresenceLocation> getAllPresenceLocations(HubContext ctx);
 
     /**
+     * Returns a presence entity.
+     *
+     * @param ctx the context of the presence entity
+     *
+     * @return a PresenceEntity instance
+     */
+    PresenceEntity getPresenceEntity(PresenceEntityContext ctx);
+
+    /**
      * Returns a presence location.
      *
      * @param ctx the presence location context
@@ -67,21 +72,21 @@ public interface PresenceStore {
     PresenceLocation getPresenceLocation(PresenceLocationContext ctx);
 
     /**
+     * Allows the presence store to perform whatever implementation-specific housekeeping tasks are needed.
+     */
+    void performHousekeeping();
+
+    /**
+     * Saves a presence entity.
+     *
+     * @param pe the presence entity to save
+     */
+    void savePresenceEntity(PresenceEntity pe);
+
+    /**
      * Saves a presence location.
      *
      * @param pl the presence location to save
      */
     void savePresenceLocation(PresenceLocation pl);
-
-    /**
-     * Deletes a presence location.
-     *
-     * @param ctx the presence location context
-     */
-    void deletePresenceLocation(PresenceLocationContext ctx);
-
-    /**
-     * Cleans up and closes the presence store.
-     */
-    void close();
 }
