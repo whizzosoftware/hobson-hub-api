@@ -53,6 +53,7 @@ public interface HobsonPlugin {
 
     EventLoopExecutor getEventLoopExecutor();
     long getRefreshInterval();
+    PluginStatus getStatus();
     TaskProvider getTaskProvider();
 
     /**

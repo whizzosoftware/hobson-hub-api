@@ -67,6 +67,11 @@ public class MockHobsonPlugin extends AbstractHobsonPlugin {
     }
 
     @Override
+    public PluginStatus getStatus() {
+        return null;
+    }
+
+    @Override
     public void onRefresh() {
 
     }

@@ -148,6 +148,7 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
         return started;
     }
 
+    @Override
     public void setLastCheckin(Long lastCheckin) {
         if (this.lastCheckin == null || (lastCheckin != null && lastCheckin - this.lastCheckin > HobsonDeviceDescriptor.AVAILABILITY_TIMEOUT_INTERVAL)) {
             postEvent(new DeviceAvailableEvent(System.currentTimeMillis(), getContext()));
@@ -155,6 +156,7 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
         this.lastCheckin = lastCheckin;
     }
 
+    @Override
     public void start(final String name, final Map<String,Object> config) {
         logger.trace("Starting device: {}", getContext());
         this.name = name;
@@ -270,10 +272,14 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
             List<DeviceVariableUpdate> updates = new ArrayList<>();
             for (String name : values.keySet()) {
                 DeviceProxyVariable var = variables.get(name);
-                Object value = values.get(name);
-                Object oldVar = var.getValue();
-                var.setValue(value, now);
-                updates.add(new DeviceVariableUpdate(DeviceVariableContext.create(getContext(), name), oldVar, value, now));
+                if (var != null) {
+                    Object value = values.get(name);
+                    Object oldVar = var.getValue();
+                    var.setValue(value, now);
+                    updates.add(new DeviceVariableUpdate(DeviceVariableContext.create(getContext(), name), oldVar, value, now));
+                } else {
+                    throw new HobsonRuntimeException("Unable to set value for unpublished variable: " + name);
+                }
             }
             postEvent(new DeviceVariablesUpdateEvent(System.currentTimeMillis(), updates));
         } else {

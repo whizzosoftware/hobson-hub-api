@@ -112,6 +112,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
         return d;
     }
 
+    @Override
+    public PluginStatus getStatus() {
+        return status;
+    }
+
     @EventHandler
     public void onHandleTaskEvents(final TaskEvent event) {
         if (hasTaskProvider()) {
