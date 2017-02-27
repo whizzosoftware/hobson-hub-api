@@ -468,8 +468,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     }
 
     /**
-     * Requests all currently known device advertisements. This is an asynchronous call that will be serviced
-     * as multiple DeviceAdvertisementEvent events to the plugin's onHobsonEvent() callback.
+     * Requests all currently known device advertisements.
      *
      * @param protocolId the protocol ID for the advertisements requested
      *

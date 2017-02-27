@@ -518,4 +518,54 @@ public class CollectionPersisterTest {
         cp.deletePresenceLocation(cpc, pctx);
         assertNull(cp.restorePresenceLocation(cpc, pctx));
     }
+
+    @Test
+    public void testSaveDeviceTags() {
+        IdProvider idProvider = new ContextPathIdProvider();
+        CollectionPersister cp = new CollectionPersister(idProvider);
+        MockCollectionPersistenceContext cpc = new MockCollectionPersistenceContext();
+        DeviceContext dctx1 = DeviceContext.createLocal("plugin1", "device1");
+        DeviceContext dctx2 = DeviceContext.createLocal("plugin1", "device2");
+
+        Set<String> tags = new HashSet<>();
+        tags.add("tag1");
+        cp.saveDeviceTags(cpc, dctx1, tags, true);
+
+        tags = new HashSet<>();
+        tags.add("tag1");
+        tags.add("tag2");
+        cp.saveDeviceTags(cpc, dctx2, tags, true);
+
+        Set<Object> otags = cpc.getSet(idProvider.createDeviceTagsId(dctx1).getId());
+        assertEquals(1, otags.size());
+        Iterator it = otags.iterator();
+        assertEquals("tag1", it.next());
+
+        otags = cpc.getSet(idProvider.createDeviceTagsId(dctx2).getId());
+        assertEquals(2, otags.size());
+        it = otags.iterator();
+        assertEquals("tag1", it.next());
+        assertEquals("tag2", it.next());
+
+        otags = cpc.getSet(idProvider.createDeviceTagNameId(HubContext.createLocal(), "tag1").getId());
+        assertEquals(2, otags.size());
+        assertTrue(otags.contains("local:plugin1:device1"));
+        assertTrue(otags.contains("local:plugin1:device2"));
+
+        otags = cpc.getSet(idProvider.createDeviceTagNameId(HubContext.createLocal(), "tag2").getId());
+        assertEquals(1, otags.size());
+        assertTrue(otags.contains("local:plugin1:device2"));
+
+        tags = new HashSet<>();
+        tags.add("tag2");
+        cp.saveDeviceTags(cpc, dctx2, tags, true);
+
+        otags = cpc.getSet(idProvider.createDeviceTagNameId(HubContext.createLocal(), "tag1").getId());
+        assertEquals(1, otags.size());
+        assertTrue(otags.contains("local:plugin1:device1"));
+
+        otags = cpc.getSet(idProvider.createDeviceTagNameId(HubContext.createLocal(), "tag2").getId());
+        assertEquals(1, otags.size());
+        assertTrue(otags.contains("local:plugin1:device2"));
+    }
 }

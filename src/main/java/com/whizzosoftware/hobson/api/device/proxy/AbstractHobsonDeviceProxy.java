@@ -42,6 +42,7 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
     private DeviceType type;
     private Map<String,DeviceProxyVariable> variables = Collections.synchronizedMap(new HashMap<String,DeviceProxyVariable>());
     private List<ActionClass> actionClasses = new ArrayList<>();
+    private Set<String> tags;
 
     /**
      * Constructor.
@@ -100,6 +101,7 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
         for (DeviceProxyVariable dv : variables.values()) {
             b.variableDescription(dv.getDescriptor());
         }
+        b.tags(tags);
         return b.build();
     }
 
@@ -168,6 +170,29 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
     //=================================================================================
     // Protected methods
     //=================================================================================
+
+    protected void addTag(String tag) {
+        if (tags == null) {
+            tags = new HashSet<>();
+        }
+        tags.add(tag);
+    }
+
+    protected DeviceProxyVariable createDeviceVariable(String name, VariableMask mask) {
+        return new DeviceProxyVariable(DeviceVariableContext.create(getContext(), name), mask);
+    }
+
+    protected DeviceProxyVariable createDeviceVariable(String name, VariableMask mask, VariableMediaType mediaType) {
+        return new DeviceProxyVariable(DeviceVariableContext.create(getContext(), name), mask, mediaType);
+    }
+
+    protected DeviceProxyVariable createDeviceVariable(String name, VariableMask mask, VariableMediaType mediaType, Object value, Long lastUpdate) {
+        return new DeviceProxyVariable(DeviceVariableContext.create(getContext(), name), mask, mediaType, value, lastUpdate);
+    }
+
+    protected DeviceProxyVariable createDeviceVariable(String name, VariableMask mask, Object value, Long lastUpdate) {
+        return new DeviceProxyVariable(DeviceVariableContext.create(getContext(), name), mask, value, lastUpdate);
+    }
 
     /**
      * Returns an array of configuration properties the device supports. These will automatically
@@ -285,22 +310,6 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
         } else {
             throw new HobsonRuntimeException("Unable to process empty variables values");
         }
-    }
-
-    protected DeviceProxyVariable createDeviceVariable(String name, VariableMask mask) {
-        return new DeviceProxyVariable(DeviceVariableContext.create(getContext(), name), mask);
-    }
-
-    protected DeviceProxyVariable createDeviceVariable(String name, VariableMask mask, VariableMediaType mediaType) {
-        return new DeviceProxyVariable(DeviceVariableContext.create(getContext(), name), mask, mediaType);
-    }
-
-    protected DeviceProxyVariable createDeviceVariable(String name, VariableMask mask, VariableMediaType mediaType, Object value, Long lastUpdate) {
-        return new DeviceProxyVariable(DeviceVariableContext.create(getContext(), name), mask, mediaType, value, lastUpdate);
-    }
-
-    protected DeviceProxyVariable createDeviceVariable(String name, VariableMask mask, Object value, Long lastUpdate) {
-        return new DeviceProxyVariable(DeviceVariableContext.create(getContext(), name), mask, value, lastUpdate);
     }
 
     public String toString() {

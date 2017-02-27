@@ -232,6 +232,14 @@ public class ContextPathIdProvider implements IdProvider {
     }
 
     @Override
+    public TemplatedId createDeviceTagNameId(HubContext ctx, String tag) {
+        return new TemplatedId(
+            "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "deviceTags" + HubContext.DELIMITER + tag,
+            ""
+        );
+    }
+
+    @Override
     public TemplatedId createLocalPluginActionClassesId(PluginContext ctx) {
         return new TemplatedId(
             "hubs" + HubContext.DELIMITER + ctx.getHubId() + HubContext.DELIMITER + "plugins" + HubContext.DELIMITER + ctx.getPluginId() + HubContext.DELIMITER + "actionClasses",

@@ -55,6 +55,7 @@ public interface IdProvider {
     TemplatedId createDeviceVariablesId(DeviceContext ctx);
     TemplatedId createDeviceConfigurationClassId(DeviceContext ctx);
     TemplatedId createDeviceTagsId(DeviceContext ctx);
+    TemplatedId createDeviceTagNameId(HubContext ctx, String tag);
     TemplatedId createPluginDeviceConfigurationClassesId(PluginContext ctx);
     TemplatedId createPluginDeviceConfigurationClassId(PluginContext ctx, String name);
     TemplatedId createGlobalVariableId(GlobalVariableContext gvctx);

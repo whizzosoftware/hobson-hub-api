@@ -626,7 +626,24 @@ public class CollectionPersister {
 
     public void saveDeviceTags(CollectionPersistenceContext pctx, DeviceContext dctx, Set<String> tags, boolean commit) {
         String deviceTagId = idProvider.createDeviceTagsId(dctx).getId();
+
+        // save the tags for the device
+        Set<Object> oldTags = pctx.getSet(deviceTagId);
         pctx.setSet(deviceTagId, new HashSet<Object>(tags));
+
+        // add the device context to tags it is now associated with
+        for (String tag : tags) {
+            pctx.addSetValue(idProvider.createDeviceTagNameId(dctx.getHubContext(), tag).getId(), dctx.toString());
+        }
+
+        // remove the device context from any tags with which it's no longer associated
+        for (Object o : oldTags) {
+            String oldTag = (String)o;
+            if (!tags.contains(oldTag)) {
+                pctx.removeFromSet(idProvider.createDeviceTagNameId(dctx.getHubContext(), oldTag).getId(), dctx.toString());
+            }
+        }
+
         if (commit) {
             pctx.commit();
         }
