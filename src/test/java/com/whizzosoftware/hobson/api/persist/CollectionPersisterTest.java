@@ -544,8 +544,10 @@ public class CollectionPersisterTest {
         otags = cpc.getSet(idProvider.createDeviceTagsId(dctx2).getId());
         assertEquals(2, otags.size());
         it = otags.iterator();
-        assertEquals("tag1", it.next());
-        assertEquals("tag2", it.next());
+        String s1 = (String)it.next();
+        String s2 = (String)it.next();
+        assertTrue("tag1".equals(s1) || "tag1".equals(s1));
+        assertTrue("tag1".equals(s2) || "tag2".equals(s2));
 
         otags = cpc.getSet(idProvider.createDeviceTagNameId(HubContext.createLocal(), "tag1").getId());
         assertEquals(2, otags.size());
