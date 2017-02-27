@@ -34,9 +34,11 @@ abstract public class HttpClientChannel {
     public void sendHttpRequest(URI uri, HttpRequest.Method method, Map<String, String> headers, Collection<Cookie> cookies, byte[] body, Object context) {
         logger.trace("Sending HTTP {} request: {}", method, uri.toASCIIString());
         HttpRequest request = createHttpRequest(uri, method);
-        buildHeaders(request, headers, cookies);
-        request.setBody(body);
-        request.execute(new HttpChannelCompletionHandler(plugin, context));
+        if (request != null) {
+            buildHeaders(request, headers, cookies);
+            request.setBody(body);
+            request.execute(new HttpChannelCompletionHandler(plugin, context));
+        }
     }
 
     abstract protected HttpRequest createHttpRequest(URI uri, HttpRequest.Method method);

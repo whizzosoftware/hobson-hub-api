@@ -43,6 +43,11 @@ public class MockDeviceManager implements DeviceManager {
     }
 
     @Override
+    public Collection<HobsonDeviceDescriptor> getDevices(HubContext hctx, String tag) {
+        return null;
+    }
+
+    @Override
     public Collection<HobsonDeviceDescriptor> getDevices(PluginContext ctx) {
         return null;
     }

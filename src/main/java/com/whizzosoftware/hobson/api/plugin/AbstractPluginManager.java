@@ -48,7 +48,13 @@ abstract public class AbstractPluginManager implements PluginManager {
 
     @Override
     public PropertyContainer getLocalPluginConfiguration(PluginContext ctx) {
-        return new PropertyContainer(getLocalPlugin(ctx).getConfigurationClass().getContext(), getConfigurationManager().getLocalPluginConfiguration(ctx));
+        ConfigurationManager cfgManager = getConfigurationManager();
+        PropertyContainerClass configClass = getLocalPlugin(ctx).getConfigurationClass();
+        if (cfgManager != null && configClass != null) {
+            return new PropertyContainer(configClass.getContext(), cfgManager.getLocalPluginConfiguration(ctx));
+        } else {
+            return null;
+        }
     }
 
     @Override

@@ -100,6 +100,16 @@ public interface DeviceManager {
     Collection<HobsonDeviceDescriptor> getDevices(HubContext hctx);
 
     /**
+     * Returns all devices with a given tag.
+     *
+     * @param hctx the context of the hub that published the devices
+     * @param tag the tag name
+     *
+     * @return a Collection of HobsonDeviceDescription instances
+     */
+    Collection<HobsonDeviceDescriptor> getDevices(HubContext hctx, String tag);
+
+    /**
      * Returns the state of a device variable.
      *
      * @param ctx the variable context
