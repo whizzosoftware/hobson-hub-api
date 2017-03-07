@@ -26,6 +26,7 @@ import com.whizzosoftware.hobson.api.event.*;
 import com.whizzosoftware.hobson.api.hub.HobsonHub;
 import com.whizzosoftware.hobson.api.hub.HubContext;
 import com.whizzosoftware.hobson.api.hub.HubManager;
+import com.whizzosoftware.hobson.api.security.AccessManager;
 import com.whizzosoftware.hobson.api.task.TaskContext;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
@@ -55,6 +56,7 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     private String version;
     private PropertyContainerClass configurationClass;
     private PluginStatus status;
+    private AccessManager accessManager;
     private DeviceManager deviceManager;
     private DiscoManager discoManager;
     private EventManager eventManager;
@@ -333,6 +335,11 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     }
 
     @Override
+    public void setAccessManager(AccessManager accessManager) {
+        this.accessManager = accessManager;
+    }
+
+    @Override
     public void setDeviceManager(DeviceManager deviceManager) {
         this.deviceManager = deviceManager;
     }
@@ -505,6 +512,10 @@ abstract public class AbstractHobsonPlugin implements HobsonPlugin, EventLoopExe
     protected HobsonHub getLocalHub() {
         validateHubManager();
         return hubManager.getHub(HubContext.createLocal());
+    }
+
+    protected AccessManager getAccessManager() {
+        return accessManager;
     }
 
     protected DiscoManager getDiscoManager() {

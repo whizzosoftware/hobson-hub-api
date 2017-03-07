@@ -12,7 +12,6 @@ package com.whizzosoftware.hobson.api.hub;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
-import com.whizzosoftware.hobson.api.user.HobsonUser;
 import com.whizzosoftware.hobson.api.variable.GlobalVariable;
 import com.whizzosoftware.hobson.api.variable.GlobalVariableContext;
 
@@ -40,15 +39,6 @@ public interface HubManager {
      * @return a Collection of HobsonHub instances
      */
     Collection<HubContext> getHubs();
-
-    /**
-     * Returns the hubs associated with a user.
-     *
-     * @param userId the user ID that owns the hubs
-     *
-     * @return a Collection of HobsonHub instances
-     */
-    Collection<HubContext> getHubs(String userId);
 
     /**
      * Returns a specific hub.
@@ -110,22 +100,6 @@ public interface HubManager {
      * @return a PropertyContainerClass instance
      */
     PropertyContainerClass getContainerClass(PropertyContainerClassContext ctx);
-
-    /**
-     * Returns the local OIDC configuration.
-     *
-     * @return an OIDCConfig instance
-     */
-    OIDCConfig getOIDCConfiguration();
-
-    /**
-     * Converts a JWT token into a HobsonUser.
-     *
-     * @param token the toke string
-     *
-     * @return a HobsonUser instance
-     */
-    HobsonUser convertTokenToUser(String token);
 
     /**
      * Indicates whether a property container class exists.

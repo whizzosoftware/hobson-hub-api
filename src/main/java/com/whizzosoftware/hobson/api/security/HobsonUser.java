@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************
 */
-package com.whizzosoftware.hobson.api.user;
+package com.whizzosoftware.hobson.api.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +23,7 @@ public class HobsonUser {
     private String givenName;
     private String familyName;
     private String email;
-    private List<HobsonRole> roles;
+    private List<String> roles;
     private Collection<String> hubs;
 
     public HobsonUser(String id) {
@@ -48,8 +48,8 @@ public class HobsonUser {
 
     public boolean hasRole(String roleName) {
         if (roles != null) {
-            for (HobsonRole r : roles) {
-                if (r.name().equals(roleName)) {
+            for (String r : roles) {
+                if (r.equals(roleName)) {
                     return true;
                 }
             }
@@ -61,7 +61,7 @@ public class HobsonUser {
         return (roles != null && roles.size() > 0);
     }
 
-    public Collection<HobsonRole> getRoles() {
+    public Collection<String> getRoles() {
         return roles;
     }
 
@@ -96,16 +96,11 @@ public class HobsonUser {
         }
 
         public Builder roles(List<String> roles) {
-            user.roles = new ArrayList<>();
-            if (roles != null) {
-                for (String r : roles) {
-                    user.roles.add(HobsonRole.valueOf(r));
-                }
-            }
+            user.roles = roles;
             return this;
         }
 
-        public Builder role(HobsonRole role) {
+        public Builder role(String role) {
             if (user.roles == null) {
                 user.roles = new ArrayList<>();
             }

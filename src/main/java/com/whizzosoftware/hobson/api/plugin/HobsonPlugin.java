@@ -20,6 +20,7 @@ import com.whizzosoftware.hobson.api.event.HobsonEvent;
 import com.whizzosoftware.hobson.api.hub.HubManager;
 import com.whizzosoftware.hobson.api.property.PropertyContainer;
 import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
+import com.whizzosoftware.hobson.api.security.AccessManager;
 import com.whizzosoftware.hobson.api.task.TaskManager;
 import com.whizzosoftware.hobson.api.task.TaskProvider;
 import com.whizzosoftware.hobson.api.variable.DeviceVariableDescriptor;
@@ -84,6 +85,7 @@ public interface HobsonPlugin {
     void postEvent(HobsonEvent event);
     void publishActionProvider(ActionProvider actionProvider);
     void scheduleAtFixedRateInEventLoop(Runnable runnable, long initialDelay, long time, TimeUnit unit);
+    void setAccessManager(AccessManager accessManager);
     void setActionManager(ActionManager actionManager);
     void setDeviceConfigurationProperty(DeviceContext dctx, String name, Object value);
     void setDeviceConfigurationProperties(DeviceContext dctx, Map<String,Object> values);

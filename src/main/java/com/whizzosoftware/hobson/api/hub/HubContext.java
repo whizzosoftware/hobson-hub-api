@@ -19,7 +19,7 @@ import java.io.Serializable;
  * @author Dan Noguerol
  */
 public class HubContext implements Serializable {
-    public static final String DEFAULT_USER = "local";
+    public static final String DEFAULT_USER = "admin";
     public static final String DEFAULT_HUB = "local";
 
     public static final String DELIMITER = ":";
