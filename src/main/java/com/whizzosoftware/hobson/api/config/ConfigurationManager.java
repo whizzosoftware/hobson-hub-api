@@ -83,6 +83,8 @@ public interface ConfigurationManager {
      *
      * @param ctx the device context
      * @param values the configuration property values
+     *
+     * @throws NotSerializableException if a configuration value is not serializable
      */
     void setDeviceConfigurationProperties(DeviceContext ctx, Map<String, Object> values) throws NotSerializableException;
 
@@ -92,6 +94,8 @@ public interface ConfigurationManager {
      * @param ctx the device context
      * @param name the configuration property name
      * @param value the configuration property value
+     *
+     * @throws NotSerializableException if a configuration value is not serializable
      */
     void setDeviceConfigurationProperty(DeviceContext ctx, String name, Object value) throws NotSerializableException;
 
@@ -100,21 +104,29 @@ public interface ConfigurationManager {
      *
      * @param ctx the context of the hub
      * @param config the configuration to set
+     *
+     * @throws NotSerializableException if a configuration value is not serializable
      */
     void setHubConfiguration(HubContext ctx, Map<String,Object> config) throws NotSerializableException;
 
     /**
      * Sets the configuration for a local plugin.
-     *  @param ctx the plugin context
+     *
+     * @param ctx the plugin context
      * @param config the new configuration
+     *
+     * @throws NotSerializableException if a configuration value is not serializable
      */
     void setLocalPluginConfiguration(PluginContext ctx, Map<String,Object> config) throws NotSerializableException;
 
     /**
      * Sets a configuration property for a local plugin.
-     *  @param ctx the plugin context
+     *
+     * @param ctx the plugin context
      * @param name the configuration property name
      * @param value the configuration property value
+     *
+     * @throws NotSerializableException if a configuration value is not serializable
      */
     void setLocalPluginConfigurationProperty(PluginContext ctx, String name, Object value) throws NotSerializableException;
 }

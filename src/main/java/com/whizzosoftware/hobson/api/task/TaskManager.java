@@ -113,6 +113,7 @@ public interface TaskManager extends TaskConditionClassProvider {
      * @param tctx the context of the task to update
      * @param name the new task name
      * @param description the description of the new task
+     * @param enabled indicates whether the task should be enabled
      * @param conditions the task's conditions
      * @param actionSet  the task's action set
      */
