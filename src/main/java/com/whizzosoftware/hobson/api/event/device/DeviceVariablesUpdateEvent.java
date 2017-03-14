@@ -37,6 +37,7 @@ public class DeviceVariablesUpdateEvent extends DeviceEvent {
         super(properties);
     }
 
+    @SuppressWarnings("unchecked")
     public Collection<DeviceVariableUpdate> getUpdates() {
         return (Collection<DeviceVariableUpdate>)getProperty(PROP_UPDATES);
     }

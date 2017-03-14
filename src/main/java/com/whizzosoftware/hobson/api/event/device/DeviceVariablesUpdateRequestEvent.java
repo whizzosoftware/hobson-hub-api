@@ -31,6 +31,7 @@ public class DeviceVariablesUpdateRequestEvent extends DeviceEvent {
         super(properties);
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String,Object> getValues() {
         return (Map<String,Object>)getProperty(PROP_VALUES);
     }

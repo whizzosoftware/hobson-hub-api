@@ -39,6 +39,7 @@ public class StringConversionUtilTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testCastTypedValueString() {
         assertEquals("foo", StringConversionUtil.castTypedValueString("Sfoo"));
         assertEquals(12, StringConversionUtil.castTypedValueString("I12"));

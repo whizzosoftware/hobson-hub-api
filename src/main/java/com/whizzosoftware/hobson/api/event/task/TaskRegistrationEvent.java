@@ -25,6 +25,7 @@ public class TaskRegistrationEvent extends TaskEvent {
         return (String)getProperty(PROP_PLUGIN_ID);
     }
 
+    @SuppressWarnings("unchecked")
     public Collection<TaskContext> getTasks() {
         return (Collection<TaskContext>)getProperty(PROP_TASKS);
     }

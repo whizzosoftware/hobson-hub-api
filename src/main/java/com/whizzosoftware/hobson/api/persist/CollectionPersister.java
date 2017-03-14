@@ -306,6 +306,7 @@ public class CollectionPersister {
         return ac;
     }
 
+    @SuppressWarnings("unchecked")
     private List<TypedProperty> restoreDeviceActionClassSupportedProperties(CollectionPersistenceContext cpctx, DeviceContext ctx, String actionClassId) {
         List<TypedProperty> results = new ArrayList<>();
 
@@ -511,6 +512,7 @@ public class CollectionPersister {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void saveDataStream(CollectionPersistenceContext pctx, HubContext hctx, DataStream dataStream, boolean commit) {
         // save data stream meta data
         Map<String,Object> map = new HashMap<>();

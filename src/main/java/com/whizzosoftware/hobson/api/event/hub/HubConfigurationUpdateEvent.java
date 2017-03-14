@@ -30,6 +30,7 @@ public class HubConfigurationUpdateEvent extends HubEvent {
         super(props);
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String,Object> getConfiguration() {
         return (Map<String,Object>)getProperty(PROP_CONFIGURATION);
     }

@@ -32,6 +32,7 @@ public class DeviceConfigurationUpdateEvent extends DeviceEvent {
         super(props);
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String,Object> getConfiguration() {
         return (Map<String,Object>)getProperty(PROP_CONFIGURATION);
     }

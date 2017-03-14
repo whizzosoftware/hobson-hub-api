@@ -1,15 +1,12 @@
 package com.whizzosoftware.hobson.api.persist;
 
-import com.whizzosoftware.hobson.api.property.PropertyContainerClass;
-import com.whizzosoftware.hobson.api.property.PropertyContainerClassContext;
-
 import java.util.*;
 
 public class MockCollectionPersistenceContext implements CollectionPersistenceContext {
     private Map<String,Object> maps = new HashMap<>();
-    private Map<PropertyContainerClassContext,PropertyContainerClass> pccMap = new HashMap<>();
 
     @Override
+    @SuppressWarnings("unchecked")
     public void addSetValue(String key, Object value) {
         Set<Object> s = (Set<Object>)maps.get(key);
         if (s == null) {
@@ -20,6 +17,7 @@ public class MockCollectionPersistenceContext implements CollectionPersistenceCo
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<String, Object> getMap(String key) {
         Map<String,Object> map = (Map<String,Object>)maps.get(key);
         if (map == null) {
@@ -35,6 +33,7 @@ public class MockCollectionPersistenceContext implements CollectionPersistenceCo
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Set<Object> getSet(String key) {
         Set<Object> set = (Set<Object>)maps.get(key);
         if (set == null) {
@@ -90,7 +89,8 @@ public class MockCollectionPersistenceContext implements CollectionPersistenceCo
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean hasSetValue(String key, Object value) {
-        return (maps.containsKey(key) && ((Set<String>)maps.get(key)).contains(value));
+        return (maps.containsKey(key) && ((Set<Object>)maps.get(key)).contains(value));
     }
 }
