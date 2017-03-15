@@ -147,7 +147,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Import-Package>org.apache.commons.*,org.slf4j,io.netty.*,gnu.io.*</Import-Package>
+                        <Import-Package>org.apache.commons.*,org.slf4j,io.netty.*</Import-Package>
                         <Export-Package>com.whizzosoftware.hobson.api.*</Export-Package>
                     </instructions>
                 </configuration>
