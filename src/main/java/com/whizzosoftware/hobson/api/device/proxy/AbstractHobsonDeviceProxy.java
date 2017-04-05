@@ -233,7 +233,7 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
             logger.debug("Publishing variable: {}", v);
             variables.put(v.getContext().getName(), v);
             newVars.add(v.getDescriptor());
-            updates.add(new DeviceVariableUpdate(DeviceVariableContext.create(getContext(), name), null, v.getValue(), now));
+            updates.add(new DeviceVariableUpdate(DeviceVariableContext.create(getContext(), v.getContext().getName()), null, v.getValue(), now));
         }
         // only alert the plugin to the variable changes if the device has been started (this prevents unnecessary
         // events early on in the device startup cycle)
@@ -252,7 +252,7 @@ abstract public class AbstractHobsonDeviceProxy implements HobsonDeviceProxy {
             logger.debug("Publishing variable: {}", v);
             variables.put(v.getContext().getName(), v);
             newVars.add(v.getDescriptor());
-            updates.add(new DeviceVariableUpdate(DeviceVariableContext.create(getContext(), name), null, v.getValue(), now));
+            updates.add(new DeviceVariableUpdate(DeviceVariableContext.create(getContext(), v.getContext().getName()), null, v.getValue(), now));
         }
         // only alert the plugin to the variable changes if the device has been started (this prevents unnecessary
         // events early on in the device startup cycle)

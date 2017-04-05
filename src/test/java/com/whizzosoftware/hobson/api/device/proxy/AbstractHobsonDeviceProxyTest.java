@@ -9,6 +9,7 @@
 */
 package com.whizzosoftware.hobson.api.device.proxy;
 
+import com.whizzosoftware.hobson.api.HobsonRuntimeException;
 import com.whizzosoftware.hobson.api.device.*;
 import com.whizzosoftware.hobson.api.event.device.DeviceAvailableEvent;
 import com.whizzosoftware.hobson.api.event.device.DeviceVariablesUpdateEvent;
@@ -159,14 +160,25 @@ public class AbstractHobsonDeviceProxyTest {
 //        assertEquals(p, d.getPlugin());
 //    }
 
-//    @Test
-//    public void testPublishVariableWithNoVariableManager() {
-//        try {
-//            HobsonPlugin p = new MockAbstractHobsonPlugin("pid", "name");
-//            MockDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB);
-//            d.publishVariable("var1", "val1", HobsonVariable.Mask.READ_WRITE, null);
-//        } catch (HobsonRuntimeException ignored) {}
-//    }
+    @Test
+    public void testPublishVariable() {
+        try {
+            MockEventManager em = new MockEventManager();
+            HobsonPlugin p = new MockHobsonPlugin("pid", "name", "version", "description");
+            p.setEventManager(em);
+            MockDeviceProxy d = new MockDeviceProxy(p, "did", DeviceType.LIGHTBULB);
+            assertEquals(0, em.getPostedEvents().size());
+            d.publishVariables(d.createDeviceVariable("var1", VariableMask.READ_WRITE, "val1", null));
+            assertEquals(1, em.getPostedEvents().size());
+            assertTrue(em.getPostedEvents().get(0) instanceof DeviceVariablesUpdateEvent);
+            DeviceVariablesUpdateEvent dvue = (DeviceVariablesUpdateEvent)em.getPostedEvents().get(0);
+            assertEquals(1, dvue.getUpdates().size());
+            DeviceVariableUpdate du = dvue.getUpdates().iterator().next();
+            assertEquals("pid", du.getPluginId());
+            assertEquals("did", du.getDeviceId());
+            assertEquals("var1", du.getName());
+        } catch (HobsonRuntimeException ignored) {}
+    }
 
 //    @Test
 //    public void testPublishVariableWithVariableManager() {
